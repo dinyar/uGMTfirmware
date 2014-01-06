@@ -12,7 +12,7 @@ entity IsoAssignmentUnit is
         iMuonsO    : in  TGMTMu_vector (0 to 35);
         iMuonsF    : in  TGMTMu_vector (0 to 35);
         iMuIdxBits : in  TIndexBits_vector (7 downto 0);
-        oIsoBits   : out std_logic_vector (7 downto 0);
+        oIsoBits   : out TIsoBits_vector (7 downto 0);
         clk        : in  std_logic;
         sinit      : in  std_logic);
 end IsoAssignmentUnit;
@@ -64,7 +64,7 @@ architecture Behavioral of IsoAssignmentUnit is
   component iso_check is
     port (iAreaSums : in  TCaloArea_vector(7 downto 0);
           iPileUp   : in  unsigned(6 downto 0);
-          oIsoBits  : out std_logic_vector(7 downto 0);
+          oIsoBits  : out TIsoBits_vector(7 downto 0);
           clk       : in  std_logic;
           sinit     : in  std_logic);
   end component;

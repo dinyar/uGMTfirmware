@@ -3,15 +3,17 @@ use IEEE.NUMERIC_STD.all;
 use ieee.std_logic_1164.all;
 use STD.TEXTIO.all;
 
+use work.mp7_data_types.all;
+use work.ugmt_constants.all;
+
 package GMTTypes is
-
-  -- Cancel-out information at station level
-  type TMuonAddress is array (0 to 3) of std_logic_vector(0 to 9);
---  type TMuonAddress_vector is array (integer range <>) of TMuonAddress;
-
   -----------------------------------------------------------------------------
   -- GMT muon at the input to the GMT.
   -----------------------------------------------------------------------------
+
+  -- Cancel-out information at station level
+  type TMuonAddress is array (0 to 3) of std_logic_vector(0 to 9);
+
   type TGMTMuIn is record
     sysign  : std_logic_vector(1 downto 0);  -- charge bit (1= plus)
     address : TMuonAddress;                  -- 4x10 bit for track addresses
@@ -25,12 +27,11 @@ package GMTTypes is
   subtype TGMTMuIn_wedge is TGMTMuIn_vector (0 to 2);
   type    TGMTMuIn_wedges is array (integer range <>) of TGMTMuIn_wedge;
 
-  -------------------------------------------------------------------------------
+  -----------------------------------------------------------------------------
   -- GMT muon at the output of the GMT and inside the logic components
-  -------------------------------------------------------------------------------
+  -----------------------------------------------------------------------------
   type TGMTMu is record
     sysign : std_logic_vector(1 downto 0);  -- charge bit (1= plus)
-    isol   : std_logic;
     eta    : signed(8 downto 0);            -- 9 bit eta
     qual   : unsigned(3 downto 0);          -- 4 bit quality
     pt     : unsigned(8 downto 0);          -- 9 bit pt
@@ -85,7 +86,6 @@ package GMTTypes is
   -- All eta rings of detector. Two additional rings on each side for
   -- calculation of area energies.
   type    TCaloRegionEtaSlice_vector is array (integer range <>) of TCaloRegionEtaSlice(35 downto 0);
-  function CaloEtaSlice_vec_from_flat (signal flat : std_logic_vector) return TCaloRegionEtaSlice_vector;
 
   subtype TCaloStripEnergy is unsigned(0 to 7);  -- Energy value for strip in
                                                  -- phi
@@ -156,6 +156,36 @@ package GMTTypes is
   -- Stuff for muon merging.
   type TRowColIndex_vector is array (integer range <>) of unsigned(6 downto 0);
 
+  -- Iso bits
+  subtype TIsoBits is std_logic_vector(1 downto 0);
+  type    TIsoBits_vector is array (integer range <>) of TIsoBits;
+
+  -----------------------------------------------------------------------------
+  -- Types for link format.
+  -----------------------------------------------------------------------------
+  subtype TFlatMuon is std_logic_vector(63 downto 0);
+  -- Contains muons from one link.
+  type    TFlatMuon_link is array (NUM_MUONS_IN -1 downto 0) of TFlatMuon;
+  -- Contains muons from all links.
+  type    TFlatMuons is array (natural range <>) of TFlatMuon_link;
+
+  -- Empty bits for muons from one link for one BX.
+  type TEmpty_link is array (natural range <>) of std_logic_vector(NUM_MUONS_IN -1 downto 0);
+
+  type TIndexBits_link is array (natural range <>) of TIndexBits_vector(NUM_MUONS_IN -1 downto 0);
+
+  type TSortRank_link is array (natural range <>) of TSortRank10_vector(NUM_MUONS_IN -1 downto 0);
+
+  function calo_etaslice_from_buf (signal buffer_flat    : ldata(2*NUM_MUONS_LINK-1)) return TCaloRegionEtaSlice;
+  function calo_etaslice_from_flat (signal flat          : std_logic_vector) return TCaloRegionEtaSlice;
+  function muon_flat_to_vec(signal iMuons_flat           : TFlatMuons) return TGMTMuIn_vector;
+  function gmt_mus_from_in_mus(signal iMuonsIn           : TGMTMuIn_vector) return TGMTMu_vector;
+  function track_addresses_from_in_mus(signal iGMTMu_vec : TGMTMuIn_vector(0 to 35)) return TGMTMuTracks_vector;
+  function unpack_idx_bits(signal iIdxBits               : TIndexBits_link) return TIndexBits_vector;
+  function unpack_sort_rank(signal iSortRanks            : TSortRank_link) return TSortRank10_vector;
+  function unpack_empty_bits(signal iEmptyBits           : TEmpty_link) return std_logic_vector;
+
+  function pack_mu_to_flat(signal iMuon : TGMTMu; signal iIso : TIsoBits) return TFlatMuon;
 end;
 
 
@@ -168,17 +198,198 @@ package body GMTTypes is
   --
   -- unpack
   --
-  function CaloEtaSlice_vec_from_flat (
-    signal flat : std_logic_vector)     -- input from calorimeter trigger
-    return TCaloRegionEtaSlice_vector is
-    variable vec : TCaloRegionEtaSlice_vector(31 downto 0);
+  function calo_etaslice_from_buf (
+    signal buffer_flat : ldata(2*NUM_MUONS_LINK-1))  -- receive the buffer
+    return TCaloRegionEtaSlice is
+    variable oEnergies : TCaloRegionEtaSlice(35 downto 0);
   begin
-    for i in vec'range loop
-      for j in vec(i)'range loop
-        vec(i)(j) := unsigned(flat((i*215)+(j*5) to (i*215)+(j*5)+4));
+    for i in buffer_flat'range loop
+      oEnergies(5*i+4 downto 5*i) := calo_etaslice_from_flat(buffer_flat(i).data);
+    end loop;  -- i
+    return oEnergies;
+  end function calo_etaslice_from_buf;
+
+  function calo_etaslice_from_flat (
+    signal flat : std_logic_vector)     -- input from calorimeter trigger
+    return TCaloRegionEtaSlice is
+    variable oEnergies : TCaloRegionEtaSlice(5 downto 0);
+  begin
+    for i in oEnergies'range loop
+      oEnergies(i) := unsigned(flat(i*5+4 downto i*5));
+    end loop;  -- i
+    return oEnergies;
+  end function calo_etaslice_from_flat;
+
+  -----------------------------------------------------------------------------
+  -- Cancel-out information for each wedge.
+  -----------------------------------------------------------------------------
+  function track_addresses_from_in_mus (
+    signal iGMTMu_vec : TGMTMuIn_vector(0 to 35))
+    return TGMTMuTracks_vector is
+    variable oWedges : TGMTMuTracks_vector(0 to 11);
+  begin
+    for i in oWedges'range loop
+      -- put 3 muons into wedge vector.
+      for j in oWedges(i)'range loop
+        oWedges(i)(j).eta := signed(iGMTMu_vec(3*i+j).eta);
+        oWedges(i)(j).phi := unsigned(iGMTMu_vec(3*i+j).phi);
+        --oWedges(i)(j).address := iGMTMu_vec(3*i+j).address;
+
+        oWedges(i)(j).qual := unsigned(iGMTMu_vec(3*i+j).qual);
       end loop;  -- j
+    end loop;  -- oWedges'Range
+    return oWedges;
+  end;
+
+  -----------------------------------------------------------------------------
+  -- Muon addresses
+  -----------------------------------------------------------------------------
+  --
+  -- Unpack
+  --
+  -- TODO: This is completely wrong, but is a placeholder until we know how
+  -- we will encode Muon track addresses.
+  function unpack_address_from_flat (
+    signal flat : std_logic_vector(29 downto 0))
+    return TMuonAddress is
+    variable vec : TMuonAddress;
+  begin  -- unpack_address_from_flat
+    for i in TMuonAddress'range loop
+      vec(i) := flat(7*i+6 downto 7*i) & "000";
     end loop;  -- i
     return vec;
-  end function CaloEtaSlice_vec_from_flat;
+  end unpack_address_from_flat;
+
+
+  -----------------------------------------------------------------------------
+  -- Unpack input muons.
+  -----------------------------------------------------------------------------
+
+  function unpack_mu_from_flat (
+    signal iMuon_flat : TFlatMuon)
+    return TGMTMuIn is
+    variable oMuon : TGMTMuIn;
+  begin
+    oMuon.sysign  := iMuon_flat(SYSIGN_IN_HIGH downto SYSIGN_IN_LOW);
+    oMuon.eta     := iMuon_flat(ETA_IN_HIGH downto ETA_IN_LOW);
+    oMuon.qual    := iMuon_flat(QUAL_IN_HIGH downto QUAL_IN_LOW);
+    oMuon.pt      := iMuon_flat(PT_IN_HIGH downto PT_IN_LOW);
+    oMuon.phi     := iMuon_flat(PHI_IN_HIGH downto PHI_IN_LOW);
+    oMuon.address := unpack_address_from_flat(iMuon_flat(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW));
+    return oMuon;
+  end;
+
+  function muon_flat_to_vec (
+    signal iMuons_flat : TFlatMuons)
+    return TGMTMuIn_vector is
+    variable oMuons : TGMTMuIn_vector(iMuons_flat'length*iMuons_flat(0)'length-1 downto 0);
+  begin
+    for i in iMuons_flat'length-1 downto 0 loop
+      for j in iMuons_flat(i)'length-1 downto 0 loop
+        oMuons(i*iMuons_flat(i)'length+j) := unpack_mu_from_flat(iMuons_flat(i+iMuons_flat'low)(j+iMuons_flat(i)'low));
+      end loop;  -- j
+    end loop;  -- i
+
+    return oMuons;
+  end muon_flat_to_vec;
+
+  -----------------------------------------------------------------------------
+  -- Pack output muons.
+  -----------------------------------------------------------------------------
+
+  function pack_mu_to_flat (
+    signal iMuon : TGMTMu;
+    signal iIso  : TIsoBits)
+    return TFlatMuon is
+    variable oMuon_flat : TFlatMuon;
+  begin  -- pack_mu_to_flat
+    oMuon_flat(SYSIGN_OUT_HIGH downto SYSIGN_OUT_LOW) := iMuon.sysign;
+    oMuon_flat(ETA_OUT_HIGH downto ETA_OUT_LOW)       := std_logic_vector(iMuon.eta);
+    oMuon_flat(QUAL_OUT_HIGH downto QUAL_OUT_LOW)     := std_logic_vector(iMuon.qual);
+    oMuon_flat(PT_OUT_HIGH downto PT_OUT_LOW)         := std_logic_vector(iMuon.pt);
+    oMuon_flat(PHI_OUT_HIGH downto PHI_OUT_LOW)       := std_logic_vector(iMuon.phi);
+    oMuon_flat(ISO_OUT_HIGH downto ISO_OUT_LOW)       := iIso;
+    oMuon_flat(ISO_OUT_LOW-1 downto 0)                := (others => '0');
+    return oMuon_flat;
+  end pack_mu_to_flat;
+
+  -----------------------------------------------------------------------------
+  -- Convert input muons to GMT muons.
+  -----------------------------------------------------------------------------
+  function gmt_mu_from_in_mu (
+    signal iMuonIn : TGMTMuIn)
+    return TGMTMu is
+    variable oMuon : TGMTMu;
+  begin  -- gmt_mu_from_in_mu
+    oMuon.sysign := iMuonIn.sysign;
+    oMuon.eta    := signed(iMuonIn.eta);
+    oMuon.qual   := unsigned(iMuonIn.qual);
+    oMuon.pt     := unsigned(iMuonIn.pt);
+    oMuon.phi    := unsigned(iMuonIn.phi);
+    return oMuon;
+  end gmt_mu_from_in_mu;
+
+  function gmt_mus_from_in_mus (
+    signal iMuonsIn : TGMTMuIn_vector)
+    return TGMTMu_vector is
+    variable oMuons : TGMTMu_vector(iMuonsIn'range);
+  begin  -- gmt_mus_from_in_mus
+    for i in iMuonsIn'range loop
+      oMuons(i) := gmt_mu_from_in_mu(iMuonsIn(i));
+    end loop;  -- i
+    return oMuons;
+  end gmt_mus_from_in_mus;
+
+  -----------------------------------------------------------------------------
+  -- Unpack index bits.
+  -----------------------------------------------------------------------------
+  function unpack_idx_bits (
+    signal iIdxBits : TIndexBits_link)
+    return TIndexBits_vector is
+    variable oIdxBits : TIndexBits_vector(iIdxBits'length*NUM_MUONS_LINK-1 downto 0);
+  begin  -- unpack_idx_bits
+    for i in iIdxBits'length-1 downto 0 loop
+      for j in iIdxBits(i)'range loop
+        oIdxBits(i*iIdxBits(i+iIdxBits'low)'high+j) := iIdxBits(i+iIdxBits'low)(j);
+      end loop;  -- j
+    end loop;  -- i
+
+    return oIdxBits;
+  end unpack_idx_bits;
+
+  -----------------------------------------------------------------------------
+  -- Unpack empty bits.
+  -----------------------------------------------------------------------------
+  function unpack_empty_bits (
+    signal iEmptyBits : TEmpty_link)
+    return std_logic_vector is
+    variable oEmptyBits : std_logic_vector(iEmptyBits'length*NUM_MUONS_LINK-1 downto 0);
+  begin  -- unpack_empty_bits
+    for i in iEmptyBits'length-1 downto 0 loop
+      for j in iEmptyBits(i)'range loop
+        oEmptyBits(i*iEmptyBits(i+iEmptyBits'low)'length+j) := iEmptyBits(i+iEmptyBits'low)(j);
+      end loop;  -- j
+    end loop;  -- i
+
+    return oEmptyBits;
+  end unpack_empty_bits;
+
+  -----------------------------------------------------------------------------
+  -- Unpack sort ranks.
+  -----------------------------------------------------------------------------
+  
+  function unpack_sort_rank (
+    signal iSortRanks : TSortRank_link)
+    return TSortRank10_vector is
+    variable oSortRanks : TSortRank10_vector(iSortRanks'length*NUM_MUONS_LINK-1 downto 0);
+  begin  -- unpack_empty_bits
+    for i in iSortRanks'length-1 downto 0 loop
+      for j in iSortRanks(i)'range loop
+        oSortRanks(i*iSortRanks(i+iSortRanks'low)'length+j) := iSortRanks(i+iSortRanks'low)(j);
+      end loop;  -- j
+    end loop;  -- i
+
+    return oSortRanks;
+  end unpack_sort_rank;
 
 end GMTTypes;

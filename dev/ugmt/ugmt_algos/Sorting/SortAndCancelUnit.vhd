@@ -37,8 +37,6 @@ entity SortAndCancelUnit is
     iEmptyO : in std_logic_vector(0 to 35);
     iEmptyF : in std_logic_vector(0 to 35);
 
-    iIso : in std_logic_vector(7 downto 0);
-
     iIdxBitsB : in TIndexBits_vector(0 to 35);
     iIdxBitsO : in TIndexBits_vector(0 to 35);
     iIdxBitsF : in TIndexBits_vector(0 to 35);
@@ -934,7 +932,6 @@ begin
     if clk'event and clk = '1' then     -- rising clock edge
       for i in oMuons'range loop
         oMuons(i).sysign <= sMuons_reg(i).sysign;
-        oMuons(i).isol   <= iIso(i);
         oMuons(i).eta    <= sMuons_reg(i).eta;
         oMuons(i).qual   <= sMuons_reg(i).qual;
         oMuons(i).pt     <= sMuons_reg(i).pt;

@@ -9,7 +9,7 @@ use types.GMTTypes.all;
 entity iso_check is
   port (iAreaSums : in  TCaloArea_vector (7 downto 0);
         iPileUp   : in  unsigned (6 downto 0);
-        oIsoBits  : out std_logic_vector (7 downto 0);
+        oIsoBits  : out TIsoBits_vector (7 downto 0);
         clk       : in  std_logic;
         sinit     : in  std_logic);
 end iso_check;
@@ -48,7 +48,7 @@ begin
         wea      => "0",
         addra    => sInputVec(i),
         dina     => (others => '0'),
-        douta(0) => oIsoBits(i),
+        douta(0) => oIsoBits(i)(0),
         clkb     => clk,
         enb      => '0',
         web      => "0",
@@ -56,6 +56,8 @@ begin
         dinb     => (others => '0'),
         doutb    => open
         );
+    -- TODO: Isolation LUT should have 2 bit output.
+    oIsoBits(i)(1) <= '0';
   end generate iso_check_loop;
 
 end Behavioral;
