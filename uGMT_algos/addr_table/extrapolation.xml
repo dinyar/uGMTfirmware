@@ -1,0 +1,5 @@
+<node description="Container for the three regional extrapolation units.">
+  <node id="extrapolate_brl" module="file://extrapolation_mems.xml" address="0x0" description="Collection of extrapolation units for barrel." fwinfo="endpoint" />
+  <node id="extrapolate_ovl" module="file://extrapolation_mems.xml" address="0x40000" description="Collection of extrapolation units for overlap." fwinfo="endpoint" />
+  <node id="extrapolate_fwd" module="file://extrapolation_mems.xml" address="0x80000" description="Collection of extrapolation units for forward." fwinfo="endpoint" />
+</node>

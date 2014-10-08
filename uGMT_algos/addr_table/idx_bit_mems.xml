@@ -1,0 +1,5 @@
+<!-- TODO: The entries below are actually groups of LUTs. This should be represented! -->
+<node description="LUTs for the generation of calorimeter index bits from coordinates.">
+    <node id="eta_idx_bits" address="0x0" size="0x4000" mode="block" description="Group of LUTs containing the eta component of the index bits generator." fwinfo="endpoint;width=14" />
+    <node id="phi_idx_bits" address="0x8000" size="0x8000" mode="block" description="Group of LUTs containing the phi component of the index bits generator." fwinfo="endpoint;width=15" />
+</node>

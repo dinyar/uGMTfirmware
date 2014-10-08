@@ -1,0 +1,12 @@
+<!-- TODO: The entries below are actually groups of LUTs. This should be represented! -->
+<node description="Sorting algorithm LUTs">
+  <node id="cou_bo_pos" address="0x0" size="0x1000" mode="block" description="LUTs containing match qualities for barrel-overlap matching on positive side." fwinfo="endpoint;width=12" />
+  <node id="cou_bo_neg" address="0x1000" size="0x1000" mode="block" description="LUTs containing match qualities for barrel-overlap matching on negative side." fwinfo="endpoint;width=12" />
+  <node id="cou_fo_pos" address="0x2000" size="0x1000" mode="block" description="LUTs containing match qualities for forward-overlap matching on positive side." fwinfo="endpoint;width=12" />
+  <node id="cou_fo_neg" address="0x3000" size="0x1000" mode="block" description="LUTs containing match qualities for forward-overlap matching on negative side." fwinfo="endpoint;width=12" />
+  <node id="cou_brl" address="0x4000" size="0x800" mode="block" description="LUTs containing match qualities for barrel matching." fwinfo="endpoint;width=11" />
+  <node id="cou_ovl_pos" module="file://single_mq_mems.xml" address="0x5000" description="LUTs containing match qualities for overlap matching on positive side."  fwinfo="endpoint" />
+  <node id="cou_ovl_neg" module="file://single_mq_mems.xml" address="0x6000" description="LUTs containing match qualities for overlap matching on negative side."  fwinfo="endpoint" />
+  <node id="cou_fwd_pos" module="file://single_mq_mems.xml" address="0x7000" description="LUTs containing match qualities for forward matching on positive side."  fwinfo="endpoint" />
+  <node id="cou_fwd_neg" module="file://single_mq_mems.xml" address="0x8000" description="LUTs containing match qualities for forward matching on negative side."  fwinfo="endpoint" />
+</node>

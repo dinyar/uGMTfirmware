@@ -1,0 +1,4 @@
+<!-- TODO: The entries below are actually groups of LUTs. This should be represented! -->
+<node description="LUTs to determine match quality between two muons.">
+    <node id="match_qual" address="0x0" size="0x400" mode="block" description="Group of LUTs containing the match qualities for the forward or overlap regions." fwinfo="endpoint;width=10" />
+</node>
