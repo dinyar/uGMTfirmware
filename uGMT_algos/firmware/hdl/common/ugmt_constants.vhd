@@ -3,10 +3,17 @@ use IEEE.STD_LOGIC_1164.all;
 
 package ugmt_constants is
 
-  constant BUFFER_MU_POS_HIGH : natural := 9;  -- Start position in input
-                                               -- buffer for valid muon.
-  constant BUFFER_MU_POS_LOW  : natural := 4;  -- Start position in input
-                                               -- buffer for valid muon.
+  constant BUFFER_IN_MU_POS_HIGH : natural := 9;  -- Start position in input
+                                                  -- buffer for valid muon.
+  constant BUFFER_IN_MU_POS_LOW  : natural := 4;  -- Start position in input
+                                                  -- buffer for valid muon.
+
+  -- Start and end positions for buffers for outputs.
+  constant BUFFER_OUT_MU_POS_HIGH        : natural := 5;
+  constant BUFFER_OUT_MU_POS_LOW         : natural := 0;
+  constant BUFFER_INTERMEDIATES_POS_HIGH : natural := 11;
+  constant BUFFER_INTERMEDIATES_POS_LOW  : natural := 6;
+
 
   constant NUM_MU_CHANS                : integer := 36;  -- Number of channels for input muons.
   constant NUM_CALO_CHANS              : integer := 28;  -- Number of channels for energy sums.

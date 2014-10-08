@@ -36,8 +36,8 @@ begin  -- Behavioral
   end process fill_buffer;
 
   unroll_links : for chan in NCHAN-1 downto 0 generate
-    unroll_bx : for bx in BUFFER_MU_POS_HIGH downto BUFFER_MU_POS_LOW generate
-      sLinkData(chan)(32*(bx-BUFFER_MU_POS_LOW)+31 downto 32*(bx-BUFFER_MU_POS_LOW)) <= in_buf(bx)(chan).data;
+    unroll_bx : for bx in BUFFER_IN_MU_POS_HIGH downto BUFFER_IN_MU_POS_LOW generate
+      sLinkData(chan)(32*(bx-BUFFER_IN_MU_POS_LOW)+31 downto 32*(bx-BUFFER_IN_MU_POS_LOW)) <= in_buf(bx)(chan).data;
     end generate unroll_bx;
   end generate unroll_links;
 
@@ -45,7 +45,7 @@ begin  -- Behavioral
   begin  -- process gmt_in_reg
     if clk40'event and clk40 = '1' then         -- rising clock edge
       for chan in d'range loop
-        for bx in BUFFER_MU_POS_HIGH downto BUFFER_MU_POS_LOW loop
+        for bx in BUFFER_IN_MU_POS_HIGH downto BUFFER_IN_MU_POS_LOW loop
           if in_buf(bx)(chan).valid = VALID_BIT then
             sEnergies(chan) <= calo_etaslice_from_flat(sLinkData(chan));
           else

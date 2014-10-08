@@ -122,16 +122,16 @@ begin
         for j in 2*NUM_MUONS_LINK-1 downto 0 loop
           if (j mod 2) = 1 then
             -- Get first half of muon.
-            if in_buf(j+BUFFER_MU_POS_LOW)(i).valid = VALID_BIT then
+            if in_buf(j+BUFFER_IN_MU_POS_LOW)(i).valid = VALID_BIT then
               -- We're only using the lower 30 bits as the MSB is used for
               -- status codes.
-              sMuons_link(i)(j/2)(30 downto 0) <= in_buf(j+BUFFER_MU_POS_LOW)(i).data(30 downto 0);
+              sMuons_link(i)(j/2)(30 downto 0) <= in_buf(j+BUFFER_IN_MU_POS_LOW)(i).data(30 downto 0);
             else
               sMuons_link(i)(j/2)(30 downto 0) <= (others => '0');
             end if;
 
             -- Determine empty bit.
-            if in_buf(j+BUFFER_MU_POS_LOW)(i).data(PT_IN_HIGH downto PT_IN_LOW) = (PT_IN_HIGH downto PT_IN_LOW => '0') then
+            if in_buf(j+BUFFER_IN_MU_POS_LOW)(i).data(PT_IN_HIGH downto PT_IN_LOW) = (PT_IN_HIGH downto PT_IN_LOW => '0') then
               sEmpty_link(i)(j/2) <= '1';
             else
               sEmpty_link(i)(j/2) <= '0';
@@ -139,10 +139,10 @@ begin
 
           else
             -- Get second half of muon.
-            if in_buf(j+BUFFER_MU_POS_LOW)(i).valid = VALID_BIT then
+            if in_buf(j+BUFFER_IN_MU_POS_LOW)(i).valid = VALID_BIT then
               -- We're only using the lower 30 bits as the MSB is used for
               -- status codes.
-              sMuons_link(i)(j/2)(61 downto 31) <= in_buf(j+BUFFER_MU_POS_LOW)(i).data(30 downto 0);
+              sMuons_link(i)(j/2)(61 downto 31) <= in_buf(j+BUFFER_IN_MU_POS_LOW)(i).data(30 downto 0);
             else
               sMuons_link(i)(j/2)(61 downto 31) <= (others => '0');
             end if;
@@ -151,7 +151,7 @@ begin
             -- were calculated with the 'wrong part' of the TF muon.)
             -- Using j-1 as the rank calculation requires an additional clk240,
             -- so the "correct" sort rank is late by one.
-            sSortRank_link(i)(j/2) <= sSortRank_buffer(j+BUFFER_MU_POS_LOW)(i);
+            sSortRank_link(i)(j/2) <= sSortRank_buffer(j+BUFFER_IN_MU_POS_LOW)(i);
           end if;
         end loop;  -- j
       end loop;  -- i
