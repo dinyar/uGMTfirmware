@@ -45,14 +45,14 @@ begin
     split_muons : for j in NUM_OUT_CHANS-1 downto 0 generate
       muon_check : if i < NUM_MUONS_OUT generate
         -- First two clocks are always filled with '0'.
-        sOutBuf(2*i+2)(j).data    <= pack_mu_to_flat(sMuons(i+2*j), sIso(i+2*j))(31 downto 0);
-        sOutBuf(2*i+2)(j).valid   <= '1';
-        sOutBuf(2*i+1+2)(j).data  <= pack_mu_to_flat(sMuons(i+2*j), sIso(i+2*j))(63 downto 32);
-        sOutBuf(2*i+1+2)(j).valid <= '1';
+        sOutBuf(2*MU_ASSIGNMENT(i))(j).data    <= pack_mu_to_flat(sMuons(i+2*j), sIso(i+2*j))(31 downto 0);
+        sOutBuf(2*MU_ASSIGNMENT(i))(j).valid   <= '1';
+        sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).data  <= pack_mu_to_flat(sMuons(i+2*j), sIso(i+2*j))(63 downto 32);
+        sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).valid <= '1';
       end generate muon_check;
-      empty_check : if i >= NUM_MUONS_OUT generate
-        sOutBuf(2*i-4)(j)   <= LWORD_NULL;
-        sOutBuf(2*i+1-4)(j) <= LWORD_NULL;
+      empty_check : if i = NUM_MUONS_OUT generate
+        sOutBuf(2*MU_ASSIGNMENT(i))(j)   <= LWORD_NULL;
+        sOutBuf(2*MU_ASSIGNMENT(i)+1)(j) <= LWORD_NULL;
       end generate empty_check;
     end generate split_muons;
   end generate serialize_muons;

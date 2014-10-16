@@ -55,14 +55,22 @@ package ugmt_constants is
   -- Use the script ucf_serdes_constraints_generator.py for this. (Available in
   -- github repo for now.)
   -----------------------------------------------------------------------------
-  type QuadAssignment_vector is array (integer range <>) of natural;
+  type Assignment_vector is array (integer range <>) of natural;
 
   -- Muons
-  constant MU_QUAD_ASSIGNMENT : QuadAssignment_vector(8 downto 0) := (17, 16, 15, 14, 13, 12, 11, 10, 9);
+  constant MU_QUAD_ASSIGNMENT : Assignment_vector(8 downto 0) := (17, 16, 15, 14, 13, 12, 11, 10, 9);
 
   -- Calo
-  constant ENERGY_QUAD_ASSIGNMENT : QuadAssignment_vector(6 downto 0) := (2, 3, 4, 5, 6, 7, 8);
+  constant ENERGY_QUAD_ASSIGNMENT : Assignment_vector(6 downto 0) := (2, 3, 4, 5, 6, 7, 8);
 
+  -----------------------------------------------------------------------------
+  -- Output word assignment
+  -----------------------------------------------------------------------------
+  -- Vector to map final muons to positions in output buffer. (Position
+  -- indicates the muon (1st, 2nd and empty); the entry at the position
+  -- indicates the position in the buffer.)
+  constant MU_ASSIGNMENT : Assignment_vector(3 downto 0) := (1, 2, 0);
+  
   -----------------------------------------------------------------------------
   -- Bit boundaries for input and output muons.
   -----------------------------------------------------------------------------
