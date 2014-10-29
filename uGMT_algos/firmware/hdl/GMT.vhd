@@ -106,11 +106,11 @@ architecture Behavioral of GMT is
   signal   sExtrapolatedCoordsO        : TSpatialCoordinate_vector(35 downto 0);
   signal   sExtrapolatedCoordsF        : TSpatialCoordinate_vector(35 downto 0);
   type     TCoordsBuffer is array (integer range <>) of TSpatialCoordinate_vector(35 downto 0);
-  constant COORD_DELAY                 : natural := 5;  -- Delay to sync extrapolated
+  constant COORD_INTERMEDIATE_DELAY    : natural := 5;  -- Delay to sync extrapolated
                                         -- coordinates with final muons.
-  signal   sExtrapolatedCoordsB_buffer : TCoordsBuffer(COORD_DELAY-1 downto 0);
-  signal   sExtrapolatedCoordsO_buffer : TCoordsBuffer(COORD_DELAY-1 downto 0);
-  signal   sExtrapolatedCoordsF_buffer : TCoordsBuffer(COORD_DELAY-1 downto 0);
+  signal   sExtrapolatedCoordsB_buffer : TCoordsBuffer(COORD_INTERMEDIATE_DELAY-1 downto 0);
+  signal   sExtrapolatedCoordsO_buffer : TCoordsBuffer(COORD_INTERMEDIATE_DELAY-1 downto 0);
+  signal   sExtrapolatedCoordsF_buffer : TCoordsBuffer(COORD_INTERMEDIATE_DELAY-1 downto 0);
 
   signal sIntermediateMuonsB     : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsO     : TGMTMu_vector(7 downto 0);
@@ -119,7 +119,7 @@ architecture Behavioral of GMT is
   signal sIntermediateSortRanksO : TSortRank10_vector(7 downto 0);
   signal sIntermediateSortRanksF : TSortRank10_vector(7 downto 0);
 
-  constant MU_INTERMEDIATE_DELAY         : natural := 4;  -- Delay to sync
+  constant MU_INTERMEDIATE_DELAY         : natural := 3;  -- Delay to sync
                                                           -- intermediates with
                                                           -- final muons.
   type     TMuonBuffer is array (integer range <>) of TGMTMu_vector(7 downto 0);
@@ -238,26 +238,26 @@ begin
   p1 : process (clk)
   begin  -- process p1
     if clk'event and clk = '1' then     -- rising clock edge
-      sIntermediateMuonB_buffer(0)                                    <= sIntermediateMuonsB;
-      sIntermediateMuonO_buffer(0)                                    <= sIntermediateMuonsO;
-      sIntermediateMuonF_buffer(0)                                    <= sIntermediateMuonsF;
-      sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)     <= sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
-      sIntermediateMuonO_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)     <= sIntermediateMuonO_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
-      sIntermediateMuonF_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)     <= sIntermediateMuonF_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
-      sIntermediateSortRankB_buffer(0)                                <= sIntermediateSortRanksB;
-      sIntermediateSortRankO_buffer(0)                                <= sIntermediateSortRanksO;
-      sIntermediateSortRankF_buffer(0)                                <= sIntermediateSortRanksF;
-      sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-1 downto 1) <= sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
-      sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-1 downto 1) <= sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
-      sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-1 downto 1) <= sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
-      sFinalEnergies_buffer(0)                                        <= sFinalEnergies;
-      sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-1 downto 1)     <= sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-2 downto 0);
-      sExtrapolatedCoordsB_buffer(0)                                  <= sExtrapolatedCoordsB;
-      sExtrapolatedCoordsO_buffer(0)                                  <= sExtrapolatedCoordsO;
-      sExtrapolatedCoordsF_buffer(0)                                  <= sExtrapolatedCoordsF;
-      sExtrapolatedCoordsB_buffer(COORD_DELAY-1 downto 1)             <= sExtrapolatedCoordsB_buffer(COORD_DELAY-2 downto 0);
-      sExtrapolatedCoordsO_buffer(COORD_DELAY-1 downto 1)             <= sExtrapolatedCoordsO_buffer(COORD_DELAY-2 downto 0);
-      sExtrapolatedCoordsF_buffer(COORD_DELAY-1 downto 1)             <= sExtrapolatedCoordsF_buffer(COORD_DELAY-2 downto 0);
+      sIntermediateMuonB_buffer(0)                                     <= sIntermediateMuonsB;
+      sIntermediateMuonO_buffer(0)                                     <= sIntermediateMuonsO;
+      sIntermediateMuonF_buffer(0)                                     <= sIntermediateMuonsF;
+      sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)      <= sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
+      sIntermediateMuonO_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)      <= sIntermediateMuonO_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
+      sIntermediateMuonF_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)      <= sIntermediateMuonF_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
+      sIntermediateSortRankB_buffer(0)                                 <= sIntermediateSortRanksB;
+      sIntermediateSortRankO_buffer(0)                                 <= sIntermediateSortRanksO;
+      sIntermediateSortRankF_buffer(0)                                 <= sIntermediateSortRanksF;
+      sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)  <= sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
+      sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)  <= sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
+      sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)  <= sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
+      sFinalEnergies_buffer(0)                                         <= sFinalEnergies;
+      sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-1 downto 1)      <= sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-2 downto 0);
+      sExtrapolatedCoordsB_buffer(0)                                   <= sExtrapolatedCoordsB;
+      sExtrapolatedCoordsO_buffer(0)                                   <= sExtrapolatedCoordsO;
+      sExtrapolatedCoordsF_buffer(0)                                   <= sExtrapolatedCoordsF;
+      sExtrapolatedCoordsB_buffer(COORD_INTERMEDIATE_DELAY-1 downto 1) <= sExtrapolatedCoordsB_buffer(COORD_INTERMEDIATE_DELAY-2 downto 0);
+      sExtrapolatedCoordsO_buffer(COORD_INTERMEDIATE_DELAY-1 downto 1) <= sExtrapolatedCoordsO_buffer(COORD_INTERMEDIATE_DELAY-2 downto 0);
+      sExtrapolatedCoordsF_buffer(COORD_INTERMEDIATE_DELAY-1 downto 1) <= sExtrapolatedCoordsF_buffer(COORD_INTERMEDIATE_DELAY-2 downto 0);
 
       oMuons <= sMuons_sorted;
       oIso   <= sIsoBits;
@@ -271,8 +271,8 @@ begin
   oSortRanksF          <= sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-1);
   oFinalEnergies       <= sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-1);
   -- TODO: Connect outputs to buffers!!
-  oExtrapolatedCoordsB <= sExtrapolatedCoordsB_buffer(COORD_DELAY-1);
-  oExtrapolatedCoordsO <= sExtrapolatedCoordsO_buffer(COORD_DELAY-1);
-  oExtrapolatedCoordsF <= sExtrapolatedCoordsF_buffer(COORD_DELAY-1);
+  oExtrapolatedCoordsB <= sExtrapolatedCoordsB_buffer(COORD_INTERMEDIATE_DELAY-1);
+  oExtrapolatedCoordsO <= sExtrapolatedCoordsO_buffer(COORD_INTERMEDIATE_DELAY-1);
+  oExtrapolatedCoordsF <= sExtrapolatedCoordsF_buffer(COORD_INTERMEDIATE_DELAY-1);
   
 end Behavioral;
