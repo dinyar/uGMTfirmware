@@ -62,35 +62,42 @@ begin
       -- Using an offset of +2 in sOutBuf, so that first two clocks are
       -- always filled with '0'.
       -- Intermediate muons don't have isolation applied, so forcing Iso to "00".
-      sOutBuf(2*i+BUFFER_INTERMEDIATES_POS_LOW)(j+NUM_OUT_CHANS).data    <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIso)(31 downto 0);
-      sOutBuf(2*i+BUFFER_INTERMEDIATES_POS_LOW)(j+NUM_OUT_CHANS).valid   <= '1';
-      sOutBuf(2*i+1+BUFFER_INTERMEDIATES_POS_LOW)(j+NUM_OUT_CHANS).data  <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIso)(63 downto 32);
-      sOutBuf(2*i+1+BUFFER_INTERMEDIATES_POS_LOW)(j+NUM_OUT_CHANS).valid <= '1';
+      sOutBuf(2*i)(j+NUM_OUT_CHANS).data    <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIso)(31 downto 0);
+      sOutBuf(2*i)(j+NUM_OUT_CHANS).valid   <= '1';
+      sOutBuf(2*i+1)(j+NUM_OUT_CHANS).data  <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIso)(63 downto 32);
+      sOutBuf(2*i+1)(j+NUM_OUT_CHANS).valid <= '1';
     end generate split_muons;
   end generate serialize_intermediate_muons;
 
   serialize_intermediate_sort_ranks : for i in NUM_FRAMES_LINK-1 downto 0 generate
     split_srt_ranks : for j in NUM_INTERM_SRT_OUT_CHANS-1 downto 0 generate
-      sOutBuf(i+BUFFER_INTERMEDIATES_POS_LOW)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS).data  <= sSortRanks(2*i+12*j) & sSortRanks(2*i+12*j+1) & (11 downto 0 => '0');
-      sOutBuf(i+BUFFER_INTERMEDIATES_POS_LOW)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS).valid <= '1';
+      sOutBuf(i)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS).data  <= sSortRanks(2*i+12*j) & sSortRanks(2*i+12*j+1) & (11 downto 0 => '0');
+      sOutBuf(i)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS).valid <= '1';
     end generate split_srt_ranks;
   end generate serialize_intermediate_sort_ranks;
 
   serialize_interm_energies : for i in NUM_FRAMES_LINK-1 downto 0 generate
-    sOutBuf(BUFFER_INTERMEDIATES_POS_LOW)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).data  <= std_logic_vector(iFinalEnergies(0)) & std_logic_vector(iFinalEnergies(1)) & std_logic_vector(iFinalEnergies(2)) & std_logic_vector(iFinalEnergies(3)) & (11 downto 0 => '0');
-    sOutBuf(BUFFER_INTERMEDIATES_POS_LOW)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).valid <= '1';
-    sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+1)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).data  <= std_logic_vector(iFinalEnergies(4)) & std_logic_vector(iFinalEnergies(5)) & std_logic_vector(iFinalEnergies(6)) & std_logic_vector(iFinalEnergies(7)) & (11 downto 0 => '0');
-    sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+1)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).valid <= '1';
+    sOutBuf(0)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).data  <= std_logic_vector(iFinalEnergies(0)) & std_logic_vector(iFinalEnergies(1)) & std_logic_vector(iFinalEnergies(2)) & std_logic_vector(iFinalEnergies(3)) & (11 downto 0 => '0');
+    sOutBuf(0)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).valid <= '1';
+    sOutBuf(1)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).data  <= std_logic_vector(iFinalEnergies(4)) & std_logic_vector(iFinalEnergies(5)) & std_logic_vector(iFinalEnergies(6)) & std_logic_vector(iFinalEnergies(7)) & (11 downto 0 => '0');
+    sOutBuf(1)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).valid <= '1';
   end generate serialize_interm_energies;
 
   serialize_extrapolated_coordinates : for i in NUM_MUONS_LINK-1 downto 0 generate
     split_coords : for j in NUM_EXTRAP_COORDS_OUT_CHANS-1 downto 0 generate
-      sOutBuf(2*i+BUFFER_INTERMEDIATES_POS_LOW)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS).data    <= std_logic_vector(sExtrapolatedCoords(3*i+9*j).phi) & std_logic_vector(sExtrapolatedCoords(3*i+9*j).eta) & std_logic_vector(sExtrapolatedCoords(3*i+9*j+1).phi) & (2 downto 0 => '0');
-      sOutBuf(2*i+BUFFER_INTERMEDIATES_POS_LOW)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS).valid   <= '1';
-      sOutBuf(2*i+1+BUFFER_INTERMEDIATES_POS_LOW)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS).data  <= std_logic_vector(sExtrapolatedCoords(3*i+9*j+1).eta) & std_logic_vector(sExtrapolatedCoords(3*i+9*j+2).phi) & std_logic_vector(sExtrapolatedCoords(3*i+9*j+2).eta) & (3 downto 0 => '0');
-      sOutBuf(2*i+1+BUFFER_INTERMEDIATES_POS_LOW)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS).valid <= '1';
+      sOutBuf(2*i)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS).data    <= std_logic_vector(sExtrapolatedCoords(3*i+9*j).phi) & std_logic_vector(sExtrapolatedCoords(3*i+9*j).eta) & std_logic_vector(sExtrapolatedCoords(3*i+9*j+1).phi) & (2 downto 0     => '0');
+      sOutBuf(2*i)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS).valid   <= '1';
+      sOutBuf(2*i+1)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS).data  <= std_logic_vector(sExtrapolatedCoords(3*i+9*j+1).eta) & std_logic_vector(sExtrapolatedCoords(3*i+9*j+2).phi) & std_logic_vector(sExtrapolatedCoords(3*i+9*j+2).eta) & (3 downto 0 => '0');
+      sOutBuf(2*i+1)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS).valid <= '1';
     end generate split_coords;
   end generate serialize_extrapolated_coordinates;
+
+  shift_intermediates : process (clk40)
+  begin  -- process shift_intermediates
+    if clk40'event and clk40 = '1' then  -- rising clock edge
+      sOutBuf(sOutBuf'high downto BUFFER_INTERMEDIATES_POS_LOW) <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW-1 downto 0);
+    end if;
+  end process shift_intermediates;
 
   serialization : process (clk240)
     --variable vOutBuf : TTransceiverBufferOut;
@@ -100,7 +107,7 @@ begin
         q(i) <= sOutBuf(sSel)(i);
       end loop;  -- i
       for i in NUM_OUT_CHANS to (NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS)-1 loop
-        q(i) <= sOutBuf(sSel+BUFFER_INTERMEDIATES_POS_LOW)(i);
+        q(i) <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i);
       end loop;  -- i
       if sSel < 5 then
         sSel <= sSel+1;
