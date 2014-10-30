@@ -51,17 +51,28 @@ begin
 
   
   iso_check_loop : for i in oIsoBits'range generate
-    abs_iso_check : entity work.ipbus_dpram
-      generic map (
-        ADDR_WIDTH => 5)
+    --abs_iso_check : entity work.ipbus_dpram
+    --  generic map (
+    --    ADDR_WIDTH => 5)
+    --  port map (
+    --    clk     => clk_ipb,
+    --    rst     => rst,
+    --    ipb_in  => ipbw(i),
+    --    ipb_out => ipbr(i),
+    --    rclk    => clk,
+    --    q       => sLutOutput(i),
+    --    addr    => std_logic_vector(iAreaSums(i))
+    --    );
+    abs_iso_check : entity work.abs_iso_mem
       port map (
-        clk     => clk_ipb,
-        rst     => rst,
-        ipb_in  => ipbw(i),
-        ipb_out => ipbr(i),
-        rclk    => clk,
-        q       => sLutOutput(i),
-        addr    => std_logic_vector(iAreaSums(i))
+        clk      => clk_ipb,
+        we       => ipbusWe_vector(i),
+        a        => ipbw(i).ipb_addr(4 downto 0),
+        d        => ipbw(i).ipb_wdata(0 downto 0),
+        qspo     => ipbr(i).ipb_rdata(0 downto 0),
+        qdpo_clk => clk240,
+        dpra     => std_logic_vector(iAreaSums(i)),
+        qdpo     => sLutOutput(i)
         );
     oIsoBits(i) <= sLutOutput(i)(0);
   end generate iso_check_loop;
