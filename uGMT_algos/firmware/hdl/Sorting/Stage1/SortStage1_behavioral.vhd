@@ -9,20 +9,20 @@ use work.SorterUnit.all;                -- use procedure in package
 
 entity SortStage1 is
   port (
-    iSortRanksB : in TSortRank10_vector(0 to 7);
-    iEmptyB     : in std_logic_vector(0 to 7);
-    iIdxBitsB   : in TIndexBits_vector(0 to 7);
-    iMuonsB     : in TGMTMu_vector(0 to 7);
+    iSortRanksB : in TSortRank10_vector(7 downto 0);
+    iEmptyB     : in std_logic_vector(7 downto 0);
+    iIdxBitsB   : in TIndexBits_vector(7 downto 0);
+    iMuonsB     : in TGMTMu_vector(7 downto 0);
 
-    iSortRanksO : in TSortRank10_vector(0 to 7);
-    iEmptyO     : in std_logic_vector(0 to 7);
-    iIdxBitsO   : in TIndexBits_vector(0 to 7);
-    iMuonsO     : in TGMTMu_vector(0 to 7);
+    iSortRanksO : in TSortRank10_vector(7 downto 0);
+    iEmptyO     : in std_logic_vector(7 downto 0);
+    iIdxBitsO   : in TIndexBits_vector(7 downto 0);
+    iMuonsO     : in TGMTMu_vector(7 downto 0);
 
-    iSortRanksF : in TSortRank10_vector(0 to 7);
-    iEmptyF     : in std_logic_vector(0 to 7);
-    iIdxBitsF   : in TIndexBits_vector(0 to 7);
-    iMuonsF     : in TGMTMu_vector(0 to 7);
+    iSortRanksF : in TSortRank10_vector(7 downto 0);
+    iEmptyF     : in std_logic_vector(7 downto 0);
+    iIdxBitsF   : in TIndexBits_vector(7 downto 0);
+    iMuonsF     : in TGMTMu_vector(7 downto 0);
 
     oIdxBits : out TIndexBits_vector(7 downto 0);  -- Sent to IsoAU.
     oMuons   : out TGMTMu_vector(7 downto 0);
@@ -36,8 +36,6 @@ end entity SortStage1;
 
 --
 architecture behavioral of SortStage1 is
---  attribute syn_useioff : boolean;   -- Synplicity commands not required
---  attribute syn_useioff of behavioral : architecture is true;
 
   component comp10_ge
     port (
@@ -46,14 +44,10 @@ architecture behavioral of SortStage1 is
       a_ge_b : out std_logic);
   end component;
 
--- Synplicity black box declaration
--- attribute syn_black_box : boolean;
--- attribute syn_black_box of comp10: component is true;
-
-  signal sSortRanks : TSortRank10_vector(0 to 23);
+  signal sSortRanks : TSortRank10_vector(23 downto 0);
   signal sEmpty     : std_logic_vector(23 downto 0);
-  signal sMuons     : TGMTMu_vector(0 to 23);
-  signal sIdxBits   : TIndexBits_vector(0 to 23);
+  signal sMuons     : TGMTMu_vector(23 downto 0);
+  signal sIdxBits   : TIndexBits_vector(23 downto 0);
 
   signal GEMatrix : TGEMatrix24;
   signal sSelBits : TSelBits_1_of_24_vec (0 to 7);
@@ -62,10 +56,10 @@ architecture behavioral of SortStage1 is
   -- purpose: final mux after sort
   procedure mux_muons (
     constant vSelBits : in  TSelBits_1_of_24_vec (0 to 7);
-    signal   iMuons   : in  TGMTMu_vector(0 to 23);
-    signal   iIdxBits : in  TIndexBits_vector(0 to 23);
-    signal   oMuons   : out TGMTMu_vector(0 to 7);
-    signal   oIdxBits : out TIndexBits_vector(0 to 7)
+    signal   iMuons   : in  TGMTMu_vector(23 downto 0);
+    signal   iIdxBits : in  TIndexBits_vector(23 downto 0);
+    signal   oMuons   : out TGMTMu_vector(7 downto 0);
+    signal   oIdxBits : out TIndexBits_vector(7 downto 0)
     ) is
   begin  -- procedure mux
     for iplace in 0 to 7 loop

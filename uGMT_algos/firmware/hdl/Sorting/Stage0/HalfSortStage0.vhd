@@ -15,13 +15,13 @@ use work.SorterUnit.all;
 entity HalfSortStage0 is
   generic (
     sorter_lat_start : integer := 6);                 -- start latency
-  port (iSortRanks : in  TSortRank10_vector(0 to 17);
-        iEmpty     : in  std_logic_vector(0 to 17);   -- arrive 1/2 bx later?
-        iCancel_A  : in  std_logic_vector(0 to 17);   -- arrive 1/2 bx later
-        iCancel_B  : in  std_logic_vector(0 to 17);   -- arrive 1/2 bx later
-        iCancel_C  : in  std_logic_vector(0 to 17);   -- arrive 1/2 bx later
-        iMuons     : in  TGMTMu_vector(0 to 17);      -- arrive 1/2 bx later?
-        iIdxBits   : in  TIndexBits_vector(0 to 17);  -- arrive 1/2 bx later?
+  port (iSortRanks : in  TSortRank10_vector(17 downto 0);
+        iEmpty     : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later?
+        iCancel_A  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
+        iCancel_B  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
+        iCancel_C  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
+        iMuons     : in  TGMTMu_vector(17 downto 0);      -- arrive 1/2 bx later?
+        iIdxBits   : in  TIndexBits_vector(17 downto 0);  -- arrive 1/2 bx later?
         oMuons     : out TGMTMu_vector(3 downto 0);
         oIdxBits   : out TIndexBits_vector(3 downto 0);
         oSortRanks : out TSortRank10_vector(3 downto 0);
@@ -47,22 +47,22 @@ architecture behavioral of HalfSortStage0 is
 --  attribute syn_black_box              : boolean;
 --  attribute syn_black_box of comp10_ge : component is true;
 
-  signal sMuons_reg   : TGMTMu_vector(0 to 17);
-  signal sMuons_store : TGMTMu_vector(0 to 17);
+  signal sMuons_reg   : TGMTMu_vector(17 downto 0);
+  signal sMuons_store : TGMTMu_vector(17 downto 0);
 
   signal GEMatrix, GEMatrix_reg : TGEMatrix18;
 
-  signal sIdxBits       : TIndexBits_vector(0 to 17);
-  signal sIdxBits_reg   : TIndexBits_vector(0 to 17);
-  signal sIdxBits_store : TIndexBits_vector(0 to 17);
+  signal sIdxBits       : TIndexBits_vector(17 downto 0);
+  signal sIdxBits_reg   : TIndexBits_vector(17 downto 0);
+  signal sIdxBits_store : TIndexBits_vector(17 downto 0);
 
-  signal sSortRanks       : TSortRank10_vector(0 to 17);
-  signal sSortRanks_reg   : TSortRank10_vector(0 to 17);
-  signal sSortRanks_store : TSortRank10_vector(0 to 17);
+  signal sSortRanks       : TSortRank10_vector(17 downto 0);
+  signal sSortRanks_reg   : TSortRank10_vector(17 downto 0);
+  signal sSortRanks_store : TSortRank10_vector(17 downto 0);
 
-  signal sDisable     : std_logic_vector(0 to 17);
-  signal sEmpty_store : std_logic_vector(0 to 17);
-  signal sEmpty_reg   : std_logic_vector(0 to 17);
+  signal sDisable     : std_logic_vector(17 downto 0);
+  signal sEmpty_store : std_logic_vector(17 downto 0);
+  signal sEmpty_reg   : std_logic_vector(17 downto 0);
 
   signal sSelBits     : TSelBits_1_of_18_vec (0 to 3);
   signal sSelBits_reg : TSelBits_1_of_18_vec (0 to 3);
@@ -93,7 +93,6 @@ begin  -- architecture behavioral
     end generate;
   end generate;
 
-  -- TODO: Is this flip-flop correct?
   reg_ge : process (clk) is
   begin  -- process reg_ge
     if clk'event and clk = '1' then
@@ -102,10 +101,6 @@ begin  -- architecture behavioral
       sSortRanks_store <= sSortRanks;
       sMuons_store     <= iMuons;
       sEmpty_store     <= iEmpty;
-      --sMuons_reg     <= iMuons;
-      --sSortRanks_reg <= sSortRanks;
-      --sEmpty_reg     <= iEmpty;
-      --sIdxBits_reg   <= sIdxBits;
     end if;
   end process reg_ge;
 

@@ -6,22 +6,18 @@ use ieee.NUMERIC_STD.all;
 
 use work.GMTTypes.all;
 
--- Do I need this?
---library LogicFPGA;
---use LogicFPGA.LFTiming.all;
-
 use work.SorterUnit.all;
 
 entity SortStage0 is
   generic (
     sorter_lat_start : integer := 6);                 -- start latency
-  port (iSortRanks : in  TSortRank10_vector(0 to 35);
-        iEmpty     : in  std_logic_vector(0 to 35);   -- arrive 1/2 bx later?
-        iCancel_A  : in  std_logic_vector(0 to 35);   -- arrive 1/2 bx later
-        iCancel_B  : in  std_logic_vector(0 to 35);   -- arrive 1/2 bx later
-        iCancel_C  : in  std_logic_vector(0 to 35);   -- arrive 1/2 bx later
-        iMuons     : in  TGMTMu_vector(0 to 35);      -- arrive 1/2 bx later?
-        iIdxBits   : in  TIndexBits_vector(0 to 35);  -- arrive 1/2 bx later?
+  port (iSortRanks : in  TSortRank10_vector(35 downto 0);
+        iEmpty     : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later?
+        iCancel_A  : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later
+        iCancel_B  : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later
+        iCancel_C  : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later
+        iMuons     : in  TGMTMu_vector(35 downto 0);      -- arrive 1/2 bx later?
+        iIdxBits   : in  TIndexBits_vector(35 downto 0);  -- arrive 1/2 bx later?
         oMuons     : out TGMTMu_vector(7 downto 0);
         oIdxBits   : out TIndexBits_vector(7 downto 0);
         oSortRanks : out TSortRank10_vector(7 downto 0);
@@ -33,8 +29,6 @@ entity SortStage0 is
 end;
 
 architecture behavioral of SortStage0 is
-  attribute syn_useioff               : boolean;
-  attribute syn_useioff of behavioral : architecture is true;
 
   component comp10_ge
     port (
@@ -43,29 +37,24 @@ architecture behavioral of SortStage0 is
       A_GE_B : out std_logic);
   end component;
 
--- Synplicity black box declaration
---  attribute syn_black_box              : boolean;
---  attribute syn_black_box of comp10_ge : component is true;
-
-  signal sMuons_reg   : TGMTMu_vector(0 to 35);
-  signal sMuons_store : TGMTMu_vector(0 to 35);
+  signal sMuons_reg   : TGMTMu_vector(35 downto 0);
+  signal sMuons_store : TGMTMu_vector(35 downto 0);
 
   signal GEMatrix, GEMatrix_reg : TGEMatrix36;
 
-  signal sIdxBits       : TIndexBits_vector(0 to 35);
-  signal sIdxBits_reg   : TIndexBits_vector(0 to 35);
-  signal sIdxBits_store : TIndexBits_vector(0 to 35);
+  signal sIdxBits       : TIndexBits_vector(35 downto 0);
+  signal sIdxBits_reg   : TIndexBits_vector(35 downto 0);
+  signal sIdxBits_store : TIndexBits_vector(35 downto 0);
 
-  signal sSortRanks       : TSortRank10_vector(0 to 35);
-  signal sSortRanks_reg   : TSortRank10_vector(0 to 35);
-  signal sSortRanks_store : TSortRank10_vector(0 to 35);
+  signal sSortRanks       : TSortRank10_vector(35 downto 0);
+  signal sSortRanks_reg   : TSortRank10_vector(35 downto 0);
+  signal sSortRanks_store : TSortRank10_vector(35 downto 0);
 
-  -- Not sure about this one..
+  signal sEmpty_store : std_logic_vector(35 downto 0);
+  signal sEmpty_reg   : std_logic_vector(35 downto 0);
+
   signal sSelBits     : TSelBits_1_of_36_vec (0 to 7);
   signal sSelBits_reg : TSelBits_1_of_36_vec (0 to 7);
-
-  signal sEmpty_store : std_logic_vector(0 to 35);
-  signal sEmpty_reg   : std_logic_vector(0 to 35);
 
 begin  -- architecture behavioral
   sIdxBits   <= iIdxBits;
@@ -106,10 +95,6 @@ begin  -- architecture behavioral
       sSortRanks_store <= sSortRanks;
       sMuons_store     <= iMuons;
       sEmpty_store     <= iEmpty;
-      --sMuons_reg     <= iMuons;
-      --sSortRanks_reg <= sSortRanks;
-      --sEmpty_reg     <= iEmpty;
-      --sIdxBits_reg   <= sIdxBits;
     end if;
   end process reg_ge;
 

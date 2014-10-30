@@ -8,10 +8,10 @@ use work.GMTTypes.all;
 entity SortStage0_Mux is
   port (
     iSelBits   : in  TSelBits_1_of_36_vec(0 to 7);
-    iMuons     : in  TGMTMu_vector(0 to 35);
-    iSortRanks : in  TSortRank10_vector(0 to 35);
-    iEmpty     : in  std_logic_vector(0 to 35);
-    iIdxBits   : in  TIndexBits_vector(0 to 35);
+    iMuons     : in  TGMTMu_vector(35 downto 0);
+    iSortRanks : in  TSortRank10_vector(35 downto 0);
+    iEmpty     : in  std_logic_vector(35 downto 0);
+    iIdxBits   : in  TIndexBits_vector(35 downto 0);
     oMuons     : out TGMTMu_vector(7 downto 0);
     oSortRanks : out TSortRank10_vector(7 downto 0);
     oEmpty     : out std_logic_vector(7 downto 0);

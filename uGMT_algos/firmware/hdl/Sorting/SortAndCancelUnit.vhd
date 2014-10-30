@@ -15,9 +15,9 @@ entity SortAndCancelUnit is
     rpc_merging : boolean := false      -- whether RPC merging should be done.
     );
   port (
-    iMuonsB : in TGMTMu_vector(0 to 35);
-    iMuonsO : in TGMTMu_vector(0 to 35);
-    iMuonsF : in TGMTMu_vector(0 to 35);
+    iMuonsB : in TGMTMu_vector(35 downto 0);
+    iMuonsO : in TGMTMu_vector(35 downto 0);
+    iMuonsF : in TGMTMu_vector(35 downto 0);
 
     -- For RPC merging.
     iMuonsRPCb     : in TGMTMuRPC_vector(3 downto 0);
@@ -29,22 +29,22 @@ entity SortAndCancelUnit is
     iIdxBitsRPCb   : in TIndexBits_vector(3 downto 0);
     iIdxBitsRPCf   : in TIndexBits_vector(3 downto 0);
 
-    iTracksB : in TGMTMuTracks_vector(0 to 11);
-    iTracksO : in TGMTMuTracks_vector(0 to 11);
-    iTracksF : in TGMTMuTracks_vector(0 to 11);
+    iTracksB : in TGMTMuTracks_vector(11 downto 0);
+    iTracksO : in TGMTMuTracks_vector(11 downto 0);
+    iTracksF : in TGMTMuTracks_vector(11 downto 0);
 
     -- I'm assuming I can assign rank and check for empty during rcv stage.
-    iSortRanksB : in TSortRank10_vector(0 to 35);
-    iSortRanksO : in TSortRank10_vector(0 to 35);
-    iSortRanksF : in TSortRank10_vector(0 to 35);
+    iSortRanksB : in TSortRank10_vector(35 downto 0);
+    iSortRanksO : in TSortRank10_vector(35 downto 0);
+    iSortRanksF : in TSortRank10_vector(35 downto 0);
 
-    iEmptyB : in std_logic_vector(0 to 35);
-    iEmptyO : in std_logic_vector(0 to 35);
-    iEmptyF : in std_logic_vector(0 to 35);
+    iEmptyB : in std_logic_vector(35 downto 0);
+    iEmptyO : in std_logic_vector(35 downto 0);
+    iEmptyF : in std_logic_vector(35 downto 0);
 
-    iIdxBitsB : in TIndexBits_vector(0 to 35);
-    iIdxBitsO : in TIndexBits_vector(0 to 35);
-    iIdxBitsF : in TIndexBits_vector(0 to 35);
+    iIdxBitsB : in TIndexBits_vector(35 downto 0);
+    iIdxBitsO : in TIndexBits_vector(35 downto 0);
+    iIdxBitsF : in TIndexBits_vector(35 downto 0);
 
     oIntermediateMuonsB : out TGMTMu_vector(7 downto 0);
     oIntermediateMuonsO : out TGMTMu_vector(7 downto 0);
@@ -72,132 +72,132 @@ architecture behavioral of SortAndCancelUnit is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
-  signal sMuonsO_plus  : TGMTMu_vector(0 to 17);
-  signal sMuonsO_minus : TGMTMu_vector(0 to 17);
-  signal sMuonsF_plus  : TGMTMu_vector(0 to 17);
-  signal sMuonsF_minus : TGMTMu_vector(0 to 17);
+  signal sMuonsO_plus  : TGMTMu_vector(17 downto 0);
+  signal sMuonsO_minus : TGMTMu_vector(17 downto 0);
+  signal sMuonsF_plus  : TGMTMu_vector(17 downto 0);
+  signal sMuonsF_minus : TGMTMu_vector(17 downto 0);
 
-  signal sTracksO_plus  : TGMTMuTracks_vector(0 to 5);
-  signal sTracksO_minus : TGMTMuTracks_vector(0 to 5);
-  signal sTracksF_plus  : TGMTMuTracks_vector(0 to 5);
-  signal sTracksF_minus : TGMTMuTracks_vector(0 to 5);
+  signal sTracksO_plus  : TGMTMuTracks_vector(5 downto 0);
+  signal sTracksO_minus : TGMTMuTracks_vector(5 downto 0);
+  signal sTracksF_plus  : TGMTMuTracks_vector(5 downto 0);
+  signal sTracksF_minus : TGMTMuTracks_vector(5 downto 0);
 
-  signal sSortRanksO_plus       : TSortRank10_vector(0 to 17);
-  signal sEmptyO_plus           : std_logic_vector(0 to 17);
-  signal sIdxBitsO_plus         : TIndexBits_vector(0 to 17);
-  signal sSortedMuonsO_plus     : TGMTMu_vector(0 to 3);
-  signal sSortedIdxBitsO_plus   : TIndexBits_vector(0 to 3);
-  signal sSortedSortRanksO_plus : TSortRank10_vector(0 to 3);
-  signal sSortedEmptyO_plus     : std_logic_vector(0 to 3);
+  signal sSortRanksO_plus       : TSortRank10_vector(17 downto 0);
+  signal sEmptyO_plus           : std_logic_vector(17 downto 0);
+  signal sIdxBitsO_plus         : TIndexBits_vector(17 downto 0);
+  signal sSortedMuonsO_plus     : TGMTMu_vector(3 downto 0);
+  signal sSortedIdxBitsO_plus   : TIndexBits_vector(3 downto 0);
+  signal sSortedSortRanksO_plus : TSortRank10_vector(3 downto 0);
+  signal sSortedEmptyO_plus     : std_logic_vector(3 downto 0);
 
-  signal sSortRanksO_minus       : TSortRank10_vector(0 to 17);
-  signal sEmptyO_minus           : std_logic_vector(0 to 17);
-  signal sIdxBitsO_minus         : TIndexBits_vector(0 to 17);
-  signal sSortedMuonsO_minus     : TGMTMu_vector(0 to 3);
-  signal sSortedIdxBitsO_minus   : TIndexBits_vector(0 to 3);
-  signal sSortedSortRanksO_minus : TSortRank10_vector(0 to 3);
-  signal sSortedEmptyO_minus     : std_logic_vector(0 to 3);
+  signal sSortRanksO_minus       : TSortRank10_vector(17 downto 0);
+  signal sEmptyO_minus           : std_logic_vector(17 downto 0);
+  signal sIdxBitsO_minus         : TIndexBits_vector(17 downto 0);
+  signal sSortedMuonsO_minus     : TGMTMu_vector(3 downto 0);
+  signal sSortedIdxBitsO_minus   : TIndexBits_vector(3 downto 0);
+  signal sSortedSortRanksO_minus : TSortRank10_vector(3 downto 0);
+  signal sSortedEmptyO_minus     : std_logic_vector(3 downto 0);
 
-  signal sSortRanksF_plus       : TSortRank10_vector(0 to 17);
-  signal sEmptyF_plus           : std_logic_vector(0 to 17);
-  signal sIdxBitsF_plus         : TIndexBits_vector(0 to 17);
-  signal sSortedMuonsF_plus     : TGMTMu_vector(0 to 3);
-  signal sSortedIdxBitsF_plus   : TIndexBits_vector(0 to 3);
-  signal sSortedSortRanksF_plus : TSortRank10_vector(0 to 3);
-  signal sSortedEmptyF_plus     : std_logic_vector(0 to 3);
+  signal sSortRanksF_plus       : TSortRank10_vector(17 downto 0);
+  signal sEmptyF_plus           : std_logic_vector(17 downto 0);
+  signal sIdxBitsF_plus         : TIndexBits_vector(17 downto 0);
+  signal sSortedMuonsF_plus     : TGMTMu_vector(3 downto 0);
+  signal sSortedIdxBitsF_plus   : TIndexBits_vector(3 downto 0);
+  signal sSortedSortRanksF_plus : TSortRank10_vector(3 downto 0);
+  signal sSortedEmptyF_plus     : std_logic_vector(3 downto 0);
 
-  signal sSortRanksF_minus       : TSortRank10_vector(0 to 17);
-  signal sEmptyF_minus           : std_logic_vector(0 to 17);
-  signal sIdxBitsF_minus         : TIndexBits_vector(0 to 17);
-  signal sSortedMuonsF_minus     : TGMTMu_vector(0 to 3);
-  signal sSortedIdxBitsF_minus   : TIndexBits_vector(0 to 3);
-  signal sSortedSortRanksF_minus : TSortRank10_vector(0 to 3);
-  signal sSortedEmptyF_minus     : std_logic_vector(0 to 3);
+  signal sSortRanksF_minus       : TSortRank10_vector(17 downto 0);
+  signal sEmptyF_minus           : std_logic_vector(17 downto 0);
+  signal sIdxBitsF_minus         : TIndexBits_vector(17 downto 0);
+  signal sSortedMuonsF_minus     : TGMTMu_vector(3 downto 0);
+  signal sSortedIdxBitsF_minus   : TIndexBits_vector(3 downto 0);
+  signal sSortedSortRanksF_minus : TSortRank10_vector(3 downto 0);
+  signal sSortedEmptyF_minus     : std_logic_vector(3 downto 0);
 
-  signal sCancelB              : std_logic_vector(0 to 35);
-  signal sCancelO_plus         : std_logic_vector(0 to 17);
-  signal sCancelO_minus        : std_logic_vector(0 to 17);
-  signal sCancelF_plus         : std_logic_vector(0 to 17);
-  signal sCancelF_minus        : std_logic_vector(0 to 17);
-  signal sCancelBO_B_plus      : std_logic_vector(0 to 35);
-  signal sCancelBO_B_minus     : std_logic_vector(0 to 35);
-  signal sCancelBO_O_plus      : std_logic_vector(0 to 17);
-  signal sCancelBO_O_minus     : std_logic_vector(0 to 17);
-  signal sCancelFO_F_plus      : std_logic_vector(0 to 17);
-  signal sCancelFO_F_minus     : std_logic_vector(0 to 17);
-  signal sCancelFO_O_plus      : std_logic_vector(0 to 17);
-  signal sCancelFO_O_minus     : std_logic_vector(0 to 17);
-  signal sCancelBO_O_plus_reg  : std_logic_vector(0 to 17);
-  signal sCancelBO_O_minus_reg : std_logic_vector(0 to 17);
-  signal sCancelFO_F_plus_reg  : std_logic_vector(0 to 17);
-  signal sCancelFO_F_minus_reg : std_logic_vector(0 to 17);
-  signal sCancelFO_O_plus_reg  : std_logic_vector(0 to 17);
-  signal sCancelFO_O_minus_reg : std_logic_vector(0 to 17);
-  signal sCancelB_reg          : std_logic_vector(0 to 35);
-  signal sCancelO_plus_reg     : std_logic_vector(0 to 17);
-  signal sCancelO_minus_reg    : std_logic_vector(0 to 17);
-  signal sCancelF_plus_reg     : std_logic_vector(0 to 17);
-  signal sCancelF_minus_reg    : std_logic_vector(0 to 17);
-  signal sCancelBO_B_reg       : std_logic_vector(0 to 35);
+  signal sCancelB              : std_logic_vector(35 downto 0);
+  signal sCancelO_plus         : std_logic_vector(17 downto 0);
+  signal sCancelO_minus        : std_logic_vector(17 downto 0);
+  signal sCancelF_plus         : std_logic_vector(17 downto 0);
+  signal sCancelF_minus        : std_logic_vector(17 downto 0);
+  signal sCancelBO_B_plus      : std_logic_vector(35 downto 0);
+  signal sCancelBO_B_minus     : std_logic_vector(35 downto 0);
+  signal sCancelBO_O_plus      : std_logic_vector(17 downto 0);
+  signal sCancelBO_O_minus     : std_logic_vector(17 downto 0);
+  signal sCancelFO_F_plus      : std_logic_vector(17 downto 0);
+  signal sCancelFO_F_minus     : std_logic_vector(17 downto 0);
+  signal sCancelFO_O_plus      : std_logic_vector(17 downto 0);
+  signal sCancelFO_O_minus     : std_logic_vector(17 downto 0);
+  signal sCancelBO_O_plus_reg  : std_logic_vector(17 downto 0);
+  signal sCancelBO_O_minus_reg : std_logic_vector(17 downto 0);
+  signal sCancelFO_F_plus_reg  : std_logic_vector(17 downto 0);
+  signal sCancelFO_F_minus_reg : std_logic_vector(17 downto 0);
+  signal sCancelFO_O_plus_reg  : std_logic_vector(17 downto 0);
+  signal sCancelFO_O_minus_reg : std_logic_vector(17 downto 0);
+  signal sCancelB_reg          : std_logic_vector(35 downto 0);
+  signal sCancelO_plus_reg     : std_logic_vector(17 downto 0);
+  signal sCancelO_minus_reg    : std_logic_vector(17 downto 0);
+  signal sCancelF_plus_reg     : std_logic_vector(17 downto 0);
+  signal sCancelF_minus_reg    : std_logic_vector(17 downto 0);
+  signal sCancelBO_B_reg       : std_logic_vector(35 downto 0);
 
-  signal sMuonsB     : TGMTMu_vector(0 to 7);
-  signal sIdxBitsB   : TIndexBits_vector(0 to 7);
-  signal sSortRanksB : TSortRank10_vector(0 to 7);
-  signal sEmptyB     : std_logic_vector(0 to 7);
-  signal sMuonsO     : TGMTMu_vector(0 to 7);
-  signal sIdxBitsO   : TIndexBits_vector(0 to 7);
-  signal sSortRanksO : TSortRank10_vector(0 to 7);
-  signal sEmptyO     : std_logic_vector(0 to 7);
-  signal sMuonsF     : TGMTMu_vector(0 to 7);
-  signal sIdxBitsF   : TIndexBits_vector(0 to 7);
-  signal sSortRanksF : TSortRank10_vector(0 to 7);
-  signal sEmptyF     : std_logic_vector(0 to 7);
+  signal sMuonsB     : TGMTMu_vector(7 downto 0);
+  signal sIdxBitsB   : TIndexBits_vector(7 downto 0);
+  signal sSortRanksB : TSortRank10_vector(7 downto 0);
+  signal sEmptyB     : std_logic_vector(7 downto 0);
+  signal sMuonsO     : TGMTMu_vector(7 downto 0);
+  signal sIdxBitsO   : TIndexBits_vector(7 downto 0);
+  signal sSortRanksO : TSortRank10_vector(7 downto 0);
+  signal sEmptyO     : std_logic_vector(7 downto 0);
+  signal sMuonsF     : TGMTMu_vector(7 downto 0);
+  signal sIdxBitsF   : TIndexBits_vector(7 downto 0);
+  signal sSortRanksF : TSortRank10_vector(7 downto 0);
+  signal sEmptyF     : std_logic_vector(7 downto 0);
 
-  signal sSortRanksB_reg : TSortRank10_vector(0 to 7);
-  signal sSortRanksO_reg : TSortRank10_vector(0 to 7);
-  signal sSortRanksF_reg : TSortRank10_vector(0 to 7);
-  signal sEmptyB_reg     : std_logic_vector(0 to 7);
-  signal sEmptyO_reg     : std_logic_vector(0 to 7);
-  signal sEmptyF_reg     : std_logic_vector(0 to 7);
+  signal sSortRanksB_reg : TSortRank10_vector(7 downto 0);
+  signal sSortRanksO_reg : TSortRank10_vector(7 downto 0);
+  signal sSortRanksF_reg : TSortRank10_vector(7 downto 0);
+  signal sEmptyB_reg     : std_logic_vector(7 downto 0);
+  signal sEmptyO_reg     : std_logic_vector(7 downto 0);
+  signal sEmptyF_reg     : std_logic_vector(7 downto 0);
 
-  signal sIdxBitsB_reg : TIndexBits_vector(0 to 7);
-  signal sIdxBitsO_reg : TIndexBits_vector(0 to 7);
-  signal sIdxBitsF_reg : TIndexBits_vector(0 to 7);
-  signal sMuonsB_reg   : TGMTMu_vector(0 to 7);
-  signal sMuonsO_reg   : TGMTMu_vector(0 to 7);
-  signal sMuonsF_reg   : TGMTMu_vector(0 to 7);
+  signal sIdxBitsB_reg : TIndexBits_vector(7 downto 0);
+  signal sIdxBitsO_reg : TIndexBits_vector(7 downto 0);
+  signal sIdxBitsF_reg : TIndexBits_vector(7 downto 0);
+  signal sMuonsB_reg   : TGMTMu_vector(7 downto 0);
+  signal sMuonsO_reg   : TGMTMu_vector(7 downto 0);
+  signal sMuonsF_reg   : TGMTMu_vector(7 downto 0);
 
-  signal sSortRanksB_store : TSortRank10_vector(0 to 7);
-  signal sSortRanksO_store : TSortRank10_vector(0 to 7);
-  signal sSortRanksF_store : TSortRank10_vector(0 to 7);
-  signal sEmptyB_store     : std_logic_vector(0 to 7);
-  signal sEmptyO_store     : std_logic_vector(0 to 7);
-  signal sEmptyF_store     : std_logic_vector(0 to 7);
+  signal sSortRanksB_store : TSortRank10_vector(7 downto 0);
+  signal sSortRanksO_store : TSortRank10_vector(7 downto 0);
+  signal sSortRanksF_store : TSortRank10_vector(7 downto 0);
+  signal sEmptyB_store     : std_logic_vector(7 downto 0);
+  signal sEmptyO_store     : std_logic_vector(7 downto 0);
+  signal sEmptyF_store     : std_logic_vector(7 downto 0);
 
-  signal sIdxBitsB_store : TIndexBits_vector(0 to 7);
-  signal sIdxBitsO_store : TIndexBits_vector(0 to 7);
-  signal sIdxBitsF_store : TIndexBits_vector(0 to 7);
-  signal sMuonsB_store   : TGMTMu_vector(0 to 7);
-  signal sMuonsO_store   : TGMTMu_vector(0 to 7);
-  signal sMuonsF_store   : TGMTMu_vector(0 to 7);
+  signal sIdxBitsB_store : TIndexBits_vector(7 downto 0);
+  signal sIdxBitsO_store : TIndexBits_vector(7 downto 0);
+  signal sIdxBitsF_store : TIndexBits_vector(7 downto 0);
+  signal sMuonsB_store   : TGMTMu_vector(7 downto 0);
+  signal sMuonsO_store   : TGMTMu_vector(7 downto 0);
+  signal sMuonsF_store   : TGMTMu_vector(7 downto 0);
 
-  signal sSortRanksB_store2 : TSortRank10_vector(0 to 7);
-  signal sSortRanksO_store2 : TSortRank10_vector(0 to 7);
-  signal sSortRanksF_store2 : TSortRank10_vector(0 to 7);
-  signal sEmptyB_store2     : std_logic_vector(0 to 7);
-  signal sEmptyO_store2     : std_logic_vector(0 to 7);
-  signal sEmptyF_store2     : std_logic_vector(0 to 7);
+  signal sSortRanksB_store2 : TSortRank10_vector(7 downto 0);
+  signal sSortRanksO_store2 : TSortRank10_vector(7 downto 0);
+  signal sSortRanksF_store2 : TSortRank10_vector(7 downto 0);
+  signal sEmptyB_store2     : std_logic_vector(7 downto 0);
+  signal sEmptyO_store2     : std_logic_vector(7 downto 0);
+  signal sEmptyF_store2     : std_logic_vector(7 downto 0);
 
-  signal sIdxBitsB_store2 : TIndexBits_vector(0 to 7);
-  signal sIdxBitsO_store2 : TIndexBits_vector(0 to 7);
-  signal sIdxBitsF_store2 : TIndexBits_vector(0 to 7);
-  signal sMuonsB_store2   : TGMTMu_vector(0 to 7);
-  signal sMuonsO_store2   : TGMTMu_vector(0 to 7);
-  signal sMuonsF_store2   : TGMTMu_vector(0 to 7);
+  signal sIdxBitsB_store2 : TIndexBits_vector(7 downto 0);
+  signal sIdxBitsO_store2 : TIndexBits_vector(7 downto 0);
+  signal sIdxBitsF_store2 : TIndexBits_vector(7 downto 0);
+  signal sMuonsB_store2   : TGMTMu_vector(7 downto 0);
+  signal sMuonsO_store2   : TGMTMu_vector(7 downto 0);
+  signal sMuonsF_store2   : TGMTMu_vector(7 downto 0);
 
-  signal sMuons       : TGMTMu_vector(0 to 7);
-  signal sMuons_store : TGMTMu_vector(0 to 7);
-  signal sMuons_reg   : TGMTMu_vector(0 to 7);
+  signal sMuons       : TGMTMu_vector(7 downto 0);
+  signal sMuons_store : TGMTMu_vector(7 downto 0);
+  signal sMuons_reg   : TGMTMu_vector(7 downto 0);
 
   -- RPC merging stuff
   signal iMuonsRPCf_reg    : TGMTMuRPC_vector(3 downto 0);
@@ -279,26 +279,26 @@ begin
       ipb_from_slaves => ipbr
       );
 
-  sMuonsO_plus      <= iMuonsO(0 to 17);
-  sMuonsO_minus     <= iMuonsO(18 to 35);
-  sMuonsF_plus      <= iMuonsF(0 to 17);
-  sMuonsF_minus     <= iMuonsF(18 to 35);
-  sTracksO_plus     <= iTracksO(0 to 5);
-  sTracksO_minus    <= iTracksO(6 to 11);
-  sTracksF_plus     <= iTracksF(0 to 5);
-  sTracksF_minus    <= iTracksF(6 to 11);
-  sSortRanksO_plus  <= iSortRanksO(0 to 17);
-  sSortRanksO_minus <= iSortRanksO(18 to 35);
-  sSortRanksF_plus  <= iSortRanksF(0 to 17);
-  sSortRanksF_minus <= iSortRanksF(18 to 35);
-  sEmptyO_plus      <= iEmptyO(0 to 17);
-  sEmptyO_minus     <= iEmptyO(18 to 35);
-  sEmptyF_plus      <= iEmptyF(0 to 17);
-  sEmptyF_minus     <= iEmptyF(18 to 35);
-  sIdxBitsO_plus    <= iIdxBitsO(0 to 17);
-  sIdxBitsO_minus   <= iIdxBitsO(18 to 35);
-  sIdxBitsF_plus    <= iIdxBitsF(0 to 17);
-  sIdxBitsF_minus   <= iIdxBitsF(18 to 35);
+  sMuonsO_plus      <= iMuonsO(17 downto 0);
+  sMuonsO_minus     <= iMuonsO(35 downto 18);
+  sMuonsF_plus      <= iMuonsF(17 downto 0);
+  sMuonsF_minus     <= iMuonsF(35 downto 18);
+  sTracksO_plus     <= iTracksO(5 downto 0);
+  sTracksO_minus    <= iTracksO(11 downto 6);
+  sTracksF_plus     <= iTracksF(5 downto 0);
+  sTracksF_minus    <= iTracksF(11 downto 6);
+  sSortRanksO_plus  <= iSortRanksO(17 downto 0);
+  sSortRanksO_minus <= iSortRanksO(35 downto 18);
+  sSortRanksF_plus  <= iSortRanksF(17 downto 0);
+  sSortRanksF_minus <= iSortRanksF(35 downto 18);
+  sEmptyO_plus      <= iEmptyO(17 downto 0);
+  sEmptyO_minus     <= iEmptyO(35 downto 18);
+  sEmptyF_plus      <= iEmptyF(17 downto 0);
+  sEmptyF_minus     <= iEmptyF(35 downto 18);
+  sIdxBitsO_plus    <= iIdxBitsO(17 downto 0);
+  sIdxBitsO_minus   <= iIdxBitsO(35 downto 18);
+  sIdxBitsF_plus    <= iIdxBitsF(17 downto 0);
+  sIdxBitsF_minus   <= iIdxBitsF(35 downto 18);
 
   -- Calculate match quality between RPC and TF muons.
   generate_mq_unit : if rpc_merging generate

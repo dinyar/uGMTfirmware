@@ -6,29 +6,29 @@ use work.GMTTypes.all;
 
 package SorterUnit is
   -- Greater-Equal Matrix 
-  type TGEMatrix18 is array (integer range 0 to 17, integer range 0 to 17) of std_logic;
-  type TGEMatrix24 is array (integer range 0 to 23, integer range 0 to 23) of std_logic;
-  type TGEMatrix32 is array (integer range 0 to 31, integer range 0 to 31) of std_logic;
-  type TGEMatrix36 is array (integer range 0 to 35, integer range 0 to 35) of std_logic;
+  type TGEMatrix18 is array (integer range 17 downto 0, integer range 17 downto 0) of std_logic;
+  type TGEMatrix24 is array (integer range 23 downto 0, integer range 23 downto 0) of std_logic;
+  type TGEMatrix32 is array (integer range 31 downto 0, integer range 31 downto 0) of std_logic;
+  type TGEMatrix36 is array (integer range 35 downto 0, integer range 35 downto 0) of std_logic;
   
   procedure count_wins18 (
     iGEMatrix       : in  TGEMatrix18;
-    iEmpty          : in  std_logic_vector(0 to 17);
+    iEmpty          : in  std_logic_vector(17 downto 0);
     signal oSelBits : out TSelBits_1_of_18_vec);
 
   procedure count_wins24 (
     iGEMatrix       : in  TGEMatrix24;
-    iEmpty          : in  std_logic_vector(0 to 23);
+    iEmpty          : in  std_logic_vector(23 downto 0);
     signal oSelBits : out TSelBits_1_of_24_vec);
 
   procedure count_wins32 (
     iGEMatrix       : in  TGEMatrix32;
-    iEmpty          : in  std_logic_vector(0 to 31);
+    iEmpty          : in  std_logic_vector(31 downto 0);
     signal oSelBits : out TSelBits_1_of_32_vec);
 
   procedure count_wins36 (
     iGEMatrix       : in  TGEMatrix36;
-    iEmpty          : in  std_logic_vector(0 to 35);
+    iEmpty          : in  std_logic_vector(35 downto 0);
     signal oSelBits : out TSelBits_1_of_36_vec);
 
 end SorterUnit;
@@ -37,7 +37,7 @@ package body SorterUnit is
 
   procedure count_wins18 (
     iGEMatrix       : in  TGEMatrix18;
-    iEmpty          : in  std_logic_vector(0 to 17);
+    iEmpty          : in  std_logic_vector(17 downto 0);
     signal oSelBits : out TSelBits_1_of_18_vec) is
 
     variable nwin : integer range 0 to 18;
@@ -69,7 +69,7 @@ package body SorterUnit is
 
   procedure count_wins24 (
     iGEMatrix       : in  TGEMatrix24;
-    iEmpty          : in  std_logic_vector(0 to 23);
+    iEmpty          : in  std_logic_vector(23 downto 0);
     signal oSelBits : out TSelBits_1_of_24_vec) is
 
     variable nwin : integer range 0 to 24;
@@ -101,7 +101,7 @@ package body SorterUnit is
   
   procedure count_wins32 (
     iGEMatrix       : in  TGEMatrix32;
-    iEmpty          : in  std_logic_vector(0 to 31);
+    iEmpty          : in  std_logic_vector(31 downto 0);
     signal oSelBits : out TSelBits_1_of_32_vec) is
 
     variable nwin : integer range 0 to 31;
@@ -133,7 +133,7 @@ package body SorterUnit is
 
   procedure count_wins36 (
     iGEMatrix       : in  TGEMatrix36;
-    iEmpty          : in  std_logic_vector(0 to 35);
+    iEmpty          : in  std_logic_vector(35 downto 0);
     signal oSelBits : out TSelBits_1_of_36_vec) is
 
     variable nwin : integer range 0 to 35;
