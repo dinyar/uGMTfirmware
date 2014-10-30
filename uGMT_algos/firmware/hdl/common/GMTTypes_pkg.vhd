@@ -206,18 +206,18 @@ package GMTTypes is
   -----------------------------------------------------------------------------
   subtype TFlatMuon is std_logic_vector(63 downto 0);
   -- Contains muons from one link.
-  type    TFlatMuon_link is array (NUM_MUONS_IN -1 downto 0) of TFlatMuon;
+  type    TFlatMuon_link is array (0 to NUM_MUONS_IN -1) of TFlatMuon;
   -- Contains muons from all links.
   type    TFlatMuons is array (natural range <>) of TFlatMuon_link;
   -- Contains flat muons inside a simple vector
   type    TFlatMuon_vector is array (natural range <>) of TFlatMuon;
 
   -- Empty bits for muons from one link for one BX.
-  type TEmpty_link is array (natural range <>) of std_logic_vector(NUM_MUONS_IN -1 downto 0);
+  type TEmpty_link is array (natural range <>) of std_logic_vector(0 to NUM_MUONS_IN -1);
 
-  type TIndexBits_link is array (natural range <>) of TIndexBits_vector(NUM_MUONS_IN -1 downto 0);
+  type TIndexBits_link is array (natural range <>) of TIndexBits_vector(0 to NUM_MUONS_IN -1);
 
-  type TSortRank_link is array (natural range <>) of TSortRank10_vector(NUM_MUONS_IN -1 downto 0);
+  type TSortRank_link is array (natural range <>) of TSortRank10_vector(0 to NUM_MUONS_IN -1);
 
   --function calo_etaslice_from_buf (signal buffer_flat    : ldata(2*NUM_MUONS_LINK-1 downto 0)) return TCaloRegionEtaSlice;
   function unroll_link_muons (signal iMuons_link         : TFlatMuons) return TFlatMuon_vector;
@@ -262,7 +262,7 @@ package body GMTTypes is
   function track_addresses_from_in_mus (
     signal iGMTMu_vec : TGMTMuIn_vector)
     return TGMTMuTracks_vector is
-    variable oWedges : TGMTMuTracks_vector(iGMTMu_vec'length/3-1 downto 0);
+    variable oWedges : TGMTMuTracks_vector(0 to iGMTMu_vec'length/3-1);
   begin
     for i in oWedges'range loop
       -- put 3 muons into wedge vector.
@@ -306,8 +306,8 @@ package body GMTTypes is
     return TFlatMuon_vector is
     variable oMuons_flat : TFlatMuon_vector(iMuons_link'length*iMuons_link(0)'length-1 downto 0);
   begin
-    for i in iMuons_link'length-1 downto 0 loop
-      for j in iMuons_link(i)'length-1 downto 0 loop
+    for i in iMuons_link'range loop
+      for j in iMuons_link(i)'range loop
         oMuons_flat(i*iMuons_link(i)'length+j) := iMuons_link(i+iMuons_link'low)(j+iMuons_link(i)'low);
       end loop;  -- j
     end loop;  -- i
