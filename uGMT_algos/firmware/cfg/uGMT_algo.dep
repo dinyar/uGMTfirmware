@@ -64,6 +64,10 @@ src -s cores phi_extrapolation_mem.vhd
 src -n phi_extrapolation_mem.xco
 src -s cores phi_sel_mem.vhd
 src -n phi_sel_mem.xco
+src -s cores rel_isolation_mem.vhd
+src -n rel_isolation_mem.xco
+src -s cores abs_iso_mem.vhd
+src -n abs_iso_mem.xco
 src -c components/ipbus_slaves ipbus_dpram.vhd
 src ipbus_decode_deserialization.vhd
 src ipbus_decode_extrapolation_mems.vhd
