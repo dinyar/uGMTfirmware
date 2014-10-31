@@ -27,6 +27,7 @@ architecture Behavioral of iso_check_abs is
 
   signal sLutOutput : TLutBuf(oIsoBits'range);
 
+  signal ipbusWe_vector : std_logic_vector(iAreaSums'range);
 begin
   -----------------------------------------------------------------------------
   -- ipbus address decode
@@ -51,18 +52,7 @@ begin
 
   
   iso_check_loop : for i in oIsoBits'range generate
-    --abs_iso_check : entity work.ipbus_dpram
-    --  generic map (
-    --    ADDR_WIDTH => 5)
-    --  port map (
-    --    clk     => clk_ipb,
-    --    rst     => rst,
-    --    ipb_in  => ipbw(i),
-    --    ipb_out => ipbr(i),
-    --    rclk    => clk,
-    --    q       => sLutOutput(i),
-    --    addr    => std_logic_vector(iAreaSums(i))
-    --    );
+    ipbusWe_vector(i) <= ipbw(i).ipb_write and ipbw(i).ipb_strobe;
     abs_iso_check : entity work.abs_iso_mem
       port map (
         clk      => clk_ipb,
@@ -70,11 +60,11 @@ begin
         a        => ipbw(i).ipb_addr(4 downto 0),
         d        => ipbw(i).ipb_wdata(0 downto 0),
         qspo     => ipbr(i).ipb_rdata(0 downto 0),
-        qdpo_clk => clk240,
+        qdpo_clk => clk,
         dpra     => std_logic_vector(iAreaSums(i)),
-        qdpo     => sLutOutput(i)
+        qdpo     => oIsoBits(i downto i)
         );
-    oIsoBits(i) <= sLutOutput(i)(0);
+--    oIsoBits(i) <= sLutOutput(i)(0);
   end generate iso_check_loop;
 
 end Behavioral;

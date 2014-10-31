@@ -28,8 +28,10 @@ architecture Behavioral of iso_check_rel is
   signal sLutOutput : TLutBuf(oIsoBits'range);
 
   subtype RelIsoInput is std_logic_vector(13 downto 0);
-  type RelIsoInput_vector is array (iAreaSums'range) of RelIsoInput;
-  signal sRelInputVec : RelIsoInput_vector;
+  type    RelIsoInput_vector is array (iAreaSums'range) of RelIsoInput;
+  signal  sRelInputVec : RelIsoInput_vector;
+
+  signal ipbusWe_vector : std_logic_vector(sRelInputVec'range);
 begin
   -----------------------------------------------------------------------------
   -- ipbus address decode
@@ -53,26 +55,23 @@ begin
       );
 
   
-  construct_input_vec : for i in sRelInputVec'range generate
-    sRelInputVec(i) <= std_logic_vector(iMuonPT(i)) & std_logic_vector(iAreaSums(i));
-  end generate construct_input_vec;
-
   iso_check_loop : for i in oIsoBits'range generate
-    rel_iso_check : entity work.rel_iso_mem
+    sRelInputVec(i)   <= std_logic_vector(iMuonPT(i)) & std_logic_vector(iAreaSums(i));
+    ipbusWe_vector(i) <= ipbw(i).ipb_write and ipbw(i).ipb_strobe;
+    rel_iso_check : entity work.rel_isolation_mem
       port map (
         clka   => clk_ipb,
         wea(0) => ipbusWe_vector(i),
         addra  => ipbw(i).ipb_addr(13 downto 0),
         dina   => ipbw(i).ipb_wdata(0 downto 0),
         douta  => ipbr(i).ipb_rdata(0 downto 0),
-        clkb   => clk240,
-        enb    => '1',
+        clkb   => clk,
         addrb  => sRelInputVec(i),
         dinb   => (others => '0'),
-        doutb  => sLutOutput(i),
+        doutb  => oIsoBits(i downto i),
         web    => "0"
         );
-    oIsoBits(i) <= sLutOutput(i)(0);
+--    oIsoBits(i) <= sLutOutput(i)(0);
   end generate iso_check_loop;
   
 end Behavioral;
