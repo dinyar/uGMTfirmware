@@ -230,6 +230,6 @@ begin
       iExtrapolatedCoordsB => sExtrapolatedCoordsB,
       iExtrapolatedCoordsO => sExtrapolatedCoordsO,
       iExtrapolatedCoordsF => sExtrapolatedCoordsF,
-      q                    => q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS)-1 downto 0));
+      q                    => q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0));
 
 end rtl;

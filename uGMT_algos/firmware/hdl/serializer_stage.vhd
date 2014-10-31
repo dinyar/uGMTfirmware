@@ -20,7 +20,7 @@ entity serializer_stage is
         iExtrapolatedCoordsB : in  TSpatialCoordinate_vector(35 downto 0);
         iExtrapolatedCoordsO : in  TSpatialCoordinate_vector(35 downto 0);
         iExtrapolatedCoordsF : in  TSpatialCoordinate_vector(35 downto 0);
-        q                    : out ldata ((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS)-1 downto 0));
+        q                    : out ldata ((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0));
 end serializer_stage;
 
 architecture Behavioral of serializer_stage is
@@ -76,12 +76,10 @@ begin
     end generate split_srt_ranks;
   end generate serialize_intermediate_sort_ranks;
 
-  serialize_interm_energies : for i in NUM_FRAMES_LINK-1 downto 0 generate
-    sOutBuf(0)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).data  <= std_logic_vector(iFinalEnergies(0)) & std_logic_vector(iFinalEnergies(1)) & std_logic_vector(iFinalEnergies(2)) & std_logic_vector(iFinalEnergies(3)) & (11 downto 0 => '0');
-    sOutBuf(0)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).valid <= '1';
-    sOutBuf(1)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).data  <= std_logic_vector(iFinalEnergies(4)) & std_logic_vector(iFinalEnergies(5)) & std_logic_vector(iFinalEnergies(6)) & std_logic_vector(iFinalEnergies(7)) & (11 downto 0 => '0');
-    sOutBuf(1)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).valid <= '1';
-  end generate serialize_interm_energies;
+  sOutBuf(0)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).data  <= std_logic_vector(iFinalEnergies(0)) & std_logic_vector(iFinalEnergies(1)) & std_logic_vector(iFinalEnergies(2)) & std_logic_vector(iFinalEnergies(3)) & (11 downto 0 => '0');
+  sOutBuf(0)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).valid <= '1';
+  sOutBuf(1)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).data  <= std_logic_vector(iFinalEnergies(4)) & std_logic_vector(iFinalEnergies(5)) & std_logic_vector(iFinalEnergies(6)) & std_logic_vector(iFinalEnergies(7)) & (11 downto 0 => '0');
+  sOutBuf(1)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).valid <= '1';
 
   serialize_extrapolated_coordinates : for i in NUM_MUONS_LINK-1 downto 0 generate
     split_coords : for j in NUM_EXTRAP_COORDS_OUT_CHANS-1 downto 0 generate
@@ -106,7 +104,7 @@ begin
       for i in 0 to NUM_OUT_CHANS-1 loop
         q(i) <= sOutBuf(sSel)(i);
       end loop;  -- i
-      for i in NUM_OUT_CHANS to (NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS)-1 loop
+      for i in NUM_OUT_CHANS to q'high loop
         q(i) <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i);
       end loop;  -- i
       if sSel < 5 then
