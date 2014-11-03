@@ -270,7 +270,6 @@ begin
   oSortRanksO          <= sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-1);
   oSortRanksF          <= sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-1);
   oFinalEnergies       <= sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-1);
-  -- TODO: Connect outputs to buffers!!
   oExtrapolatedCoordsB <= sExtrapolatedCoordsB_buffer(COORD_INTERMEDIATE_DELAY-1);
   oExtrapolatedCoordsO <= sExtrapolatedCoordsO_buffer(COORD_INTERMEDIATE_DELAY-1);
   oExtrapolatedCoordsF <= sExtrapolatedCoordsF_buffer(COORD_INTERMEDIATE_DELAY-1);
