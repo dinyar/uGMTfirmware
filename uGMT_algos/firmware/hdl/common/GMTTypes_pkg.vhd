@@ -33,6 +33,8 @@ package GMTTypes is
   -- GMT muon at the output of the GMT and inside the logic components
   -----------------------------------------------------------------------------
   type TGMTMu is record
+    valid  : std_logic;                     -- set if the first input word
+                                            -- consituting the muon is valid
     sysign : std_logic_vector(1 downto 0);  -- charge bit (1= plus)
     eta    : signed(8 downto 0);            -- 9 bit eta
     qual   : unsigned(3 downto 0);          -- 4 bit quality
@@ -215,23 +217,26 @@ package GMTTypes is
   -- Empty bits for muons from one link for one BX.
   type TEmpty_link is array (natural range <>) of std_logic_vector(0 to NUM_MUONS_IN -1);
 
+  -- Valid bits for muons from one link for one BX.
+  type TValid_link is array (natural range <>) of std_logic_vector(0 to NUM_MUONS_IN -1);
+
   type TIndexBits_link is array (natural range <>) of TIndexBits_vector(0 to NUM_MUONS_IN -1);
 
   type TSortRank_link is array (natural range <>) of TSortRank10_vector(0 to NUM_MUONS_IN -1);
 
-  --function calo_etaslice_from_buf (signal buffer_flat    : ldata(2*NUM_MUONS_LINK-1 downto 0)) return TCaloRegionEtaSlice;
-  function unroll_link_muons (signal iMuons_link         : TFlatMuons) return TFlatMuon_vector;
-  function unpack_mu_from_flat (signal iMuon_flat        : TFlatMuon) return TGMTMuIn;
-  function gmt_mu_from_in_mu (signal iMuonIn             : TGMTMuIn) return TGMTMu;
+  function unroll_link_muons (signal iMuons_link  : TFlatMuons) return TFlatMuon_vector;
+  function unpack_mu_from_flat (signal iMuon_flat : TFlatMuon) return TGMTMuIn;
+  function gmt_mu_from_in_mu (signal iMuonIn : TGMTMuIn;
+                              signal iValid  : std_logic) return TGMTMu;
   function calo_etaslice_from_flat (constant flat        : std_logic_vector) return TCaloRegionEtaSlice;
-  --function muon_flat_to_vec(signal iMuons_flat           : TFlatMuons) return TGMTMuIn_vector;
-  --function gmt_mus_from_in_mus(signal iMuonsIn           : TGMTMuIn_vector) return TGMTMu_vector;
   function track_addresses_from_in_mus(signal iGMTMu_vec : TGMTMuIn_vector) return TGMTMuTracks_vector;
+  function unpack_valid_bits (signal iValid_link         : TValid_link) return std_logic_vector;
   function unpack_idx_bits(signal iIdxBits               : TIndexBits_link) return TIndexBits_vector;
   function unpack_sort_rank(signal iSortRanks            : TSortRank_link) return TSortRank10_vector;
   function unpack_empty_bits(signal iEmptyBits           : TEmpty_link) return std_logic_vector;
 
-  function pack_mu_to_flat(signal iMuon : TGMTMu; signal iIso : TIsoBits) return TFlatMuon;
+  function pack_mu_to_flat(signal iMuon : TGMTMu;
+                           signal iIso  : TIsoBits) return TFlatMuon;
 end;
 
 
@@ -353,10 +358,12 @@ package body GMTTypes is
   -- Convert input muons to GMT muons.
   -----------------------------------------------------------------------------
   function gmt_mu_from_in_mu (
-    signal iMuonIn : TGMTMuIn)
+    signal iMuonIn : TGMTMuIn;
+    signal iValid  : std_logic)
     return TGMTMu is
     variable oMuon : TGMTMu;
   begin  -- gmt_mu_from_in_mu
+    oMuon.valid  := iValid;
     oMuon.sysign := iMuonIn.sysign;
     oMuon.eta    := signed(iMuonIn.eta);
     oMuon.qual   := unsigned(iMuonIn.qual);
@@ -364,6 +371,24 @@ package body GMTTypes is
     oMuon.phi    := unsigned(iMuonIn.phi);
     return oMuon;
   end gmt_mu_from_in_mu;
+
+
+  -----------------------------------------------------------------------------
+  -- Unpack valid bits
+  -----------------------------------------------------------------------------
+  function unpack_valid_bits (
+    signal iValid_link : TValid_link)
+    return std_logic_vector is
+    variable oValid : std_logic_vector(iValid_link'length*NUM_MUONS_LINK-1 downto 0);
+  begin  -- unpack_valid_bits
+    for i in iValid_link'range loop
+      for j in iValid_link(i)'range loop
+        oValid(i*iValid_link(i)'length+j) := iValid_link(i)(j);
+      end loop;  -- j
+    end loop;  -- i
+
+    return oValid;
+  end unpack_valid_bits;
 
   -----------------------------------------------------------------------------
   -- Unpack index bits.
@@ -373,9 +398,9 @@ package body GMTTypes is
     return TIndexBits_vector is
     variable oIdxBits : TIndexBits_vector(iIdxBits'length*NUM_MUONS_LINK-1 downto 0);
   begin  -- unpack_idx_bits
-    for i in iIdxBits'length-1 downto 0 loop
+    for i in iIdxBits'range loop
       for j in iIdxBits(i)'range loop
-        oIdxBits(i*iIdxBits(i+iIdxBits'low)'high+j) := iIdxBits(i+iIdxBits'low)(j);
+        oIdxBits(i*iIdxBits(i)'length+j) := iIdxBits(i)(j);
       end loop;  -- j
     end loop;  -- i
 
@@ -390,9 +415,9 @@ package body GMTTypes is
     return std_logic_vector is
     variable oEmptyBits : std_logic_vector(iEmptyBits'length*NUM_MUONS_LINK-1 downto 0);
   begin  -- unpack_empty_bits
-    for i in iEmptyBits'length-1 downto 0 loop
+    for i in iEmptyBits'range loop
       for j in iEmptyBits(i)'range loop
-        oEmptyBits(i*iEmptyBits(i+iEmptyBits'low)'length+j) := iEmptyBits(i+iEmptyBits'low)(j);
+        oEmptyBits(i*iEmptyBits(i)'length+j) := iEmptyBits(i)(j);
       end loop;  -- j
     end loop;  -- i
 
@@ -408,9 +433,9 @@ package body GMTTypes is
     return TSortRank10_vector is
     variable oSortRanks : TSortRank10_vector(iSortRanks'length*NUM_MUONS_LINK-1 downto 0);
   begin  -- unpack_empty_bits
-    for i in iSortRanks'length-1 downto 0 loop
+    for i in iSortRanks'range loop
       for j in iSortRanks(i)'range loop
-        oSortRanks(i*iSortRanks(i+iSortRanks'low)'length+j) := iSortRanks(i+iSortRanks'low)(j);
+        oSortRanks(i*iSortRanks(i)'length+j) := iSortRanks(i)(j);
       end loop;  -- j
     end loop;  -- i
 

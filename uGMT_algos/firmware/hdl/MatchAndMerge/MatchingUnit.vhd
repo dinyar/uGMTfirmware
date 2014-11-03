@@ -86,7 +86,7 @@ begin  -- behavioral
         when "0000000000000100" => sMuonsMatched(i) <= sMuonsTF(13);
         when "0000000000000010" => sMuonsMatched(i) <= sMuonsTF(14);
         when "0000000000000001" => sMuonsMatched(i) <= sMuonsTF(15);
-        when others             => sMuonsMatched(i) <= ("00", "000000000", "0000", "0000000000", "0000000000");
+        when others             => sMuonsMatched(i) <= ('0', "00", "000000000", "0000", "0000000000", "0000000000");
       end case;
       case sSelBits(i) is
         when "1000000000000000" => sIdxBitsMatched(i) <= sIdxBitsTF(0);

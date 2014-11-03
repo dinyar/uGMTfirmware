@@ -149,7 +149,7 @@ begin  -- architecture behavioral
         when "000000000000000100" => oMuons(iplace) <= sMuons_reg(15);
         when "000000000000000010" => oMuons(iplace) <= sMuons_reg(16);
         when "000000000000000001" => oMuons(iplace) <= sMuons_reg(17);
-        when others               => oMuons(iplace) <= ("00", "000000000", "0000", "000000000", "0000000000");
+        when others               => oMuons(iplace) <= ('0', "00", "000000000", "0000", "000000000", "0000000000");
       end case;
       case sSelBits_reg(iplace) is
         when "100000000000000000" => oSortRanks(iplace) <= sSortRanks_reg(0);

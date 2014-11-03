@@ -43,6 +43,9 @@ architecture Behavioral of deserialize_mu_quad is
   signal sMuons_flat : TFlatMuon_vector(NCHAN*NUM_MUONS_IN-1 downto 0);  -- All input muons unrolled.
   signal sMuonsIn    : TGMTMuIn_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
 
+  signal sValid_link : TValid_link(NCHAN-1 downto 0);
+  signal sValid      : std_logic_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
+
   signal sEmpty_link : TEmpty_link(NCHAN-1 downto 0);
 
   -- Stores sort ranks for each 32 bit word that arrives from TFs. Every second
@@ -121,6 +124,8 @@ begin
       for i in NCHAN-1 downto 0 loop
         for j in 2*NUM_MUONS_LINK-1 downto 0 loop
           if (j mod 2) = 1 then
+            -- Store valid bit.
+            sValid_link(i)(j/2) <= in_buf(j+BUFFER_IN_MU_POS_LOW)(i).valid;
             -- Get first half of muon.
             if in_buf(j+BUFFER_IN_MU_POS_LOW)(i).valid = VALID_BIT then
               -- We're only using the lower 30 bits as the MSB is used for
@@ -159,11 +164,12 @@ begin
   end process gmt_in_reg;
 
   sMuons_flat <= unroll_link_muons(sMuons_link(NCHAN-1 downto 0));
+  sValid      <= unpack_valid_bits(sValid_link(NCHAN-1 downto 0));
   unpack_muons : for i in sMuonsIn'range generate
     sMuonsIn(i) <= unpack_mu_from_flat(sMuons_flat(i));
   end generate unpack_muons;
   convert_muons : for i in sMuonsIn'range generate
-    sMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i));
+    sMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i), sValid(i));
   end generate convert_muons;
   sTracks    <= track_addresses_from_in_mus(sMuonsIn);
   sEmpty     <= unpack_empty_bits(sEmpty_link(NCHAN-1 downto 0));

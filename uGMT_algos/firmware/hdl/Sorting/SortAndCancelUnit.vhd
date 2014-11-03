@@ -650,49 +650,6 @@ begin
         sinit            => sinit);
   end generate gen_matching_unit;
 
-  ---- Register muons after exiting stage 0 sorter.
-  --p1 : process (clk)
-  --begin  -- process p1
-  --  if clk'event and clk = '1' then     -- rising clock edge
-  --    sSortRanksB_store2 <= sSortRanksB_store;
-  --    sSortRanksO_store2 <= sSortRanksO_store;
-  --    sSortRanksF_store2 <= sSortRanksF_store;
-  --    sEmptyB_store2     <= sEmptyB_store;
-  --    sEmptyO_store2     <= sEmptyO_store;
-  --    sEmptyF_store2     <= sEmptyF_store;
-  --    sIdxBitsB_store2   <= sIdxBitsB_store;
-  --    sIdxBitsO_store2   <= sIdxBitsO_store;
-  --    sIdxBitsF_store2   <= sIdxBitsF_store;
-  --    sMuonsB_store2     <= sMuonsB_store;
-  --    sMuonsO_store2     <= sMuonsO_store;
-  --    sMuonsF_store2     <= sMuonsF_store;
-
-  --    -- For RPC merging
-  --    sMatchedMuonsF_reg     <= sMatchedMuonsF;
-  --    sCancelF_matched_reg   <= sCancelF_matched;
-  --    sCancelO_matched_A_reg <= sCancelO_matched_A;
-  --    sMatchedMuonsB_reg     <= sMatchedMuonsB;
-  --    sCancelB_matched_reg   <= sCancelB_matched;
-  --    sCancelO_matched_B_reg <= sCancelO_matched_B;
-
-  --    sMatchedSortRanksB_reg <= sMatchedSortRanksB;
-  --    sMatchedEmptyB_reg     <= sMatchedEmptyB;
-  --    sMatchedIdxBitsB_reg   <= sMatchedIdxBitsB;
-  --    sSortRanksRPCb_reg     <= iSortRanksRPCb;
-  --    sEmptyRPCb_reg         <= iEmptyRPCb;
-  --    sIdxBitsRPCb_reg       <= iIdxBitsRPCb;
-  --    sMatchedSortRanksF_reg <= sMatchedSortRanksF;
-  --    sMatchedEmptyF_reg     <= sMatchedEmptyF;
-  --    sMatchedIdxBitsF_reg   <= sMatchedIdxBitsF;
-  --    sSortRanksRPCf_reg     <= iSortRanksRPCf;
-  --    sEmptyRPCf_reg         <= iEmptyRPCf;
-  --    sIdxBitsRPCf_reg       <= iIdxBitsRPCf;
-
-  --    iMuonsRPCf_reg <= iMuonsRPCf_store2;
-  --    iMuonsRPCb_reg <= iMuonsRPCb_store2;
-  --  end if;
-  --end process p1;
-
   gen_merger_unit : if rpc_merging generate
     -- For RPC merging
     merger_fwd : entity work.MergerUnit
@@ -729,34 +686,6 @@ begin
         clk           => clk,
         sinit         => sinit);
   end generate gen_merger_unit;
-
-  --reg_merged_mu : process (clk)
-  --begin  -- process reg_merged_mu
-  --  if clk'event and clk = '1' then     -- rising clock edge
-  --    sSortRanksB_reg <= sSortRanksB;
-  --    sSortRanksO_reg <= sSortRanksO;
-  --    sSortRanksF_reg <= sSortRanksF;
-  --    sEmptyB_reg     <= sEmptyB;
-  --    sEmptyO_reg     <= sEmptyO;
-  --    sEmptyF_reg     <= sEmptyF;
-  --    sIdxBitsB_reg   <= sIdxBitsB;
-  --    sIdxBitsO_reg   <= sIdxBitsO;
-  --    sIdxBitsF_reg   <= sIdxBitsF;
-  --    sMuonsB_reg     <= sMuonsB;
-  --    sMuonsO_reg     <= sMuonsO;
-  --    sMuonsF_reg     <= sMuonsF;
-
-  --    sSortRanksMergedF_reg <= sSortRanksMergedF;
-  --    sEmptyMergedF_reg     <= sEmptyMergedF;
-  --    sIdxBitsMergedF_reg   <= sIdxBitsMergedF;
-  --    sMergedMuonsF_reg     <= sMergedMuonsF;
-
-  --    sSortRanksMergedB_reg <= sSortRanksMergedB;
-  --    sEmptyMergedB_reg     <= sEmptyMergedB;
-  --    sIdxBitsMergedB_reg   <= sIdxBitsMergedB;
-  --    sMergedMuonsB_reg     <= sMergedMuonsB;
-  --  end if;
-  --end process reg_merged_mu;
 
   -- Sort final muons together.
   gen_sorting_with_merged_muons : if rpc_merging generate
@@ -828,13 +757,14 @@ begin
   final_reg : process (clk)
   begin  -- process final_reg
     if clk'event and clk = '0' then     -- falling clock edge
-      for i in oMuons'range loop
-        oMuons(i).sysign <= sMuons_reg(i).sysign;
-        oMuons(i).eta    <= sMuons_reg(i).eta;
-        oMuons(i).qual   <= sMuons_reg(i).qual;
-        oMuons(i).pt     <= sMuons_reg(i).pt;
-        oMuons(i).phi    <= sMuons_reg(i).phi;
-      end loop;  -- i
+      oMuons <= sMuons_reg;
+      --for i in oMuons'range loop
+      --  oMuons(i).sysign <= sMuons_reg(i).sysign;
+      --  oMuons(i).eta    <= sMuons_reg(i).eta;
+      --  oMuons(i).qual   <= sMuons_reg(i).qual;
+      --  oMuons(i).pt     <= sMuons_reg(i).pt;
+      --  oMuons(i).phi    <= sMuons_reg(i).phi;
+      --end loop;  -- i
     end if;
   end process final_reg;
 end architecture behavioral;

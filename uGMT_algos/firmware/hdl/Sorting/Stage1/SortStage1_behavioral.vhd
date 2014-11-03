@@ -88,7 +88,7 @@ architecture behavioral of SortStage1 is
         when "000000000000000000000100" => oMuons(iplace) <= iMuons(21);
         when "000000000000000000000010" => oMuons(iplace) <= iMuons(22);
         when "000000000000000000000001" => oMuons(iplace) <= iMuons(23);
-        when others                     => oMuons(iplace) <= ("00", "000000000", "0000", "000000000", "0000000000");
+        when others                     => oMuons(iplace) <= ('0', "00", "000000000", "0000", "000000000", "0000000000");
       end case;
 
       case vSelBits(iplace) is
