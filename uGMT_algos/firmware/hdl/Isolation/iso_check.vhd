@@ -31,6 +31,8 @@ architecture Behavioral of iso_check is
 
   signal sAbsIsoBits : std_logic_vector(7 downto 0);
   signal sRelIsoBits : std_logic_vector(7 downto 0);
+
+  signal sMuonPT_reg : TMuonPT_vector(7 downto 0);
 begin
   notClk <= not clk;
 
@@ -70,10 +72,24 @@ begin
       oIsoBits  => sRelIsoBits
       );
 
-  assign_iso_bits : for i in oIsoBits'range generate
-    oIsoBits(i)(0) <= sAbsIsoBits(i);
-    oIsoBits(i)(1) <= sRelIsoBits(i);
-  end generate assign_iso_bits;
+  reg_pt : process (clk)
+  begin  -- process reg_pt
+    if clk'event and clk = '0' then     -- falling clock edge
+      sMuonPT_reg <= iMuonPT;
+    end if;
+  end process reg_pt;
+
+  assign_iso_bits : process (sMuonPT_reg, sAbsIsoBits, sRelIsoBits)
+  begin  -- process assign_iso_bits
+    for i in oIsoBits'range loop
+      if sMuonPT_reg(i) = (8 downto 0 => '0') then
+        oIsoBits(i)(0) <= '0';
+        oIsoBits(i)(1) <= '0';
+      else
+        oIsoBits(i)(0) <= sAbsIsoBits(i);
+        oIsoBits(i)(1) <= sRelIsoBits(i);
+      end if;
+    end loop;  -- i
+  end process assign_iso_bits;
 
 end Behavioral;
-
