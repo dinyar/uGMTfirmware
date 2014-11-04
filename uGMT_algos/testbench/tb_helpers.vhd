@@ -124,30 +124,64 @@ package body tb_helpers is
   procedure ReadMuEvent (
     file F         :     text;
     variable event : out TGMTMuEvent) is
-    variable L : line;
+    variable L          : line;
+    variable muNo       : integer := 0;
+    variable muBrlNo    : integer := 0;
+    variable muOvlNo    : integer := 0;
+    variable muFwdNo    : integer := 0;
+    variable wedgeNo    : integer := 0;
+    variable wedgeBrlNo : integer := 0;
+    variable wedgeOvlNo : integer := 0;
+    variable wedgeFwdNo : integer := 0;
+    variable muons      : TGMTMu_vector(107 downto 0);
+    variable sortRanks  : TSortRank10_vector(107 downto 0);
+    variable emptyBits  : std_logic_vector(107 downto 0);
+    variable idxBits    : TIndexBits_vector(107 downto 0);
   begin  -- ReadMuEvent
 
-    for fwd_mu in 17 downto 0 loop
-      ReadInputMuon(L, event.muons_fwd(fwd_mu), event.sortRanks_fwd(fwd_mu), event.emptyBits_fwd(fwd_mu));
-      event.idxBits_fwd(fwd_mu) := fwd_mu;
-    end loop;  -- fwd_mu
-    for ovl_mu in 17 downto 0 loop
-      ReadInputMuon(L, event.muons_ovl(ovl_mu), event.sortRanks_ovl(ovl_mu), event.emptyBits_ovl(ovl_mu));
-      event.idxBits_ovl(ovl_mu) := 18+ovl_mu;
-    end loop;  -- ovl_mu
-    for brl_mu in 35 downto 0 loop
-      ReadInputMuon(L, event.muons_brl(brl_mu), event.sortRanks_brl(brl_mu), event.emptyBits_brl(brl_mu));
-      event.idxBits_brl(brl_mu) := 36+brl_mu;
-    end loop;  -- brl_mu
-    for ovl_mu in 17 downto 0 loop
-      ReadInputMuon(L, event.muons_ovl(ovl_mu), event.sortRanks_ovl(ovl_mu), event.emptyBits_ovl(ovl_mu));
-      event.idxBits_ovl(ovl_mu) := 72+ovl_mu;
-    end loop;  -- ovl_mu
-    for fwd_mu in 17 downto 0 loop
-      ReadInputMuon(L, event.muons_fwd(fwd_mu), event.sortRanks_fwd(fwd_mu), event.emptyBits_fwd(fwd_mu));
-      event.idxBits_fwd(fwd_mu) := 90+fwd_mu;
-    end loop;  -- fwd_mu
+    while (muNo < 108) or (wedgeNo < 36) loop
+      readline(F, L);
+      if(L.all(1 to 2) = "--") then
+        next;
+      end if;
 
+      if L.all(1 to 3) = "BRL" then
+        ReadInputMuon(L, event.muons_brl(muBrlNo), event.sortRanks_brl(muBrlNo), event.emptyBits_brl(muBrlNo));
+        event.idxBits_brl(muBrlNo) := muNo;
+        muBrlNo                    := muBrlNo+1;
+      end if;
+      if L.all(1 to 3) = "OVL" then
+        ReadInputMuon(L, event.muons_ovl(muOvlNo), event.sortRanks_ovl(muOvlNo), event.emptyBits_ovl(muOvlNo));
+        event.idxBits_ovl(muOvlNo) := muNo;
+        muOvlNo                    := muOvlNo+1;
+      end if;
+      if L.all(1 to 3) = "FWD" then
+        ReadInputMuon(L, event.muons_fwd(muFwdNo), event.sortRanks_fwd(muFwdNo), event.emptyBits_fwd(muFwdNo));
+        event.idxBits_fwd(muFwdNo) := muNo;
+        muFwdNo                    := muFwdNo+1;
+      end if;
+
+
+      if L.all(1 to 4) = "BTRK" then
+        ReadTrack(L, event.tracks_brl(wedgeBrlNo));
+        wedgeBrlNo := wedgeBrlNo+1;
+      end if;
+      if L.all(1 to 4) = "OTRK" then
+        ReadTrack(L, event.tracks_ovl(wedgeOvlNo));
+        wedgeOvlNo := wedgeOvlNo+1;
+      end if;
+      if L.all(1 to 4) = "FTRK" then
+        ReadTrack(L, event.tracks_fwd(wedgeFwdNo));
+        wedgeFwdNo := wedgeFwdNo+1;
+      end if;
+
+      if L.all(1 to 3) = "BRL" or L.all(1 to 3) = "OVL" or L.all(1 to 3) = "FWD" then
+        muNo := muNo+1;
+      elsif L.all(2 to 4) = "TRK" then
+        wedgeNo := wedgeNo+1;
+      end if;
+
+    end loop;
   end ReadMuEvent;
-  
+
 end tb_helpers;
