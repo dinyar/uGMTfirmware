@@ -3,8 +3,9 @@ use IEEE.Std_logic_1164.all;
 use IEEE.NUMERIC_STD.all;
 use WORK.GMTTypes.all;
 use STD.TEXTIO.all;
+use ieee.std_logic_textio;
 
-package body tb_helpers is
+package tb_helpers is
 
   type TGMTMuEvent is record
     muons_brl     : TGMTMu_vector(35 downto 0);
@@ -40,46 +41,62 @@ package body tb_helpers is
     file F         :     text;
     variable event : out TGMTMuEvent);
 
-  procedure ReadCaloEvent (
-    file F         :     text;
-    variable event : out TGMTCaloEvent);
+  --procedure ReadCaloEvent (
+  --  file F         :     text;
+  --  variable event : out TGMTCaloEvent);
 
-  procedure ReadEvent (
-    file F         :     text;
-    variable event : out TGMTEvent);
+  --procedure ReadEvent (
+  --  file F         :     text;
+  --  variable event : out TGMTEvent);
 
-end tb_helpers;
+  procedure DumpMuEvent (
+    variable event : in TGMTMuEvent);
+
+  --procedure DumpCaloEvent (
+  --  variable event : in TGMTCaloEvent);
+
+  --procedure DumpEvent (
+  --  variable event : in TGMTEvent);
+
+  procedure DumpMuons (
+    variable iMuons : in TGMTMu_vector;
+    variable id     : in string(1 to 3));
+end;
 
 package body tb_helpers is
 
   procedure ReadInputMuon (
-    variable L        : in  line;
-    variable muon     : out TGMTMu;
-    variable sortRank : out TSortRank10;
-    variable emptyBit : out std_logic
+    variable L        : inout line;
+    variable muon     : out   TGMTMu;
+    variable sortRank : out   TSortRank10;
+    variable emptyBit : out   std_logic
     ) is
-    variable sysign : integer;
-    variable eta    : integer;
-    variable qual   : integer;
-    variable pt     : integer;
-    variable phi    : integer;
-    variable rank   : integer;
-    variable empty  : bit;
-    variable dummy  : string(0 to 3);
+    variable cable_no    : integer;
+    variable sign, vsign : bit;
+    variable eta         : integer;
+    variable qual        : integer;
+    variable pt          : integer;
+    variable phi         : integer;
+    variable rank        : integer;
+    variable empty       : bit;
+
+    variable dummy : string(1 to 4);
   begin  -- ReadInputMuon
     read(L, dummy);
 
+    read(L, cable_no);
     muon.valid  := '1';
-    read(L, sysign);
-    muon.sysign := std_logic_vector(to_unsigned(sysign, 2));
-    read(L, eta);
-    muon.eta    := to_signed(eta, 9);
-    read(L, qual);
-    muon.qual   := to_unsigned(qual, 4);
     read(L, pt);
     muon.pt     := to_unsigned(pt, 9);
     read(L, phi);
     muon.phi    := to_unsigned(phi, 10);
+    read(L, eta);
+    muon.eta    := to_signed(eta, 9);
+    read(L, sign);
+    read(L, vsign);
+    muon.sysign := to_stdulogic(vsign) & to_stdulogic(sign);
+    read(L, qual);
+    muon.qual   := to_unsigned(qual, 4);
     read(L, rank);
     sortRank    := std_logic_vector(to_unsigned(rank, 10));
     read(L, empty);
@@ -87,36 +104,38 @@ package body tb_helpers is
   end ReadInputMuon;
 
   procedure ReadTrack (
-    variable L     : in  line;
-    variable track : out TGMTMuTracks3) is
+    variable L     : inout line;
+    variable track : out   TGMTMuTracks3) is
+    variable LO                  : line;
     variable eta1, eta2, eta3    : integer;
     variable phi1, phi2, phi3    : integer;
     variable qual1, qual2, qual3 : integer;
-    variable dummy               : string(0 to 3);
+
+    variable dummy : string(1 to 5);
   begin  -- ReadTrack
     read(L, dummy);
 
     read(L, eta1);
-    track(0).eta  := to_signed(eta1);
+    track(0).eta  := to_signed(eta1, 9);
     read(L, phi1);
-    track(0).phi  := to_unsigned(phi1);
+    track(0).phi  := to_unsigned(phi1, 10);
     read(L, qual1);
-    track(0).qual := to_unsigned(qual1);
+    track(0).qual := to_unsigned(qual1, 4);
 
     read(L, eta2);
-    track(1).eta  := to_signed(eta2);
+    track(1).eta  := to_signed(eta2, 9);
     read(L, phi2);
-    track(1).phi  := to_unsigned(phi2);
+    track(1).phi  := to_unsigned(phi2, 10);
     read(L, qual2);
-    track(1).qual := to_unsigned(qual2);
+    track(1).qual := to_unsigned(qual2, 4);
 
     read(L, eta3);
-    track(2).eta  := to_signed(eta3);
+    track(2).eta  := to_signed(eta3, 9);
     read(L, phi3);
-    track(2).phi  := to_unsigned(phi3);
+    track(2).phi  := to_unsigned(phi3, 10);
     read(L, qual3);
-    track(2).qual := to_unsigned(qual3);
-    
+    track(2).qual := to_unsigned(qual3, 4);
+
   end ReadTrack;
 
   -- TODO: Add procedure for reading calo inputs.
@@ -124,7 +143,7 @@ package body tb_helpers is
   procedure ReadMuEvent (
     file F         :     text;
     variable event : out TGMTMuEvent) is
-    variable L          : line;
+    variable L, L1      : line;
     variable muNo       : integer := 0;
     variable muBrlNo    : integer := 0;
     variable muOvlNo    : integer := 0;
@@ -141,47 +160,176 @@ package body tb_helpers is
 
     while (muNo < 108) or (wedgeNo < 36) loop
       readline(F, L);
-      if(L.all(1 to 2) = "--") then
+      --write(L1, L.all);
+      --write(L1, string'(" muNo: "));
+      --write(L1, muNo);
+      --writeline(OUTPUT, L1);
+
+      if L.all'length = 0 then
         next;
-      end if;
-
-      if L.all(1 to 3) = "BRL" then
-        ReadInputMuon(L, event.muons_brl(muBrlNo), event.sortRanks_brl(muBrlNo), event.emptyBits_brl(muBrlNo));
-        event.idxBits_brl(muBrlNo) := muNo;
+      elsif(L.all(1 to 2) = "# ") then
+        next;
+      elsif L.all(1 to 3) = "EVT" then
+        -- TODO: Parse this maybe?
+        next;
+      elsif L.all(1 to 3) = "BAR" then
+        ReadInputMuon(L, event.muons_brl(muBrlNo), event.sortRanks_brl(muBrlNo), event.empty_brl(muBrlNo));
+        event.idxBits_brl(muBrlNo) := to_unsigned(muNo, 7);
         muBrlNo                    := muBrlNo+1;
-      end if;
-      if L.all(1 to 3) = "OVL" then
-        ReadInputMuon(L, event.muons_ovl(muOvlNo), event.sortRanks_ovl(muOvlNo), event.emptyBits_ovl(muOvlNo));
-        event.idxBits_ovl(muOvlNo) := muNo;
+        muNo                       := muNo+1;
+      elsif L.all(1 to 3) = "OVL" then
+        ReadInputMuon(L, event.muons_ovl(muOvlNo), event.sortRanks_ovl(muOvlNo), event.empty_ovl(muOvlNo));
+        event.idxBits_ovl(muOvlNo) := to_unsigned(muNo, 7);
         muOvlNo                    := muOvlNo+1;
-      end if;
-      if L.all(1 to 3) = "FWD" then
-        ReadInputMuon(L, event.muons_fwd(muFwdNo), event.sortRanks_fwd(muFwdNo), event.emptyBits_fwd(muFwdNo));
-        event.idxBits_fwd(muFwdNo) := muNo;
+        muNo                       := muNo+1;
+      elsif L.all(1 to 3) = "FWD" then
+        ReadInputMuon(L, event.muons_fwd(muFwdNo), event.sortRanks_fwd(muFwdNo), event.empty_fwd(muFwdNo));
+        event.idxBits_fwd(muFwdNo) := to_unsigned(muNo, 7);
         muFwdNo                    := muFwdNo+1;
-      end if;
-
-
-      if L.all(1 to 4) = "BTRK" then
+        muNo                       := muNo+1;
+      elsif L.all(1 to 4) = "BTRK" then
         ReadTrack(L, event.tracks_brl(wedgeBrlNo));
         wedgeBrlNo := wedgeBrlNo+1;
-      end if;
-      if L.all(1 to 4) = "OTRK" then
+        wedgeNo    := wedgeNo+1;
+      elsif L.all(1 to 4) = "OTRK" then
         ReadTrack(L, event.tracks_ovl(wedgeOvlNo));
         wedgeOvlNo := wedgeOvlNo+1;
-      end if;
-      if L.all(1 to 4) = "FTRK" then
+        wedgeNo    := wedgeNo+1;
+      elsif L.all(1 to 4) = "FTRK" then
         ReadTrack(L, event.tracks_fwd(wedgeFwdNo));
         wedgeFwdNo := wedgeFwdNo+1;
+        wedgeNo    := wedgeNo+1;
       end if;
 
-      if L.all(1 to 3) = "BRL" or L.all(1 to 3) = "OVL" or L.all(1 to 3) = "FWD" then
-        muNo := muNo+1;
-      elsif L.all(2 to 4) = "TRK" then
-        wedgeNo := wedgeNo+1;
-      end if;
+      --if (L.all(1 to 3) = "BRL") or (L.all(1 to 3) = "OVL") or (L.all(1 to 3) = "FWD") then
+      --  muNo := muNo+1;
+      --elsif L.all(2 to 4) = "TRK" then
+      --  wedgeNo := wedgeNo+1;
+      --end if;
 
     end loop;
   end ReadMuEvent;
 
+  procedure DumpMuEvent (
+    variable event : in TGMTMuEvent) is
+    variable L1 : line;
+  begin  -- DumpMuEvent
+    for iMu in event.muons_brl'range loop
+      write(L1, string'("BRL #"));
+      write(L1, iMu);
+      write(L1, string'(": "));
+      write(L1, to_integer(event.muons_brl(iMu).pt));
+      write(L1, string'(" "));
+      write(L1, to_integer(event.muons_brl(iMu).phi));
+      write(L1, string'(" "));
+      write(L1, to_integer(event.muons_brl(iMu).eta));
+      write(L1, string'(" "));
+      write(L1, to_bit(event.muons_brl(iMu).sysign(0)));
+      write(L1, string'(" "));
+      write(L1, to_bit(event.muons_brl(iMu).sysign(1)));
+      write(L1, string'(" "));
+      write(L1, to_integer(event.muons_brl(iMu).qual));
+      writeline(OUTPUT, L1);
+    end loop;  -- iMu
+    for iMu in event.muons_ovl'range loop
+      write(L1, string'("OVL #"));
+      write(L1, iMu);
+      write(L1, string'(": "));
+      write(L1, to_integer(event.muons_ovl(iMu).pt));
+      write(L1, string'(" "));
+      write(L1, to_integer(event.muons_ovl(iMu).phi));
+      write(L1, string'(" "));
+      write(L1, to_integer(event.muons_ovl(iMu).eta));
+      write(L1, string'(" "));
+      write(L1, to_bit(event.muons_ovl(iMu).sysign(0)));
+      write(L1, string'(" "));
+      write(L1, to_bit(event.muons_ovl(iMu).sysign(1)));
+      write(L1, string'(" "));
+      write(L1, to_integer(event.muons_ovl(iMu).qual));
+      writeline(OUTPUT, L1);
+    end loop;  -- iMu
+    for iMu in event.muons_fwd'range loop
+      write(L1, string'("FWD #"));
+      write(L1, iMu);
+      write(L1, string'(": "));
+      write(L1, to_integer(event.muons_fwd(iMu).pt));
+      write(L1, string'(" "));
+      write(L1, to_integer(event.muons_fwd(iMu).phi));
+      write(L1, string'(" "));
+      write(L1, to_integer(event.muons_fwd(iMu).eta));
+      write(L1, string'(" "));
+      write(L1, to_bit(event.muons_fwd(iMu).sysign(0)));
+      write(L1, string'(" "));
+      write(L1, to_bit(event.muons_fwd(iMu).sysign(1)));
+      write(L1, string'(" "));
+      write(L1, to_integer(event.muons_fwd(iMu).qual));
+      writeline(OUTPUT, L1);
+    end loop;  -- iMu
+
+    for iTrack in event.tracks_brl'range loop
+      write(L1, string'("BTRK #"));
+      write(L1, iTrack);
+      write(L1, string'(": "));
+      for i in 2 downto 0 loop
+        write(L1, to_integer(event.tracks_brl(iTrack)(i).phi));
+        write(L1, string'(" "));
+        write(L1, to_integer(event.tracks_brl(iTrack)(i).eta));
+        write(L1, string'(" "));
+        write(L1, to_integer(event.tracks_brl(iTrack)(i).qual));
+      end loop;  -- i
+      writeline(OUTPUT, L1);
+    end loop;  -- iTrack
+    for iTrack in event.tracks_ovl'range loop
+      write(L1, string'("BTRK #"));
+      write(L1, iTrack);
+      write(L1, string'(": "));
+      for i in 2 downto 0 loop
+        write(L1, to_integer(event.tracks_ovl(iTrack)(i).phi));
+        write(L1, string'(" "));
+        write(L1, to_integer(event.tracks_ovl(iTrack)(i).eta));
+        write(L1, string'(" "));
+        write(L1, to_integer(event.tracks_ovl(iTrack)(i).qual));
+      end loop;  -- i
+      writeline(OUTPUT, L1);
+    end loop;  -- iTrack
+    for iTrack in event.tracks_fwd'range loop
+      write(L1, string'("BTRK #"));
+      write(L1, iTrack);
+      write(L1, string'(": "));
+      for i in 2 downto 0 loop
+        write(L1, to_integer(event.tracks_fwd(iTrack)(i).phi));
+        write(L1, string'(" "));
+        write(L1, to_integer(event.tracks_fwd(iTrack)(i).eta));
+        write(L1, string'(" "));
+        write(L1, to_integer(event.tracks_fwd(iTrack)(i).qual));
+      end loop;  -- i
+      writeline(OUTPUT, L1);
+    end loop;  -- iTrack
+  end DumpMuEvent;
+
+  procedure DumpMuons (
+    variable iMuons : in TGMTMu_vector;
+    variable id     : in string(1 to 3)) is
+    variable L1 : line;
+  begin  -- DumpMuons
+    for iMu in iMuons'range loop
+      write(L1, id);
+      write(L1, string'(" #"));
+      write(L1, iMu);
+      write(L1, string'(": "));
+      write(L1, to_integer(iMuons(iMu).pt));
+      write(L1, string'(" "));
+      write(L1, to_integer(iMuons(iMu).phi));
+      write(L1, string'(" "));
+      write(L1, to_integer(iMuons(iMu).eta));
+      write(L1, string'(" "));
+      write(L1, to_bit(iMuons(iMu).sysign(0)));
+      write(L1, string'(" "));
+      write(L1, to_bit(iMuons(iMu).sysign(1)));
+      write(L1, string'(" "));
+      write(L1, to_integer(iMuons(iMu).qual));
+      writeline(OUTPUT, L1);
+    end loop;  -- iMu
+  end DumpMuons;
+  
 end tb_helpers;
