@@ -58,6 +58,10 @@ package tb_helpers is
   --procedure DumpEvent (
   --  variable event : in TGMTEvent);
 
+  procedure DumpTracks (
+    variable iTracks : in TGMTMuTracks_vector;
+    variable id      : in string(1 to 4));
+
   procedure DumpMuons (
     variable iMuons : in TGMTMu_vector;
     variable id     : in string(1 to 3));
@@ -212,80 +216,56 @@ package body tb_helpers is
 
   procedure DumpMuEvent (
     variable event : in TGMTMuEvent) is
-    variable L1            : line;
-    variable brl_id        : string(1 to 3) := "BRL";
-    variable ovl_id        : string(1 to 3) := "OVL";
-    variable fwd_id        : string(1 to 3) := "FWD";
-    variable display_track : boolean        := false;
+    variable L1        : line;
+    variable brl_id    : string(1 to 3) := "BRL";
+    variable ovl_id    : string(1 to 3) := "OVL";
+    variable fwd_id    : string(1 to 3) := "FWD";
+    variable brlTrk_id : string(1 to 4) := "BTRK";
+    variable ovlTrk_id : string(1 to 4) := "OTRK";
+    variable fwdTrk_id : string(1 to 4) := "FTRK";
   begin  -- DumpMuEvent
     DumpMuons(event.muons_brl, brl_id);
     DumpMuons(event.muons_ovl, ovl_id);
     DumpMuons(event.muons_fwd, fwd_id);
 
-    for iTrack in event.tracks_brl'range loop
-      display_track := false;
-      for i in 2 downto 0 loop
-        if event.tracks_brl(iTrack)(i).phi /= (9 downto 0 => '0') and event.tracks_brl(iTrack)(i).eta /= (8 downto 0 => '0') and event.tracks_brl(iTrack)(i).qual /= (3 downto 0 => '0') then
-          display_track := true;
-        end if;
-      end loop;  -- i
-      if display_track = true then
-        write(L1, string'("BTRK #"));
-        write(L1, iTrack);
-        write(L1, string'(": "));
-        for i in 2 downto 0 loop
-          write(L1, to_integer(event.tracks_brl(iTrack)(i).phi));
-          write(L1, string'(" "));
-          write(L1, to_integer(event.tracks_brl(iTrack)(i).eta));
-          write(L1, string'(" "));
-          write(L1, to_integer(event.tracks_brl(iTrack)(i).qual));
-        end loop;  -- i
-        writeline(OUTPUT, L1);
-      end if;
-    end loop;  -- iTrack
-    for iTrack in event.tracks_ovl'range loop
-      display_track := false;
-      for i in 2 downto 0 loop
-        if event.tracks_ovl(iTrack)(i).phi /= (9 downto 0 => '0') and event.tracks_ovl(iTrack)(i).eta /= (8 downto 0 => '0') and event.tracks_ovl(iTrack)(i).qual /= (3 downto 0 => '0') then
-          display_track := true;
-        end if;
-      end loop;  -- i
-      if display_track = true then
-        write(L1, string'("OTRK #"));
-        write(L1, iTrack);
-        write(L1, string'(": "));
-        for i in 2 downto 0 loop
-          write(L1, to_integer(event.tracks_ovl(iTrack)(i).phi));
-          write(L1, string'(" "));
-          write(L1, to_integer(event.tracks_ovl(iTrack)(i).eta));
-          write(L1, string'(" "));
-          write(L1, to_integer(event.tracks_ovl(iTrack)(i).qual));
-        end loop;  -- i
-        writeline(OUTPUT, L1);
-      end if;
-    end loop;  -- iTrack
-    for iTrack in event.tracks_fwd'range loop
-      display_track := false;
-      for i in 2 downto 0 loop
-        if event.tracks_fwd(iTrack)(i).phi /= (9 downto 0 => '0') and event.tracks_fwd(iTrack)(i).eta /= (8 downto 0 => '0') and event.tracks_fwd(iTrack)(i).qual /= (3 downto 0 => '0') then
-          display_track := true;
-        end if;
-      end loop;  -- i
-      if display_track = true then
-        write(L1, string'("FTRK #"));
-        write(L1, iTrack);
-        write(L1, string'(": "));
-        for i in 2 downto 0 loop
-          write(L1, to_integer(event.tracks_fwd(iTrack)(i).phi));
-          write(L1, string'(" "));
-          write(L1, to_integer(event.tracks_fwd(iTrack)(i).eta));
-          write(L1, string'(" "));
-          write(L1, to_integer(event.tracks_fwd(iTrack)(i).qual));
-        end loop;  -- i
-        writeline(OUTPUT, L1);
-      end if;
-    end loop;  -- iTrack
+    DumpTracks(event.tracks_brl, brlTrk_id);
+    DumpTracks(event.tracks_ovl, ovlTrk_id);
+    DumpTracks(event.tracks_fwd, fwdTrk_id);
   end DumpMuEvent;
+
+  procedure DumpTracks (
+    variable iTracks : in TGMTMuTracks_vector;
+    variable id      : in string(1 to 4)) is
+    variable L1            : line;
+    variable display_track : boolean := false;
+  begin  -- DumpTracks
+    for iTrack in iTracks'range loop
+      display_track := false;
+      for i in 2 downto 0 loop
+        if iTracks(iTrack)(i).phi /= (9 downto 0 => '0') and
+          iTracks(iTrack)(i).eta /= (8 downto 0  => '0') and
+          iTracks(iTrack)(i).qual /= (3 downto 0 => '0') then
+          display_track := true;
+        end if;
+      end loop;  -- i
+
+      if display_track = true then
+        write(L1, id);
+        write(L1, string'(" #"));
+        write(L1, iTrack);
+        write(L1, string'(":"));
+        for i in 2 downto 0 loop
+          write(L1, string'(" "));
+          write(L1, to_integer(iTracks(iTrack)(i).phi));
+          write(L1, string'(" "));
+          write(L1, to_integer(iTracks(iTrack)(i).eta));
+          write(L1, string'(" "));
+          write(L1, to_integer(iTracks(iTrack)(i).qual));
+        end loop;  -- i
+        writeline(OUTPUT, L1);
+      end if;
+    end loop;  -- iTrack    
+  end DumpTracks;
 
   procedure DumpMuons (
     variable iMuons : in TGMTMu_vector;

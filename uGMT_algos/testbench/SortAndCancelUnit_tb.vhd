@@ -9,6 +9,7 @@ entity testbench is
 end testbench;
 
 architecture behavior of testbench is
+  type TIntermediateMu_buf is array (integer range <>) of TGMTMu_vector(7 downto 0);
 
   constant div240          : integer   := 12;
   constant div40           : integer   := 2;
@@ -100,21 +101,77 @@ begin
     file F                               : text open read_mode is "ugmt_testfile.dat";
     variable L, LO                       : line;
     variable event                       : TGMTMuEvent;
+    constant SORTER_LATENCY              : integer        := 7;
+    variable event_buffer                : TGMTMuEvent_vec(SORTER_LATENCY-1 downto 0);
+    constant INTERMEDIATE_DELAY          : integer        := 5;
+    variable vIntermediateB_buffer       : TIntermediateMu_buf(INTERMEDIATE_DELAY-1 downto 0);
+    variable vIntermediateO_buffer       : TIntermediateMu_buf(INTERMEDIATE_DELAY-1 downto 0);
+    variable vIntermediateF_buffer       : TIntermediateMu_buf(INTERMEDIATE_DELAY-1 downto 0);
     variable vMuons, vIntB, vIntO, vIntF : TGMTMu_vector(oMuons'range);
     variable fin_id                      : string(1 to 3) := string'("FIN");
     variable int_id                      : string(1 to 3) := string'("INT");
     variable iEvent                      : integer        := 0;
   begin
 
-    -- Reset all variables
-    for i in iMuonsB'range loop
-      -- TODO: Reset muons, empty, srtrnks
-    end loop;  -- i
-    for i in iTracksB'range loop
-      for j in iTracksB(0)'range loop
-        -- TODO: Reset tracks        
-      end loop;  -- j
-    end loop;  -- i
+    -- Reset event buffer
+    for iEvent in event_buffer'range loop
+      for i in event_buffer(iEvent).muons_brl'range loop
+        event_buffer(iEvent).muons_brl(i).phi    := "0000000000";
+        event_buffer(iEvent).muons_brl(i).eta    := "000000000";
+        event_buffer(iEvent).muons_brl(i).pt     := "000000000";
+        event_buffer(iEvent).muons_brl(i).qual   := "0000";
+        event_buffer(iEvent).muons_brl(i).sysign := "00";
+        event_buffer(iEvent).muons_ovl(i).phi    := "0000000000";
+        event_buffer(iEvent).muons_ovl(i).eta    := "000000000";
+        event_buffer(iEvent).muons_ovl(i).pt     := "000000000";
+        event_buffer(iEvent).muons_ovl(i).qual   := "0000";
+        event_buffer(iEvent).muons_ovl(i).sysign := "00";
+        event_buffer(iEvent).muons_fwd(i).phi    := "0000000000";
+        event_buffer(iEvent).muons_fwd(i).eta    := "000000000";
+        event_buffer(iEvent).muons_fwd(i).pt     := "000000000";
+        event_buffer(iEvent).muons_fwd(i).qual   := "0000";
+        event_buffer(iEvent).muons_fwd(i).sysign := "00";
+        event_buffer(iEvent).sortRanks_brl(i)    := "0000000000";
+        event_buffer(iEvent).sortRanks_ovl(i)    := "0000000000";
+        event_buffer(iEvent).sortRanks_fwd(i)    := "0000000000";
+        event_buffer(iEvent).empty_brl(i)        := '1';
+        event_buffer(iEvent).empty_ovl(i)        := '1';
+        event_buffer(iEvent).empty_fwd(i)        := '1';
+      end loop;  -- i
+      for i in iTracksB'range loop
+        for j in iTracksB(0)'range loop
+          event_buffer(iEvent).tracks_brl(i)(j).eta  := "000000000";
+          event_buffer(iEvent).tracks_brl(i)(j).phi  := "0000000000";
+          event_buffer(iEvent).tracks_brl(i)(j).qual := "0000";
+          event_buffer(iEvent).tracks_ovl(i)(j).eta  := "000000000";
+          event_buffer(iEvent).tracks_ovl(i)(j).phi  := "0000000000";
+          event_buffer(iEvent).tracks_ovl(i)(j).qual := "0000";
+          event_buffer(iEvent).tracks_fwd(i)(j).eta  := "000000000";
+          event_buffer(iEvent).tracks_fwd(i)(j).phi  := "0000000000";
+          event_buffer(iEvent).tracks_fwd(i)(j).qual := "0000";
+        end loop;  -- j
+      end loop;  -- i
+    end loop;  -- event
+    -- Reset intermediate buffer
+    for iInt in vIntermediateB_buffer'range loop
+      for iMu in vIntermediateB_buffer(iInt)'range loop
+        vIntermediateB_buffer(iInt)(iMu).phi    := "0000000000";
+        vIntermediateB_buffer(iInt)(iMu).eta    := "000000000";
+        vIntermediateB_buffer(iInt)(iMu).pt     := "000000000";
+        vIntermediateB_buffer(iInt)(iMu).qual   := "0000";
+        vIntermediateB_buffer(iInt)(iMu).sysign := "00";
+        vIntermediateO_buffer(iInt)(iMu).phi    := "0000000000";
+        vIntermediateO_buffer(iInt)(iMu).eta    := "000000000";
+        vIntermediateO_buffer(iInt)(iMu).pt     := "000000000";
+        vIntermediateO_buffer(iInt)(iMu).qual   := "0000";
+        vIntermediateO_buffer(iInt)(iMu).sysign := "00";
+        vIntermediateF_buffer(iInt)(iMu).phi    := "0000000000";
+        vIntermediateF_buffer(iInt)(iMu).eta    := "000000000";
+        vIntermediateF_buffer(iInt)(iMu).pt     := "000000000";
+        vIntermediateF_buffer(iInt)(iMu).qual   := "0000";
+        vIntermediateF_buffer(iInt)(iMu).sysign := "00";        
+      end loop;  -- iMu
+    end loop;  -- iInt
 
     wait for 250 ns;  -- wait until global set/reset completes    
     write (LO, string'("******************* start of tests  ********************** "));
@@ -123,11 +180,13 @@ begin
     while not endfile(F) loop
       write(LO, string'("++++++++++++++++++++ reading event: "));
       write(LO, iEvent);
-      iEvent := iEvent+1;
+      iEvent                                  := iEvent+1;
       write(LO, string'("++++++++++++++++++++"));
       writeline (OUTPUT, LO);
       ReadMuEvent(F, event);
-      DumpMuEvent(event);
+      event_buffer(0)                         := event;
+      event_buffer(SORTER_LATENCY-1 downto 1) := event_buffer(SORTER_LATENCY-2 downto 0);
+      DumpMuEvent(event_buffer(SORTER_LATENCY-1));
 
       iMuonsB     <= event.muons_brl;
       iMuonsO     <= event.muons_ovl;
@@ -145,18 +204,27 @@ begin
       iIdxBitsO   <= event.idxBits_ovl;
       iIdxBitsF   <= event.idxBits_fwd;
 
-      vIntB  := oIntermediateMuonsB;
-      vIntO  := oIntermediateMuonsO;
-      vIntF  := oIntermediateMuonsF;
+      vIntermediateB_buffer(0)                                   := oIntermediateMuonsB;
+      vIntermediateO_buffer(0)                                   := oIntermediateMuonsO;
+      vIntermediateF_buffer(0)                                   := oIntermediateMuonsF;
+      vIntermediateB_buffer(vIntermediateB_buffer'high downto 1) := vIntermediateB_buffer(vIntermediateB_buffer'high-1 downto 0);
+      vIntermediateO_buffer(vIntermediateO_buffer'high downto 1) := vIntermediateO_buffer(vIntermediateO_buffer'high-1 downto 0);
+      vIntermediateF_buffer(vIntermediateF_buffer'high downto 1) := vIntermediateF_buffer(vIntermediateF_buffer'high-1 downto 0);
+      vIntB                                                      := vIntermediateB_buffer(vIntermediateB_buffer'high);
+      vIntO                                                      := vIntermediateO_buffer(vIntermediateO_buffer'high);
+      vIntF                                                      := vIntermediateF_buffer(vIntermediateF_buffer'high);
       DumpMuons(vIntB, int_id);
       DumpMuons(vIntO, int_id);
       DumpMuons(vIntF, int_id);
-      vMuons := oMuons;
+      vMuons                                                     := oMuons;
       DumpMuons(vMuons, fin_id);
       wait for 25 ns;
     end loop;
 
     for i in 0 to 9 loop
+      event_buffer(SORTER_LATENCY-1 downto 1) := event_buffer(SORTER_LATENCY-2 downto 0);
+      DumpMuEvent(event_buffer(SORTER_LATENCY-1));
+
       vIntB  := oIntermediateMuonsB;
       vIntO  := oIntermediateMuonsO;
       vIntF  := oIntermediateMuonsF;
