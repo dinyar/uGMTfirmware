@@ -8,21 +8,25 @@ use ieee.std_logic_textio;
 package tb_helpers is
 
   type TGMTMuEvent is record
-    muons_brl     : TGMTMu_vector(35 downto 0);
-    muons_ovl     : TGMTMu_vector(35 downto 0);
-    muons_fwd     : TGMTMu_vector(35 downto 0);
-    tracks_brl    : TGMTMuTracks_vector(11 downto 0);
-    tracks_ovl    : TGMTMuTracks_vector(11 downto 0);
-    tracks_fwd    : TGMTMuTracks_vector(11 downto 0);
-    sortRanks_brl : TSortRank10_vector(35 downto 0);
-    sortRanks_ovl : TSortRank10_vector(35 downto 0);
-    sortRanks_fwd : TSortRank10_vector(35 downto 0);
-    empty_brl     : std_logic_vector(35 downto 0);
-    empty_ovl     : std_logic_vector(35 downto 0);
-    empty_fwd     : std_logic_vector(35 downto 0);
-    idxBits_brl   : TIndexBits_vector(35 downto 0);
-    idxBits_ovl   : TIndexBits_vector(35 downto 0);
-    idxBits_fwd   : TIndexBits_vector(35 downto 0);
+    muons_brl      : TGMTMu_vector(35 downto 0);
+    muons_ovl      : TGMTMu_vector(35 downto 0);
+    muons_fwd      : TGMTMu_vector(35 downto 0);
+    tracks_brl     : TGMTMuTracks_vector(11 downto 0);
+    tracks_ovl     : TGMTMuTracks_vector(11 downto 0);
+    tracks_fwd     : TGMTMuTracks_vector(11 downto 0);
+    sortRanks_brl  : TSortRank10_vector(35 downto 0);
+    sortRanks_ovl  : TSortRank10_vector(35 downto 0);
+    sortRanks_fwd  : TSortRank10_vector(35 downto 0);
+    empty_brl      : std_logic_vector(35 downto 0);
+    empty_ovl      : std_logic_vector(35 downto 0);
+    empty_fwd      : std_logic_vector(35 downto 0);
+    idxBits_brl    : TIndexBits_vector(35 downto 0);
+    idxBits_ovl    : TIndexBits_vector(35 downto 0);
+    idxBits_fwd    : TIndexBits_vector(35 downto 0);
+    expectedMuons  : TGMTMu_vector(7 downto 0);
+    expectedIntMuB : TGMTMu_vector(7 downto 0);
+    expectedIntMuO : TGMTMu_vector(7 downto 0);
+    expectedIntMuF : TGMTMu_vector(7 downto 0);
   end record;
   type TGMTMuEvent_vec is array (integer range <>) of TGMTMuEvent;
 
@@ -148,19 +152,25 @@ package body tb_helpers is
   procedure ReadMuEvent (
     file F         :     text;
     variable event : out TGMTMuEvent) is
-    variable L, L1      : line;
-    variable muNo       : integer := 0;
-    variable muBrlNo    : integer := 0;
-    variable muOvlNo    : integer := 0;
-    variable muFwdNo    : integer := 0;
-    variable wedgeNo    : integer := 0;
-    variable wedgeBrlNo : integer := 0;
-    variable wedgeOvlNo : integer := 0;
-    variable wedgeFwdNo : integer := 0;
-    variable muons      : TGMTMu_vector(107 downto 0);
-    variable sortRanks  : TSortRank10_vector(107 downto 0);
-    variable emptyBits  : std_logic_vector(107 downto 0);
-    variable idxBits    : TIndexBits_vector(107 downto 0);
+    variable L, L1         : line;
+    variable muNo          : integer := 0;
+    variable muBrlNo       : integer := 0;
+    variable muOvlNo       : integer := 0;
+    variable muFwdNo       : integer := 0;
+    variable wedgeNo       : integer := 0;
+    variable wedgeBrlNo    : integer := 0;
+    variable wedgeOvlNo    : integer := 0;
+    variable wedgeFwdNo    : integer := 0;
+    variable muons         : TGMTMu_vector(107 downto 0);
+    variable sortRanks     : TSortRank10_vector(107 downto 0);
+    variable emptyBits     : std_logic_vector(107 downto 0);
+    variable idxBits       : TIndexBits_vector(107 downto 0);
+    variable dummySrtRnk   : TSortRank10;
+    variable dummyEmptyBit : std_logic;
+    variable finMuNo       : integer := 0;
+    variable intMuBNo      : integer := 0;
+    variable intMuONo      : integer := 0;
+    variable intMuFNo      : integer := 0;
   begin  -- ReadMuEvent
 
     while (muNo < 108) or (wedgeNo < 36) loop
@@ -204,6 +214,18 @@ package body tb_helpers is
         ReadTrack(L, event.tracks_fwd(wedgeFwdNo));
         wedgeFwdNo := wedgeFwdNo+1;
         wedgeNo    := wedgeNo+1;
+      elsif L.all(1 to 3) = "FIN" then
+        ReadInputMuon(L, event.expectedMuons(finMuNo), dummySrtRnk, dummyEmptyBit);
+        finMuNo := finMuNo+1;
+      elsif L.all(1 to 4) = "BINT" then
+        ReadInputMuon(L, event.expectedIntMuB(intMuBNo), dummySrtRnk, dummyEmptyBit);
+        intMuBNo := intMuBNo+1;
+      elsif L.all(1 to 4) = "OINT" then
+        ReadInputMuon(L, event.expectedIntMuO(intMuONo), dummySrtRnk, dummyEmptyBit);
+        intMuONo := intMuONo+1;
+      elsif L.all(1 to 4) = "FINT" then
+        ReadInputMuon(L, event.expectedIntMuF(intMuFNo), dummySrtRnk, dummyEmptyBit);
+        intMuFNo := intMuFNo+1;
       end if;
 
       --if (L.all(1 to 3) = "BRL") or (L.all(1 to 3) = "OVL") or (L.all(1 to 3) = "FWD") then
