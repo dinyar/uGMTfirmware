@@ -10,6 +10,7 @@ end testbench;
 
 architecture behavior of testbench is
   type TIntermediateMu_buf is array (integer range <>) of TGMTMu_vector(7 downto 0);
+  type TSortRank_buf is array (integer range <>) of TSortRank10_vector(7 downto 0);
 
   constant div240          : integer   := 12;
   constant div40           : integer   := 2;
@@ -101,16 +102,20 @@ begin
     file F                               : text open read_mode is "ugmt_testfile.dat";
     variable L, LO                       : line;
     variable event                       : TGMTMuEvent;
-    constant SORTER_LATENCY              : integer        := 7;
+    constant SORTER_LATENCY              : integer                        := 7;
     variable event_buffer                : TGMTMuEvent_vec(SORTER_LATENCY-1 downto 0);
-    constant INTERMEDIATE_DELAY          : integer        := 5;
+    constant INTERMEDIATE_DELAY          : integer                        := 5;
     variable vIntermediateB_buffer       : TIntermediateMu_buf(INTERMEDIATE_DELAY-1 downto 0);
     variable vIntermediateO_buffer       : TIntermediateMu_buf(INTERMEDIATE_DELAY-1 downto 0);
     variable vIntermediateF_buffer       : TIntermediateMu_buf(INTERMEDIATE_DELAY-1 downto 0);
+    variable vSortRankB_buffer           : TSortRank_buf(INTERMEDIATE_DELAY-1 downto 0);
+    variable vSortRankO_buffer           : TSortRank_buf(INTERMEDIATE_DELAY-1 downto 0);
+    variable vSortRankF_buffer           : TSortRank_buf(INTERMEDIATE_DELAY-1 downto 0);
     variable vMuons, vIntB, vIntO, vIntF : TGMTMu_vector(oMuons'range);
-    variable fin_id                      : string(1 to 3) := string'("FIN");
-    variable int_id                      : string(1 to 3) := string'("INT");
-    variable iEvent                      : integer        := 0;
+    variable vDummySortRanks             : TSortRank10_vector(7 downto 0) := (others => "0000000000");
+    variable fin_id                      : string(1 to 3)                 := string'("FIN");
+    variable int_id                      : string(1 to 3)                 := string'("INT");
+    variable iEvent                      : integer                        := 0;
   begin
 
     -- Reset event buffer
@@ -169,7 +174,10 @@ begin
         vIntermediateF_buffer(iInt)(iMu).eta    := "000000000";
         vIntermediateF_buffer(iInt)(iMu).pt     := "000000000";
         vIntermediateF_buffer(iInt)(iMu).qual   := "0000";
-        vIntermediateF_buffer(iInt)(iMu).sysign := "00";        
+        vIntermediateF_buffer(iInt)(iMu).sysign := "00";
+        vSortRankB_buffer(iInt)(iMu)            := "0000000000";
+        vSortRankO_buffer(iInt)(iMu)            := "0000000000";
+        vSortRankF_buffer(iInt)(iMu)            := "0000000000";
       end loop;  -- iMu
     end loop;  -- iInt
 
@@ -210,29 +218,43 @@ begin
       vIntermediateB_buffer(vIntermediateB_buffer'high downto 1) := vIntermediateB_buffer(vIntermediateB_buffer'high-1 downto 0);
       vIntermediateO_buffer(vIntermediateO_buffer'high downto 1) := vIntermediateO_buffer(vIntermediateO_buffer'high-1 downto 0);
       vIntermediateF_buffer(vIntermediateF_buffer'high downto 1) := vIntermediateF_buffer(vIntermediateF_buffer'high-1 downto 0);
-      vIntB                                                      := vIntermediateB_buffer(vIntermediateB_buffer'high);
-      vIntO                                                      := vIntermediateO_buffer(vIntermediateO_buffer'high);
-      vIntF                                                      := vIntermediateF_buffer(vIntermediateF_buffer'high);
-      DumpMuons(vIntB, int_id);
-      DumpMuons(vIntO, int_id);
-      DumpMuons(vIntF, int_id);
+      vSortRankB_buffer(0)                                       := oSortRanksB;
+      vSortRankO_buffer(0)                                       := oSortRanksO;
+      vSortRankF_buffer(0)                                       := oSortRanksF;
+      vSortRankB_buffer(vSortRankB_buffer'high downto 1)         := vSortRankB_buffer(vSortRankB_buffer'high-1 downto 0);
+      vSortRankO_buffer(vSortRankO_buffer'high downto 1)         := vSortRankO_buffer(vSortRankO_buffer'high-1 downto 0);
+      vSortRankF_buffer(vSortRankF_buffer'high downto 1)         := vSortRankF_buffer(vSortRankF_buffer'high-1 downto 0);
+      DumpMuons(vIntermediateB_buffer(vIntermediateB_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), int_id);
+      DumpMuons(vIntermediateO_buffer(vIntermediateO_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), int_id);
+      DumpMuons(vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), int_id);
       vMuons                                                     := oMuons;
-      DumpMuons(vMuons, fin_id);
+      DumpMuons(vMuons, vDummySortRanks, fin_id);
       wait for 25 ns;
     end loop;
 
     for i in 0 to 9 loop
+      write(LO, string'("++++++++++++++++++++ final events ++++++++++++++++++++"));
+      writeline(OUTPUT, LO);
       event_buffer(SORTER_LATENCY-1 downto 1) := event_buffer(SORTER_LATENCY-2 downto 0);
       DumpMuEvent(event_buffer(SORTER_LATENCY-1));
 
-      vIntB  := oIntermediateMuonsB;
-      vIntO  := oIntermediateMuonsO;
-      vIntF  := oIntermediateMuonsF;
-      DumpMuons(vIntB, int_id);
-      DumpMuons(vIntO, int_id);
-      DumpMuons(vIntF, int_id);
-      vMuons := oMuons;
-      DumpMuons(vMuons, fin_id);
+      vIntermediateB_buffer(0)                                   := oIntermediateMuonsB;
+      vIntermediateO_buffer(0)                                   := oIntermediateMuonsO;
+      vIntermediateF_buffer(0)                                   := oIntermediateMuonsF;
+      vIntermediateB_buffer(vIntermediateB_buffer'high downto 1) := vIntermediateB_buffer(vIntermediateB_buffer'high-1 downto 0);
+      vIntermediateO_buffer(vIntermediateO_buffer'high downto 1) := vIntermediateO_buffer(vIntermediateO_buffer'high-1 downto 0);
+      vIntermediateF_buffer(vIntermediateF_buffer'high downto 1) := vIntermediateF_buffer(vIntermediateF_buffer'high-1 downto 0);
+      vSortRankB_buffer(0)                                       := oSortRanksB;
+      vSortRankO_buffer(0)                                       := oSortRanksO;
+      vSortRankF_buffer(0)                                       := oSortRanksF;
+      vSortRankB_buffer(vSortRankB_buffer'high downto 1)         := vSortRankB_buffer(vSortRankB_buffer'high-1 downto 0);
+      vSortRankO_buffer(vSortRankO_buffer'high downto 1)         := vSortRankO_buffer(vSortRankO_buffer'high-1 downto 0);
+      vSortRankF_buffer(vSortRankF_buffer'high downto 1)         := vSortRankF_buffer(vSortRankF_buffer'high-1 downto 0);
+      DumpMuons(vIntermediateB_buffer(vIntermediateB_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), int_id);
+      DumpMuons(vIntermediateO_buffer(vIntermediateO_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), int_id);
+      DumpMuons(vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), int_id);
+      vMuons                                                     := oMuons;
+      DumpMuons(vMuons, vDummySortRanks, fin_id);
       wait for 25 ns;
     end loop;  -- i
 

@@ -63,8 +63,9 @@ package tb_helpers is
     variable id      : in string(1 to 4));
 
   procedure DumpMuons (
-    variable iMuons : in TGMTMu_vector;
-    variable id     : in string(1 to 3));
+    variable iMuons     : in TGMTMu_vector;
+    variable iSortRanks : in TSortRank10_vector;
+    variable id         : in string(1 to 3));
 end;
 
 package body tb_helpers is
@@ -224,9 +225,9 @@ package body tb_helpers is
     variable ovlTrk_id : string(1 to 4) := "OTRK";
     variable fwdTrk_id : string(1 to 4) := "FTRK";
   begin  -- DumpMuEvent
-    DumpMuons(event.muons_brl, brl_id);
-    DumpMuons(event.muons_ovl, ovl_id);
-    DumpMuons(event.muons_fwd, fwd_id);
+    DumpMuons(event.muons_brl, event.sortRanks_brl, brl_id);
+    DumpMuons(event.muons_ovl, event.sortRanks_ovl, ovl_id);
+    DumpMuons(event.muons_fwd, event.sortRanks_fwd, fwd_id);
 
     DumpTracks(event.tracks_brl, brlTrk_id);
     DumpTracks(event.tracks_ovl, ovlTrk_id);
@@ -253,7 +254,7 @@ package body tb_helpers is
         write(L1, id);
         write(L1, string'(" #"));
         write(L1, iTrack);
-        write(L1, string'(":"));
+        write(L1, string'(" :"));
         for i in 2 downto 0 loop
           write(L1, string'(" "));
           write(L1, to_integer(iTracks(iTrack)(i).phi));
@@ -268,8 +269,9 @@ package body tb_helpers is
   end DumpTracks;
 
   procedure DumpMuons (
-    variable iMuons : in TGMTMu_vector;
-    variable id     : in string(1 to 3)) is
+    variable iMuons     : in TGMTMu_vector;
+    variable iSortRanks : in TSortRank10_vector;
+    variable id         : in string(1 to 3)) is
     variable L1 : line;
   begin  -- DumpMuons
     for iMu in iMuons'range loop
@@ -291,6 +293,12 @@ package body tb_helpers is
       write(L1, to_bit(iMuons(iMu).sysign(1)));
       write(L1, string'(" "));
       write(L1, to_integer(iMuons(iMu).qual));
+      -- For final muons no sort rank information is available and is thus
+      -- faked by the testbench. We therefore won't display it.
+      if id /= string'("FIN") then
+        write(L1, string'(" "));
+        write(L1, to_integer(unsigned(iSortRanks(iMu))));
+      end if;
       writeline(OUTPUT, L1);
     end loop;  -- iMu
   end DumpMuons;
