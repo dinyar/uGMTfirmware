@@ -212,98 +212,78 @@ package body tb_helpers is
 
   procedure DumpMuEvent (
     variable event : in TGMTMuEvent) is
-    variable L1 : line;
+    variable L1            : line;
+    variable brl_id        : string(1 to 3) := "BRL";
+    variable ovl_id        : string(1 to 3) := "OVL";
+    variable fwd_id        : string(1 to 3) := "FWD";
+    variable display_track : boolean        := false;
   begin  -- DumpMuEvent
-    for iMu in event.muons_brl'range loop
-      write(L1, string'("BRL #"));
-      write(L1, iMu);
-      write(L1, string'(": "));
-      write(L1, to_integer(event.muons_brl(iMu).pt));
-      write(L1, string'(" "));
-      write(L1, to_integer(event.muons_brl(iMu).phi));
-      write(L1, string'(" "));
-      write(L1, to_integer(event.muons_brl(iMu).eta));
-      write(L1, string'(" "));
-      write(L1, to_bit(event.muons_brl(iMu).sysign(0)));
-      write(L1, string'(" "));
-      write(L1, to_bit(event.muons_brl(iMu).sysign(1)));
-      write(L1, string'(" "));
-      write(L1, to_integer(event.muons_brl(iMu).qual));
-      writeline(OUTPUT, L1);
-    end loop;  -- iMu
-    for iMu in event.muons_ovl'range loop
-      write(L1, string'("OVL #"));
-      write(L1, iMu);
-      write(L1, string'(": "));
-      write(L1, to_integer(event.muons_ovl(iMu).pt));
-      write(L1, string'(" "));
-      write(L1, to_integer(event.muons_ovl(iMu).phi));
-      write(L1, string'(" "));
-      write(L1, to_integer(event.muons_ovl(iMu).eta));
-      write(L1, string'(" "));
-      write(L1, to_bit(event.muons_ovl(iMu).sysign(0)));
-      write(L1, string'(" "));
-      write(L1, to_bit(event.muons_ovl(iMu).sysign(1)));
-      write(L1, string'(" "));
-      write(L1, to_integer(event.muons_ovl(iMu).qual));
-      writeline(OUTPUT, L1);
-    end loop;  -- iMu
-    for iMu in event.muons_fwd'range loop
-      write(L1, string'("FWD #"));
-      write(L1, iMu);
-      write(L1, string'(": "));
-      write(L1, to_integer(event.muons_fwd(iMu).pt));
-      write(L1, string'(" "));
-      write(L1, to_integer(event.muons_fwd(iMu).phi));
-      write(L1, string'(" "));
-      write(L1, to_integer(event.muons_fwd(iMu).eta));
-      write(L1, string'(" "));
-      write(L1, to_bit(event.muons_fwd(iMu).sysign(0)));
-      write(L1, string'(" "));
-      write(L1, to_bit(event.muons_fwd(iMu).sysign(1)));
-      write(L1, string'(" "));
-      write(L1, to_integer(event.muons_fwd(iMu).qual));
-      writeline(OUTPUT, L1);
-    end loop;  -- iMu
+    DumpMuons(event.muons_brl, brl_id);
+    DumpMuons(event.muons_ovl, ovl_id);
+    DumpMuons(event.muons_fwd, fwd_id);
 
     for iTrack in event.tracks_brl'range loop
-      write(L1, string'("BTRK #"));
-      write(L1, iTrack);
-      write(L1, string'(": "));
+      display_track := false;
       for i in 2 downto 0 loop
-        write(L1, to_integer(event.tracks_brl(iTrack)(i).phi));
-        write(L1, string'(" "));
-        write(L1, to_integer(event.tracks_brl(iTrack)(i).eta));
-        write(L1, string'(" "));
-        write(L1, to_integer(event.tracks_brl(iTrack)(i).qual));
+        if event.tracks_brl(iTrack)(i).phi /= (9 downto 0 => '0') and event.tracks_brl(iTrack)(i).eta /= (8 downto 0 => '0') and event.tracks_brl(iTrack)(i).qual /= (3 downto 0 => '0') then
+          display_track := true;
+        end if;
       end loop;  -- i
-      writeline(OUTPUT, L1);
+      if display_track = true then
+        write(L1, string'("BTRK #"));
+        write(L1, iTrack);
+        write(L1, string'(": "));
+        for i in 2 downto 0 loop
+          write(L1, to_integer(event.tracks_brl(iTrack)(i).phi));
+          write(L1, string'(" "));
+          write(L1, to_integer(event.tracks_brl(iTrack)(i).eta));
+          write(L1, string'(" "));
+          write(L1, to_integer(event.tracks_brl(iTrack)(i).qual));
+        end loop;  -- i
+        writeline(OUTPUT, L1);
+      end if;
     end loop;  -- iTrack
     for iTrack in event.tracks_ovl'range loop
-      write(L1, string'("BTRK #"));
-      write(L1, iTrack);
-      write(L1, string'(": "));
+      display_track := false;
       for i in 2 downto 0 loop
-        write(L1, to_integer(event.tracks_ovl(iTrack)(i).phi));
-        write(L1, string'(" "));
-        write(L1, to_integer(event.tracks_ovl(iTrack)(i).eta));
-        write(L1, string'(" "));
-        write(L1, to_integer(event.tracks_ovl(iTrack)(i).qual));
+        if event.tracks_ovl(iTrack)(i).phi /= (9 downto 0 => '0') and event.tracks_ovl(iTrack)(i).eta /= (8 downto 0 => '0') and event.tracks_ovl(iTrack)(i).qual /= (3 downto 0 => '0') then
+          display_track := true;
+        end if;
       end loop;  -- i
-      writeline(OUTPUT, L1);
+      if display_track = true then
+        write(L1, string'("OTRK #"));
+        write(L1, iTrack);
+        write(L1, string'(": "));
+        for i in 2 downto 0 loop
+          write(L1, to_integer(event.tracks_ovl(iTrack)(i).phi));
+          write(L1, string'(" "));
+          write(L1, to_integer(event.tracks_ovl(iTrack)(i).eta));
+          write(L1, string'(" "));
+          write(L1, to_integer(event.tracks_ovl(iTrack)(i).qual));
+        end loop;  -- i
+        writeline(OUTPUT, L1);
+      end if;
     end loop;  -- iTrack
     for iTrack in event.tracks_fwd'range loop
-      write(L1, string'("BTRK #"));
-      write(L1, iTrack);
-      write(L1, string'(": "));
+      display_track := false;
       for i in 2 downto 0 loop
-        write(L1, to_integer(event.tracks_fwd(iTrack)(i).phi));
-        write(L1, string'(" "));
-        write(L1, to_integer(event.tracks_fwd(iTrack)(i).eta));
-        write(L1, string'(" "));
-        write(L1, to_integer(event.tracks_fwd(iTrack)(i).qual));
+        if event.tracks_fwd(iTrack)(i).phi /= (9 downto 0 => '0') and event.tracks_fwd(iTrack)(i).eta /= (8 downto 0 => '0') and event.tracks_fwd(iTrack)(i).qual /= (3 downto 0 => '0') then
+          display_track := true;
+        end if;
       end loop;  -- i
-      writeline(OUTPUT, L1);
+      if display_track = true then
+        write(L1, string'("FTRK #"));
+        write(L1, iTrack);
+        write(L1, string'(": "));
+        for i in 2 downto 0 loop
+          write(L1, to_integer(event.tracks_fwd(iTrack)(i).phi));
+          write(L1, string'(" "));
+          write(L1, to_integer(event.tracks_fwd(iTrack)(i).eta));
+          write(L1, string'(" "));
+          write(L1, to_integer(event.tracks_fwd(iTrack)(i).qual));
+        end loop;  -- i
+        writeline(OUTPUT, L1);
+      end if;
     end loop;  -- iTrack
   end DumpMuEvent;
 
@@ -313,6 +293,9 @@ package body tb_helpers is
     variable L1 : line;
   begin  -- DumpMuons
     for iMu in iMuons'range loop
+      if iMuons(iMu).pt = (8 downto 0 => '0') and iMuons(iMu).phi = (9 downto 0 => '0') and iMuons(iMu).eta = (8 downto 0 => '0') and iMuons(iMu).sysign = "00" and iMuons(iMu).qual = (3 downto 0 => '0') then
+        next;
+      end if;
       write(L1, id);
       write(L1, string'(" #"));
       write(L1, iMu);

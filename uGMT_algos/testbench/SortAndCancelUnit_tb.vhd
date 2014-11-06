@@ -103,6 +103,7 @@ begin
     variable vMuons, vIntB, vIntO, vIntF : TGMTMu_vector(oMuons'range);
     variable fin_id                      : string(1 to 3) := string'("FIN");
     variable int_id                      : string(1 to 3) := string'("INT");
+    variable iEvent                      : integer        := 0;
   begin
 
     -- Reset all variables
@@ -120,7 +121,10 @@ begin
     writeline (OUTPUT, LO);
     -- Add user defined stimulus here
     while not endfile(F) loop
-      write (LO, string'("++++++++++++++++++++ reading event ++++++++++++++++++++"));
+      write(LO, string'("++++++++++++++++++++ reading event: "));
+      write(LO, iEvent);
+      iEvent := iEvent+1;
+      write(LO, string'("++++++++++++++++++++"));
       writeline (OUTPUT, LO);
       ReadMuEvent(F, event);
       DumpMuEvent(event);
@@ -141,9 +145,9 @@ begin
       iIdxBitsO   <= event.idxBits_ovl;
       iIdxBitsF   <= event.idxBits_fwd;
 
-      vIntB := oIntermediateMuonsB;
-      vIntO := oIntermediateMuonsO;
-      vIntF := oIntermediateMuonsF;
+      vIntB  := oIntermediateMuonsB;
+      vIntO  := oIntermediateMuonsO;
+      vIntF  := oIntermediateMuonsF;
       DumpMuons(vIntB, int_id);
       DumpMuons(vIntO, int_id);
       DumpMuons(vIntF, int_id);
@@ -153,9 +157,9 @@ begin
     end loop;
 
     for i in 0 to 9 loop
-      vIntB := oIntermediateMuonsB;
-      vIntO := oIntermediateMuonsO;
-      vIntF := oIntermediateMuonsF;
+      vIntB  := oIntermediateMuonsB;
+      vIntO  := oIntermediateMuonsO;
+      vIntF  := oIntermediateMuonsF;
       DumpMuons(vIntB, int_id);
       DumpMuons(vIntO, int_id);
       DumpMuons(vIntF, int_id);
