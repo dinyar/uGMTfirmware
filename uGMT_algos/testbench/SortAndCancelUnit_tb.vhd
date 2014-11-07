@@ -116,32 +116,57 @@ begin
     variable fin_id                      : string(1 to 3)                 := string'("FIN");
     variable int_id                      : string(1 to 3)                 := string'("INT");
     variable iEvent                      : integer                        := 0;
+    variable cntError                    : integer                        := 0;
   begin
 
     -- Reset event buffer
     for iEvent in event_buffer'range loop
       for i in event_buffer(iEvent).muons_brl'range loop
-        event_buffer(iEvent).muons_brl(i).phi    := "0000000000";
-        event_buffer(iEvent).muons_brl(i).eta    := "000000000";
-        event_buffer(iEvent).muons_brl(i).pt     := "000000000";
-        event_buffer(iEvent).muons_brl(i).qual   := "0000";
-        event_buffer(iEvent).muons_brl(i).sysign := "00";
-        event_buffer(iEvent).muons_ovl(i).phi    := "0000000000";
-        event_buffer(iEvent).muons_ovl(i).eta    := "000000000";
-        event_buffer(iEvent).muons_ovl(i).pt     := "000000000";
-        event_buffer(iEvent).muons_ovl(i).qual   := "0000";
-        event_buffer(iEvent).muons_ovl(i).sysign := "00";
-        event_buffer(iEvent).muons_fwd(i).phi    := "0000000000";
-        event_buffer(iEvent).muons_fwd(i).eta    := "000000000";
-        event_buffer(iEvent).muons_fwd(i).pt     := "000000000";
-        event_buffer(iEvent).muons_fwd(i).qual   := "0000";
-        event_buffer(iEvent).muons_fwd(i).sysign := "00";
-        event_buffer(iEvent).sortRanks_brl(i)    := "0000000000";
-        event_buffer(iEvent).sortRanks_ovl(i)    := "0000000000";
-        event_buffer(iEvent).sortRanks_fwd(i)    := "0000000000";
-        event_buffer(iEvent).empty_brl(i)        := '1';
-        event_buffer(iEvent).empty_ovl(i)        := '1';
-        event_buffer(iEvent).empty_fwd(i)        := '1';
+        event_buffer(iEvent).muons_brl(i).phi         := "0000000000";
+        event_buffer(iEvent).muons_brl(i).eta         := "000000000";
+        event_buffer(iEvent).muons_brl(i).pt          := "000000000";
+        event_buffer(iEvent).muons_brl(i).qual        := "0000";
+        event_buffer(iEvent).muons_brl(i).sysign      := "00";
+        event_buffer(iEvent).muons_ovl(i).phi         := "0000000000";
+        event_buffer(iEvent).muons_ovl(i).eta         := "000000000";
+        event_buffer(iEvent).muons_ovl(i).pt          := "000000000";
+        event_buffer(iEvent).muons_ovl(i).qual        := "0000";
+        event_buffer(iEvent).muons_ovl(i).sysign      := "00";
+        event_buffer(iEvent).muons_fwd(i).phi         := "0000000000";
+        event_buffer(iEvent).muons_fwd(i).eta         := "000000000";
+        event_buffer(iEvent).muons_fwd(i).pt          := "000000000";
+        event_buffer(iEvent).muons_fwd(i).qual        := "0000";
+        event_buffer(iEvent).muons_fwd(i).sysign      := "00";
+        event_buffer(iEvent).sortRanks_brl(i)         := "0000000000";
+        event_buffer(iEvent).sortRanks_ovl(i)         := "0000000000";
+        event_buffer(iEvent).sortRanks_fwd(i)         := "0000000000";
+        event_buffer(iEvent).empty_brl(i)             := '1';
+        event_buffer(iEvent).empty_ovl(i)             := '1';
+        event_buffer(iEvent).empty_fwd(i)             := '1';
+        event_buffer(iEvent).idxBits_brl(i)           := (others => '0');
+        event_buffer(iEvent).idxBits_ovl(i)           := (others => '0');
+        event_buffer(iEvent).idxBits_fwd(i)           := (others => '0');
+        event_buffer(iEvent).expectedMuons(i).phi     := "0000000000";
+        event_buffer(iEvent).expectedMuons(i).eta     := "000000000";
+        event_buffer(iEvent).expectedMuons(i).pt      := "000000000";
+        event_buffer(iEvent).expectedMuons(i).qual    := "0000";
+        event_buffer(iEvent).expectedMuons(i).sysign  := "00";
+        event_buffer(iEvent).expectedIso(i)           := "00";
+        event_buffer(iEvent).expectedIntMuB(i).phi    := "0000000000";
+        event_buffer(iEvent).expectedIntMuB(i).eta    := "000000000";
+        event_buffer(iEvent).expectedIntMuB(i).pt     := "000000000";
+        event_buffer(iEvent).expectedIntMuB(i).qual   := "0000";
+        event_buffer(iEvent).expectedIntMuB(i).sysign := "00";
+        event_buffer(iEvent).expectedIntMuO(i).phi    := "0000000000";
+        event_buffer(iEvent).expectedIntMuO(i).eta    := "000000000";
+        event_buffer(iEvent).expectedIntMuO(i).pt     := "000000000";
+        event_buffer(iEvent).expectedIntMuO(i).qual   := "0000";
+        event_buffer(iEvent).expectedIntMuO(i).sysign := "00";
+        event_buffer(iEvent).expectedIntMuF(i).phi    := "0000000000";
+        event_buffer(iEvent).expectedIntMuF(i).eta    := "000000000";
+        event_buffer(iEvent).expectedIntMuF(i).pt     := "000000000";
+        event_buffer(iEvent).expectedIntMuF(i).qual   := "0000";
+        event_buffer(iEvent).expectedIntMuF(i).sysign := "00";
       end loop;  -- i
       for i in iTracksB'range loop
         for j in iTracksB(0)'range loop

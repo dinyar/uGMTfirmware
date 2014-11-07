@@ -24,6 +24,7 @@ package tb_helpers is
     idxBits_ovl    : TIndexBits_vector(35 downto 0);
     idxBits_fwd    : TIndexBits_vector(35 downto 0);
     expectedMuons  : TGMTMu_vector(7 downto 0);
+    expectedIso    : TIsoBits_vector(7 downto 0);
     expectedIntMuB : TGMTMu_vector(7 downto 0);
     expectedIntMuO : TGMTMu_vector(7 downto 0);
     expectedIntMuF : TGMTMu_vector(7 downto 0);
