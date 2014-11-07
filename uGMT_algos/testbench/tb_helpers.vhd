@@ -8,6 +8,7 @@ use ieee.std_logic_textio;
 package tb_helpers is
 
   type TGMTMuEvent is record
+    iEvent         : integer;
     muons_brl      : TGMTMu_vector(35 downto 0);
     muons_ovl      : TGMTMu_vector(35 downto 0);
     muons_fwd      : TGMTMu_vector(35 downto 0);
@@ -43,8 +44,9 @@ package tb_helpers is
   type TGMTEvent_vector is array (integer range <>) of TGMTEvent;
 
   procedure ReadMuEvent (
-    file F         :     text;
-    variable event : out TGMTMuEvent);
+    file F          :     text;
+    variable iEvent : in  integer;
+    variable event  : out TGMTMuEvent);
 
   --procedure ReadCaloEvent (
   --  file F         :     text;
@@ -151,8 +153,9 @@ package body tb_helpers is
   -- TODO: Add procedure for reading calo inputs.
 
   procedure ReadMuEvent (
-    file F         :     text;
-    variable event : out TGMTMuEvent) is
+    file F          :     text;
+    variable iEvent : in  integer;
+    variable event  : out TGMTMuEvent) is
     variable L, L1         : line;
     variable muNo          : integer := 0;
     variable muBrlNo       : integer := 0;
@@ -173,6 +176,8 @@ package body tb_helpers is
     variable intMuONo      : integer := 0;
     variable intMuFNo      : integer := 0;
   begin  -- ReadMuEvent
+
+    event.iEvent := iEvent;
 
     while (muNo < 108) or (wedgeNo < 36) loop
       readline(F, L);
@@ -248,6 +253,10 @@ package body tb_helpers is
     variable ovlTrk_id : string(1 to 4) := "OTRK";
     variable fwdTrk_id : string(1 to 4) := "FTRK";
   begin  -- DumpMuEvent
+    write(L1, string'("++++++++++++++++++++ Dump of event "));
+    write(L1, event.iEvent);
+    write(L1, string'(": ++++++++++++++++++++"));
+    writeline(OUTPUT, L1);
     DumpMuons(event.muons_brl, event.sortRanks_brl, brl_id);
     DumpMuons(event.muons_ovl, event.sortRanks_ovl, ovl_id);
     DumpMuons(event.muons_fwd, event.sortRanks_fwd, fwd_id);
