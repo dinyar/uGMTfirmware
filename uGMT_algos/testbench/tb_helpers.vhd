@@ -370,23 +370,24 @@ package body tb_helpers is
     variable iEmuSrtRnk : in  TSortRank10;
     variable id         : in  string(1 to 3);
     variable error      : out integer) is
-    variable LO : line;
+    variable LO    : line;
+    variable idEmu : string(1 to 3) := "EMU";
   begin  -- CheckMuon
     error := 0;
     if iMu.phi /= iEmuMu.phi or iMu.eta /= iEmuMu.eta or iMu.pt /= iEmuMu.pt or iMu.sysign /= iEmuMu.sysign or iMu.qual /= iEmuMu.qual then
       error := 1;
 
-      write(LO, string'("!!!!!! Error with "));
+      write(LO, string'("!!!!!! Error in "));
       write(LO, id);
       write(LO, string'(" muon #"));
       write(LO, noMu);
       writeline(OUTPUT, LO);
-      write(LO, string'("!!! Simulation output: "));
+      write(LO, string'("!!! Comparison: "));
       writeline(OUTPUT, LO);
       DumpMuon(noMu, iMu, iSrtRnk, id);
-      write(LO, string'("!!!   Expected output: "));
+      DumpMuon(noMu, iEmuMu, iEmuSrtRnk, idEmu);
+      write(LO, string'(""));
       writeline(OUTPUT, LO);
-      DumpMuon(noMu, iEmuMu, iEmuSrtRnk, id);
     end if;
   end CheckMuon;
   
@@ -442,7 +443,7 @@ package body tb_helpers is
       if iSrtRnks(i) /= iEmuSrtRnks(i) then
         vErrors := vErrors+1;
 
-        write(LO, string'("!!!!!! Error with "));
+        write(LO, string'("!!!!!! Error in "));
         write(LO, id);
         write(LO, string'(" sort rank #"));
         write(LO, i);
@@ -453,8 +454,11 @@ package body tb_helpers is
         write(LO, string'("!!!   Expected output: "));
         write(LO, to_integer(unsigned(iEmuSrtRnks(i))));
         writeline(OUTPUT, LO);
+        write(LO, string'(""));
+        writeline(OUTPUT, LO);
       end if;
     end loop;  --i
+    errors := vErrors;
   end CheckSortRanks;
 
   procedure ValidateOutput (
@@ -506,11 +510,18 @@ package body tb_helpers is
       CheckSortRanks(iSrtRnksF, iEvent.expectedSrtRnksF, idIntF, tmpError);
       vError   := vError + tmpError;
 
+      write(LO, string'(""));
+      writeline(OUTPUT, LO);
+      write(LO, string'(""));
+      writeline(OUTPUT, LO);
+
       if vError > 0 then
         error := 1;
       else
         error := 0;
       end if;
+    else
+      error := 0;
     end if;
   end ValidateOutput;
 end tb_helpers;
