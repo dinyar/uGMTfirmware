@@ -146,6 +146,8 @@ begin
         event_buffer(iEvent).idxBits_brl(i)      := (others => '0');
         event_buffer(iEvent).idxBits_ovl(i)      := (others => '0');
         event_buffer(iEvent).idxBits_fwd(i)      := (others => '0');
+      end loop;
+      for i in event_buffer(iEvent).expectedMuons'range loop
         event_buffer(iEvent).expectedMuons(i).phi     := "0000000000";
         event_buffer(iEvent).expectedMuons(i).eta     := "000000000";
         event_buffer(iEvent).expectedMuons(i).pt      := "000000000";
