@@ -253,17 +253,19 @@ package body tb_helpers is
     variable ovlTrk_id : string(1 to 4) := "OTRK";
     variable fwdTrk_id : string(1 to 4) := "FTRK";
   begin  -- DumpMuEvent
-    write(L1, string'("++++++++++++++++++++ Dump of event "));
-    write(L1, event.iEvent);
-    write(L1, string'(": ++++++++++++++++++++"));
-    writeline(OUTPUT, L1);
-    DumpMuons(event.muons_brl, event.sortRanks_brl, brl_id);
-    DumpMuons(event.muons_ovl, event.sortRanks_ovl, ovl_id);
-    DumpMuons(event.muons_fwd, event.sortRanks_fwd, fwd_id);
+    if event.iEvent /= -1 then
+      write(L1, string'("++++++++++++++++++++ Dump of event "));
+      write(L1, event.iEvent);
+      write(L1, string'(": ++++++++++++++++++++"));
+      writeline(OUTPUT, L1);
+      DumpMuons(event.muons_brl, event.sortRanks_brl, brl_id);
+      DumpMuons(event.muons_ovl, event.sortRanks_ovl, ovl_id);
+      DumpMuons(event.muons_fwd, event.sortRanks_fwd, fwd_id);
 
-    DumpTracks(event.tracks_brl, brlTrk_id);
-    DumpTracks(event.tracks_ovl, ovlTrk_id);
-    DumpTracks(event.tracks_fwd, fwdTrk_id);
+      DumpTracks(event.tracks_brl, brlTrk_id);
+      DumpTracks(event.tracks_ovl, ovlTrk_id);
+      DumpTracks(event.tracks_fwd, fwdTrk_id);
+    end if;
   end DumpMuEvent;
 
   procedure DumpTracks (
@@ -297,7 +299,9 @@ package body tb_helpers is
         end loop;  -- i
         writeline(OUTPUT, L1);
       end if;
-    end loop;  -- iTrack    
+    end loop;  -- iTrack
+    write(L1, string'(""));
+    writeline(OUTPUT, L1);
   end DumpTracks;
 
   procedure DumpMuons (
@@ -333,6 +337,8 @@ package body tb_helpers is
       end if;
       writeline(OUTPUT, L1);
     end loop;  -- iMu
+    write(L1, string'(""));
+    writeline(OUTPUT, L1);
   end DumpMuons;
-  
+
 end tb_helpers;
