@@ -557,11 +557,11 @@ begin
       sinit      => sinit);
 
   oIntermediateMuonsB <= sMuonsB;
-  oIntermediateMuonsO <= sSortedMuonsO_plus & sSortedMuonsO_minus;
-  oIntermediateMuonsF <= sSortedMuonsF_plus & sSortedMuonsF_minus;
+  oIntermediateMuonsO <= sSortedMuonsO_minus & sSortedMuonsO_plus;
+  oIntermediateMuonsF <= sSortedMuonsF_minus & sSortedMuonsF_plus;
   oSortRanksB         <= sSortRanksB;
-  oSortRanksO         <= sSortedSortRanksO_plus & sSortedSortRanksO_minus;
-  oSortRanksF         <= sSortedSortRanksF_plus & sSortedSortRanksF_minus;
+  oSortRanksO         <= sSortedSortRanksO_minus & sSortedSortRanksO_plus;
+  oSortRanksF         <= sSortedSortRanksF_minus & sSortedSortRanksF_plus;
 
 
   gen_pair_finding_unit : if rpc_merging generate
@@ -585,17 +585,17 @@ begin
   begin  -- process reg_pairs
     if clk'event and clk = '0' then     -- falling clock edge
       sSortRanksB_reg <= sSortRanksB;
-      sSortRanksO_reg <= sSortedSortRanksO_plus & sSortedSortRanksO_minus;
-      sSortRanksF_reg <= sSortedSortRanksF_plus & sSortedSortRanksF_minus;
+      sSortRanksO_reg <= sSortedSortRanksO_minus & sSortedSortRanksO_plus;
+      sSortRanksF_reg <= sSortedSortRanksF_minus & sSortedSortRanksF_plus;
       sEmptyB_reg     <= sEmptyB;
-      sEmptyO_reg     <= sSortedEmptyO_plus & sSortedEmptyO_minus;
-      sEmptyF_reg     <= sSortedEmptyF_plus & sSortedEmptyF_minus;
+      sEmptyO_reg     <= sSortedEmptyO_minus & sSortedEmptyO_plus;
+      sEmptyF_reg     <= sSortedEmptyF_minus & sSortedEmptyF_plus;
       sIdxBitsB_reg   <= sIdxBitsB;
-      sIdxBitsO_reg   <= sSortedIdxBitsO_plus & sSortedIdxBitsO_minus;
-      sIdxBitsF_reg   <= sSortedIdxBitsF_plus & sSortedIdxBitsF_minus;
+      sIdxBitsO_reg   <= sSortedIdxBitsO_minus & sSortedIdxBitsO_plus;
+      sIdxBitsF_reg   <= sSortedIdxBitsF_minus & sSortedIdxBitsF_plus;
       sMuonsB_reg     <= sMuonsB;
-      sMuonsO_reg     <= sSortedMuonsO_plus & sSortedMuonsO_minus;
-      sMuonsF_reg     <= sSortedMuonsF_plus & sSortedMuonsF_minus;
+      sMuonsO_reg     <= sSortedMuonsO_minus & sSortedMuonsO_plus;
+      sMuonsF_reg     <= sSortedMuonsF_minus & sSortedMuonsF_plus;
 
 
       -- For RPC merging
