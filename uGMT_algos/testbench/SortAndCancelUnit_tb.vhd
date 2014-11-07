@@ -9,6 +9,9 @@ entity testbench is
 end testbench;
 
 architecture behavior of testbench is
+
+  constant verbose : boolean := false;
+
   type TIntermediateMu_buf is array (integer range <>) of TGMTMu_vector(7 downto 0);
   type TSortRank_buf is array (integer range <>) of TSortRank10_vector(7 downto 0);
 
@@ -250,7 +253,6 @@ begin
       end if;
 
       event_buffer(SORTER_LATENCY-1 downto 1)                    := event_buffer(SORTER_LATENCY-2 downto 0);
-      DumpMuEvent(event_buffer(SORTER_LATENCY-1));
       vIntermediateB_buffer(0)                                   := oIntermediateMuonsB;
       vIntermediateO_buffer(0)                                   := oIntermediateMuonsO;
       vIntermediateF_buffer(0)                                   := oIntermediateMuonsF;
@@ -263,16 +265,20 @@ begin
       vSortRankB_buffer(vSortRankB_buffer'high downto 1)         := vSortRankB_buffer(vSortRankB_buffer'high-1 downto 0);
       vSortRankO_buffer(vSortRankO_buffer'high downto 1)         := vSortRankO_buffer(vSortRankO_buffer'high-1 downto 0);
       vSortRankF_buffer(vSortRankF_buffer'high downto 1)         := vSortRankF_buffer(vSortRankF_buffer'high-1 downto 0);
-      DumpMuons(vIntermediateB_buffer(vIntermediateB_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), int_id);
-      DumpMuons(vIntermediateO_buffer(vIntermediateO_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), int_id);
-      DumpMuons(vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), int_id);
       vMuons                                                     := oMuons;
-      DumpMuons(vMuons, vDummySortRanks, fin_id);
+
+      if verbose then
+        DumpMuEvent(event_buffer(SORTER_LATENCY-1));
+        DumpMuons(vIntermediateB_buffer(vIntermediateB_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), int_id);
+        DumpMuons(vIntermediateO_buffer(vIntermediateO_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), int_id);
+        DumpMuons(vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), int_id);
+        DumpMuons(vMuons, vDummySortRanks, fin_id);
+      end if;
 
       ValidateOutput(vMuons, vIntermediateB_buffer(vIntermediateB_buffer'high), vIntermediateO_buffer(vIntermediateO_buffer'high), vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), event_buffer(SORTER_LATENCY-1), tmpError);
       cntError := cntError+tmpError;
       wait for 25 ns;
-      iEvent := iEvent+1;
+      iEvent   := iEvent+1;
     end loop;
     write(LO, string'("!!!!! Number of events with errors: "));
     write(LO, cntError);
