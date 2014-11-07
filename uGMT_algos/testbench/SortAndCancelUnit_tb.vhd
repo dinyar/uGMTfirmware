@@ -116,6 +116,7 @@ begin
     variable fin_id                      : string(1 to 3)                 := string'("FIN");
     variable int_id                      : string(1 to 3)                 := string'("INT");
     variable iEvent                      : integer                        := 0;
+    variable tmpError                    : integer;
     variable cntError                    : integer                        := 0;
     variable remainingEvents             : integer                        := SORTER_LATENCY;
   begin
@@ -217,14 +218,13 @@ begin
     writeline (OUTPUT, LO);
     -- Add user defined stimulus here
     while remainingEvents > 0 loop
+      tmpError := 99999999;
       if not endfile(F) then
         write(LO, string'("++ reading event "));
         write(LO, iEvent);
         write(LO, string'("...."));
         writeline (OUTPUT, LO);
         ReadMuEvent(F, iEvent, event);
-
-        iEvent := iEvent+1;
 
         -- Filling uGMT
         iMuonsB     <= event.muons_brl;
@@ -268,8 +268,15 @@ begin
       DumpMuons(vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), int_id);
       vMuons                                                     := oMuons;
       DumpMuons(vMuons, vDummySortRanks, fin_id);
+
+      ValidateOutput(vMuons, vIntermediateB_buffer(vIntermediateB_buffer'high), vIntermediateO_buffer(vIntermediateO_buffer'high), vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), event_buffer(SORTER_LATENCY-1), tmpError);
+      cntError := cntError+tmpError;
       wait for 25 ns;
+      iEvent := iEvent+1;
     end loop;
+    write(LO, string'("!!!!! Number of events with errors: "));
+    write(LO, cntError);
+    writeline(OUTPUT, LO);
     wait;                               -- will wait forever
   end process tb;
   --  End Test Bench

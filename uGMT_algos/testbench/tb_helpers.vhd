@@ -75,6 +75,17 @@ package tb_helpers is
     variable iMuons     : in TGMTMu_vector;
     variable iSortRanks : in TSortRank10_vector;
     variable id         : in string(1 to 3));
+
+  procedure ValidateOutput (
+    variable iFinalMus : in  TGMTMu_vector(7 downto 0);
+    variable iIntMusB  : in  TGMTMu_vector(7 downto 0);
+    variable iIntMusO  : in  TGMTMu_vector(7 downto 0);
+    variable iIntMusF  : in  TGMTMu_vector(7 downto 0);
+    variable iSrtRnksB : in  TSortRank10_vector(7 downto 0);
+    variable iSrtRnksO : in  TSortRank10_vector(7 downto 0);
+    variable iSrtRnksF : in  TSortRank10_vector(7 downto 0);
+    variable iEvent    : in  TGMTMuEvent;
+    variable error     : out integer);
 end;
 
 package body tb_helpers is
@@ -115,7 +126,7 @@ package body tb_helpers is
     sortRank    := std_logic_vector(to_unsigned(rank, 10));
     read(L, empty);
     emptyBit    := to_stdulogic(empty);
-    
+
   end ReadInputMuon;
 
   procedure ReadTrack (
@@ -182,7 +193,7 @@ package body tb_helpers is
 
     event.iEvent := iEvent;
 
-    while (muNo < 108) or (wedgeNo < 36) loop
+    while (muNo < 108) or (wedgeNo < 36) or (finMuNo < 8) loop  --or (intMuBNo < 8) or (intMuONo < 8) or (intMuFNo < 8) loop
       readline(F, L);
       --write(L1, L.all);
       --write(L1, string'(" muNo: "));
@@ -191,7 +202,7 @@ package body tb_helpers is
 
       if L.all'length = 0 then
         next;
-      elsif(L.all(1 to 2) = "# ") then
+      elsif(L.all(1 to 1) = "#") then
         next;
       elsif L.all(1 to 3) = "EVT" then
         -- TODO: Parse this maybe?
@@ -300,6 +311,40 @@ package body tb_helpers is
     writeline(OUTPUT, L1);
   end DumpTracks;
 
+  procedure DumpMuon (
+    noMu               : in integer;
+    variable iMu       : in TGMTMu;
+    variable iSortRank : in TSortRank10;
+    variable id        : in string(1 to 3)) is
+    variable L1 : line;
+  begin  -- DumpMuon
+    if iMu.pt = (8 downto 0 => '0') and iMu.phi = (9 downto 0 => '0') and iMu.eta = (8 downto 0 => '0') and iMu.sysign = "00" and iMu.qual = (3 downto 0 => '0') then
+      return;
+    end if;
+    write(L1, id);
+    write(L1, string'(" #"));
+    write(L1, noMu);
+    write(L1, string'(": "));
+    write(L1, to_integer(iMu.pt));
+    write(L1, string'(" "));
+    write(L1, to_integer(iMu.phi));
+    write(L1, string'(" "));
+    write(L1, to_integer(iMu.eta));
+    write(L1, string'(" "));
+    write(L1, to_bit(iMu.sysign(0)));
+    write(L1, string'(" "));
+    write(L1, to_bit(iMu.sysign(1)));
+    write(L1, string'(" "));
+    write(L1, to_integer(iMu.qual));
+    -- For final muons no sort rank information is available and is thus
+    -- faked by the testbench. We therefore won't display it.
+    if id /= string'("OUT") then
+      write(L1, string'(" "));
+      write(L1, to_integer(unsigned(iSortRank)));
+    end if;
+    writeline(OUTPUT, L1);
+  end DumpMuon;
+  
   procedure DumpMuons (
     variable iMuons     : in TGMTMu_vector;
     variable iSortRanks : in TSortRank10_vector;
@@ -307,34 +352,121 @@ package body tb_helpers is
     variable L1 : line;
   begin  -- DumpMuons
     for iMu in iMuons'range loop
-      if iMuons(iMu).pt = (8 downto 0 => '0') and iMuons(iMu).phi = (9 downto 0 => '0') and iMuons(iMu).eta = (8 downto 0 => '0') and iMuons(iMu).sysign = "00" and iMuons(iMu).qual = (3 downto 0 => '0') then
-        next;
-      end if;
-      write(L1, id);
-      write(L1, string'(" #"));
-      write(L1, iMu);
-      write(L1, string'(": "));
-      write(L1, to_integer(iMuons(iMu).pt));
-      write(L1, string'(" "));
-      write(L1, to_integer(iMuons(iMu).phi));
-      write(L1, string'(" "));
-      write(L1, to_integer(iMuons(iMu).eta));
-      write(L1, string'(" "));
-      write(L1, to_bit(iMuons(iMu).sysign(0)));
-      write(L1, string'(" "));
-      write(L1, to_bit(iMuons(iMu).sysign(1)));
-      write(L1, string'(" "));
-      write(L1, to_integer(iMuons(iMu).qual));
-      -- For final muons no sort rank information is available and is thus
-      -- faked by the testbench. We therefore won't display it.
-      if id /= string'("OUT") then
-        write(L1, string'(" "));
-        write(L1, to_integer(unsigned(iSortRanks(iMu))));
-      end if;
-      writeline(OUTPUT, L1);
+      DumpMuon(iMu, iMuons(iMu), iSortRanks(iMu), id);
     end loop;  -- iMu
     write(L1, string'(""));
     writeline(OUTPUT, L1);
   end DumpMuons;
 
+  procedure CheckMuons (
+    variable iMus    : in  TGMTMu_vector;
+    variable iEmuMus : in  TGMTMu_vector;
+    variable id      : in  string(1 to 3);
+    variable errors  : out integer) is
+    variable LO          : line;
+    variable vErrors     : integer     := 0;
+    variable dummySrtRnk : TSortRank10 := (others => '0');
+  begin  -- CheckMuons
+    errors := 0;
+    for i in iMus'range loop
+      if iMus(i).phi /= iEmuMus(i).phi or iMus(i).eta /= iEmuMus(i).eta or iMus(i).pt /= iEmuMus(i).pt or iMus(i).sysign /= iEmuMus(i).sysign or iMus(i).qual /= iEmuMus(i).qual then
+        vErrors := vErrors+1;
+
+        write(LO, string'("!!!!!! Error with "));
+        write(LO, id);
+        write(LO, string'(" muon #"));
+        write(LO, i);
+        writeline(OUTPUT, LO);
+        write(LO, string'("!!! Simulation output: "));
+        writeline(OUTPUT, LO);
+        DumpMuon(i, iMus(i), dummySrtRnk, id);
+        write(LO, string'("!!!   Expected output: "));
+        writeline(OUTPUT, LO);
+        DumpMuon(i, iEmuMus(i), dummySrtRnk, id);
+      end if;
+    end loop;  -- i
+    errors := vErrors;
+  end CheckMuons;
+
+  procedure CheckSortRanks (
+    variable iSrtRnks    : in  TSortRank10_vector;
+    variable iEmuSrtRnks : in  TSortRank10_vector;
+    variable id          : in  string(1 to 3);
+    variable errors      : out integer) is
+    variable LO      : line;
+    variable vErrors : integer := 0;
+  begin  -- CheckSortRanks
+    for i in iSrtRnks'range loop
+      if iSrtRnks(i) /= iEmuSrtRnks(i) then
+        vErrors := vErrors+1;
+
+        write(LO, string'("!!!!!! Error with "));
+        write(LO, id);
+        write(LO, string'(" sort rank #"));
+        write(LO, i);
+        writeline(OUTPUT, LO);
+        write(LO, string'("!!! Simulation output: "));
+        write(LO, to_integer(unsigned(iSrtRnks(i))));
+        writeline(OUTPUT, LO);
+        write(LO, string'("!!!   Expected output: "));
+        write(LO, to_integer(unsigned(iEmuSrtRnks(i))));
+        writeline(OUTPUT, LO);
+      end if;
+    end loop;  --i
+  end CheckSortRanks;
+
+  procedure ValidateOutput (
+    variable iFinalMus : in  TGMTMu_vector(7 downto 0);
+    variable iIntMusB  : in  TGMTMu_vector(7 downto 0);
+    variable iIntMusO  : in  TGMTMu_vector(7 downto 0);
+    variable iIntMusF  : in  TGMTMu_vector(7 downto 0);
+    variable iSrtRnksB : in  TSortRank10_vector(7 downto 0);
+    variable iSrtRnksO : in  TSortRank10_vector(7 downto 0);
+    variable iSrtRnksF : in  TSortRank10_vector(7 downto 0);
+    variable iEvent    : in  TGMTMuEvent;
+    variable error     : out integer) is
+    variable LO       : line;
+    variable vError   : integer        := 0;
+    variable tmpError : integer        := 0;
+    variable idFin    : string(1 to 3) := "FIN";
+    variable idIntB   : string(1 to 3) := "IMB";
+    variable idIntO   : string(1 to 3) := "IMO";
+    variable idIntF   : string(1 to 3) := "IMF";
+  begin
+    write(LO, string'("@@@ Validating event "));
+    write(LO, iEvent.iEvent);
+    write(LO, string'(" @@@"));
+    writeline(OUTPUT, LO);
+    write(LO, string'(""));
+    writeline(OUTPUT, LO);
+
+    tmpError := 0;
+    CheckMuons(iFinalMus, iEvent.expectedMuons, idFin, tmpError);
+    vError   := tmpError;
+    tmpError := 0;
+    CheckMuons(iIntMusB, iEvent.expectedIntMuB, idIntB, tmpError);
+    vError   := vError + tmpError;
+    tmpError := 0;
+    CheckMuons(iIntMusO, iEvent.expectedIntMuO, idIntO, tmpError);
+    vError   := vError + tmpError;
+    tmpError := 0;
+    CheckMuons(iIntMusF, iEvent.expectedIntMuF, idIntF, tmpError);
+    vError   := vError + tmpError;
+
+    tmpError := 0;
+    CheckSortRanks(iSrtRnksB, iEvent.expectedSrtRnksB, idIntB, tmpError);
+    vError   := vError + tmpError;
+    tmpError := 0;
+    CheckSortRanks(iSrtRnksO, iEvent.expectedSrtRnksO, idIntO, tmpError);
+    vError   := vError + tmpError;
+    tmpError := 0;
+    CheckSortRanks(iSrtRnksF, iEvent.expectedSrtRnksF, idIntF, tmpError);
+    vError   := vError + tmpError;
+
+    if vError > 0 then
+      error := 1;
+    else
+      error := 0;
+    end if;
+  end ValidateOutput;
 end tb_helpers;
