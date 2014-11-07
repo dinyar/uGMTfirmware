@@ -155,7 +155,6 @@ begin
         event_buffer(iEvent).expectedMuons(i).pt      := "000000000";
         event_buffer(iEvent).expectedMuons(i).qual    := "0000";
         event_buffer(iEvent).expectedMuons(i).sysign  := "00";
-        event_buffer(iEvent).expectedIso(i)           := "00";
         event_buffer(iEvent).expectedIntMuB(i).phi    := "0000000000";
         event_buffer(iEvent).expectedIntMuB(i).eta    := "000000000";
         event_buffer(iEvent).expectedIntMuB(i).pt     := "000000000";
@@ -171,6 +170,9 @@ begin
         event_buffer(iEvent).expectedIntMuF(i).pt     := "000000000";
         event_buffer(iEvent).expectedIntMuF(i).qual   := "0000";
         event_buffer(iEvent).expectedIntMuF(i).sysign := "00";
+        event_buffer(iEvent).expectedSrtRnksB(i)      := (others => '0');
+        event_buffer(iEvent).expectedSrtRnksO(i)      := (others => '0');
+        event_buffer(iEvent).expectedSrtRnksF(i)      := (others => '0');
       end loop;  -- i
       for i in iTracksB'range loop
         for j in iTracksB(0)'range loop

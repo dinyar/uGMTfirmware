@@ -8,27 +8,29 @@ use ieee.std_logic_textio;
 package tb_helpers is
 
   type TGMTMuEvent is record
-    iEvent         : integer;
-    muons_brl      : TGMTMu_vector(35 downto 0);
-    muons_ovl      : TGMTMu_vector(35 downto 0);
-    muons_fwd      : TGMTMu_vector(35 downto 0);
-    tracks_brl     : TGMTMuTracks_vector(11 downto 0);
-    tracks_ovl     : TGMTMuTracks_vector(11 downto 0);
-    tracks_fwd     : TGMTMuTracks_vector(11 downto 0);
-    sortRanks_brl  : TSortRank10_vector(35 downto 0);
-    sortRanks_ovl  : TSortRank10_vector(35 downto 0);
-    sortRanks_fwd  : TSortRank10_vector(35 downto 0);
-    empty_brl      : std_logic_vector(35 downto 0);
-    empty_ovl      : std_logic_vector(35 downto 0);
-    empty_fwd      : std_logic_vector(35 downto 0);
-    idxBits_brl    : TIndexBits_vector(35 downto 0);
-    idxBits_ovl    : TIndexBits_vector(35 downto 0);
-    idxBits_fwd    : TIndexBits_vector(35 downto 0);
-    expectedMuons  : TGMTMu_vector(7 downto 0);
-    expectedIso    : TIsoBits_vector(7 downto 0);
-    expectedIntMuB : TGMTMu_vector(7 downto 0);
-    expectedIntMuO : TGMTMu_vector(7 downto 0);
-    expectedIntMuF : TGMTMu_vector(7 downto 0);
+    iEvent           : integer;
+    muons_brl        : TGMTMu_vector(35 downto 0);
+    muons_ovl        : TGMTMu_vector(35 downto 0);
+    muons_fwd        : TGMTMu_vector(35 downto 0);
+    tracks_brl       : TGMTMuTracks_vector(11 downto 0);
+    tracks_ovl       : TGMTMuTracks_vector(11 downto 0);
+    tracks_fwd       : TGMTMuTracks_vector(11 downto 0);
+    sortRanks_brl    : TSortRank10_vector(35 downto 0);
+    sortRanks_ovl    : TSortRank10_vector(35 downto 0);
+    sortRanks_fwd    : TSortRank10_vector(35 downto 0);
+    empty_brl        : std_logic_vector(35 downto 0);
+    empty_ovl        : std_logic_vector(35 downto 0);
+    empty_fwd        : std_logic_vector(35 downto 0);
+    idxBits_brl      : TIndexBits_vector(35 downto 0);
+    idxBits_ovl      : TIndexBits_vector(35 downto 0);
+    idxBits_fwd      : TIndexBits_vector(35 downto 0);
+    expectedMuons    : TGMTMu_vector(7 downto 0);
+    expectedIntMuB   : TGMTMu_vector(7 downto 0);
+    expectedIntMuO   : TGMTMu_vector(7 downto 0);
+    expectedIntMuF   : TGMTMu_vector(7 downto 0);
+    expectedSrtRnksB : TSortRank10_vector(7 downto 0);
+    expectedSrtRnksO : TSortRank10_vector(7 downto 0);
+    expectedSrtRnksF : TSortRank10_vector(7 downto 0);
   end record;
   type TGMTMuEvent_vec is array (integer range <>) of TGMTMuEvent;
 
@@ -113,6 +115,7 @@ package body tb_helpers is
     sortRank    := std_logic_vector(to_unsigned(rank, 10));
     read(L, empty);
     emptyBit    := to_stdulogic(empty);
+    
   end ReadInputMuon;
 
   procedure ReadTrack (
@@ -220,26 +223,19 @@ package body tb_helpers is
         ReadTrack(L, event.tracks_fwd(wedgeFwdNo));
         wedgeFwdNo := wedgeFwdNo+1;
         wedgeNo    := wedgeNo+1;
-      elsif L.all(1 to 3) = "FIN" then
+      elsif L.all(1 to 3) = "OUT" then
         ReadInputMuon(L, event.expectedMuons(finMuNo), dummySrtRnk, dummyEmptyBit);
         finMuNo := finMuNo+1;
       elsif L.all(1 to 4) = "BINT" then
-        ReadInputMuon(L, event.expectedIntMuB(intMuBNo), dummySrtRnk, dummyEmptyBit);
+        ReadInputMuon(L, event.expectedIntMuB(intMuBNo), event.expectedSrtRnksB(intMuBNo), dummyEmptyBit);
         intMuBNo := intMuBNo+1;
       elsif L.all(1 to 4) = "OINT" then
-        ReadInputMuon(L, event.expectedIntMuO(intMuONo), dummySrtRnk, dummyEmptyBit);
+        ReadInputMuon(L, event.expectedIntMuO(intMuONo), event.expectedSrtRnksO(intMuONo), dummyEmptyBit);
         intMuONo := intMuONo+1;
       elsif L.all(1 to 4) = "FINT" then
-        ReadInputMuon(L, event.expectedIntMuF(intMuFNo), dummySrtRnk, dummyEmptyBit);
+        ReadInputMuon(L, event.expectedIntMuF(intMuFNo), event.expectedSrtRnksF(intMuFNo), dummyEmptyBit);
         intMuFNo := intMuFNo+1;
       end if;
-
-      --if (L.all(1 to 3) = "BRL") or (L.all(1 to 3) = "OVL") or (L.all(1 to 3) = "FWD") then
-      --  muNo := muNo+1;
-      --elsif L.all(2 to 4) = "TRK" then
-      --  wedgeNo := wedgeNo+1;
-      --end if;
-
     end loop;
   end ReadMuEvent;
 
@@ -331,7 +327,7 @@ package body tb_helpers is
       write(L1, to_integer(iMuons(iMu).qual));
       -- For final muons no sort rank information is available and is thus
       -- faked by the testbench. We therefore won't display it.
-      if id /= string'("FIN") then
+      if id /= string'("OUT") then
         write(L1, string'(" "));
         write(L1, to_integer(unsigned(iSortRanks(iMu))));
       end if;
