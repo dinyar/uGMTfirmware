@@ -787,8 +787,8 @@ begin
   oIntermediateMuonsB <= sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-1);
   oIntermediateMuonsO <= sIntermediateMuonO_buffer(MU_INTERMEDIATE_DELAY-1);
   oIntermediateMuonsF <= sIntermediateMuonF_buffer(MU_INTERMEDIATE_DELAY-1);
-  oSortRanksB         <= sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-1);
-  oSortRanksO         <= sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-1);
-  oSortRanksF         <= sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-1);
+  oIntermediateSortRanksB         <= sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-1);
+  oIntermediateSortRanksO         <= sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-1);
+  oIntermediateSortRanksF         <= sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-1);
   
 end architecture behavioral;
