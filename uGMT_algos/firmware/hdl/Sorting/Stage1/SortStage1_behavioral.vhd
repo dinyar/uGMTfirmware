@@ -53,11 +53,11 @@ architecture behavioral of SortStage1 is
 
 begin  -- architecture behavioral
   
-  sSortRanks <= iSortRanksB & iSortRanksO & iSortRanksF;
-  sMuons     <= iMuonsB & iMuonsO & iMuonsF;
-  sIdxBits   <= iIdxBitsB & iIdxBitsO & iIdxBitsF;
+  sSortRanks <= iSortRanksF(7 downto 4) & iSortRanksO(7 downto 4) & iSortRanksB & iSortRanksO(3 downto 0) & iSortRanksF(3 downto 0);
+  sMuons     <= iMuonsF(7 downto 4) & iMuonsO(7 downto 4) & iMuonsB & iMuonsO(3 downto 0) & iMuonsF(3 downto 0);
+  sIdxBits   <= iIdxBitsF(7 downto 4) & iIdxBitsO(7 downto 4) & iIdxBitsB & iIdxBitsO(3 downto 0) & iIdxBitsF(3 downto 0);
 
-  sEmpty <= iEmptyB & iEmptyO & iEmptyF;
+  sEmpty <= iEmptyF(7 downto 4) & iEmptyO(7 downto 4) & iEmptyB & iEmptyO(3 downto 0) & iEmptyF(3 downto 0);
 
   -----------------------------------------------------------------------------
   -- calculate GE Matrix : 
@@ -81,7 +81,7 @@ begin  -- architecture behavioral
   -----------------------------------------------------------------------------  
   count_wins24(GEMatrix, sEmpty, sSelBits);
 
-  mux: process (sSelBits, sMuons, sIdxBits)
+  mux : process (sSelBits, sMuons, sIdxBits)
   begin  -- process mux
     for iplace in 0 to 7 loop
       case sSelBits(iplace) is
