@@ -267,7 +267,7 @@ begin
       vSortRankF_buffer(vSortRankF_buffer'high downto 1)         := vSortRankF_buffer(vSortRankF_buffer'high-1 downto 0);
       vMuons                                                     := oMuons;
 
-      ValidateOutput(vMuons, vIntermediateB_buffer(vIntermediateB_buffer'high), vIntermediateO_buffer(vIntermediateO_buffer'high), vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), event_buffer(SORTER_LATENCY-1), tmpError);
+      ValidateSorterOutput(vMuons, vIntermediateB_buffer(vIntermediateB_buffer'high), vIntermediateO_buffer(vIntermediateO_buffer'high), vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), event_buffer(SORTER_LATENCY-1), tmpError);
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then

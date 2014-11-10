@@ -4,8 +4,30 @@ use IEEE.NUMERIC_STD.all;
 use WORK.GMTTypes.all;
 use STD.TEXTIO.all;
 use ieee.std_logic_textio;
+use work.mp7_data_types.all;
+use work.ugmt_constants.all;
 
 package tb_helpers is
+
+  type TOutTransceiverBuffer is array (2*2*NUM_MUONS_IN-1 downto 0) of ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0);
+
+  type TGMTOutEvent is record
+    iEvent           : integer;
+    muons            : TGMTMu_vector(7 downto 0);
+    iso              : TIsoBits_vector(7 downto 0);
+    intMuons_brl     : TGMTMu_vector(7 downto 0);
+    intMuons_ovl     : TGMTMu_vector(7 downto 0);
+    intMuons_fwd     : TGMTMu_vector(7 downto 0);
+    intSortRanks_brl : TSortRank10_vector(35 downto 0);
+    intSortRanks_ovl : TSortRank10_vector(35 downto 0);
+    intSortRanks_fwd : TSortRank10_vector(35 downto 0);
+    finalEnergies    : TCaloArea_vector(7 downto 0);
+    extrCoords_brl   : TSpatialCoordinate_vector(35 downto 0);
+    extrCoords_ovl   : TSpatialCoordinate_vector(35 downto 0);
+    extrCoords_fwd   : TSpatialCoordinate_vector(35 downto 0);
+    expectedOutput   : TOutTransceiverBuffer;
+  end record;
+  type TGMTOutEvent_vec is array (integer range <>) of TGMTOutEvent;
 
   type TGMTMuEvent is record
     iEvent           : integer;
@@ -45,6 +67,11 @@ package tb_helpers is
   end record;
   type TGMTEvent_vector is array (integer range <>) of TGMTEvent;
 
+  procedure ReadOutEvent (
+    file F          :     text;
+    variable iEvent : in  integer;
+    variable event  : out TGMTOutEvent);
+
   procedure ReadMuEvent (
     file F          :     text;
     variable iEvent : in  integer;
@@ -57,6 +84,9 @@ package tb_helpers is
   --procedure ReadEvent (
   --  file F         :     text;
   --  variable event : out TGMTEvent);
+
+  procedure DumpOutEvent (
+    variable event : in TGMTOutEvent);
 
   procedure DumpMuEvent (
     variable event : in TGMTMuEvent);
@@ -76,7 +106,12 @@ package tb_helpers is
     variable iSortRanks : in TSortRank10_vector;
     variable id         : in string(1 to 3));
 
-  procedure ValidateOutput (
+  procedure ValidateSerializerOutput (
+    variable iOutput : in  TOutTransceiverBuffer;
+    variable event  : in  TGMTOutEvent;
+    variable errors : out integer);
+
+  procedure ValidateSorterOutput (
     variable iFinalMus : in  TGMTMu_vector(7 downto 0);
     variable iIntMusB  : in  TGMTMu_vector(7 downto 0);
     variable iIntMusO  : in  TGMTMu_vector(7 downto 0);
@@ -164,8 +199,53 @@ package body tb_helpers is
 
   end ReadTrack;
 
-  -- TODO: Add procedure for reading calo inputs.
+  procedure ReadOutEvent (
+    file F          :     text;
+    variable iEvent : in  integer;
+    variable event  : out TGMTOutEvent) is
+    variable L             : line;
+    variable dummySortRank : TSortRank10;
+    variable dummyEmpty    : std_logic;
+    variable muNo          : integer := 0;
+    variable muFinNo       : integer := 0;
+    variable muIntBNo      : integer := 0;
+    variable muIntONo      : integer := 0;
+    variable muIntFNo      : integer := 0;
+  begin  -- ReadOutEvent
+    event.iEvent := iEvent;
 
+    while muFinNo < 8 and muIntBNo < 8 and muIntONo < 8 and muIntFNo < 8 loop
+      readline(F, L);
+      if L.all'length = 0 then
+        next;
+      elsif(L.all(1 to 1) = "#") then
+        next;
+      elsif L.all(1 to 3) = "EVT" then
+        -- TODO: Parse this maybe?
+        next;
+      elsif L.all(1 to 3) = "OUT" then
+        -- TODO: Read Iso bits.
+        ReadInputMuon(L, event.muons(muFinNo), dummySortRank, dummyEmpty);
+        muFinNo := muFinNo+1;
+        muNo    := muNo+1;
+      elsif L.all(1 to 4) = "BIMD" then
+        ReadInputMuon(L, event.muons(muIntBNo), event.intSortRanks_brl(muIntBNo), dummyEmpty);
+        muIntBNo := muIntBNo+1;
+        muNo     := muNo+1;
+      elsif L.all(1 to 4) = "OIMD" then
+        ReadInputMuon(L, event.muons(muIntONo), event.intSortRanks_brl(muIntONo), dummyEmpty);
+        muIntONo := muIntONo+1;
+        muNo     := muNo+1;
+      elsif L.all(1 to 4) = "FIMD" then
+        ReadInputMuon(L, event.muons(muIntFNo), event.intSortRanks_brl(muIntFNo), dummyEmpty);
+        muIntFNo := muIntFNo+1;
+        muNo     := muNo+1;
+      end if;
+    end loop;
+  end ReadOutEvent;
+
+
+  -- TODO: Add procedure for reading calo inputs.
   procedure ReadMuEvent (
     file F          :     text;
     variable iEvent : in  integer;
@@ -195,14 +275,6 @@ package body tb_helpers is
 
     while (muNo < 108) or (wedgeNo < 36) or (finMuNo < 8) or (intMuBNo < 8) or (intMuONo < 8) or (intMuFNo < 8) loop
       readline(F, L);
-      --write(L1, L.all);
-      --write(L1, string'(" muNo: "));
-      --write(L1, muNo);
-      --write(L1, string'(" wedgeNo: "));
-      --write(L1, wedgeNo);
-      --write(L1, string'(" finMuNo: "));
-      --write(L1, finMuNo);
-      --writeline(OUTPUT, L1);
 
       if L.all'length = 0 then
         next;
@@ -253,6 +325,30 @@ package body tb_helpers is
       end if;
     end loop;
   end ReadMuEvent;
+
+  procedure DumpOutEvent (
+    variable event : in TGMTOutEvent) is
+    variable L1              : line;
+    variable fin_id          : string(1 to 3)                 := "OUT";
+    variable brl_id          : string(1 to 3)                 := "INB";
+    variable ovl_id          : string(1 to 3)                 := "INO";
+    variable fwd_id          : string(1 to 3)                 := "INF";
+    variable vDummySortRanks : TSortRank10_vector(7 downto 0) := (others => "0000000000");
+
+  begin  -- DumpOutEvent
+    if event.iEvent /= -1 then
+      write(L1, string'("++++++++++++++++++++ Dump of event "));
+      write(L1, event.iEvent);
+      write(L1, string'(": ++++++++++++++++++++"));
+      writeline(OUTPUT, L1);
+
+      DumpMuons(event.muons, vDummySortRanks, fin_id);
+      DumpMuons(event.intMuons_brl, event.intSortRanks_brl, brl_id);
+      DumpMuons(event.intMuons_ovl, event.intSortRanks_ovl, ovl_id);
+      DumpMuons(event.intMuons_fwd, event.intSortRanks_fwd, fwd_id);
+      -- TODO: Missing final energies, extrapolated coordinates and iso bits.
+    end if;
+  end DumpOutEvent;
 
   procedure DumpMuEvent (
     variable event : in TGMTMuEvent) is
@@ -462,7 +558,41 @@ package body tb_helpers is
     errors := vErrors;
   end CheckSortRanks;
 
-  procedure ValidateOutput (
+  procedure ValidateSerializerOutput (
+    variable iOutput : in  TOutTransceiverBuffer;
+    variable event   : in  TGMTOutEvent;
+    variable errors  : out integer) is
+    variable LO       : line;
+    variable tmpError : integer := 0;
+    variable vErrors  : integer := 0;
+  begin
+    if (event.iEvent >= 0) then
+      write(LO, string'("@@@ Validating event "));
+      write(LO, event.iEvent);
+      write(LO, string'(" @@@"));
+      writeline(OUTPUT, LO);
+      write(LO, string'(""));
+      writeline(OUTPUT, LO);
+
+      for iFrame in iOutput'range loop
+        for iChan in iOutput(iFrame)'range loop
+          if iOutput(iFrame)(iChan) /= event.expectedOutput(iFrame)(iChan) then
+            vErrors := vErrors+1;
+          end if;
+        end loop;  -- iChan
+      end loop;  -- frame
+
+      if vErrors > 0 then
+        errors := 1;
+      else
+        errors := 0;
+      end if;
+    else
+      errors := 0;
+    end if;
+  end ValidateSerializerOutput;
+
+  procedure ValidateSorterOutput (
     variable iFinalMus : in  TGMTMu_vector(7 downto 0);
     variable iIntMusB  : in  TGMTMu_vector(7 downto 0);
     variable iIntMusO  : in  TGMTMu_vector(7 downto 0);
@@ -519,5 +649,5 @@ package body tb_helpers is
     else
       error := 0;
     end if;
-  end ValidateOutput;
+  end ValidateSorterOutput;
 end tb_helpers;
