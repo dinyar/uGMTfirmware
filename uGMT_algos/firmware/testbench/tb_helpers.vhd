@@ -9,7 +9,8 @@ use work.ugmt_constants.all;
 
 package tb_helpers is
 
-  type TOutTransceiverBuffer is array (2*2*NUM_MUONS_IN-1 downto 0) of ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0);
+  constant NCHAN : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS;
+  type     TOutTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NCHAN-1 downto 0);
 
   type TGMTOutEvent is record
     iEvent           : integer;
@@ -108,8 +109,8 @@ package tb_helpers is
 
   procedure ValidateSerializerOutput (
     variable iOutput : in  TOutTransceiverBuffer;
-    variable event  : in  TGMTOutEvent;
-    variable errors : out integer);
+    variable event   : in  TGMTOutEvent;
+    variable errors  : out integer);
 
   procedure ValidateSorterOutput (
     variable iFinalMus : in  TGMTMu_vector(7 downto 0);
@@ -199,6 +200,23 @@ package body tb_helpers is
 
   end ReadTrack;
 
+  procedure ReadInputFrame (
+    variable L       : inout line;
+    variable oOutput : out   ldata(NCHAN-1 downto 0)) is
+    variable word  : integer;
+    variable dummy : string(1 to 4);
+    variable tmpVec : std_logic_vector(32 downto 0);
+  begin  -- ReadInputFrame
+    read(L, dummy);
+
+    for iWord in 0 to NCHAN-1 loop
+      read(L, word);
+      tmpVec := std_logic_vector(to_unsigned(word, 33));
+      oOutput(iWord).data  := tmpVec(31 downto 0);
+      oOutput(iWord).valid := tmpVec(32);
+    end loop;  -- iWord
+  end ReadInputFrame;
+
   procedure ReadOutEvent (
     file F          :     text;
     variable iEvent : in  integer;
@@ -211,6 +229,7 @@ package body tb_helpers is
     variable muIntBNo      : integer := 0;
     variable muIntONo      : integer := 0;
     variable muIntFNo      : integer := 0;
+    variable frameNo       : integer := 0;
   begin  -- ReadOutEvent
     event.iEvent := iEvent;
 
@@ -240,10 +259,12 @@ package body tb_helpers is
         ReadInputMuon(L, event.muons(muIntFNo), event.intSortRanks_brl(muIntFNo), dummyEmpty);
         muIntFNo := muIntFNo+1;
         muNo     := muNo+1;
+      elsif L.all(1 to 3) = "FRM" then
+        ReadInputFrame(L, event.expectedOutput(frameNo));
+        frameNo := frameNo+1;
       end if;
     end loop;
   end ReadOutEvent;
-
 
   -- TODO: Add procedure for reading calo inputs.
   procedure ReadMuEvent (
@@ -281,7 +302,7 @@ package body tb_helpers is
       elsif(L.all(1 to 1) = "#") then
         next;
       elsif L.all(1 to 3) = "EVT" then
-        -- TODO: Parse this maybe?
+                                        -- TODO: Parse this maybe?
         next;
       elsif L.all(1 to 3) = "BAR" then
         ReadInputMuon(L, event.muons_brl(muBrlNo), event.sortRanks_brl(muBrlNo), event.empty_brl(muBrlNo));
@@ -346,7 +367,7 @@ package body tb_helpers is
       DumpMuons(event.intMuons_brl, event.intSortRanks_brl, brl_id);
       DumpMuons(event.intMuons_ovl, event.intSortRanks_ovl, ovl_id);
       DumpMuons(event.intMuons_fwd, event.intSortRanks_fwd, fwd_id);
-      -- TODO: Missing final energies, extrapolated coordinates and iso bits.
+                                        -- TODO: Missing final energies, extrapolated coordinates and iso bits.
     end if;
   end DumpOutEvent;
 
@@ -437,8 +458,8 @@ package body tb_helpers is
     write(L1, to_bit(iMu.sysign(1)));
     write(L1, string'(" "));
     write(L1, to_integer(iMu.qual));
-    -- For final muons no sort rank information is available and is thus
-    -- faked by the testbench. We therefore won't display it.
+                                        -- For final muons no sort rank information is available and is thus
+                                        -- faked by the testbench. We therefore won't display it.
     if id /= string'("OUT") then
       write(L1, string'(" "));
       write(L1, to_integer(unsigned(iSortRank)));
