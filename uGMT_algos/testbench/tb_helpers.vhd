@@ -276,6 +276,7 @@ package body tb_helpers is
       DumpTracks(event.tracks_brl, brlTrk_id);
       DumpTracks(event.tracks_ovl, ovlTrk_id);
       DumpTracks(event.tracks_fwd, fwdTrk_id);
+
     end if;
   end DumpMuEvent;
 
@@ -509,11 +510,6 @@ package body tb_helpers is
       tmpError := 0;
       CheckSortRanks(iSrtRnksF, iEvent.expectedSrtRnksF, idIntF, tmpError);
       vError   := vError + tmpError;
-
-      write(LO, string'(""));
-      writeline(OUTPUT, LO);
-      write(LO, string'(""));
-      writeline(OUTPUT, LO);
 
       if vError > 0 then
         error := 1;

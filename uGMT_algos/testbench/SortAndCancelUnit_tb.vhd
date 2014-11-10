@@ -267,18 +267,22 @@ begin
       vSortRankF_buffer(vSortRankF_buffer'high downto 1)         := vSortRankF_buffer(vSortRankF_buffer'high-1 downto 0);
       vMuons                                                     := oMuons;
 
-      if verbose then
+      ValidateOutput(vMuons, vIntermediateB_buffer(vIntermediateB_buffer'high), vIntermediateO_buffer(vIntermediateO_buffer'high), vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), event_buffer(SORTER_LATENCY-1), tmpError);
+      cntError := cntError+tmpError;
+
+      if verbose or (tmpError > 0) then
         DumpMuEvent(event_buffer(SORTER_LATENCY-1));
         DumpMuons(vIntermediateB_buffer(vIntermediateB_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), int_id);
         DumpMuons(vIntermediateO_buffer(vIntermediateO_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), int_id);
         DumpMuons(vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), int_id);
         DumpMuons(vMuons, vDummySortRanks, fin_id);
+        write(LO, string'(""));
+        writeline (OUTPUT, LO);
       end if;
 
-      ValidateOutput(vMuons, vIntermediateB_buffer(vIntermediateB_buffer'high), vIntermediateO_buffer(vIntermediateO_buffer'high), vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), event_buffer(SORTER_LATENCY-1), tmpError);
-      cntError := cntError+tmpError;
+
       wait for 25 ns;
-      iEvent   := iEvent+1;
+      iEvent := iEvent+1;
     end loop;
     write(LO, string'("!!!!! Number of events with errors: "));
     write(LO, cntError);
