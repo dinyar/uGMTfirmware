@@ -34,7 +34,6 @@ entity SortStage1 is
     );
 end entity SortStage1;
 
---
 architecture behavioral of SortStage1 is
 
   component comp10_ge
@@ -51,77 +50,6 @@ architecture behavioral of SortStage1 is
 
   signal GEMatrix : TGEMatrix24;
   signal sSelBits : TSelBits_1_of_24_vec (0 to 7);
-
-
-  -- purpose: final mux after sort
-  procedure mux_muons (
-    constant vSelBits : in  TSelBits_1_of_24_vec (0 to 7);
-    signal   iMuons   : in  TGMTMu_vector(23 downto 0);
-    signal   iIdxBits : in  TIndexBits_vector(23 downto 0);
-    signal   oMuons   : out TGMTMu_vector(7 downto 0);
-    signal   oIdxBits : out TIndexBits_vector(7 downto 0)
-    ) is
-  begin  -- procedure mux
-    for iplace in 0 to 7 loop
-      case vSelBits(iplace) is
-        when "100000000000000000000000" => oMuons(iplace) <= iMuons(0);
-        when "010000000000000000000000" => oMuons(iplace) <= iMuons(1);
-        when "001000000000000000000000" => oMuons(iplace) <= iMuons(2);
-        when "000100000000000000000000" => oMuons(iplace) <= iMuons(3);
-        when "000010000000000000000000" => oMuons(iplace) <= iMuons(4);
-        when "000001000000000000000000" => oMuons(iplace) <= iMuons(5);
-        when "000000100000000000000000" => oMuons(iplace) <= iMuons(6);
-        when "000000010000000000000000" => oMuons(iplace) <= iMuons(7);
-        when "000000001000000000000000" => oMuons(iplace) <= iMuons(8);
-        when "000000000100000000000000" => oMuons(iplace) <= iMuons(9);
-        when "000000000010000000000000" => oMuons(iplace) <= iMuons(10);
-        when "000000000001000000000000" => oMuons(iplace) <= iMuons(11);
-        when "000000000000100000000000" => oMuons(iplace) <= iMuons(12);
-        when "000000000000010000000000" => oMuons(iplace) <= iMuons(13);
-        when "000000000000001000000000" => oMuons(iplace) <= iMuons(14);
-        when "000000000000000100000000" => oMuons(iplace) <= iMuons(15);
-        when "000000000000000010000000" => oMuons(iplace) <= iMuons(16);
-        when "000000000000000001000000" => oMuons(iplace) <= iMuons(17);
-        when "000000000000000000100000" => oMuons(iplace) <= iMuons(18);
-        when "000000000000000000010000" => oMuons(iplace) <= iMuons(19);
-        when "000000000000000000001000" => oMuons(iplace) <= iMuons(20);
-        when "000000000000000000000100" => oMuons(iplace) <= iMuons(21);
-        when "000000000000000000000010" => oMuons(iplace) <= iMuons(22);
-        when "000000000000000000000001" => oMuons(iplace) <= iMuons(23);
-        when others                     => oMuons(iplace) <= ('0', "00", "000000000", "0000", "000000000", "0000000000");
-      end case;
-
-      case vSelBits(iplace) is
-        when "100000000000000000000000" => oIdxBits(iplace) <= iIdxBits(0);
-        when "010000000000000000000000" => oIdxBits(iplace) <= iIdxBits(1);
-        when "001000000000000000000000" => oIdxBits(iplace) <= iIdxBits(2);
-        when "000100000000000000000000" => oIdxBits(iplace) <= iIdxBits(3);
-        when "000010000000000000000000" => oIdxBits(iplace) <= iIdxBits(4);
-        when "000001000000000000000000" => oIdxBits(iplace) <= iIdxBits(5);
-        when "000000100000000000000000" => oIdxBits(iplace) <= iIdxBits(6);
-        when "000000010000000000000000" => oIdxBits(iplace) <= iIdxBits(7);
-        when "000000001000000000000000" => oIdxBits(iplace) <= iIdxBits(8);
-        when "000000000100000000000000" => oIdxBits(iplace) <= iIdxBits(9);
-        when "000000000010000000000000" => oIdxBits(iplace) <= iIdxBits(10);
-        when "000000000001000000000000" => oIdxBits(iplace) <= iIdxBits(11);
-        when "000000000000100000000000" => oIdxBits(iplace) <= iIdxBits(12);
-        when "000000000000010000000000" => oIdxBits(iplace) <= iIdxBits(13);
-        when "000000000000001000000000" => oIdxBits(iplace) <= iIdxBits(14);
-        when "000000000000000100000000" => oIdxBits(iplace) <= iIdxBits(15);
-        when "000000000000000010000000" => oIdxBits(iplace) <= iIdxBits(16);
-        when "000000000000000001000000" => oIdxBits(iplace) <= iIdxBits(17);
-        when "000000000000000000100000" => oIdxBits(iplace) <= iIdxBits(18);
-        when "000000000000000000010000" => oIdxBits(iplace) <= iIdxBits(19);
-        when "000000000000000000001000" => oIdxBits(iplace) <= iIdxBits(20);
-        when "000000000000000000000100" => oIdxBits(iplace) <= iIdxBits(21);
-        when "000000000000000000000010" => oIdxBits(iplace) <= iIdxBits(22);
-        when "000000000000000000000001" => oIdxBits(iplace) <= iIdxBits(23);
-        when others                     => oIdxBits(iplace) <= (others => '0');
-      end case;
-      
-    end loop;  -- iplace
-    
-  end procedure mux_muons;
 
 begin  -- architecture behavioral
   
@@ -153,6 +81,65 @@ begin  -- architecture behavioral
   -----------------------------------------------------------------------------  
   count_wins24(GEMatrix, sEmpty, sSelBits);
 
-  mux_muons(sSelBits, sMuons, sIdxBits, oMuons, oIdxBits);
+  mux: process (sSelBits, sMuons, sIdxBits)
+  begin  -- process mux
+    for iplace in 0 to 7 loop
+      case sSelBits(iplace) is
+        when "100000000000000000000000" => oMuons(iplace) <= sMuons(0);
+        when "010000000000000000000000" => oMuons(iplace) <= sMuons(1);
+        when "001000000000000000000000" => oMuons(iplace) <= sMuons(2);
+        when "000100000000000000000000" => oMuons(iplace) <= sMuons(3);
+        when "000010000000000000000000" => oMuons(iplace) <= sMuons(4);
+        when "000001000000000000000000" => oMuons(iplace) <= sMuons(5);
+        when "000000100000000000000000" => oMuons(iplace) <= sMuons(6);
+        when "000000010000000000000000" => oMuons(iplace) <= sMuons(7);
+        when "000000001000000000000000" => oMuons(iplace) <= sMuons(8);
+        when "000000000100000000000000" => oMuons(iplace) <= sMuons(9);
+        when "000000000010000000000000" => oMuons(iplace) <= sMuons(10);
+        when "000000000001000000000000" => oMuons(iplace) <= sMuons(11);
+        when "000000000000100000000000" => oMuons(iplace) <= sMuons(12);
+        when "000000000000010000000000" => oMuons(iplace) <= sMuons(13);
+        when "000000000000001000000000" => oMuons(iplace) <= sMuons(14);
+        when "000000000000000100000000" => oMuons(iplace) <= sMuons(15);
+        when "000000000000000010000000" => oMuons(iplace) <= sMuons(16);
+        when "000000000000000001000000" => oMuons(iplace) <= sMuons(17);
+        when "000000000000000000100000" => oMuons(iplace) <= sMuons(18);
+        when "000000000000000000010000" => oMuons(iplace) <= sMuons(19);
+        when "000000000000000000001000" => oMuons(iplace) <= sMuons(20);
+        when "000000000000000000000100" => oMuons(iplace) <= sMuons(21);
+        when "000000000000000000000010" => oMuons(iplace) <= sMuons(22);
+        when "000000000000000000000001" => oMuons(iplace) <= sMuons(23);
+        when others                     => oMuons(iplace) <= ('0', "00", "000000000", "0000", "000000000", "0000000000");
+      end case;
+
+      case sSelBits(iplace) is
+        when "100000000000000000000000" => oIdxBits(iplace) <= sIdxBits(0);
+        when "010000000000000000000000" => oIdxBits(iplace) <= sIdxBits(1);
+        when "001000000000000000000000" => oIdxBits(iplace) <= sIdxBits(2);
+        when "000100000000000000000000" => oIdxBits(iplace) <= sIdxBits(3);
+        when "000010000000000000000000" => oIdxBits(iplace) <= sIdxBits(4);
+        when "000001000000000000000000" => oIdxBits(iplace) <= sIdxBits(5);
+        when "000000100000000000000000" => oIdxBits(iplace) <= sIdxBits(6);
+        when "000000010000000000000000" => oIdxBits(iplace) <= sIdxBits(7);
+        when "000000001000000000000000" => oIdxBits(iplace) <= sIdxBits(8);
+        when "000000000100000000000000" => oIdxBits(iplace) <= sIdxBits(9);
+        when "000000000010000000000000" => oIdxBits(iplace) <= sIdxBits(10);
+        when "000000000001000000000000" => oIdxBits(iplace) <= sIdxBits(11);
+        when "000000000000100000000000" => oIdxBits(iplace) <= sIdxBits(12);
+        when "000000000000010000000000" => oIdxBits(iplace) <= sIdxBits(13);
+        when "000000000000001000000000" => oIdxBits(iplace) <= sIdxBits(14);
+        when "000000000000000100000000" => oIdxBits(iplace) <= sIdxBits(15);
+        when "000000000000000010000000" => oIdxBits(iplace) <= sIdxBits(16);
+        when "000000000000000001000000" => oIdxBits(iplace) <= sIdxBits(17);
+        when "000000000000000000100000" => oIdxBits(iplace) <= sIdxBits(18);
+        when "000000000000000000010000" => oIdxBits(iplace) <= sIdxBits(19);
+        when "000000000000000000001000" => oIdxBits(iplace) <= sIdxBits(20);
+        when "000000000000000000000100" => oIdxBits(iplace) <= sIdxBits(21);
+        when "000000000000000000000010" => oIdxBits(iplace) <= sIdxBits(22);
+        when "000000000000000000000001" => oIdxBits(iplace) <= sIdxBits(23);
+        when others                     => oIdxBits(iplace) <= (others => '0');
+      end case;
+    end loop;  -- iplace    
+  end process mux;
 
 end architecture behavioral;
