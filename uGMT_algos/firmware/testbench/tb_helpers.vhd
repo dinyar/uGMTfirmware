@@ -10,7 +10,7 @@ use work.ugmt_constants.all;
 package tb_helpers is
 
   constant NCHAN : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS;
-  type     TOutTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NCHAN-1 downto 0);
+  type TOutTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NCHAN-1 downto 0);
 
   type TGMTOutEvent is record
     iEvent           : integer;
@@ -204,16 +204,16 @@ package body tb_helpers is
     variable L       : inout line;
     variable oOutput : out   ldata(NCHAN-1 downto 0)) is
     variable word  : integer;
+    variable valid : bit;
     variable dummy : string(1 to 4);
-    variable tmpVec : std_logic_vector(32 downto 0);
   begin  -- ReadInputFrame
     read(L, dummy);
 
     for iWord in 0 to NCHAN-1 loop
+      read(L, valid);
+      oOutput(iWord).valid := to_stdulogic(valid);
       read(L, word);
-      tmpVec := std_logic_vector(to_unsigned(word, 33));
-      oOutput(iWord).data  := tmpVec(31 downto 0);
-      oOutput(iWord).valid := tmpVec(32);
+      oOutput(iWord).data  := std_logic_vector(to_unsigned(word, 32));
     end loop;  -- iWord
   end ReadInputFrame;
 
