@@ -59,7 +59,17 @@ architecture rtl of ugmt_serdes is
   signal sExtrapolatedCoordsB : TSpatialCoordinate_vector(35 downto 0);
   signal sExtrapolatedCoordsO : TSpatialCoordinate_vector(35 downto 0);
   signal sExtrapolatedCoordsF : TSpatialCoordinate_vector(35 downto 0);
-  
+  signal sIntermediateMuonsB_reg  : TGMTMu_vector(7 downto 0);
+  signal sIntermediateMuonsO_reg  : TGMTMu_vector(7 downto 0);
+  signal sIntermediateMuonsF_reg  : TGMTMu_vector(7 downto 0);
+  signal sSortRanksB_reg          : TSortRank10_vector(7 downto 0);
+  signal sSortRanksO_reg          : TSortRank10_vector(7 downto 0);
+  signal sSortRanksF_reg          : TSortRank10_vector(7 downto 0);
+  signal sFinalEnergies_reg       : TCaloArea_vector(7 downto 0);
+  signal sExtrapolatedCoordsB_reg : TSpatialCoordinate_vector(35 downto 0);
+  signal sExtrapolatedCoordsO_reg : TSpatialCoordinate_vector(35 downto 0);
+  signal sExtrapolatedCoordsF_reg : TSpatialCoordinate_vector(35 downto 0);
+
 begin
 
   -- ipbus address decode
@@ -203,6 +213,17 @@ begin
     if clk40'event and clk40 = '1' then  -- rising clock edge
       sIso_reg   <= sIso;
       oMuons_reg <= oMuons;
+
+      sIntermediateMuonsO_reg     <= sIntermediateMuonsO,
+      sIntermediateMuonsB_reg     <= sIntermediateMuonsB,
+      sIntermediateMuonsF_reg     <= sIntermediateMuonsF,
+      sIntermediateSortRanksB_reg <= sSortRanksB,
+      sIntermediateSortRanksO_reg <= sSortRanksO,
+      sIntermediateSortRanksF_reg <= sSortRanksF,
+      sFinalEnergies_reg          <= sFinalEnergies,
+      sExtrapolatedCoordsB_reg    <= sExtrapolatedCoordsB,
+      sExtrapolatedCoordsO_reg    <= sExtrapolatedCoordsO,
+      sExtrapolatedCoordsF_reg    <= sExtrapolatedCoordsF,
     end if;
   end process gmt_out_reg;
 
@@ -220,16 +241,16 @@ begin
       clk40                => clk40,
       sMuons               => oMuons_reg,
       sIso                 => sIso_reg,
-      iIntermediateMuonsB  => sIntermediateMuonsB,
-      iIntermediateMuonsO  => sIntermediateMuonsO,
-      iIntermediateMuonsF  => sIntermediateMuonsF,
-      iSortRanksB          => sSortRanksB,
-      iSortRanksO          => sSortRanksO,
-      iSortRanksF          => sSortRanksF,
-      iFinalEnergies       => sFinalEnergies,
-      iExtrapolatedCoordsB => sExtrapolatedCoordsB,
-      iExtrapolatedCoordsO => sExtrapolatedCoordsO,
-      iExtrapolatedCoordsF => sExtrapolatedCoordsF,
+      iIntermediateMuonsB  => sIntermediateMuonsB_reg,
+      iIntermediateMuonsO  => sIntermediateMuonsO_reg,
+      iIntermediateMuonsF  => sIntermediateMuonsF_reg,
+      iSortRanksB          => sSortRanksB_reg,
+      iSortRanksO          => sSortRanksO_reg,
+      iSortRanksF          => sSortRanksF_reg,
+      iFinalEnergies       => sFinalEnergies_reg,
+      iExtrapolatedCoordsB => sExtrapolatedCoordsB_reg,
+      iExtrapolatedCoordsO => sExtrapolatedCoordsO_reg,
+      iExtrapolatedCoordsF => sExtrapolatedCoordsF_reg,
       q                    => q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0));
 
 end rtl;

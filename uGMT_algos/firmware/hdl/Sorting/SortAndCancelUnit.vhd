@@ -263,7 +263,7 @@ architecture behavioral of SortAndCancelUnit is
   signal sIdxBitsRPCf_reg       : TIndexBits_vector(3 downto 0);
 
   -- For intermediates
-  constant MU_INTERMEDIATE_DELAY       : natural := 3;  -- Delay to sync
+  constant MU_INTERMEDIATE_DELAY       : natural := 2;  -- Delay to sync
                                                         -- intermediates with
                                                         -- final muons.
   type TMuonBuffer is array (integer range <>) of TGMTMu_vector(7 downto 0);
@@ -790,5 +790,5 @@ begin
   oIntermediateSortRanksB         <= sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-1);
   oIntermediateSortRanksO         <= sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-1);
   oIntermediateSortRanksF         <= sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-1);
-  
+
 end architecture behavioral;
