@@ -12,7 +12,7 @@ end testbench;
 
 architecture behavior of testbench is
 
-  constant verbose : boolean := false;
+  constant verbose : boolean := true;
 
   constant div240          : integer   := 12;
   constant div40           : integer   := 2;
@@ -34,7 +34,7 @@ architecture behavior of testbench is
   signal iExtrapolatedCoordsB    : TSpatialCoordinate_vector(35 downto 0);
   signal iExtrapolatedCoordsO    : TSpatialCoordinate_vector(35 downto 0);
   signal iExtrapolatedCoordsF    : TSpatialCoordinate_vector(35 downto 0);
-  signal oQ                      : ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0);
+  signal oQ                      : ldata(NOUTCHAN-1 downto 0);
   signal oOutput                 : TOutTransceiverBuffer;
 
 begin
@@ -91,19 +91,19 @@ begin
         writeline (OUTPUT, LO);
         ReadOutEvent(F, iEvent, event);
 
-        -- Filling serializer
-        iMuons                  <= event.muons;
-        iIso                    <= (others => "00");  -- MISSING!
-        iIntermediateMuonsB     <= event.intMuons_brl;
-        iIntermediateMuonsO     <= event.intMuons_ovl;
-        iIntermediateMuonsF     <= event.intMuons_fwd;
-        iIntermediateSortRanksB <= event.intSortRanks_brl;
-        iIntermediateSortRanksO <= event.intSortRanks_ovl;
-        iIntermediateSortRanksF <= event.intSortRanks_fwd;
-        iFinalEnergies          <= (others => "00000");
-        iExtrapolatedCoordsB    <= (others => ("000000000", "0000000000"));
-        iExtrapolatedCoordsO    <= (others => ("000000000", "0000000000"));
-        iExtrapolatedCoordsF    <= (others => ("000000000", "0000000000"));
+        ---- Filling serializer
+        --iMuons                  <= event.muons;
+        --iIso                    <= (others => "00");  -- MISSING!
+        --iIntermediateMuonsB     <= event.intMuons_brl;
+        --iIntermediateMuonsO     <= event.intMuons_ovl;
+        --iIntermediateMuonsF     <= event.intMuons_fwd;
+        --iIntermediateSortRanksB <= event.intSortRanks_brl;
+        --iIntermediateSortRanksO <= event.intSortRanks_ovl;
+        --iIntermediateSortRanksF <= event.intSortRanks_fwd;
+        --iFinalEnergies          <= (others => "00000");
+        --iExtrapolatedCoordsB    <= (others => ("000000000", "0000000000"));
+        --iExtrapolatedCoordsO    <= (others => ("000000000", "0000000000"));
+        --iExtrapolatedCoordsF    <= (others => ("000000000", "0000000000"));
 
         event_buffer(0) := event;
 
@@ -137,9 +137,9 @@ begin
   begin  -- process tb_read
     wait for 250 ns;
 
-    oOutput(cnt) <= oQ;
+    oOutput(cnt) <= oQ(NCHAN-1 downto 0);
 
-    if cnt < 6 then
+    if cnt < 5 then
       cnt := cnt+1;
     else
       cnt := 0;

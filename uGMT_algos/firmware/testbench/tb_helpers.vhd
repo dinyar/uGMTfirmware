@@ -3,13 +3,14 @@ use IEEE.Std_logic_1164.all;
 use IEEE.NUMERIC_STD.all;
 use WORK.GMTTypes.all;
 use STD.TEXTIO.all;
-use ieee.std_logic_textio;
+use ieee.std_logic_textio.all;
 use work.mp7_data_types.all;
 use work.ugmt_constants.all;
 
 package tb_helpers is
 
-  constant NCHAN : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS;
+  constant NOUTCHAN : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS;
+  constant NCHAN : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS;
   type TOutTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NCHAN-1 downto 0);
 
   type TGMTOutEvent is record
@@ -203,7 +204,7 @@ package body tb_helpers is
   procedure ReadInputFrame (
     variable L       : inout line;
     variable oOutput : out   ldata(NCHAN-1 downto 0)) is
-    variable word  : integer;
+    variable word  : std_logic_vector(31 downto 0);
     variable valid : bit;
     variable dummy : string(1 to 4);
   begin  -- ReadInputFrame
@@ -212,8 +213,8 @@ package body tb_helpers is
     for iWord in 0 to NCHAN-1 loop
       read(L, valid);
       oOutput(iWord).valid := to_stdulogic(valid);
-      read(L, word);
-      oOutput(iWord).data  := std_logic_vector(to_unsigned(word, 32));
+      hread(L, word);
+      oOutput(iWord).data  := word;
     end loop;  -- iWord
   end ReadInputFrame;
 
@@ -233,8 +234,9 @@ package body tb_helpers is
   begin  -- ReadOutEvent
     event.iEvent := iEvent;
 
-    while muFinNo < 8 and muIntBNo < 8 and muIntONo < 8 and muIntFNo < 8 loop
+    while muFinNo < 8 or muIntBNo < 8 or muIntONo < 8 or muIntFNo < 8 or frameNo < 6 loop
       readline(F, L);
+      
       if L.all'length = 0 then
         next;
       elsif(L.all(1 to 1) = "#") then
@@ -248,15 +250,15 @@ package body tb_helpers is
         muFinNo := muFinNo+1;
         muNo    := muNo+1;
       elsif L.all(1 to 4) = "BIMD" then
-        ReadInputMuon(L, event.muons(muIntBNo), event.intSortRanks_brl(muIntBNo), dummyEmpty);
+        ReadInputMuon(L, event.intMuons_brl(muIntBNo), event.intSortRanks_brl(muIntBNo), dummyEmpty);
         muIntBNo := muIntBNo+1;
         muNo     := muNo+1;
       elsif L.all(1 to 4) = "OIMD" then
-        ReadInputMuon(L, event.muons(muIntONo), event.intSortRanks_brl(muIntONo), dummyEmpty);
+        ReadInputMuon(L, event.intMuons_ovl(muIntONo), event.intSortRanks_ovl(muIntONo), dummyEmpty);
         muIntONo := muIntONo+1;
         muNo     := muNo+1;
       elsif L.all(1 to 4) = "FIMD" then
-        ReadInputMuon(L, event.muons(muIntFNo), event.intSortRanks_brl(muIntFNo), dummyEmpty);
+        ReadInputMuon(L, event.intMuons_fwd(muIntFNo), event.intSortRanks_fwd(muIntFNo), dummyEmpty);
         muIntFNo := muIntFNo+1;
         muNo     := muNo+1;
       elsif L.all(1 to 3) = "FRM" then
@@ -458,8 +460,8 @@ package body tb_helpers is
     write(L1, to_bit(iMu.sysign(1)));
     write(L1, string'(" "));
     write(L1, to_integer(iMu.qual));
-                                        -- For final muons no sort rank information is available and is thus
-                                        -- faked by the testbench. We therefore won't display it.
+    -- For final muons no sort rank information is available and is thus
+    -- faked by the testbench. We therefore won't display it.
     if id /= string'("OUT") then
       write(L1, string'(" "));
       write(L1, to_integer(unsigned(iSortRank)));
