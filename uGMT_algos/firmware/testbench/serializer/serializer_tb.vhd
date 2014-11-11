@@ -34,22 +34,23 @@ architecture behavior of testbench is
   signal iExtrapolatedCoordsB    : TSpatialCoordinate_vector(35 downto 0);
   signal iExtrapolatedCoordsO    : TSpatialCoordinate_vector(35 downto 0);
   signal iExtrapolatedCoordsF    : TSpatialCoordinate_vector(35 downto 0);
-  signal oQ                      : ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0));
+  signal oQ                      : ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0);
+  signal oOutput                 : TOutTransceiverBuffer;
 
 begin
 
   uut : entity work.serializer_stage
     port map (
       clk240               => clk240,
-      clk49                => clk40,
+      clk40                => clk40,
       sMuons               => iMuons,
       sIso                 => iIso,
       iIntermediateMuonsB  => iIntermediateMuonsB,
       iIntermediateMuonsO  => iIntermediateMuonsO,
       iIntermediateMuonsF  => iIntermediateMuonsF,
       iSortRanksB          => iIntermediateSortRanksB,
-      iSortRanksO          => iIntermediateMuonsO,
-      iSortRanksF          => iIntermediateMuonsF,
+      iSortRanksO          => iIntermediateSortRanksO,
+      iSortRanksF          => iIntermediateSortRanksF,
       iFinalEnergies       => iFinalEnergies,
       iExtrapolatedCoordsB => iExtrapolatedCoordsB,
       iExtrapolatedCoordsO => iExtrapolatedCoordsO,
@@ -63,12 +64,14 @@ begin
   tb : process
     file F                      : text open read_mode is "ugmt_testfile.dat";
     variable L, LO              : line;
-    constant SERIALIZER_LATENCY : integer := 1;
+    constant SERIALIZER_LATENCY : integer := 2;
+    variable event              : TGMTOutEvent;
     variable event_buffer       : TGMTOutEvent_vec(SERIALIZER_LATENCY-1 downto 0);
     variable iEvent             : integer := 0;
     variable tmpError           : integer;
     variable cntError           : integer := 0;
     variable remainingEvents    : integer := SERIALIZER_LATENCY;
+    variable vOutput            : TOutTransceiverBuffer;
 
   begin  -- process tb
 
@@ -98,15 +101,16 @@ begin
         iIntermediateSortRanksO <= event.intSortRanks_ovl;
         iIntermediateSortRanksF <= event.intSortRanks_fwd;
         iFinalEnergies          <= (others => "00000");
-        iExtrapolatedCoordsB    <= (others => ("0000", "0000"));
-        iExtrapolatedCoordsO    <= (others => ("0000", "0000"));
-        iExtrapolatedCoordsF    <= (others => ("0000", "0000"));
+        iExtrapolatedCoordsB    <= (others => ("000000000", "0000000000"));
+        iExtrapolatedCoordsO    <= (others => ("000000000", "0000000000"));
+        iExtrapolatedCoordsF    <= (others => ("000000000", "0000000000"));
 
         event_buffer(0) := event;
 
       else
         remainingEvents := remainingEvents-1;
       end if;
+      vOutput := oOutput;
 
       event_buffer(SERIALIZER_LATENCY-1 downto 1) := event_buffer(SERIALIZER_LATENCY-2 downto 0);
 
@@ -127,5 +131,22 @@ begin
     writeline(OUTPUT, LO);
     wait;                               -- will wait forever
   end process tb;
+
+  tb_read : process
+    variable cnt : integer := 0;
+  begin  -- process tb_read
+    wait for 250 ns;
+
+    oOutput(cnt) <= oQ;
+
+    if cnt < 6 then
+      cnt := cnt+1;
+    else
+      cnt := 0;
+    end if;
+
+    wait for half_period_240;
+    wait for half_period_240;
+  end process tb_read;
 
 end;

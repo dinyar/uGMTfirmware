@@ -19,9 +19,9 @@ package tb_helpers is
     intMuons_brl     : TGMTMu_vector(7 downto 0);
     intMuons_ovl     : TGMTMu_vector(7 downto 0);
     intMuons_fwd     : TGMTMu_vector(7 downto 0);
-    intSortRanks_brl : TSortRank10_vector(35 downto 0);
-    intSortRanks_ovl : TSortRank10_vector(35 downto 0);
-    intSortRanks_fwd : TSortRank10_vector(35 downto 0);
+    intSortRanks_brl : TSortRank10_vector(7 downto 0);
+    intSortRanks_ovl : TSortRank10_vector(7 downto 0);
+    intSortRanks_fwd : TSortRank10_vector(7 downto 0);
     finalEnergies    : TCaloArea_vector(7 downto 0);
     extrCoords_brl   : TSpatialCoordinate_vector(35 downto 0);
     extrCoords_ovl   : TSpatialCoordinate_vector(35 downto 0);
