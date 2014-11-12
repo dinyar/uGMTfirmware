@@ -10,8 +10,8 @@ use work.ugmt_constants.all;
 package tb_helpers is
 
   constant NOUTCHAN : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS;
-  constant NCHAN : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS;
-  type TOutTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NCHAN-1 downto 0);
+  constant NCHAN    : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS;
+  type     TOutTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NCHAN-1 downto 0);
 
   type TGMTOutEvent is record
     iEvent           : integer;
@@ -89,6 +89,9 @@ package tb_helpers is
 
   procedure DumpOutEvent (
     variable event : in TGMTOutEvent);
+
+  procedure DumpOutput (
+    variable tbuf : in TOutTransceiverBuffer);
 
   procedure DumpMuEvent (
     variable event : in TGMTMuEvent);
@@ -236,7 +239,7 @@ package body tb_helpers is
 
     while muFinNo < 8 or muIntBNo < 8 or muIntONo < 8 or muIntFNo < 8 or frameNo < 6 loop
       readline(F, L);
-      
+
       if L.all'length = 0 then
         next;
       elsif(L.all(1 to 1) = "#") then
@@ -365,14 +368,37 @@ package body tb_helpers is
       write(L1, string'(": ++++++++++++++++++++"));
       writeline(OUTPUT, L1);
 
+      write(L1, string'("### Dumping final muons: "));
+      writeline(OUTPUT, L1);
       DumpMuons(event.muons, vDummySortRanks, fin_id);
+      write(L1, string'("### Dumping intermediate muons: "));
+      writeline(OUTPUT, L1);
       DumpMuons(event.intMuons_brl, event.intSortRanks_brl, brl_id);
       DumpMuons(event.intMuons_ovl, event.intSortRanks_ovl, ovl_id);
       DumpMuons(event.intMuons_fwd, event.intSortRanks_fwd, fwd_id);
-                                        -- TODO: Missing final energies, extrapolated coordinates and iso bits.
+      write(L1, string'("### Dumping expected output: "));
+      writeline(OUTPUT, L1);
+      DumpOutput(event.expectedOutput);
+      -- TODO: Missing final energies, extrapolated coordinates and iso bits.
     end if;
   end DumpOutEvent;
 
+  procedure DumpOutput (
+    variable tbuf : in TOutTransceiverBuffer) is
+    variable L : line;
+  begin  -- DumpOutput
+    for iFrame in tbuf'range loop
+      write(L, string'("FRM"));
+      write(L, iFrame);
+      write(L, string'("    "));
+      for iChan in tbuf(iFrame)'range loop
+        hwrite(L, tbuf(iFrame)(iChan).data);
+        write(L, string'("    "));
+      end loop;  -- iChan
+      writeline(OUTPUT, L);
+    end loop;  -- iFrame
+  end DumpOutput;
+  
   procedure DumpMuEvent (
     variable event : in TGMTMuEvent) is
     variable L1        : line;
@@ -601,6 +627,20 @@ package body tb_helpers is
         for iChan in iOutput(iFrame)'range loop
           if iOutput(iFrame)(iChan) /= event.expectedOutput(iFrame)(iChan) then
             vErrors := vErrors+1;
+
+            write(LO, string'("!!!!!! Error in frame #"));
+            write(LO, iFrame);
+            write(LO, string'(", channel #"));
+            write(LO, iChan);
+            writeline(OUTPUT, LO);
+            write(LO, string'("!!! Simulation output: "));
+            hwrite(LO, iOutput(iFrame)(iChan).data);
+            writeline(OUTPUT, LO);
+            write(LO, string'("!!!   Expected output: "));
+            hwrite(LO, event.expectedOutput(iFrame)(iChan).data);
+            writeline(OUTPUT, LO);
+            write(LO, string'(""));
+            writeline(OUTPUT, LO);
           end if;
         end loop;  -- iChan
       end loop;  -- frame

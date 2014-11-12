@@ -121,6 +121,9 @@ begin
         DumpOutEvent(event_buffer(SERIALIZER_LATENCY-1));
         write(LO, string'(""));
         writeline (OUTPUT, LO);
+        write(LO, string'("### Dumping sim output:"));
+        writeline (OUTPUT, LO);
+        DumpOutput(vOutput);
       end if;
 
       wait for 25 ns;
