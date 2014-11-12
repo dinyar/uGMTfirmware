@@ -38,10 +38,10 @@ architecture Behavioral of serializer_stage is
   signal sExtrapolatedCoords : TSpatialCoordinate_vector(107 downto 0);
 begin
 
-  sIntermediateMuons <= iIntermediateMuonsB & iIntermediateMuonsO & iIntermediateMuonsF;
-  sSortRanks         <= iSortRanksB & iSortRanksO & iSortRanksF;
+  sIntermediateMuons <= iIntermediateMuonsF(7 downto 4) & iIntermediateMuonsO(7 downto 4) & iIntermediateMuonsB & iIntermediateMuonsO(3 downto 0) & iIntermediateMuonsF(3 downto 0);
+  sSortRanks         <= iSortRanksF(7 downto 4) & iSortRanksO(7 downto 4) & iSortRanksB & iSortRanksO(3 downto 0) & iSortRanksF(3 downto 0);
 
-  sExtrapolatedCoords <= iExtrapolatedCoordsB & iExtrapolatedCoordsO & iExtrapolatedCoordsF;
+  sExtrapolatedCoords <= iExtrapolatedCoordsF(35 downto 18) & iExtrapolatedCoordsO(35 downto 18) & iExtrapolatedCoordsB & iExtrapolatedCoordsO(17 downto 0) & iExtrapolatedCoordsF(17 downto 0);
 
   serialize_muons : for i in NUM_MUONS_LINK-1 downto 0 generate
     split_muons : for j in NUM_OUT_CHANS-1 downto 0 generate
