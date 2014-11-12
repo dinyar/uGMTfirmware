@@ -132,9 +132,11 @@ package body tb_helpers is
 
   procedure ReadInputMuon (
     variable L        : inout line;
+    variable id       : in    string(1 to 3);
     variable muon     : out   TGMTMu;
     variable sortRank : out   TSortRank10;
-    variable emptyBit : out   std_logic
+    variable emptyBit : out   std_logic;
+    variable isoBit   : out   TIsoBits
     ) is
     variable cable_no    : integer;
     variable sign, vsign : bit;
@@ -144,6 +146,7 @@ package body tb_helpers is
     variable phi         : integer;
     variable rank        : integer;
     variable empty       : bit;
+    variable iso         : integer;
 
     variable dummy : string(1 to 4);
   begin  -- ReadInputMuon
@@ -166,7 +169,22 @@ package body tb_helpers is
     sortRank    := std_logic_vector(to_unsigned(rank, 10));
     read(L, empty);
     emptyBit    := to_stdulogic(empty);
+    if id = string'("OUT") then
+      read(L, iso);
+      isoBit := std_logic_vector(to_unsigned(iso, 2));
+    end if;
+  end ReadInputMuon;
 
+  procedure ReadInputMuon (
+    variable L        : inout line;
+    variable muon     : out   TGMTMu;
+    variable sortRank : out   TSortRank10;
+    variable emptyBit : out   std_logic
+    ) is
+    variable dummyIso : TIsoBits;
+    variable dummyid  : string(1 to 3) := "XXX";
+  begin  -- ReadInputMuon
+    ReadInputMuon(L, dummyid, muon, sortRank, emptyBit, dummyIso);
   end ReadInputMuon;
 
   procedure ReadTrack (
@@ -249,7 +267,7 @@ package body tb_helpers is
         next;
       elsif L.all(1 to 3) = "OUT" then
         -- TODO: Read Iso bits.
-        ReadInputMuon(L, event.muons(muFinNo), dummySortRank, dummyEmpty);
+        ReadInputMuon(L, L.all(1 to 3), event.muons(muFinNo), dummySortRank, dummyEmpty, event.iso(muFinNo));
         muFinNo := muFinNo+1;
         muNo    := muNo+1;
       elsif L.all(1 to 4) = "BIMD" then

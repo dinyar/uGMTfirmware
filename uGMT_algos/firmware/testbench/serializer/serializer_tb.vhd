@@ -13,7 +13,7 @@ end testbench;
 
 architecture behavior of testbench is
 
-  constant verbose : boolean := true;
+  constant verbose : boolean := false;
 
   constant div240          : integer   := 12;
   constant div40           : integer   := 2;
@@ -94,7 +94,7 @@ begin
 
         -- Filling serializer
         iMuons                  <= event.muons;
-        iIso                    <= (others => "00");  -- MISSING!
+        iIso                    <= event.iso;
         iIntermediateMuonsB     <= event.intMuons_brl;
         iIntermediateMuonsO     <= event.intMuons_ovl;
         iIntermediateMuonsF     <= event.intMuons_fwd;
@@ -114,8 +114,6 @@ begin
 
       for cnt in 0 to 5 loop
         oOutput(cnt) <= oQ(NCHAN-1 downto 0);
-        hwrite(L, oOutput(cnt)(0).data);
-        writeline(OUTPUT, L);
 
         wait for half_period_240;
         wait for half_period_240;        
@@ -136,6 +134,10 @@ begin
         write(LO, string'("### Dumping sim output :"));
         writeline (OUTPUT, LO);
         DumpOutput(vOutput);
+        write(LO, string'(""));
+        writeline (OUTPUT, LO);
+        write(LO, string'(""));
+        writeline (OUTPUT, LO);
       end if;
 
       iEvent := iEvent+1;
