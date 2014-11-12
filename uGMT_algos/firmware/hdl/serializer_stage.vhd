@@ -27,7 +27,9 @@ architecture Behavioral of serializer_stage is
   type   TTransceiverBufferOut is array (2*2*NUM_MUONS_LINK-1 downto 0) of ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0);
   signal sOutBuf : TTransceiverBufferOut;
 
-  signal sSel : integer range 0 to 5 := 0;
+  -- Offsetting the beginning of sending to align with 40 MHz clock and make
+  -- sending a bit faster.
+  signal sSel : integer range 0 to 5 := 1;
 
   signal sIntermediateMuons : TGMTMu_vector(23 downto 0);
   signal sSortRanks         : TSortRank10_vector(23 downto 0);

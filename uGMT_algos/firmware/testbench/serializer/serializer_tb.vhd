@@ -4,6 +4,7 @@ use ieee.numeric_std.all;
 use WORK.GMTTypes.all;
 use work.tb_helpers.all;
 use STD.TEXTIO.all;
+use ieee.std_logic_textio.all;
 use work.mp7_data_types.all;
 use work.ugmt_constants.all;
 
@@ -91,25 +92,36 @@ begin
         writeline (OUTPUT, LO);
         ReadOutEvent(F, iEvent, event);
 
-        ---- Filling serializer
-        --iMuons                  <= event.muons;
-        --iIso                    <= (others => "00");  -- MISSING!
-        --iIntermediateMuonsB     <= event.intMuons_brl;
-        --iIntermediateMuonsO     <= event.intMuons_ovl;
-        --iIntermediateMuonsF     <= event.intMuons_fwd;
-        --iIntermediateSortRanksB <= event.intSortRanks_brl;
-        --iIntermediateSortRanksO <= event.intSortRanks_ovl;
-        --iIntermediateSortRanksF <= event.intSortRanks_fwd;
-        --iFinalEnergies          <= (others => "00000");
-        --iExtrapolatedCoordsB    <= (others => ("000000000", "0000000000"));
-        --iExtrapolatedCoordsO    <= (others => ("000000000", "0000000000"));
-        --iExtrapolatedCoordsF    <= (others => ("000000000", "0000000000"));
+        -- Filling serializer
+        iMuons                  <= event.muons;
+        iIso                    <= (others => "00");  -- MISSING!
+        iIntermediateMuonsB     <= event.intMuons_brl;
+        iIntermediateMuonsO     <= event.intMuons_ovl;
+        iIntermediateMuonsF     <= event.intMuons_fwd;
+        iIntermediateSortRanksB <= event.intSortRanks_brl;
+        iIntermediateSortRanksO <= event.intSortRanks_ovl;
+        iIntermediateSortRanksF <= event.intSortRanks_fwd;
+        iFinalEnergies          <= (others => "00000");
+        iExtrapolatedCoordsB    <= (others => ("000000000", "0000000000"));
+        iExtrapolatedCoordsO    <= (others => ("000000000", "0000000000"));
+        iExtrapolatedCoordsF    <= (others => ("000000000", "0000000000"));
 
         event_buffer(0) := event;
 
       else
         remainingEvents := remainingEvents-1;
       end if;
+
+      for cnt in 0 to 5 loop
+        oOutput(cnt) <= oQ(NCHAN-1 downto 0);
+        hwrite(L, oOutput(cnt)(0).data);
+        writeline(OUTPUT, L);
+
+        wait for half_period_240;
+        wait for half_period_240;        
+
+      end loop;  -- cnt
+
       vOutput := oOutput;
 
       event_buffer(SERIALIZER_LATENCY-1 downto 1) := event_buffer(SERIALIZER_LATENCY-2 downto 0);
@@ -121,12 +133,11 @@ begin
         DumpOutEvent(event_buffer(SERIALIZER_LATENCY-1));
         write(LO, string'(""));
         writeline (OUTPUT, LO);
-        write(LO, string'("### Dumping sim output:"));
+        write(LO, string'("### Dumping sim output :"));
         writeline (OUTPUT, LO);
         DumpOutput(vOutput);
       end if;
 
-      wait for 25 ns;
       iEvent := iEvent+1;
     end loop;
     write(LO, string'("!!!!! Number of events with errors: "));
@@ -134,22 +145,5 @@ begin
     writeline(OUTPUT, LO);
     wait;                               -- will wait forever
   end process tb;
-
-  tb_read : process
-    variable cnt : integer := 0;
-  begin  -- process tb_read
-    wait for 250 ns;
-
-    oOutput(cnt) <= oQ(NCHAN-1 downto 0);
-
-    if cnt < 5 then
-      cnt := cnt+1;
-    else
-      cnt := 0;
-    end if;
-
-    wait for half_period_240;
-    wait for half_period_240;
-  end process tb_read;
 
 end;
