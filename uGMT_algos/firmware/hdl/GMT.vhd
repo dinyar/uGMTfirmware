@@ -135,14 +135,14 @@ begin
       ipb_from_slaves => ipbr
       );
 
-  sMuonsO     <= iMuonsO_plus & iMuonsO_minus;
-  sMuonsF     <= iMuonsF_plus & iMuonsF_minus;
-  sSortRanksO <= iSortRanksO_plus & iSortRanksO_minus;
-  sSortRanksF <= iSortRanksF_plus & iSortRanksF_minus;
-  sEmptyO     <= iEmptyO_plus & iEmptyO_minus;
-  sEmptyF     <= iEmptyF_plus & iEmptyF_minus;
-  sIdxBitsO   <= iIdxBitsO_plus & iIdxBitsO_minus;
-  sIdxBitsO   <= iIdxBitsO_plus & iIdxBitsO_minus;
+  sMuonsO     <= iMuonsO_minus & iMuonsO_plus;
+  sMuonsF     <= iMuonsF_minus & iMuonsF_plus;
+  sSortRanksO <= iSortRanksO_minus & iSortRanksO_plus;
+  sSortRanksF <= iSortRanksF_minus & iSortRanksF_pluss;
+  sEmptyO     <= iEmptyO_minus & iEmptyO_plus;
+  sEmptyF     <= iEmptyF_minus & iEmptyF_plus;
+  sIdxBitsO   <= iIdxBitsO_minus & iIdxBitsO_plus;
+  sIdxBitsO   <= iIdxBitsO_minus & iIdxBitsO_plus;
 
   -----------------------------------------------------------------------------
   -- calo stuff
