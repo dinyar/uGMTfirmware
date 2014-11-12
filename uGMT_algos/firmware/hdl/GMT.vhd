@@ -235,19 +235,21 @@ begin
       sExtrapolatedCoordsO_buffer(COORD_INTERMEDIATE_DELAY-1 downto 1) <= sExtrapolatedCoordsO_buffer(COORD_INTERMEDIATE_DELAY-2 downto 0);
       sExtrapolatedCoordsF_buffer(COORD_INTERMEDIATE_DELAY-1 downto 1) <= sExtrapolatedCoordsF_buffer(COORD_INTERMEDIATE_DELAY-2 downto 0);
 
+      oIntermediateMuonsB     <= sIntermediateMuonsB;
+      oIntermediateMuonsO     <= sIntermediateMuonsO;
+      oIntermediateMuonsF     <= sIntermediateMuonsF;
+      oIntermediateSortRanksB <= sIntermediateSortRanksB;
+      oIntermediateSortRanksO <= sIntermediateSortRanksO;
+      oIntermediateSortRanksF <= sIntermediateSortRanksF;
+
       oMuons <= sMuons_sorted;
       oIso   <= sIsoBits;
     end if;
   end process p1;
-  oIntermediateMuonsB     <= sIntermediateMuonsB;
-  oIntermediateMuonsO     <= sIntermediateMuonsO;
-  oIntermediateMuonsF     <= sIntermediateMuonsF;
-  oIntermediateSortRanksB <= sIntermediateSortRanksB;
-  oIntermediateSortRanksO <= sIntermediateSortRanksO;
-  oIntermediateSortRanksF <= sIntermediateSortRanksF;
+
   oFinalEnergies          <= sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-1);
   oExtrapolatedCoordsB    <= sExtrapolatedCoordsB_buffer(COORD_INTERMEDIATE_DELAY-1);
   oExtrapolatedCoordsO    <= sExtrapolatedCoordsO_buffer(COORD_INTERMEDIATE_DELAY-1);
   oExtrapolatedCoordsF    <= sExtrapolatedCoordsF_buffer(COORD_INTERMEDIATE_DELAY-1);
-  
+
 end Behavioral;
