@@ -410,6 +410,8 @@ package body tb_helpers is
       write(L, iFrame);
       write(L, string'("    "));
       for iChan in tbuf(iFrame)'range loop
+        write(L, tbuf(iFrame)(iChan).valid);
+        write(L, string'(" "));
         hwrite(L, tbuf(iFrame)(iChan).data);
         write(L, string'("    "));
       end loop;  -- iChan
@@ -652,9 +654,13 @@ package body tb_helpers is
             write(LO, iChan);
             writeline(OUTPUT, LO);
             write(LO, string'("!!! Simulation output: "));
+            write(LO, iOutput(iFrame)(iChan).valid);
+            write(LO, string'(" "));
             hwrite(LO, iOutput(iFrame)(iChan).data);
             writeline(OUTPUT, LO);
             write(LO, string'("!!!   Expected output: "));
+            write(LO, event.expectedOutput(iFrame)(iChan).valid);
+            write(LO, string'(" "));
             hwrite(LO, event.expectedOutput(iFrame)(iChan).data);
             writeline(OUTPUT, LO);
             write(LO, string'(""));
