@@ -49,26 +49,26 @@ architecture rtl of ugmt_serdes is
   signal oMuons_reg : TGMTMu_vector(7 downto 0);
   signal sIso_reg   : TIsoBits_vector(7 downto 0);
 
-  signal sIntermediateMuonsB  : TGMTMu_vector(7 downto 0);
-  signal sIntermediateMuonsO  : TGMTMu_vector(7 downto 0);
-  signal sIntermediateMuonsF  : TGMTMu_vector(7 downto 0);
-  signal sSortRanksB          : TSortRank10_vector(7 downto 0);
-  signal sSortRanksO          : TSortRank10_vector(7 downto 0);
-  signal sSortRanksF          : TSortRank10_vector(7 downto 0);
-  signal sFinalEnergies       : TCaloArea_vector(7 downto 0);
-  signal sExtrapolatedCoordsB : TSpatialCoordinate_vector(35 downto 0);
-  signal sExtrapolatedCoordsO : TSpatialCoordinate_vector(35 downto 0);
-  signal sExtrapolatedCoordsF : TSpatialCoordinate_vector(35 downto 0);
-  signal sIntermediateMuonsB_reg  : TGMTMu_vector(7 downto 0);
-  signal sIntermediateMuonsO_reg  : TGMTMu_vector(7 downto 0);
-  signal sIntermediateMuonsF_reg  : TGMTMu_vector(7 downto 0);
-  signal sSortRanksB_reg          : TSortRank10_vector(7 downto 0);
-  signal sSortRanksO_reg          : TSortRank10_vector(7 downto 0);
-  signal sSortRanksF_reg          : TSortRank10_vector(7 downto 0);
-  signal sFinalEnergies_reg       : TCaloArea_vector(7 downto 0);
-  signal sExtrapolatedCoordsB_reg : TSpatialCoordinate_vector(35 downto 0);
-  signal sExtrapolatedCoordsO_reg : TSpatialCoordinate_vector(35 downto 0);
-  signal sExtrapolatedCoordsF_reg : TSpatialCoordinate_vector(35 downto 0);
+  signal sIntermediateMuonsB         : TGMTMu_vector(7 downto 0);
+  signal sIntermediateMuonsO         : TGMTMu_vector(7 downto 0);
+  signal sIntermediateMuonsF         : TGMTMu_vector(7 downto 0);
+  signal sIntermediateSortRanksB     : TSortRank10_vector(7 downto 0);
+  signal sIntermediateSortRanksO     : TSortRank10_vector(7 downto 0);
+  signal sIntermediateSortRanksF     : TSortRank10_vector(7 downto 0);
+  signal sFinalEnergies              : TCaloArea_vector(7 downto 0);
+  signal sExtrapolatedCoordsB        : TSpatialCoordinate_vector(35 downto 0);
+  signal sExtrapolatedCoordsO        : TSpatialCoordinate_vector(35 downto 0);
+  signal sExtrapolatedCoordsF        : TSpatialCoordinate_vector(35 downto 0);
+  signal sIntermediateMuonsB_reg     : TGMTMu_vector(7 downto 0);
+  signal sIntermediateMuonsO_reg     : TGMTMu_vector(7 downto 0);
+  signal sIntermediateMuonsF_reg     : TGMTMu_vector(7 downto 0);
+  signal sIntermediateSortRanksB_reg : TSortRank10_vector(7 downto 0);
+  signal sIntermediateSortRanksO_reg : TSortRank10_vector(7 downto 0);
+  signal sIntermediateSortRanksF_reg : TSortRank10_vector(7 downto 0);
+  signal sFinalEnergies_reg          : TCaloArea_vector(7 downto 0);
+  signal sExtrapolatedCoordsB_reg    : TSpatialCoordinate_vector(35 downto 0);
+  signal sExtrapolatedCoordsO_reg    : TSpatialCoordinate_vector(35 downto 0);
+  signal sExtrapolatedCoordsF_reg    : TSpatialCoordinate_vector(35 downto 0);
 
 begin
 
@@ -190,9 +190,9 @@ begin
       oIntermediateMuonsB     => sIntermediateMuonsB,
       oIntermediateMuonsO     => sIntermediateMuonsO,
       oIntermediateMuonsF     => sIntermediateMuonsF,
-      oIntermediateSortRanksB => sSortRanksB,
-      oIntermediateSortRanksO => sSortRanksO,
-      oIntermediateSortRanksF => sSortRanksF,
+      oIntermediateSortRanksB => sIntermediateSortRanksB,
+      oIntermediateSortRanksO => sIntermediateSortRanksO,
+      oIntermediateSortRanksF => sIntermediateSortRanksF,
       oFinalEnergies          => sFinalEnergies,
       oExtrapolatedCoordsB    => sExtrapolatedCoordsB,
       oExtrapolatedCoordsO    => sExtrapolatedCoordsO,
@@ -214,16 +214,16 @@ begin
       sIso_reg   <= sIso;
       oMuons_reg <= oMuons;
 
-      sIntermediateMuonsO_reg     <= sIntermediateMuonsO,
-      sIntermediateMuonsB_reg     <= sIntermediateMuonsB,
-      sIntermediateMuonsF_reg     <= sIntermediateMuonsF,
-      sIntermediateSortRanksB_reg <= sSortRanksB,
-      sIntermediateSortRanksO_reg <= sSortRanksO,
-      sIntermediateSortRanksF_reg <= sSortRanksF,
-      sFinalEnergies_reg          <= sFinalEnergies,
-      sExtrapolatedCoordsB_reg    <= sExtrapolatedCoordsB,
-      sExtrapolatedCoordsO_reg    <= sExtrapolatedCoordsO,
-      sExtrapolatedCoordsF_reg    <= sExtrapolatedCoordsF,
+      sIntermediateMuonsO_reg     <= sIntermediateMuonsO;
+      sIntermediateMuonsB_reg     <= sIntermediateMuonsB;
+      sIntermediateMuonsF_reg     <= sIntermediateMuonsF;
+      sIntermediateSortRanksB_reg <= sIntermediateSortRanksB;
+      sIntermediateSortRanksO_reg <= sIntermediateSortRanksO;
+      sIntermediateSortRanksF_reg <= sIntermediateSortRanksF;
+      sFinalEnergies_reg          <= sFinalEnergies;
+      sExtrapolatedCoordsB_reg    <= sExtrapolatedCoordsB;
+      sExtrapolatedCoordsO_reg    <= sExtrapolatedCoordsO;
+      sExtrapolatedCoordsF_reg    <= sExtrapolatedCoordsF;
     end if;
   end process gmt_out_reg;
 
@@ -244,9 +244,9 @@ begin
       iIntermediateMuonsB  => sIntermediateMuonsB_reg,
       iIntermediateMuonsO  => sIntermediateMuonsO_reg,
       iIntermediateMuonsF  => sIntermediateMuonsF_reg,
-      iSortRanksB          => sSortRanksB_reg,
-      iSortRanksO          => sSortRanksO_reg,
-      iSortRanksF          => sSortRanksF_reg,
+      iSortRanksB          => sIntermediateSortRanksB_reg,
+      iSortRanksO          => sIntermediateSortRanksO_reg,
+      iSortRanksF          => sIntermediateSortRanksF_reg,
       iFinalEnergies       => sFinalEnergies_reg,
       iExtrapolatedCoordsB => sExtrapolatedCoordsB_reg,
       iExtrapolatedCoordsO => sExtrapolatedCoordsO_reg,

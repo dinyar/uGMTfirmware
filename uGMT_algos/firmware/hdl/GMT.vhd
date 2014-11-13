@@ -138,7 +138,7 @@ begin
   sMuonsO     <= iMuonsO_minus & iMuonsO_plus;
   sMuonsF     <= iMuonsF_minus & iMuonsF_plus;
   sSortRanksO <= iSortRanksO_minus & iSortRanksO_plus;
-  sSortRanksF <= iSortRanksF_minus & iSortRanksF_pluss;
+  sSortRanksF <= iSortRanksF_minus & iSortRanksF_plus;
   sEmptyO     <= iEmptyO_minus & iEmptyO_plus;
   sEmptyF     <= iEmptyF_minus & iEmptyF_plus;
   sIdxBitsO   <= iIdxBitsO_minus & iIdxBitsO_plus;
