@@ -405,11 +405,11 @@ package body tb_helpers is
     variable tbuf : in TOutTransceiverBuffer) is
     variable L : line;
   begin  -- DumpOutput
-    for iFrame in tbuf'range loop
+    for iFrame in tbuf'low to tbuf'high loop
       write(L, string'("FRM"));
       write(L, iFrame);
       write(L, string'("    "));
-      for iChan in tbuf(iFrame)'range loop
+      for iChan in tbuf(iFrame)'low to tbuf(iFrame)'high loop
         write(L, tbuf(iFrame)(iChan).valid);
         write(L, string'(" "));
         hwrite(L, tbuf(iFrame)(iChan).data);
