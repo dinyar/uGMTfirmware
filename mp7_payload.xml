@@ -1,3 +1,5 @@
+<!-- This file should be copied to cactusupgrades/components/null_algo/addr_tab --> 
+
 <node description="Top-level address table for uGMT board">
   <node id="deserialization" module="file://deserialization.xml" address="0x0" description="LUTs used during deserialization." fwinfo="endpoint" />
   <node id="ugmt" module="file://uGMT.xml" address="0x800000" description="The core uGMT algorithms." fwinfo="endpoint" />
