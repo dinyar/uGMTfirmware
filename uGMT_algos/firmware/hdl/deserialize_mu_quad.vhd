@@ -45,6 +45,7 @@ architecture Behavioral of deserialize_mu_quad is
 
   signal sValid_link : TValid_link(NCHAN-1 downto 0);
   signal sValid      : std_logic_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
+  signal sFinalValid : std_logic;
 
   signal sEmpty_link : TEmpty_link(NCHAN-1 downto 0);
 
@@ -168,8 +169,16 @@ begin
   unpack_muons : for i in sMuonsIn'range generate
     sMuonsIn(i) <= unpack_mu_from_flat(sMuons_flat(i));
   end generate unpack_muons;
+  valid_combination: process (sValid)
+    variable tmp : std_logic;
+  begin  -- process valid_combination
+    for i in sValid'range loop
+      tmp := tmp or sValid(i);
+    end loop;  -- i
+    sFinalValid <= tmp;
+  end process valid_combination;
   convert_muons : for i in sMuonsIn'range generate
-    sMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i), sValid(i));
+    sMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i), sFinalValid);
   end generate convert_muons;
   sTracks    <= track_addresses_from_in_mus(sMuonsIn);
   sEmpty     <= unpack_empty_bits(sEmpty_link(NCHAN-1 downto 0));
