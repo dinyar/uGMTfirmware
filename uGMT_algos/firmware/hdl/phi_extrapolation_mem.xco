@@ -1,7 +1,7 @@
 ##############################################################
 #
-# Xilinx Core Generator version 14.3
-# Date: Thu Jun  6 16:04:25 2013
+# Xilinx Core Generator version 14.6
+# Date: Mon Jul 28 14:52:34 2014
 #
 ##############################################################
 #
@@ -28,11 +28,11 @@ SET flowvendor = Other
 SET formalverification = false
 SET foundationsym = false
 SET implementationfiletype = Ngc
-SET package = ffg1157
+SET package = ffg1927
 SET removerpms = false
 SET simulationfiles = Behavioral
-SET speedgrade = -3
-SET verilogsim = false
+SET speedgrade = -2
+SET verilogsim = true
 SET vhdlsim = true
 # END Project Options
 # BEGIN Select
@@ -105,4 +105,4 @@ CSET write_width_b=4
 MISC pkg_timestamp=2012-09-17T22:14:36Z
 # END Extra information
 GENERATE
-# CRC:  c6b0c41
+# CRC: 449bad16

@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.6
-# Date: Fri Jul 25 09:53:11 2014
+# Date: Mon Jul 28 14:51:42 2014
 #
 ##############################################################
 #
@@ -32,7 +32,7 @@ SET package = ffg1927
 SET removerpms = false
 SET simulationfiles = Behavioral
 SET speedgrade = -2
-SET verilogsim = false
+SET verilogsim = true
 SET vhdlsim = true
 # END Project Options
 # BEGIN Select
@@ -46,7 +46,7 @@ CSET axi_id_width=4
 CSET axi_slave_type=Memory_Slave
 CSET axi_type=AXI4_Full
 CSET byte_size=9
-CSET coe_file=/home/scratch/vhdl/uGMT/dev/1.2.0/uGMT_no_IPbus/mp7_690es/uGMT_coes/IdxSelMemPhiB.coe
+CSET coe_file=../../cactusupgrades/components/uGMT_algos/firmware/hdl/coe_files/IdxSelMemPhiB.coe
 CSET collision_warnings=ALL
 CSET component_name=phi_sel_mem
 CSET disable_collision_warnings=false
@@ -105,4 +105,4 @@ CSET write_width_b=6
 MISC pkg_timestamp=2012-11-19T16:22:25Z
 # END Extra information
 GENERATE
-# CRC: cec28759
+# CRC: a908ca15
