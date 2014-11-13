@@ -263,7 +263,7 @@ architecture behavioral of SortAndCancelUnit is
   signal sIdxBitsRPCf_reg       : TIndexBits_vector(3 downto 0);
 
   -- For intermediates
-  constant MU_INTERMEDIATE_DELAY       : natural := 1;  -- Delay to sync
+  constant MU_INTERMEDIATE_DELAY       : natural := 2;  -- Delay to sync
                                                         -- intermediates with
                                                         -- final muons.
   type TMuonBuffer is array (integer range <>) of TGMTMu_vector(7 downto 0);
@@ -765,15 +765,15 @@ begin
       sIntermediateMuonB_buffer(0)                                    <= sIntermediateMuonsB;
       sIntermediateMuonO_buffer(0)                                    <= sIntermediateMuonsO;
       sIntermediateMuonF_buffer(0)                                    <= sIntermediateMuonsF;
-      --sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)     <= sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
-      --sIntermediateMuonO_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)     <= sIntermediateMuonO_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
-      --sIntermediateMuonF_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)     <= sIntermediateMuonF_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
+      sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)     <= sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
+      sIntermediateMuonO_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)     <= sIntermediateMuonO_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
+      sIntermediateMuonF_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)     <= sIntermediateMuonF_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
       sIntermediateSortRankB_buffer(0)                                <= sIntermediateSortRanksB;
       sIntermediateSortRankO_buffer(0)                                <= sIntermediateSortRanksO;
       sIntermediateSortRankF_buffer(0)                                <= sIntermediateSortRanksF;
-      --sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-1 downto 1) <= sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
-      --sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-1 downto 1) <= sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
-      --sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-1 downto 1) <= sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
+      sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-1 downto 1) <= sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
+      sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-1 downto 1) <= sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
+      sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-1 downto 1) <= sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
 
       sMuons_reg <= sMuons;
       oMuons     <= sMuons_reg;

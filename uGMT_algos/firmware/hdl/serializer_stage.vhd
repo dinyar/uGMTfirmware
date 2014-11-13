@@ -107,7 +107,7 @@ begin
         q(i) <= sOutBuf(sSel)(i);
       end loop;  -- i
       for i in NUM_OUT_CHANS to q'high loop
-        q(i) <= sOutBuf(sSel)(i);
+        q(i) <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i);
       end loop;  -- i
       if sSel < 5 then
         sSel <= sSel+1;
