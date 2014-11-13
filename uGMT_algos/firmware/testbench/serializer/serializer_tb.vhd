@@ -67,7 +67,7 @@ begin
     variable L, LO              : line;
     constant SERIALIZER_LATENCY : integer := 2;
     variable event              : TGMTOutEvent;
-    variable event_buffer       : TGMTOutEvent_vec(SERIALIZER_LATENCY-1 downto 0);
+    variable event_buffer       : TGMTOutEvent_vec(SERIALIZER_LATENCY downto 0);
     variable iEvent             : integer := 0;
     variable tmpError           : integer;
     variable cntError           : integer := 0;
@@ -77,7 +77,11 @@ begin
   begin  -- process tb
 
     -- Reset event buffer
-    -- TODO
+    for iMu in event_buffer(1).muons'range loop
+      event_buffer(1).muons(iMu) := ('0', "00", "000000000", "0000", "000000000", "0000000000");
+      event_buffer(1).iso(iMu)   := "00";
+    end loop;  -- iMu
+
 
     wait for 250 ns;  -- wait until global set/reset completes
     write (LO, string'("******************* start of tests  ********************** "));
@@ -93,8 +97,8 @@ begin
         ReadOutEvent(F, iEvent, event);
 
         -- Filling serializer
-        iMuons                  <= event.muons;
-        iIso                    <= event.iso;
+        iMuons                  <= event_buffer(1).muons;
+        iIso                    <= event_buffer(1).iso;
         iIntermediateMuonsB     <= event.intMuons_brl;
         iIntermediateMuonsO     <= event.intMuons_ovl;
         iIntermediateMuonsF     <= event.intMuons_fwd;
@@ -116,19 +120,19 @@ begin
         oOutput(cnt) <= oQ(NCHAN-1 downto 0);
 
         wait for half_period_240;
-        wait for half_period_240;        
+        wait for half_period_240;
 
       end loop;  -- cnt
 
       vOutput := oOutput;
 
-      event_buffer(SERIALIZER_LATENCY-1 downto 1) := event_buffer(SERIALIZER_LATENCY-2 downto 0);
+      event_buffer(SERIALIZER_LATENCY downto 1) := event_buffer(SERIALIZER_LATENCY-1 downto 0);
 
-      ValidateSerializerOutput(vOutput, event_buffer(SERIALIZER_LATENCY-1), tmpError);
+      ValidateSerializerOutput(vOutput, event_buffer(SERIALIZER_LATENCY), tmpError);
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
-        DumpOutEvent(event_buffer(SERIALIZER_LATENCY-1));
+        DumpOutEvent(event_buffer(SERIALIZER_LATENCY));
         write(LO, string'(""));
         writeline (OUTPUT, LO);
         write(LO, string'("### Dumping sim output :"));
