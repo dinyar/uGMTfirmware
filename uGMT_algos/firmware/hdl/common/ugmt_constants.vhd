@@ -67,7 +67,7 @@ package ugmt_constants is
   -- Output word assignment
   -----------------------------------------------------------------------------
   -- Vector to map final muons to positions in output buffer. (Position
-  -- indicates the muon (1st, 2nd and empty); the entry at the position
+  -- indicates the muon (2->empty, 1->second muon, 0->first muon); the entry at the position
   -- indicates the position in the buffer.)
   constant MU_ASSIGNMENT : Assignment_vector(2 downto 0) := (0, 2, 1);
   

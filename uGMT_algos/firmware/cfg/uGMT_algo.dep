@@ -79,6 +79,7 @@ src ipbus_decode_isolation.vhd
 src ipbus_decode_single_mq_mems.vhd
 src ipbus_decode_sorting.vhd
 src ipbus_decode_uGMT.vhd
+src ipbus_decode_mp7_payload.vhd
 src -s common GMTTypes_pkg.vhd
 src -s common ugmt_constants.vhd
 src -c components/ipbus_core ipbus_fabric_sel.vhd
