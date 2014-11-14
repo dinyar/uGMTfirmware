@@ -53,8 +53,10 @@ begin
         sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).valid <= sMuons(i+2*j).valid;
       end generate muon_check;
       empty_check : if i = NUM_MUONS_OUT generate
-        sOutBuf(2*MU_ASSIGNMENT(i))(j)   <= ((31 downto 0 => '0'), sMuons(0).valid);
-        sOutBuf(2*MU_ASSIGNMENT(i)+1)(j) <= ((31 downto 0 => '0'), sMuons(0).valid);
+        sOutBuf(2*MU_ASSIGNMENT(i))(j).data    <= (31 downto 0 => '0');
+        sOutBuf(2*MU_ASSIGNMENT(i))(j).valid   <= sMuons(0).valid;
+        sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).data  <= (31 downto 0 => '0');
+        sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).valid <= sMuons(0).valid;
       end generate empty_check;
     end generate split_muons;
   end generate serialize_muons;
