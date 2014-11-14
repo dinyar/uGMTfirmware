@@ -53,16 +53,14 @@ begin
         sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).valid <= sMuons(i+2*j).valid;
       end generate muon_check;
       empty_check : if i = NUM_MUONS_OUT generate
-        sOutBuf(2*MU_ASSIGNMENT(i))(j)   <= ((31 downto 0 => '0'), '0');
-        sOutBuf(2*MU_ASSIGNMENT(i)+1)(j) <= ((31 downto 0 => '0'), '0');
+        sOutBuf(2*MU_ASSIGNMENT(i))(j)   <= ((31 downto 0 => '0'), sMuons(0).valid);
+        sOutBuf(2*MU_ASSIGNMENT(i)+1)(j) <= ((31 downto 0 => '0'), sMuons(0).valid);
       end generate empty_check;
     end generate split_muons;
   end generate serialize_muons;
 
   serialize_intermediate_muons : for i in NUM_MUONS_LINK-1 downto 0 generate
     split_muons : for j in NUM_INTERM_MU_OUT_CHANS-1 downto 0 generate
-      -- Using an offset of +2 in sOutBuf, so that first two clocks are
-      -- always filled with '0'.
       -- Intermediate muons don't have isolation applied, so forcing Iso to "00".
       sOutBuf(2*i)(j+NUM_OUT_CHANS).data    <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIso)(31 downto 0);
       sOutBuf(2*i)(j+NUM_OUT_CHANS).valid   <= sIntermediateMuons(i+3*j).valid;
