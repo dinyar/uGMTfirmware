@@ -23,10 +23,10 @@
     </text>
   </g>
   <g>
-    <rect style="fill: #e1e1e1" x="440" y="-160" width="660" height="1020"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="440" y="-160" width="660" height="1020"/>
-    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="770" y="353.9">
-      <tspan x="770" y="353.9"></tspan>
+    <rect style="fill: #e1e1e1" x="440" y="-160" width="580" height="1020"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="440" y="-160" width="580" height="1020"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="730" y="353.9">
+      <tspan x="730" y="353.9"></tspan>
     </text>
   </g>
   <g>
@@ -38,7 +38,7 @@
   </g>
   <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 20; stroke: #000000" x1="280" y1="-200" x2="280" y2="900"/>
   <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 20; stroke: #000000" x1="400" y1="-200" x2="400" y2="900"/>
-  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 20; stroke: #000000" x1="1060" y1="-200" x2="1060" y2="900"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 20; stroke: #000000" x1="1080" y1="-200" x2="1080" y2="900"/>
   <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 20; stroke: #000000" x1="1320" y1="-200" x2="1320" y2="900"/>
   <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="49.7714" y="60">
     <tspan x="49.7714" y="60">deserializer_stage_muons</tspan>
@@ -63,10 +63,10 @@
     <tspan x="1123.56" y="205.208">serializer_stage</tspan>
   </text>
   <g>
-    <rect style="fill: #cfe1e6" x="460" y="-140" width="520" height="880"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="460" y="-140" width="520" height="880"/>
-    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="720" y="303.9">
-      <tspan x="720" y="303.9"></tspan>
+    <rect style="fill: #cfe1e6" x="460" y="-140" width="500" height="880"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="460" y="-140" width="500" height="880"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="710" y="303.9">
+      <tspan x="710" y="303.9"></tspan>
     </text>
   </g>
   <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="467.166" y="-121.448">
@@ -544,4 +544,5 @@
     <polygon style="fill: #000000" points="1377.76,340 1367.76,345 1370.26,340 1367.76,335 "/>
     <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="1377.76,340 1367.76,345 1370.26,340 1367.76,335 "/>
   </g>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 20; stroke: #000000" x1="1000" y1="-200" x2="1000" y2="900"/>
 </svg>
