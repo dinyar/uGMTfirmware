@@ -7,10 +7,10 @@ This repository contains the algorithm part of the CMS uGMT firmware. It has bee
 
 This most probably isn't of use for anyone outside the CMS Level-1 Trigger.
 
-== Instructions for setting up the build environment ==
-
+## Instructions for setting up the build environment
 This has been tested on SLC6, but no guarantees given for anything.
 
+### Obtaining required sources
 Instructions for obtaining the MP7 framework firmware can be found at https://twiki.cern.ch/twiki/bin/viewauth/CMS/MP7FirmwareNews. These should be followed until step 6. 
 
 Following this check out the uGMT algorithms to a directory of your choice. The `uGMT_algos` should either be linked or copied to `cactusupgrades/components/`:
@@ -20,6 +20,7 @@ cd [mp7framework_directory]/cactusupgrades/components
 ln -s [...]/uGMTfirmware/uGMT_algos uGMT_algos
 ```
 
+### Auto-generating the ISE project
 To automatically generate an ISE project file the following steps then need to be followed:
 
 1. Add `include -c components/uGMT_algos uGMT_algo.dep` and `addrtab -t mp7_payload.xml` to `cactusupgrades/components/mp7_null_algo/firmware/cfg/mp7_null_algo.dep`
