@@ -69,6 +69,20 @@ architecture Behavioral of IsoAssignmentUnit is
   signal sIsoBitsB : std_logic_vector(0 to 35);
   signal sIsoBitsO : std_logic_vector(0 to 35);
   signal sIsoBitsF : std_logic_vector(0 to 35);
+
+  -- For intermediates
+  type TEnergyBuffer is array (integer range <>) of TCaloArea_vector(7 downto 0);
+  constant ENERGY_INTERMEDIATE_DELAY : natural := 4;  -- Delay to sync
+                                                      -- energies  with
+                                                      -- final muons.
+  signal sFinalEnergies_buffer       : TEnergyBuffer(ENERGY_INTERMEDIATE_DELAY-1 downto 0);
+
+  type TCoordsBuffer is array (integer range <>) of TSpatialCoordinate_vector(35 downto 0);
+  constant COORD_INTERMEDIATE_DELAY  : natural := 5;  -- Delay to sync extrapolated
+                                        -- coordinates with final muons.
+  signal sExtrapolatedCoordsB_buffer : TCoordsBuffer(COORD_INTERMEDIATE_DELAY-1 downto 0);
+  signal sExtrapolatedCoordsO_buffer : TCoordsBuffer(COORD_INTERMEDIATE_DELAY-1 downto 0);
+  signal sExtrapolatedCoordsF_buffer : TCoordsBuffer(COORD_INTERMEDIATE_DELAY-1 downto 0);
 begin
 
   -----------------------------------------------------------------------------
@@ -237,7 +251,24 @@ begin
       ipb_out   => ipbr(N_SLV_ISOLATION_CHECK)
       );
 
-  oExtrapolatedCoordsB <= sVertexCoordsB;
-  oExtrapolatedCoordsO <= sVertexCoordsO;
-  oExtrapolatedCoordsF <= sVertexCoordsF;
+
+  p1 : process (clk)
+  begin  -- process p1
+    if clk'event and clk = '1' then     -- rising clock edge
+      sFinalEnergies_buffer(0)                                         <= sSelectedEnergies;
+      sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-1 downto 1)      <= sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-2 downto 0);
+      sExtrapolatedCoordsB_buffer(0)                                   <= sVertexCoordsB;
+      sExtrapolatedCoordsO_buffer(0)                                   <= sVertexCoordsO;
+      sExtrapolatedCoordsF_buffer(0)                                   <= sVertexCoordsF;
+      sExtrapolatedCoordsB_buffer(COORD_INTERMEDIATE_DELAY-1 downto 1) <= sExtrapolatedCoordsB_buffer(COORD_INTERMEDIATE_DELAY-2 downto 0);
+      sExtrapolatedCoordsO_buffer(COORD_INTERMEDIATE_DELAY-1 downto 1) <= sExtrapolatedCoordsO_buffer(COORD_INTERMEDIATE_DELAY-2 downto 0);
+      sExtrapolatedCoordsF_buffer(COORD_INTERMEDIATE_DELAY-1 downto 1) <= sExtrapolatedCoordsF_buffer(COORD_INTERMEDIATE_DELAY-2 downto 0);
+    end if;
+  end process p1;
+
+  oFinalEnergies       <= sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-1);
+  oExtrapolatedCoordsB <= sExtrapolatedCoordsB_buffer(COORD_INTERMEDIATE_DELAY-1);
+  oExtrapolatedCoordsO <= sExtrapolatedCoordsO_buffer(COORD_INTERMEDIATE_DELAY-1);
+  oExtrapolatedCoordsF <= sExtrapolatedCoordsF_buffer(COORD_INTERMEDIATE_DELAY-1);
+  
 end Behavioral;
