@@ -10,7 +10,7 @@ use work.ugmt_constants.all;
 package tb_helpers is
 
   constant NOUTCHAN : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS;
-  constant NCHAN    : integer := NUM_OUT_CHANS;
+  constant NCHAN    : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS;
   type     TOutTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NCHAN-1 downto 0);
 
   type TGMTOutEvent is record

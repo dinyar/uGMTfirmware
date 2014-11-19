@@ -71,7 +71,7 @@ begin
     variable iEvent             : integer := 0;
     variable tmpError           : integer;
     variable cntError           : integer := 0;
-    variable remainingEvents    : integer := SERIALIZER_LATENCY-1;
+    variable remainingEvents    : integer := SERIALIZER_LATENCY;
     variable vOutput            : TOutTransceiverBuffer;
 
   begin  -- process tb
