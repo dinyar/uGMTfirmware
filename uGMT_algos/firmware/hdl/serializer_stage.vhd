@@ -29,7 +29,10 @@ architecture Behavioral of serializer_stage is
 
   -- Offsetting the beginning of sending to align with 40 MHz clock and make
   -- sending a bit faster.
-  signal sSel : integer range 0 to 5 := 1;
+  signal sSel    : integer range 0 to 5 := 0;
+  signal sSelRst : std_logic;
+
+  signal clk40_delayed : std_logic;
 
   signal sIntermediateMuons : TGMTMu_vector(23 downto 0);
   signal sSortRanks         : TSortRank10_vector(23 downto 0);
@@ -99,23 +102,30 @@ begin
     end if;
   end process shift_intermediates;
 
+  sSelRst <= clk240 and clk40 and (not clk40_delayed);
+
   serialization : process (clk240)
     --variable vOutBuf : TTransceiverBufferOut;
   begin  -- process serialization
     if clk240'event and clk240 = '1' then  -- rising clock edge
+
+      clk40_delayed <= clk40;
+
       for i in 0 to NUM_OUT_CHANS-1 loop
         q(i) <= sOutBuf(sSel)(i);
       end loop;  -- i
       --for i in NUM_OUT_CHANS to q'high loop
       --  q(i) <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i);
       --end loop;  -- i
-      if sSel < 5 then
-        sSel <= sSel+1;
-      else
+      if sSelRst = '1' then
         sSel <= 0;
+      elsif sSel < 5 then
+        sSel <= sSel+1;
+      --else
+      --  sSel <= 0;
       end if;
     end if;
   end process serialization;
-  
+
 end Behavioral;
 
