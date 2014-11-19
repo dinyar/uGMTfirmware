@@ -19,8 +19,8 @@ architecture behavior of testbench is
   constant div40           : integer   := 2;
   constant half_period_240 : time      := 25000 ps / div240;
   constant half_period_40  : time      := 25000 ps / div40;
-  signal   clk240          : std_logic := '0';
-  signal   clk40           : std_logic := '0';
+  signal   clk240          : std_logic := '1';
+  signal   clk40           : std_logic := '1';
   signal   rst             : std_logic := '0';
 
   signal iMuons                  : TGMTMu_vector(7 downto 0);
