@@ -208,21 +208,21 @@ package GMTTypes is
   -----------------------------------------------------------------------------
   subtype TFlatMuon is std_logic_vector(63 downto 0);
   -- Contains muons from one link.
-  type    TFlatMuon_link is array (0 to NUM_MUONS_IN -1) of TFlatMuon;
+  type    TFlatMuon_link is array (NUM_MUONS_IN-1 downto 0) of TFlatMuon;
   -- Contains muons from all links.
   type    TFlatMuons is array (natural range <>) of TFlatMuon_link;
   -- Contains flat muons inside a simple vector
   type    TFlatMuon_vector is array (natural range <>) of TFlatMuon;
 
   -- Empty bits for muons from one link for one BX.
-  type TEmpty_link is array (natural range <>) of std_logic_vector(0 to NUM_MUONS_IN -1);
+  type TEmpty_link is array (natural range <>) of std_logic_vector(NUM_MUONS_IN-1 downto 0);
 
   -- Valid bits for muons from one link for one BX.
-  type TValid_link is array (natural range <>) of std_logic_vector(0 to NUM_MUONS_IN -1);
+  type TValid_link is array (natural range <>) of std_logic_vector(NUM_MUONS_IN-1 downto 0);
 
-  type TIndexBits_link is array (natural range <>) of TIndexBits_vector(0 to NUM_MUONS_IN -1);
+  type TIndexBits_link is array (natural range <>) of TIndexBits_vector(NUM_MUONS_IN-1 downto 0);
 
-  type TSortRank_link is array (natural range <>) of TSortRank10_vector(0 to NUM_MUONS_IN -1);
+  type TSortRank_link is array (natural range <>) of TSortRank10_vector(NUM_MUONS_IN-1 downto 0);
 
   function unroll_link_muons (signal iMuons_link  : TFlatMuons) return TFlatMuon_vector;
   function unpack_mu_from_flat (signal iMuon_flat : TFlatMuon) return TGMTMuIn;
