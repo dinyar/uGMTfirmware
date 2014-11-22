@@ -80,12 +80,12 @@ begin
       ipb_from_slaves => ipbr
       );
 
-  in_buf(0) <= d(NCHAN-1 downto 0);
+  in_buf(in_buf'high) <= d(NCHAN-1 downto 0);
 
   fill_buffer : process (clk240)
   begin  -- process fill_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      in_buf(in_buf'high downto 1) <= in_buf(in_buf'high-1 downto 0);
+      in_buf(in_buf'high-1 downto 0) <= in_buf(in_buf'high downto 1);
     end if;
   end process fill_buffer;
 
@@ -105,7 +105,7 @@ begin
         enb    => '1',
         addrb  => sSrtRnkIn(i),
         dinb   => (others => '0'),
-        doutb  => sSortRank_buffer(0)(i),
+        doutb  => sSortRank_buffer(sSortRank_buffer'high)(i),
         web    => "0"
         );
 
@@ -114,7 +114,7 @@ begin
   fill_sort_rank_buf : process (clk240)
   begin  -- process fill_sort_rank_buf
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      sSortRank_buffer(sSortRank_buffer'high downto 1) <= sSortRank_buffer(sSortRank_buffer'high-1 downto 0);
+      sSortRank_buffer(sSortRank_buffer'high-1 downto 0) <= sSortRank_buffer(sSortRank_buffer'high downto 1);
     end if;
   end process fill_sort_rank_buf;
 
