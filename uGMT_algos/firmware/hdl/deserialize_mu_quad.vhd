@@ -124,7 +124,7 @@ begin
     if clk40'event and clk40 = '1' then  -- rising clock edge
       for i in NCHAN-1 downto 0 loop
         for j in 2*NUM_MUONS_LINK-1 downto 0 loop
-          if (j mod 2) = 1 then
+          if (j mod 2) = 0 then
             -- Store valid bit.
             sValid_link(i)(j/2) <= in_buf(j+BUFFER_IN_MU_POS_LOW)(i).valid;
             -- Get first half of muon.
