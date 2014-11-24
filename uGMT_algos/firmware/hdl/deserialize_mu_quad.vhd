@@ -21,10 +21,10 @@ entity deserialize_mu_quad is
     clk240     : in  std_logic;
     clk40      : in  std_logic;
     d          : in  ldata(NCHAN-1 downto 0);
-    sMuons     : out TGMTMu_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
-    sTracks    : out TGMTMuTracks_vector(NCHAN-1 downto 0);
-    sEmpty     : out std_logic_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
-    sSortRanks : out TSortRank10_vector(NCHAN*NUM_MUONS_IN-1 downto 0)
+    oMuons     : out TGMTMu_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
+    oTracks    : out TGMTMuTracks_vector(NCHAN-1 downto 0);
+    oEmpty     : out std_logic_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
+    oSortRanks : out TSortRank10_vector(NCHAN*NUM_MUONS_IN-1 downto 0)
     );
 end deserialize_mu_quad;
 
@@ -178,10 +178,10 @@ begin
     sFinalValid <= tmp;
   end process valid_combination;
   convert_muons : for i in sMuonsIn'range generate
-    sMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i), sFinalValid);
+    oMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i), sFinalValid);
   end generate convert_muons;
-  sTracks    <= track_addresses_from_in_mus(sMuonsIn);
-  sEmpty     <= unpack_empty_bits(sEmpty_link(NCHAN-1 downto 0));
-  sSortRanks <= unpack_sort_rank(sSortRank_link(NCHAN-1 downto 0));
+  oTracks    <= track_addresses_from_in_mus(sMuonsIn);
+  oEmpty     <= unpack_empty_bits(sEmpty_link(NCHAN-1 downto 0));
+  oSortRanks <= unpack_sort_rank(sSortRank_link(NCHAN-1 downto 0));
 end Behavioral;
 

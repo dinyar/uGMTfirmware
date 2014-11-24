@@ -21,10 +21,10 @@ entity deserializer_stage_muons is
     clk240     : in  std_logic;
     clk40      : in  std_logic;
     d          : in  ldata (NCHAN-1 downto 0);
-    sMuons     : out TGMTMu_vector(NUM_MU_CHANS*3-1 downto 0);
-    sTracks    : out TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
-    sEmpty     : out std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-    sSortRanks : out TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0)
+    oMuons     : out TGMTMu_vector(NUM_MU_CHANS*3-1 downto 0);
+    oTracks    : out TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
+    oEmpty     : out std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+    oSortRanks : out TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0)
     );
 end deserializer_stage_muons;
 
@@ -72,10 +72,10 @@ begin
         clk240     => clk240,
         clk40      => clk40,
         d          => d(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
-        sMuons     => sMuons(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
-        sTracks    => sTracks(i*4+3 downto i*4),
-        sEmpty     => sEmpty(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
-        sSortRanks => sSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN)
+        oMuons     => oMuons(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
+        oTracks    => oTracks(i*4+3 downto i*4),
+        oEmpty     => oEmpty(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
+        oSortRanks => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN)
         -- TODO: Need output for calo idx bits (and optionally for coords at
         -- vertex) here.
         );

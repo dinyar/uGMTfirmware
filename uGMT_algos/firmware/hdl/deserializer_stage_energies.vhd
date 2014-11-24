@@ -15,7 +15,7 @@ entity deserializer_stage_energies is
     clk240    : in  std_logic;
     clk40     : in  std_logic;
     d         : in  ldata(NCHAN-1 downto 0);
-    sEnergies : out TCaloRegionEtaSlice_vector(NUM_CALO_CHANS-1 downto 0)
+    oEnergies : out TCaloRegionEtaSlice_vector(NUM_CALO_CHANS-1 downto 0)
     );
 end deserializer_stage_energies;
 
@@ -31,7 +31,7 @@ begin  -- Behavioral
         clk240    => clk240,
         clk40     => clk40,
         d         => d(ENERGY_QUAD_ASSIGNMENT(i)*4+3 downto ENERGY_QUAD_ASSIGNMENT(i)*4),
-        sEnergies => sEnergies(i*4+3 downto i*4));
+        oEnergies => oEnergies(i*4+3 downto i*4));
   end generate deserialize_loop;
   
 end Behavioral;

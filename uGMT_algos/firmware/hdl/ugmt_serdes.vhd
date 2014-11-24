@@ -103,10 +103,10 @@ begin
       clk240     => clk240,
       clk40      => clk40,
       d          => d(NCHAN-1 downto 0),
-      sMuons     => sMuons,
-      sTracks    => sTracks,
-      sEmpty     => sEmpty,
-      sSortRanks => sSortRanks
+      oMuons     => sMuons,
+      oTracks    => sTracks,
+      oEmpty     => sEmpty,
+      oSortRanks => sSortRanks
       );
 
   deserialize_energies : entity work.deserializer_stage_energies
@@ -122,7 +122,7 @@ begin
       clk240    => clk240,
       clk40     => clk40,
       d         => d(NCHAN-1 downto 0),
-      sEnergies => sEnergies
+      oEnergies => sEnergies
       );
 
   -----------------------------------------------------------------------------

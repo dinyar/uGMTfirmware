@@ -16,7 +16,7 @@ entity deserialize_energy_quad is
     clk240    : in  std_logic;
     clk40     : in  std_logic;
     d         : in  ldata(3 downto 0);
-    sEnergies : out TCaloRegionEtaSlice_vector(NCHAN-1 downto 0)
+    oEnergies : out TCaloRegionEtaSlice_vector(NCHAN-1 downto 0)
     );
 end deserialize_energy_quad;
 
@@ -47,9 +47,9 @@ begin  -- Behavioral
       for chan in d'range loop
         for bx in BUFFER_IN_MU_POS_HIGH downto BUFFER_IN_MU_POS_LOW loop
           if in_buf(bx)(chan).valid = VALID_BIT then
-            sEnergies(chan) <= calo_etaslice_from_flat(sLinkData(chan));
+            oEnergies(chan) <= calo_etaslice_from_flat(sLinkData(chan));
           else
-            sEnergies(chan) <= (others => (others => '0'));
+            oEnergies(chan) <= (others => (others => '0'));
           end if;
         end loop;  -- bx
       end loop;  -- chan
