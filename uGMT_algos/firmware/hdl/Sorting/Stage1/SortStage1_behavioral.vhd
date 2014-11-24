@@ -56,9 +56,9 @@ begin  -- architecture behavioral
 
   -----------------------------------------------------------------------------
   -- calculate GE Matrix : 
-  -----------------------------------------------------------------------------  
-
-  -- Remark: Diagonal elements of GEMatrix are never used and also not generated. 
+  ----------------------------------------------------------------------------- 
+  -- Remark: Diagonal elements of GEMatrix are never used and also not
+  -- generated. 
   g1 : for i in 0 to 22 generate
     g2 : for j in i+1 to 23 generate
       x : comp10_ge

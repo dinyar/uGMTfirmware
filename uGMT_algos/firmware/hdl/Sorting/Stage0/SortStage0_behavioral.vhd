@@ -63,13 +63,8 @@ begin  -- architecture behavioral
   -----------------------------------------------------------------------------
   -- calculate GE Matrix
   -----------------------------------------------------------------------------
-  -- TODO: Check whether the following holds:
-  -- Previous versions: If i runs up to 35 then j becomes 36 !!!
-  --                        --> loop 36 to 35 ==> error message in Precision
-  -- Dec 08: --> i runs up to 34
-  --         --> comp36_ge (behavioral) used
-  --         -- Remark: Diagonal elements of GEMatrix are never used and also
-  --         not generated.
+  -- Remark: Diagonal elements of GEMatrix are never used and also not
+  -- generated. 
   g1 : for i in 0 to 34 generate
     g2 : for j in i+1 to 35 generate
       x : comp10_ge

@@ -155,8 +155,9 @@ begin
 
             -- Use every second result from SortRankLUT. (The other results
             -- were calculated with the 'wrong part' of the TF muon.)
-            -- Using iFrame-1 as the rank calculation requires an additional clk240,
-            -- so the "correct" sort rank is late by one.
+            -- Using this iFrame even though pT and quality are contained in
+            -- earlier frame as the rank calculation requires an additional
+            -- clk240, so the "correct" sort rank is late by one.
             sSortRank_link(iChan)(iFrame/2) <= sSortRank_buffer(iFrame+BUFFER_IN_MU_POS_LOW)(iChan);
           end if;
         end loop;  -- iFrame

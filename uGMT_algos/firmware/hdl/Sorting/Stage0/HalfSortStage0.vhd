@@ -1,4 +1,4 @@
--- Sorter 36 -> 8
+-- Sorter 18 -> 8
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -73,13 +73,8 @@ begin  -- architecture behavioral
   -----------------------------------------------------------------------------
   -- calculate GE Matrix
   -----------------------------------------------------------------------------
-  -- TODO: Check whether the following holds:
-  -- Previous versions: If i runs up to 17 then j becomes 18 !!!
-  --                        --> loop 36 to 17 ==> error message in Precision
-  -- Dec 08: --> i runs up to 16
-  --         --> comp36_ge (behavioral) used
-  --         -- Remark: Diagonal elements of GEMatrix are never used and also
-  --         not generated.
+  -- Remark: Diagonal elements of GEMatrix are never used and also not
+  -- generated.
   g1 : for i in 0 to 16 generate
     g2 : for j in i+1 to 17 generate
       x : comp10_ge
