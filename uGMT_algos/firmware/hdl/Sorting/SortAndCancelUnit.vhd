@@ -139,32 +139,24 @@ architecture behavioral of SortAndCancelUnit is
   signal sCancelF_minus_reg    : std_logic_vector(17 downto 0);
   signal sCancelBO_B_reg       : std_logic_vector(35 downto 0);
 
-  signal sMuonsB     : TGMTMu_vector(7 downto 0);
-  signal sIdxBitsB   : TIndexBits_vector(7 downto 0);
-  signal sSortRanksB : TSortRank10_vector(7 downto 0);
-  signal sEmptyB     : std_logic_vector(7 downto 0);
-  signal sMuonsO     : TGMTMu_vector(7 downto 0);
-  signal sIdxBitsO   : TIndexBits_vector(7 downto 0);
-  signal sSortRanksO : TSortRank10_vector(7 downto 0);
-  signal sEmptyO     : std_logic_vector(7 downto 0);
-  signal sMuonsF     : TGMTMu_vector(7 downto 0);
-  signal sIdxBitsF   : TIndexBits_vector(7 downto 0);
-  signal sSortRanksF : TSortRank10_vector(7 downto 0);
-  signal sEmptyF     : std_logic_vector(7 downto 0);
+  signal sSortedMuonsB     : TGMTMu_vector(7 downto 0);
+  signal sSortedIdxBitsB   : TIndexBits_vector(7 downto 0);
+  signal sSortedSortRanksB : TSortRank10_vector(7 downto 0);
+  signal sSortedEmptyB     : std_logic_vector(7 downto 0);
 
-  signal sSortRanksB_reg : TSortRank10_vector(7 downto 0);
-  signal sSortRanksO_reg : TSortRank10_vector(7 downto 0);
-  signal sSortRanksF_reg : TSortRank10_vector(7 downto 0);
-  signal sEmptyB_reg     : std_logic_vector(7 downto 0);
-  signal sEmptyO_reg     : std_logic_vector(7 downto 0);
-  signal sEmptyF_reg     : std_logic_vector(7 downto 0);
+  signal sSortedSortRanksB_reg : TSortRank10_vector(7 downto 0);
+  signal sSortedSortRanksO_reg : TSortRank10_vector(7 downto 0);
+  signal sSortedSortRanksF_reg : TSortRank10_vector(7 downto 0);
+  signal sSortedEmptyB_reg     : std_logic_vector(7 downto 0);
+  signal sSortedEmptyO_reg     : std_logic_vector(7 downto 0);
+  signal sSortedEmptyF_reg     : std_logic_vector(7 downto 0);
 
-  signal sIdxBitsB_reg : TIndexBits_vector(7 downto 0);
-  signal sIdxBitsO_reg : TIndexBits_vector(7 downto 0);
-  signal sIdxBitsF_reg : TIndexBits_vector(7 downto 0);
-  signal sMuonsB_reg   : TGMTMu_vector(7 downto 0);
-  signal sMuonsO_reg   : TGMTMu_vector(7 downto 0);
-  signal sMuonsF_reg   : TGMTMu_vector(7 downto 0);
+  signal sSortedIdxBitsB_reg : TIndexBits_vector(7 downto 0);
+  signal sSortedIdxBitsO_reg : TIndexBits_vector(7 downto 0);
+  signal sSortedIdxBitsF_reg : TIndexBits_vector(7 downto 0);
+  signal sSortedMuonsB_reg   : TGMTMu_vector(7 downto 0);
+  signal sSortedMuonsO_reg   : TGMTMu_vector(7 downto 0);
+  signal sSortedMuonsF_reg   : TGMTMu_vector(7 downto 0);
 
   signal sSortRanksB_store : TSortRank10_vector(7 downto 0);
   signal sSortRanksO_store : TSortRank10_vector(7 downto 0);
@@ -194,9 +186,9 @@ architecture behavioral of SortAndCancelUnit is
   signal sMuonsO_store2   : TGMTMu_vector(7 downto 0);
   signal sMuonsF_store2   : TGMTMu_vector(7 downto 0);
 
-  signal sMuons       : TGMTMu_vector(7 downto 0);
-  signal sMuons_store : TGMTMu_vector(7 downto 0);
-  signal sMuons_reg   : TGMTMu_vector(7 downto 0);
+  signal sFinalMuons       : TGMTMu_vector(7 downto 0);
+  signal sFinalMuons_store : TGMTMu_vector(7 downto 0);
+  signal sFinalMuons_reg   : TGMTMu_vector(7 downto 0);
 
   -- RPC merging stuff
   signal iMuonsRPCf_reg    : TGMTMuRPC_vector(3 downto 0);
@@ -507,10 +499,10 @@ begin
       iCancel_C  => (others => '0'),
       iMuons     => iMuonsB,
       iIdxBits   => iIdxBitsB,
-      oMuons     => sMuonsB,
-      oIdxBits   => sIdxBitsB,
-      oSortRanks => sSortRanksB,
-      oEmpty     => sEmptyB,
+      oMuons     => sSortedMuonsB,
+      oIdxBits   => sSortedIdxBitsB,
+      oSortRanks => sSortedSortRanksB,
+      oEmpty     => sSortedEmptyB,
       clk        => clk,
       sinit      => sinit);
   sortO_plus : entity work.HalfSortStage0
@@ -574,10 +566,10 @@ begin
       clk        => clk,
       sinit      => sinit);
 
-  sIntermediateMuonsB     <= sMuonsB;
+  sIntermediateMuonsB     <= sSortedMuonsB;
   sIntermediateMuonsO     <= sSortedMuonsO_minus & sSortedMuonsO_plus;
   sIntermediateMuonsF     <= sSortedMuonsF_minus & sSortedMuonsF_plus;
-  sIntermediateSortRanksB <= sSortRanksB;
+  sIntermediateSortRanksB <= sSortedSortRanksB;
   sIntermediateSortRanksO <= sSortedSortRanksO_minus & sSortedSortRanksO_plus;
   sIntermediateSortRanksF <= sSortedSortRanksF_minus & sSortedSortRanksF_plus;
 
@@ -601,18 +593,18 @@ begin
   reg_pairs : process (clk)
   begin  -- process reg_pairs
     if clk'event and clk = '0' then     -- falling clock edge
-      sSortRanksB_reg <= sSortRanksB;
-      sSortRanksO_reg <= sSortedSortRanksO_minus & sSortedSortRanksO_plus;
-      sSortRanksF_reg <= sSortedSortRanksF_minus & sSortedSortRanksF_plus;
-      sEmptyB_reg     <= sEmptyB;
-      sEmptyO_reg     <= sSortedEmptyO_minus & sSortedEmptyO_plus;
-      sEmptyF_reg     <= sSortedEmptyF_minus & sSortedEmptyF_plus;
-      sIdxBitsB_reg   <= sIdxBitsB;
-      sIdxBitsO_reg   <= sSortedIdxBitsO_minus & sSortedIdxBitsO_plus;
-      sIdxBitsF_reg   <= sSortedIdxBitsF_minus & sSortedIdxBitsF_plus;
-      sMuonsB_reg     <= sMuonsB;
-      sMuonsO_reg     <= sSortedMuonsO_minus & sSortedMuonsO_plus;
-      sMuonsF_reg     <= sSortedMuonsF_minus & sSortedMuonsF_plus;
+      sSortedSortRanksB_reg <= sSortedSortRanksB;
+      sSortedSortRanksO_reg <= sSortedSortRanksO_minus & sSortedSortRanksO_plus;
+      sSortedSortRanksF_reg <= sSortedSortRanksF_minus & sSortedSortRanksF_plus;
+      sSortedEmptyB_reg     <= sSortedEmptyB;
+      sSortedEmptyO_reg     <= sSortedEmptyO_minus & sSortedEmptyO_plus;
+      sSortedEmptyF_reg     <= sSortedEmptyF_minus & sSortedEmptyF_plus;
+      sSortedIdxBitsB_reg   <= sSortedIdxBitsB;
+      sSortedIdxBitsO_reg   <= sSortedIdxBitsO_minus & sSortedIdxBitsO_plus;
+      sSortedIdxBitsF_reg   <= sSortedIdxBitsF_minus & sSortedIdxBitsF_plus;
+      sSortedMuonsB_reg     <= sSortedMuonsB;
+      sSortedMuonsO_reg     <= sSortedMuonsO_minus & sSortedMuonsO_plus;
+      sSortedMuonsF_reg     <= sSortedMuonsF_minus & sSortedMuonsF_plus;
 
 
       -- For RPC merging
@@ -708,18 +700,18 @@ begin
   gen_sorting_with_merged_muons : if rpc_merging generate
     sort_final : entity work.SortStage1_RPC
       port map (
-        iSortRanksB       => sSortRanksB_reg,
-        iEmptyB           => sEmptyB_reg,
-        iIdxBitsB         => sIdxBitsB_reg,
-        iMuonsB           => sMuonsB_reg,
-        iSortRanksO       => sSortRanksO_reg,
-        iEmptyO           => sEmptyO_reg,
-        iIdxBitsO         => sIdxBitsO_reg,
-        iMuonsO           => sMuonsO_reg,
-        iSortRanksF       => sSortRanksF_reg,
-        iEmptyF           => sEmptyF_reg,
-        iIdxBitsF         => sIdxBitsF_reg,
-        iMuonsF           => sMuonsF_reg,
+        iSortRanksB       => sSortedSortRanksB_reg,
+        iEmptyB           => sSortedEmptyB_reg,
+        iIdxBitsB         => sSortedIdxBitsB_reg,
+        iMuonsB           => sSortedMuonsB_reg,
+        iSortRanksO       => sSortedSortRanksO_reg,
+        iEmptyO           => sSortedEmptyO_reg,
+        iIdxBitsO         => sSortedIdxBitsO_reg,
+        iMuonsO           => sSortedMuonsO_reg,
+        iSortRanksF       => sSortedSortRanksF_reg,
+        iEmptyF           => sSortedEmptyF_reg,
+        iIdxBitsF         => sSortedIdxBitsF_reg,
+        iMuonsF           => sSortedMuonsF_reg,
         iSortRanksMergedB => sSortRanksMergedB_reg,
         iEmptyMergedB     => sEmptyMergedB_reg,
         iIdxBitsMergedB   => sIdxBitsMergedB_reg,
@@ -733,7 +725,7 @@ begin
         iCancelO_B        => sCancelO_matched_B_reg,
         iCancelF          => sCancelF_matched_reg,
         oIdxBits          => oIdxBits,  -- Goes out to IsoAU.
-        oMuons            => sMuons,
+        oMuons            => sFinalMuons,
         clk               => clk,
         sinit             => sinit);
   end generate gen_sorting_with_merged_muons;
@@ -741,20 +733,20 @@ begin
   gen_sorting_without_merged_muons : if not rpc_merging generate
     sort_final : entity work.SortStage1
       port map (
-        iSortRanksB => sSortRanksB_reg,
-        iEmptyB     => sEmptyB_reg,
-        iIdxBitsB   => sIdxBitsB_reg,
-        iMuonsB     => sMuonsB_reg,
-        iSortRanksO => sSortRanksO_reg,
-        iEmptyO     => sEmptyO_reg,
-        iIdxBitsO   => sIdxBitsO_reg,
-        iMuonsO     => sMuonsO_reg,
-        iSortRanksF => sSortRanksF_reg,
-        iEmptyF     => sEmptyF_reg,
-        iIdxBitsF   => sIdxBitsF_reg,
-        iMuonsF     => sMuonsF_reg,
+        iSortRanksB => sSortedSortRanksB_reg,
+        iEmptyB     => sSortedEmptyB_reg,
+        iIdxBitsB   => sSortedIdxBitsB_reg,
+        iMuonsB     => sSortedMuonsB_reg,
+        iSortRanksO => sSortedSortRanksO_reg,
+        iEmptyO     => sSortedEmptyO_reg,
+        iIdxBitsO   => sSortedIdxBitsO_reg,
+        iMuonsO     => sSortedMuonsO_reg,
+        iSortRanksF => sSortedSortRanksF_reg,
+        iEmptyF     => sSortedEmptyF_reg,
+        iIdxBitsF   => sSortedIdxBitsF_reg,
+        iMuonsF     => sSortedMuonsF_reg,
         oIdxBits    => oIdxBits,        -- Goes out to IsoAU.
-        oMuons      => sMuons
+        oMuons      => sFinalMuons
         );
 
   end generate gen_sorting_without_merged_muons;
@@ -775,13 +767,13 @@ begin
       sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-1 downto 1) <= sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
       sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-1 downto 1) <= sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
 
-      sMuons_reg <= sMuons;
-      oMuons     <= sMuons_reg;
+      sFinalMuons_reg <= sFinalMuons;
+      oMuons     <= sFinalMuons_reg;
     end if;
   end process final_mu_reg;
 
-  extract_mu_pt : for i in sMuons_store'range generate
-    oMuPt(i) <= sMuons_reg(i).pt;
+  extract_mu_pt : for i in sFinalMuons_store'range generate
+    oMuPt(i) <= sFinalMuons_reg(i).pt;
   end generate extract_mu_pt;
 
   oIntermediateMuonsB     <= sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-1);
