@@ -1,3 +1,4 @@
+src -d -s ucf algo_constraints.ucf
 addrtab -t extrapolation_mems.xml
 addrtab -t extrapolation.xml
 addrtab -t idx_bit_mems.xml
