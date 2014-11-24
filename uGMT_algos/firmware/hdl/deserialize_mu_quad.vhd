@@ -122,45 +122,45 @@ begin
   gmt_in_reg : process (clk40)
   begin  -- process gmt_in_reg
     if clk40'event and clk40 = '1' then  -- rising clock edge
-      for i in NCHAN-1 downto 0 loop
-        for j in 2*NUM_MUONS_LINK-1 downto 0 loop
-          if (j mod 2) = 0 then
+      for iChan in NCHAN-1 downto 0 loop
+        for iFrame in 2*NUM_MUONS_LINK-1 downto 0 loop
+          if (iFrame mod 2) = 0 then
             -- Store valid bit.
-            sValid_link(i)(j/2) <= in_buf(j+BUFFER_IN_MU_POS_LOW)(i).valid;
+            sValid_link(iChan)(iFrame/2) <= in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).valid;
             -- Get first half of muon.
-            if in_buf(j+BUFFER_IN_MU_POS_LOW)(i).valid = VALID_BIT then
+            if in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).valid = VALID_BIT then
               -- We're only using the lower 30 bits as the MSB is used for
               -- status codes.
-              sMuons_link(i)(j/2)(30 downto 0) <= in_buf(j+BUFFER_IN_MU_POS_LOW)(i).data(30 downto 0);
+              sMuons_link(iChan)(iFrame/2)(30 downto 0) <= in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).data(30 downto 0);
             else
-              sMuons_link(i)(j/2)(30 downto 0) <= (others => '0');
+              sMuons_link(iChan)(iFrame/2)(30 downto 0) <= (others => '0');
             end if;
 
             -- Determine empty bit.
-            if in_buf(j+BUFFER_IN_MU_POS_LOW)(i).data(PT_IN_HIGH downto PT_IN_LOW) = (PT_IN_HIGH downto PT_IN_LOW => '0') then
-              sEmpty_link(i)(j/2) <= '1';
+            if in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).data(PT_IN_HIGH downto PT_IN_LOW) = (PT_IN_HIGH downto PT_IN_LOW => '0') then
+              sEmpty_link(iChan)(iFrame/2) <= '1';
             else
-              sEmpty_link(i)(j/2) <= '0';
+              sEmpty_link(iChan)(iFrame/2) <= '0';
             end if;
 
           else
             -- Get second half of muon.
-            if in_buf(j+BUFFER_IN_MU_POS_LOW)(i).valid = VALID_BIT then
+            if in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).valid = VALID_BIT then
               -- We're only using the lower 30 bits as the MSB is used for
               -- status codes.
-              sMuons_link(i)(j/2)(61 downto 31) <= in_buf(j+BUFFER_IN_MU_POS_LOW)(i).data(30 downto 0);
+              sMuons_link(iChan)(iFrame/2)(61 downto 31) <= in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).data(30 downto 0);
             else
-              sMuons_link(i)(j/2)(61 downto 31) <= (others => '0');
+              sMuons_link(iChan)(iFrame/2)(61 downto 31) <= (others => '0');
             end if;
 
             -- Use every second result from SortRankLUT. (The other results
             -- were calculated with the 'wrong part' of the TF muon.)
-            -- Using j-1 as the rank calculation requires an additional clk240,
+            -- Using iFrame-1 as the rank calculation requires an additional clk240,
             -- so the "correct" sort rank is late by one.
-            sSortRank_link(i)(j/2) <= sSortRank_buffer(j+BUFFER_IN_MU_POS_LOW)(i);
+            sSortRank_link(iChan)(iFrame/2) <= sSortRank_buffer(iFrame+BUFFER_IN_MU_POS_LOW)(iChan);
           end if;
-        end loop;  -- j
-      end loop;  -- i
+        end loop;  -- iFrame
+      end loop;  -- iChan
     end if;
   end process gmt_in_reg;
 
