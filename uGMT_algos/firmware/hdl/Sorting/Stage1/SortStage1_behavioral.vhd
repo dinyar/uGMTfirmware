@@ -25,12 +25,7 @@ entity SortStage1 is
     iMuonsF     : in TGMTMu_vector(7 downto 0);
 
     oIdxBits : out TIndexBits_vector(7 downto 0);  -- Sent to IsoAU.
-    oMuons   : out TGMTMu_vector(7 downto 0);
-
-
-    -- Clock and control
-    clk   : in std_logic;
-    sinit : in std_logic
+    oMuons   : out TGMTMu_vector(7 downto 0)
     );
 end entity SortStage1;
 

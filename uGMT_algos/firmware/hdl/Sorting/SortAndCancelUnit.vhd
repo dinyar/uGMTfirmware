@@ -263,17 +263,17 @@ architecture behavioral of SortAndCancelUnit is
   signal sIdxBitsRPCf_reg       : TIndexBits_vector(3 downto 0);
 
   -- For intermediates
-  constant MU_INTERMEDIATE_DELAY       : natural := 2;  -- Delay to sync
-                                                        -- intermediates with
-                                                        -- final muons.
-  type TMuonBuffer is array (integer range <>) of TGMTMu_vector(7 downto 0);
-  signal sIntermediateMuonB_buffer     : TMuonBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
-  signal sIntermediateMuonO_buffer     : TMuonBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
-  signal sIntermediateMuonF_buffer     : TMuonBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
-  type TSortRankBuffer is array (integer range <>) of TSortRank10_vector(7 downto 0);
-  signal sIntermediateSortRankB_buffer : TSortRankBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
-  signal sIntermediateSortRankO_buffer : TSortRankBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
-  signal sIntermediateSortRankF_buffer : TSortRankBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
+  constant MU_INTERMEDIATE_DELAY         : natural := 2;  -- Delay to sync
+                                                          -- intermediates with
+                                                          -- final muons.
+  type     TMuonBuffer is array (integer range <>) of TGMTMu_vector(7 downto 0);
+  signal   sIntermediateMuonB_buffer     : TMuonBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
+  signal   sIntermediateMuonO_buffer     : TMuonBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
+  signal   sIntermediateMuonF_buffer     : TMuonBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
+  type     TSortRankBuffer is array (integer range <>) of TSortRank10_vector(7 downto 0);
+  signal   sIntermediateSortRankB_buffer : TSortRankBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
+  signal   sIntermediateSortRankO_buffer : TSortRankBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
+  signal   sIntermediateSortRankF_buffer : TSortRankBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
 
   signal sIntermediateMuonsB     : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsO     : TGMTMu_vector(7 downto 0);
@@ -619,8 +619,8 @@ begin
       --sPairVecB_reg <= sPairVecB;
       --sPairVecF_reg <= sPairVecF;
 
-    --iMuonsRPCf_store2 <= iMuonsRPCf_store;
-    --iMuonsRPCb_store2 <= iMuonsRPCb_store;
+      --iMuonsRPCf_store2 <= iMuonsRPCf_store;
+      --iMuonsRPCb_store2 <= iMuonsRPCb_store;
     end if;
   end process reg_pairs;
 
@@ -754,9 +754,9 @@ begin
         iIdxBitsF   => sIdxBitsF_reg,
         iMuonsF     => sMuonsF_reg,
         oIdxBits    => oIdxBits,        -- Goes out to IsoAU.
-        oMuons      => sMuons,
-        clk         => clk,
-        sinit       => sinit);
+        oMuons      => sMuons
+        );
+
   end generate gen_sorting_without_merged_muons;
 
   final_mu_reg : process (clk)
@@ -784,11 +784,11 @@ begin
     oMuPt(i) <= sMuons_reg(i).pt;
   end generate extract_mu_pt;
 
-  oIntermediateMuonsB <= sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-1);
-  oIntermediateMuonsO <= sIntermediateMuonO_buffer(MU_INTERMEDIATE_DELAY-1);
-  oIntermediateMuonsF <= sIntermediateMuonF_buffer(MU_INTERMEDIATE_DELAY-1);
-  oIntermediateSortRanksB         <= sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-1);
-  oIntermediateSortRanksO         <= sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-1);
-  oIntermediateSortRanksF         <= sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-1);
+  oIntermediateMuonsB     <= sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-1);
+  oIntermediateMuonsO     <= sIntermediateMuonO_buffer(MU_INTERMEDIATE_DELAY-1);
+  oIntermediateMuonsF     <= sIntermediateMuonF_buffer(MU_INTERMEDIATE_DELAY-1);
+  oIntermediateSortRanksB <= sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-1);
+  oIntermediateSortRanksO <= sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-1);
+  oIntermediateSortRanksF <= sIntermediateSortRankF_buffer(MU_INTERMEDIATE_DELAY-1);
 
 end architecture behavioral;
