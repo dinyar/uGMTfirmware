@@ -24,7 +24,8 @@ entity deserializer_stage_muons is
     oMuons     : out TGMTMu_vector(NUM_MU_CHANS*3-1 downto 0);
     oTracks    : out TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
     oEmpty     : out std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-    oSortRanks : out TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0)
+    oSortRanks : out TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+    oValid     : out std_logic
     );
 end deserializer_stage_muons;
 
@@ -75,9 +76,10 @@ begin
         oMuons     => oMuons(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oTracks    => oTracks(i*4+3 downto i*4),
         oEmpty     => oEmpty(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
-        oSortRanks => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN)
-        -- TODO: Need output for calo idx bits (and optionally for coords at
-        -- vertex) here.
+        oSortRanks => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN);
+        oValid     => oValid
+       -- TODO: Need output for calo idx bits (and optionally for coords at
+       -- vertex) here.
         );
   end generate deserialize_loop;
 

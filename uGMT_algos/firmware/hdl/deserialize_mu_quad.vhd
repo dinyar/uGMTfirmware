@@ -24,7 +24,8 @@ entity deserialize_mu_quad is
     oMuons     : out TGMTMu_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
     oTracks    : out TGMTMuTracks_vector(NCHAN-1 downto 0);
     oEmpty     : out std_logic_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
-    oSortRanks : out TSortRank10_vector(NCHAN*NUM_MUONS_IN-1 downto 0)
+    oSortRanks : out TSortRank10_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
+    oValid     : out std_logic
     );
 end deserialize_mu_quad;
 
@@ -36,7 +37,7 @@ architecture Behavioral of deserialize_mu_quad is
 
   signal in_buf : TQuadTransceiverBufferIn;
 
-  type   TSortRankInput is array (natural range <>) of std_logic_vector(12 downto 0);
+  type TSortRankInput is array (natural range <>) of std_logic_vector(12 downto 0);
   signal sSrtRnkIn : TSortRankInput(NCHAN-1 downto 0);
 
   signal sMuons_link : TFlatMuons(NCHAN-1 downto 0);  -- All input muons.
@@ -44,14 +45,12 @@ architecture Behavioral of deserialize_mu_quad is
   signal sMuonsIn    : TGMTMuIn_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
 
   signal sValid_link : TValid_link(NCHAN-1 downto 0);
-  signal sValid      : std_logic_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
-  signal sFinalValid : std_logic;
 
   signal sEmpty_link : TEmpty_link(NCHAN-1 downto 0);
 
   -- Stores sort ranks for each 32 bit word that arrives from TFs. Every second
   -- such rank is garbage and will be disregarded in second step.
-  type   TSortRankBuffer is array (2*2*NUM_MUONS_LINK-1 downto 0) of TSortRank10_vector(NCHAN-1 downto 0);
+  type TSortRankBuffer is array (2*2*NUM_MUONS_LINK-1 downto 0) of TSortRank10_vector(NCHAN-1 downto 0);
   signal sSortRank_buffer : TSortRankBuffer;
   signal sSortRank_link   : TSortRank_link(NCHAN-1 downto 0);
   signal ipbusWe_vector   : std_logic_vector(sSortRank_buffer(0)'range);
@@ -124,9 +123,9 @@ begin
     if clk40'event and clk40 = '1' then  -- rising clock edge
       for iChan in NCHAN-1 downto 0 loop
         for iFrame in 2*NUM_MUONS_LINK-1 downto 0 loop
+          -- Store valid bit.
+          sValid_link(iChan)(iFrame) <= in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).valid;
           if (iFrame mod 2) = 0 then
-            -- Store valid bit.
-            sValid_link(iChan)(iFrame/2) <= in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).valid;
             -- Get first half of muon.
             if in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).valid = VALID_BIT then
               -- We're only using the lower 30 bits as the MSB is used for
@@ -166,23 +165,16 @@ begin
   end process gmt_in_reg;
 
   sMuons_flat <= unroll_link_muons(sMuons_link(NCHAN-1 downto 0));
-  sValid      <= unpack_valid_bits(sValid_link(NCHAN-1 downto 0));
   unpack_muons : for i in sMuonsIn'range generate
     sMuonsIn(i) <= unpack_mu_from_flat(sMuons_flat(i));
   end generate unpack_muons;
-  valid_combination: process (sValid)
-    variable tmp : std_logic;
-  begin  -- process valid_combination
-    for i in sValid'range loop
-      tmp := tmp or sValid(i);
-    end loop;  -- i
-    sFinalValid <= tmp;
-  end process valid_combination;
   convert_muons : for i in sMuonsIn'range generate
-    oMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i), sFinalValid);
+    oMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i));
   end generate convert_muons;
   oTracks    <= track_addresses_from_in_mus(sMuonsIn);
   oEmpty     <= unpack_empty_bits(sEmpty_link(NCHAN-1 downto 0));
   oSortRanks <= unpack_sort_rank(sSortRank_link(NCHAN-1 downto 0));
+
+  oValid      <= check_valid_bits(sValid_link(NCHAN-1 downto 0));
 end Behavioral;
 

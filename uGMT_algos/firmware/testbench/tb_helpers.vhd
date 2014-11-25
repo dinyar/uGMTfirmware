@@ -153,7 +153,6 @@ package body tb_helpers is
     read(L, dummy);
 
     read(L, cable_no);
-    muon.valid  := '1';
     read(L, pt);
     muon.pt     := to_unsigned(pt, 9);
     read(L, phi);

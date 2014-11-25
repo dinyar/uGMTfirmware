@@ -31,6 +31,11 @@ architecture rtl of ugmt_serdes is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
+  constant GMT_ALGO_LATENCY : natural := 5;
+  signal sValid_buffer      : std_logic_vector(GMT_ALGO_LATENCY-1 downto 0);
+  signal sValid_muons       : std_logic;
+  signal sValid_energies    : std_logic;
+
   signal sEnergies     : TCaloRegionEtaSlice_vector(27 downto 0);  -- All energies from Calo trigger.
   signal sEnergies_reg : TCaloRegionEtaSlice_vector(31 downto 0);
 
@@ -106,7 +111,8 @@ begin
       oMuons     => sMuons,
       oTracks    => sTracks,
       oEmpty     => sEmpty,
-      oSortRanks => sSortRanks
+      oSortRanks => sSortRanks,
+      oValid     => sValid_muons
       );
 
   deserialize_energies : entity work.deserializer_stage_energies
@@ -122,16 +128,27 @@ begin
       clk240    => clk240,
       clk40     => clk40,
       d         => d(NCHAN-1 downto 0),
-      oEnergies => sEnergies
+      oEnergies => sEnergies,
+      oValid    => sValid_energies
       );
 
   -----------------------------------------------------------------------------
   -- End 240 MHz domain.
   -----------------------------------------------------------------------------
 
+  sValid_buffer(0) <= sValid_muons and sValid_energies;
+
   -----------------------------------------------------------------------------
   -- Begin 40 MHz domain.
   -----------------------------------------------------------------------------
+
+  delay_valid_bit : process(clk40)
+  begin  -- process delay_valid_bit
+    if clk40'event and clk40 = '1' then  -- rising clock edge
+      sValid_buffer(sValid_buffer'high-1 downto 1) <= sValid_buffer(sValid_buffer'high-2 downto 0);
+    end if;
+  end process delay_valid_bit;
+
 
   gmt_in_reg : process (clk40)
   begin  -- process gmt_in_reg
@@ -239,6 +256,7 @@ begin
     port map (
       clk240               => clk240,
       clk40                => clk40,
+      iValid               => sValid_buffer(sValid_buffer'high);
       sMuons               => oMuons_reg,
       sIso                 => sIso_reg,
       iIntermediateMuonsB  => sIntermediateMuonsB_reg,

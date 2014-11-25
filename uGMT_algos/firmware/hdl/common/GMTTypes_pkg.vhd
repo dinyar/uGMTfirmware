@@ -25,16 +25,14 @@ package GMTTypes is
     phi     : std_logic_vector(9 downto 0);  -- 10 bit phi
   end record;
 
-  type    TGMTMuIn_vector is array (integer range <>) of TGMTMuIn;
+  type TGMTMuIn_vector is array (integer range <>) of TGMTMuIn;
   subtype TGMTMuIn_wedge is TGMTMuIn_vector (0 to 2);
-  type    TGMTMuIn_wedges is array (integer range <>) of TGMTMuIn_wedge;
+  type TGMTMuIn_wedges is array (integer range <>) of TGMTMuIn_wedge;
 
   -----------------------------------------------------------------------------
   -- GMT muon at the output of the GMT and inside the logic components
   -----------------------------------------------------------------------------
   type TGMTMu is record
-    valid  : std_logic;                     -- set if the first input word
-                                            -- consituting the muon is valid
     sysign : std_logic_vector(1 downto 0);  -- charge bit (1= plus)
     eta    : signed(8 downto 0);            -- 9 bit eta
     qual   : unsigned(3 downto 0);          -- 4 bit quality
@@ -76,9 +74,9 @@ package GMTTypes is
   end record;
 
   -- Collection of muon tracks
-  type    TGMTMuTracks is array (integer range <>) of TGMTMuTrackInfo;
+  type TGMTMuTracks is array (integer range <>) of TGMTMuTrackInfo;
   subtype TGMTMuTracks3 is TGMTMuTracks (2 downto 0);
-  type    TGMTMuTracks_vector is array (integer range <>) of TGMTMuTracks3;
+  type TGMTMuTracks_vector is array (integer range <>) of TGMTMuTracks3;
 
   -----------------------------------------------------------------------------
   -- Energy info from calo is stored in rings of 18 segments in phi
@@ -86,19 +84,19 @@ package GMTTypes is
   subtype TCaloRegionEnergy is unsigned (4 downto 0);  -- Energy value for a 2x2
                                                        -- region.
   -- Eta ring of energies.
-  type    TCaloRegionEtaSlice is array (integer range <>) of TCaloRegionEnergy;
+  type TCaloRegionEtaSlice is array (integer range <>) of TCaloRegionEnergy;
   -- All eta rings of detector. Two additional rings on each side for
   -- calculation of area energies.
-  type    TCaloRegionEtaSlice_vector is array (integer range <>) of TCaloRegionEtaSlice(35 downto 0);
+  type TCaloRegionEtaSlice_vector is array (integer range <>) of TCaloRegionEtaSlice(35 downto 0);
 
   subtype TCaloStripEnergy is unsigned(7 downto 0);  -- Energy value for strip in
                                                      -- phi
-  type    TCaloStripEtaSlice is array (35 downto 0) of TCaloStripEnergy;
-  type    TCaloStripEtaSlice_vector is array (27 downto 0) of TCaloStripEtaSlice;
+  type TCaloStripEtaSlice is array (35 downto 0) of TCaloStripEnergy;
+  type TCaloStripEtaSlice_vector is array (27 downto 0) of TCaloStripEtaSlice;
 
   subtype TCaloAreaEnergy is unsigned (4 downto 0);  -- Energy for a 5x5 regions
                                         -- area around a 2x2 region
-  type    TCaloArea_vector is array (integer range <>) of TCaloAreaEnergy;
+  type TCaloArea_vector is array (integer range <>) of TCaloAreaEnergy;
 
   -----------------------------------------------------------------------------
   -- Select bits for calorimeter regions
@@ -111,41 +109,41 @@ package GMTTypes is
 
   -- Sort Rank
   subtype TSortRank10 is std_logic_vector (9 downto 0);
-  type    TSortRank10_vector is array (integer range <>) of TSortRank10;
+  type TSortRank10_vector is array (integer range <>) of TSortRank10;
 
   -- Index bits
   subtype TIndexBits is unsigned(0 to 6);  -- Can point at one of 108 muons.
-  type    TIndexBits_vector is array (integer range <>) of TIndexBits;
+  type TIndexBits_vector is array (integer range <>) of TIndexBits;
 
   -- Select bits
   subtype TSelBits_1_of_36 is std_logic_vector(0 to 35);  -- Select bits for
                                                           -- first sorter unit
-  type    TSelBits_1_of_36_vec is array (integer range <>) of TSelBits_1_of_36;
+  type TSelBits_1_of_36_vec is array (integer range <>) of TSelBits_1_of_36;
   subtype TSelBits_1_of_32 is std_logic_vector(0 to 31);  -- Select bits for
                                                           -- second sorter unit
                                                           -- when using RPCs
-  type    TSelBits_1_of_32_vec is array (integer range <>) of TSelBits_1_of_32;
+  type TSelBits_1_of_32_vec is array (integer range <>) of TSelBits_1_of_32;
   subtype TSelBits_1_of_24 is std_logic_vector(0 to 23);  -- Select bits for
                                                           -- second sorter unit
-  type    TSelBits_1_of_24_vec is array (integer range <>) of TSelBits_1_of_24;
+  type TSelBits_1_of_24_vec is array (integer range <>) of TSelBits_1_of_24;
   subtype TSelBits_1_of_18 is std_logic_vector(0 to 17);  -- Select bits for
                                                           -- half sorter unit.
-  type    TSelBits_1_of_18_vec is array (integer range <>) of TSelBits_1_of_18;
+  type TSelBits_1_of_18_vec is array (integer range <>) of TSelBits_1_of_18;
   subtype TSelBits_1_of_16 is std_logic_vector(0 to 15);  -- Select bits for
                                                           -- matching unit.
-  type    TSelBits_1_of_16_vec is array (integer range <>) of TSelBits_1_of_16;
+  type TSelBits_1_of_16_vec is array (integer range <>) of TSelBits_1_of_16;
 
   subtype TPairIndex is unsigned(7 downto 0);
   -- Vector which holds indices of TF muons to be merged with Nth RPC muon.
-  type    TPairVector is array (integer range <>) of TPairIndex;
+  type TPairVector is array (integer range <>) of TPairIndex;
 
   -- Match Quality Matrix:
   subtype TMatchQual is unsigned(3 downto 0);
-  type    TMQMatrix is array (integer range 0 to 3, integer range 0 to 71) of TMatchQual;
-  type    TMQMatrix_vec is array (integer range<>) of TMQMatrix;
+  type TMQMatrix is array (integer range 0 to 3, integer range 0 to 71) of TMatchQual;
+  type TMQMatrix_vec is array (integer range<>) of TMQMatrix;
 
   subtype TCancelBits is std_logic_vector(7 downto 0);
-  type    TCancelBits_vec is array (integer range <>) of TCancelBits;
+  type TCancelBits_vec is array (integer range <>) of TCancelBits;
 
   -- Stuff for muon merging.
   type TRowColIndex_vector is array (integer range <>) of unsigned(6 downto 0);
@@ -155,7 +153,7 @@ package GMTTypes is
 
   -- Iso bits
   subtype TIsoBits is std_logic_vector(1 downto 0);
-  type    TIsoBits_vector is array (integer range <>) of TIsoBits;
+  type TIsoBits_vector is array (integer range <>) of TIsoBits;
 
   -----------------------------------------------------------------------------
   -- Addresses used for extrapolation memories
@@ -208,29 +206,28 @@ package GMTTypes is
   -----------------------------------------------------------------------------
   subtype TFlatMuon is std_logic_vector(63 downto 0);
   -- Contains muons from one link.
-  type    TFlatMuon_link is array (NUM_MUONS_IN-1 downto 0) of TFlatMuon;
+  type TFlatMuon_link is array (NUM_MUONS_IN-1 downto 0) of TFlatMuon;
   -- Contains muons from all links.
-  type    TFlatMuons is array (natural range <>) of TFlatMuon_link;
+  type TFlatMuons is array (natural range <>) of TFlatMuon_link;
   -- Contains flat muons inside a simple vector
-  type    TFlatMuon_vector is array (natural range <>) of TFlatMuon;
+  type TFlatMuon_vector is array (natural range <>) of TFlatMuon;
 
   -- Empty bits for muons from one link for one BX.
   type TEmpty_link is array (natural range <>) of std_logic_vector(NUM_MUONS_IN-1 downto 0);
-
-  -- Valid bits for muons from one link for one BX.
-  type TValid_link is array (natural range <>) of std_logic_vector(NUM_MUONS_IN-1 downto 0);
 
   type TIndexBits_link is array (natural range <>) of TIndexBits_vector(NUM_MUONS_IN-1 downto 0);
 
   type TSortRank_link is array (natural range <>) of TSortRank10_vector(NUM_MUONS_IN-1 downto 0);
 
-  function unroll_link_muons (signal iMuons_link  : TFlatMuons) return TFlatMuon_vector;
-  function unpack_mu_from_flat (signal iMuon_flat : TFlatMuon) return TGMTMuIn;
-  function gmt_mu_from_in_mu (signal iMuonIn : TGMTMuIn;
-                              signal iValid  : std_logic) return TGMTMu;
+  -- Valid bits for words from one link for one BX.
+  type TValid_link is array (natural range <>) of std_logic_vector(2*NUM_MUONS_IN-1 downto 0);
+
+  function unroll_link_muons (signal iMuons_link         : TFlatMuons) return TFlatMuon_vector;
+  function unpack_mu_from_flat (signal iMuon_flat        : TFlatMuon) return TGMTMuIn;
+  function gmt_mu_from_in_mu (signal iMuonIn             : TGMTMuIn) return TGMTMu;
   function calo_etaslice_from_flat (constant flat        : std_logic_vector) return TCaloRegionEtaSlice;
   function track_addresses_from_in_mus(signal iGMTMu_vec : TGMTMuIn_vector) return TGMTMuTracks_vector;
-  function unpack_valid_bits (signal iValid_link         : TValid_link) return std_logic_vector;
+  function check_valid_bits (signal iValid_link          : TValid_link) return std_logic;
   function unpack_idx_bits(signal iIdxBits               : TIndexBits_link) return TIndexBits_vector;
   function unpack_sort_rank(signal iSortRanks            : TSortRank_link) return TSortRank10_vector;
   function unpack_empty_bits(signal iEmptyBits           : TEmpty_link) return std_logic_vector;
@@ -358,12 +355,10 @@ package body GMTTypes is
   -- Convert input muons to GMT muons.
   -----------------------------------------------------------------------------
   function gmt_mu_from_in_mu (
-    signal iMuonIn : TGMTMuIn;
-    signal iValid  : std_logic)
+    signal iMuonIn : TGMTMuIn)
     return TGMTMu is
     variable oMuon : TGMTMu;
   begin  -- gmt_mu_from_in_mu
-    oMuon.valid  := iValid;
     oMuon.sysign := iMuonIn.sysign;
     oMuon.eta    := signed(iMuonIn.eta);
     oMuon.qual   := unsigned(iMuonIn.qual);
@@ -376,19 +371,19 @@ package body GMTTypes is
   -----------------------------------------------------------------------------
   -- Unpack valid bits
   -----------------------------------------------------------------------------
-  function unpack_valid_bits (
+  function check_valid_bits (
     signal iValid_link : TValid_link)
-    return std_logic_vector is
-    variable oValid : std_logic_vector(iValid_link'length*NUM_MUONS_LINK-1 downto 0);
-  begin  -- unpack_valid_bits
+    return std_logic is
+    variable oValid : std_logic := 0;
+  begin  -- check_valid_bits
     for i in iValid_link'range loop
       for j in iValid_link(i)'range loop
-        oValid(i*iValid_link(i)'length+j) := iValid_link(i)(j);
+        oValid := oValid or iValid_link(i)(j);
       end loop;  -- j
     end loop;  -- i
 
     return oValid;
-  end unpack_valid_bits;
+  end check_valid_bits;
 
   -----------------------------------------------------------------------------
   -- Unpack index bits.
