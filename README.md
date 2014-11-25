@@ -39,3 +39,28 @@ cd
 make project
 ```
 
+## Instructions for building the firmware
+An included script can be used to generate a bitfile in one step. The follwoign set up is necessary for this to work:
+
+1. Copy `runAllImplementationSteps.sh` from `uGMTfirmware` to `[mp7framework_directory]/mp7_690es` and make executable:
+```
+cd [mp7framework_directory]/mp7_690es
+cp uGMTfirmware/runAllImplementationSteps.sh .
+chmod u+x runAllImplementationSteps.sh
+```
+2. Copy both smartxplorer config files to a directory of your choosing:
+```
+mkdir -p ~/workspace/smartxplorer/config/
+cp uGMTfirmware/smartxplorer_* ~/workspace/smartxplorer/config/.
+```
+3. Create a directory to store the results of all smartxplorer runs (N.B.: This should be a local directory as the results can become large (O(10 GB)):
+```
+mkdir /tmp/smartxplorer_resuls/
+```
+4. Modify the file with you favourite editor and set the path to the config files and the working directory according to the above. Finally uncomment the line outputting the warning.
+5. Run the script:
+```
+./runAllImplementationSteps.sh
+```
+
+To create (or modify the existing) custom strategies consult the Xilinx documentation (or contact me).
