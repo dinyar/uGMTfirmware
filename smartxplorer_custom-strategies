@@ -1,0 +1,11 @@
+{
+"virtex7":
+(
+    {"name": "MapRegDup",
+        "map": " -ol high -register_duplication on -t 3 -w ",
+        "par": " -ol high"},
+    {"name": "MapLogicOptIOReg",
+        "map": " -ol high -logic_opt on -pr b -w ",
+        "par": " -ol high -xe c "},
+),
+}
