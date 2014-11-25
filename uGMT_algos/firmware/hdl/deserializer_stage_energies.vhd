@@ -22,6 +22,8 @@ end deserializer_stage_energies;
 
 architecture Behavioral of deserializer_stage_energies is
 
+  signal sValid : std_logic_vector(ENERGY_QUAD_ASSIGNMENT'range);
+  
 begin  -- Behavioral
 
   deserialize_loop : for i in ENERGY_QUAD_ASSIGNMENT'range generate
@@ -32,9 +34,17 @@ begin  -- Behavioral
         clk240    => clk240,
         clk40     => clk40,
         d         => d(ENERGY_QUAD_ASSIGNMENT(i)*4+3 downto ENERGY_QUAD_ASSIGNMENT(i)*4),
-        oEnergies => oEnergies(i*4+3 downto i*4);
-        oValid    => oValid
+        oEnergies => oEnergies(i*4+3 downto i*4),
+        oValid    => sValid(i)
         );
   end generate deserialize_loop;
-  
+
+
+  combine_valid_bits : process (sValid)
+    variable tmpValid : std_logic := '0';
+  begin  -- process combine_valid_bits
+    for i in ENERGY_QUAD_ASSIGNMENT'range loop
+      tmpValid := tmpValid or sValid(i);
+    end loop;  -- i
+  end process combine_valid_bits;
 end Behavioral;

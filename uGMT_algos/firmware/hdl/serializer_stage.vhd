@@ -72,16 +72,16 @@ begin
     split_muons : for j in NUM_INTERM_MU_OUT_CHANS-1 downto 0 generate
       -- Intermediate muons don't have isolation applied, so forcing Iso to "00".
       sOutBuf(2*i)(j+NUM_OUT_CHANS).data    <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIso)(31 downto 0);
-      sOutBuf(2*i)(j+NUM_OUT_CHANS).valid   <= sIntermediateMuons(i+3*j).valid;
+      sOutBuf(2*i)(j+NUM_OUT_CHANS).valid   <= iValid;
       sOutBuf(2*i+1)(j+NUM_OUT_CHANS).data  <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIso)(63 downto 32);
-      sOutBuf(2*i+1)(j+NUM_OUT_CHANS).valid <= sIntermediateMuons(i+3*j).valid;
+      sOutBuf(2*i+1)(j+NUM_OUT_CHANS).valid <= iValid;
     end generate split_muons;
   end generate serialize_intermediate_muons;
 
   serialize_intermediate_sort_ranks : for i in NUM_FRAMES_LINK-1 downto 0 generate
     split_srt_ranks : for j in NUM_INTERM_SRT_OUT_CHANS-1 downto 0 generate
       sOutBuf(i)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS).data  <= sSortRanks(2*i+12*j) & sSortRanks(2*i+12*j+1) & (11 downto 0 => '0');
-      sOutBuf(i)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS).valid <= sIntermediateMuons(2*i+12*j).valid or sIntermediateMuons(2*i+12*j+1).valid;
+      sOutBuf(i)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS).valid <= iValid;
     end generate split_srt_ranks;
   end generate serialize_intermediate_sort_ranks;
 

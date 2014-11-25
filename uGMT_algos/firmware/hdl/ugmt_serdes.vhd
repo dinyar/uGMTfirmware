@@ -256,7 +256,7 @@ begin
     port map (
       clk240               => clk240,
       clk40                => clk40,
-      iValid               => sValid_buffer(sValid_buffer'high);
+      iValid               => sValid_buffer(sValid_buffer'high),
       sMuons               => oMuons_reg,
       sIso                 => sIso_reg,
       iIntermediateMuonsB  => sIntermediateMuonsB_reg,

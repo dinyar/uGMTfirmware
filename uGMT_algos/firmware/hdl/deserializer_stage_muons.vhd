@@ -36,6 +36,7 @@ architecture Behavioral of deserializer_stage_muons is
   signal ipbw : ipb_wbus_array(MU_QUAD_ASSIGNMENT'range);
   signal ipbr : ipb_rbus_array(MU_QUAD_ASSIGNMENT'range);
 
+  signal sValid : std_logic_vector(MU_QUAD_ASSIGNMENT'range);
 begin
 
   -----------------------------------------------------------------------------
@@ -76,11 +77,20 @@ begin
         oMuons     => oMuons(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oTracks    => oTracks(i*4+3 downto i*4),
         oEmpty     => oEmpty(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
-        oSortRanks => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN);
-        oValid     => oValid
-       -- TODO: Need output for calo idx bits (and optionally for coords at
-       -- vertex) here.
+        oSortRanks => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
+        oValid     => sValid(i)
+        -- TODO: Need output for calo idx bits (and optionally for coords at
+        -- vertex) here.
         );
   end generate deserialize_loop;
 
+  combine_valid_bits : process (sValid)
+    variable tmpValid : std_logic := '0';
+  begin  -- process combine_valid_bits
+    for i in MU_QUAD_ASSIGNMENT'range loop
+      tmpValid := tmpValid or sValid(i);
+    end loop;  -- i
+    oValid <= tmpValid;
+  end process combine_valid_bits;
+  
 end Behavioral;

@@ -374,7 +374,7 @@ package body GMTTypes is
   function check_valid_bits (
     signal iValid_link : TValid_link)
     return std_logic is
-    variable oValid : std_logic := 0;
+    variable oValid : std_logic := '0';
   begin  -- check_valid_bits
     for i in iValid_link'range loop
       for j in iValid_link(i)'range loop
