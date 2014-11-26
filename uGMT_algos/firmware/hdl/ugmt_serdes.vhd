@@ -136,7 +136,7 @@ begin
   -- End 240 MHz domain.
   -----------------------------------------------------------------------------
 
-  sValid_buffer(0) <= sValid_muons and sValid_energies;
+  sValid_buffer(0) <= sValid_muons or sValid_energies;
 
   -----------------------------------------------------------------------------
   -- Begin 40 MHz domain.
@@ -145,7 +145,7 @@ begin
   delay_valid_bit : process(clk40)
   begin  -- process delay_valid_bit
     if clk40'event and clk40 = '1' then  -- rising clock edge
-      sValid_buffer(sValid_buffer'high-1 downto 1) <= sValid_buffer(sValid_buffer'high-2 downto 0);
+      sValid_buffer(sValid_buffer'high downto 1) <= sValid_buffer(sValid_buffer'high-1 downto 0);
     end if;
   end process delay_valid_bit;
 
