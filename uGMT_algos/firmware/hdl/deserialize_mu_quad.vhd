@@ -14,6 +14,8 @@ entity deserialize_mu_quad is
     VALID_BIT : std_logic
     );
   port (
+    bunch_ctr  : in  std_logic_vector(11 downto 0);
+    orb_ctr    : in  std_logic_vector(23 downto 0);
     clk_ipb    : in  std_logic;
     rst        : in  std_logic;
     ipb_in     : in  ipb_wbus;
@@ -36,7 +38,7 @@ architecture Behavioral of deserialize_mu_quad is
 
   signal in_buf : TQuadTransceiverBufferIn;
 
-  type   TSortRankInput is array (natural range <>) of std_logic_vector(12 downto 0);
+  type TSortRankInput is array (natural range <>) of std_logic_vector(12 downto 0);
   signal sSrtRnkIn : TSortRankInput(NCHAN-1 downto 0);
 
   signal sMuons_link : TFlatMuons(NCHAN-1 downto 0);  -- All input muons.
@@ -51,7 +53,7 @@ architecture Behavioral of deserialize_mu_quad is
 
   -- Stores sort ranks for each 32 bit word that arrives from TFs. Every second
   -- such rank is garbage and will be disregarded in second step.
-  type   TSortRankBuffer is array (2*2*NUM_MUONS_LINK-1 downto 0) of TSortRank10_vector(NCHAN-1 downto 0);
+  type TSortRankBuffer is array (2*2*NUM_MUONS_LINK-1 downto 0) of TSortRank10_vector(NCHAN-1 downto 0);
   signal sSortRank_buffer : TSortRankBuffer;
   signal sSortRank_link   : TSortRank_link(NCHAN-1 downto 0);
   signal ipbusWe_vector   : std_logic_vector(sSortRank_buffer(0)'range);
@@ -170,7 +172,7 @@ begin
   unpack_muons : for i in sMuonsIn'range generate
     sMuonsIn(i) <= unpack_mu_from_flat(sMuons_flat(i));
   end generate unpack_muons;
-  valid_combination: process (sValid)
+  valid_combination : process (sValid)
     variable tmp : std_logic;
   begin  -- process valid_combination
     for i in sValid'range loop

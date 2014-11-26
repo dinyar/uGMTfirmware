@@ -13,6 +13,8 @@ entity deserialize_energy_quad is
     VALID_BIT : std_logic
     );
   port (
+    bunch_ctr : in  std_logic_vector(11 downto 0);
+    orb_ctr   : in  std_logic_vector(23 downto 0);
     clk240    : in  std_logic;
     clk40     : in  std_logic;
     d         : in  ldata(3 downto 0);
@@ -22,7 +24,7 @@ end deserialize_energy_quad;
 
 architecture Behavioral of deserialize_energy_quad is
   signal in_buf    : TQuadTransceiverBufferIn;
-  type   TQuadDataBuffer is array (natural range <>) of std_logic_vector(191 downto 0);
+  type TQuadDataBuffer is array (natural range <>) of std_logic_vector(191 downto 0);
   signal sLinkData : TQuadDataBuffer(NCHAN-1 downto 0);
 begin  -- Behavioral
 
@@ -43,7 +45,7 @@ begin  -- Behavioral
 
   gmt_in_reg : process (clk40)
   begin  -- process gmt_in_reg
-    if clk40'event and clk40 = '1' then         -- rising clock edge
+    if clk40'event and clk40 = '1' then  -- rising clock edge
       for chan in d'range loop
         for bx in BUFFER_IN_MU_POS_HIGH downto BUFFER_IN_MU_POS_LOW loop
           if in_buf(bx)(chan).valid = VALID_BIT then

@@ -14,6 +14,8 @@ entity deserializer_stage_muons is
     VALID_BIT : std_logic
     );
   port (
+    bunch_ctr  : in  std_logic_vector(11 downto 0);
+    orb_ctr    : in  std_logic_vector(23 downto 0);
     clk_ipb    : in  std_logic;
     rst        : in  std_logic;
     ipb_in     : in  ipb_wbus;
@@ -65,6 +67,8 @@ begin
       generic map (
         VALID_BIT => VALID_BIT)
       port map (
+        bunch_ctr  => bunch_ctr,
+        orb_ctr    => orb_ctr,
         clk_ipb    => clk_ipb,
         rst        => rst,
         ipb_in     => ipbw(i),
@@ -76,8 +80,8 @@ begin
         oTracks    => oTracks(i*4+3 downto i*4),
         oEmpty     => oEmpty(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oSortRanks => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN)
-        -- TODO: Need output for calo idx bits (and optionally for coords at
-        -- vertex) here.
+       -- TODO: Need output for calo idx bits (and optionally for coords at
+       -- vertex) here.
         );
   end generate deserialize_loop;
 

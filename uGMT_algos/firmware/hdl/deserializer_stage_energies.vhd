@@ -12,6 +12,8 @@ entity deserializer_stage_energies is
     VALID_BIT : std_logic
     );
   port (
+    bunch_ctr : in  std_logic_vector(11 downto 0);
+    orb_ctr   : in  std_logic_vector(23 downto 0);
     clk240    : in  std_logic;
     clk40     : in  std_logic;
     d         : in  ldata(NCHAN-1 downto 0);
@@ -28,6 +30,8 @@ begin  -- Behavioral
       generic map (
         VALID_BIT => VALID_BIT)
       port map (
+        bunch_ctr => bunch_ctr,
+        orb_ctr   => orb_ctr,
         clk240    => clk240,
         clk40     => clk40,
         d         => d(ENERGY_QUAD_ASSIGNMENT(i)*4+3 downto ENERGY_QUAD_ASSIGNMENT(i)*4),
