@@ -226,7 +226,7 @@ package body tb_helpers is
     variable oOutput : out   ldata(NCHAN-1 downto 0)) is
     variable word  : std_logic_vector(31 downto 0);
     variable valid : bit;
-    variable dummy : string(1 to 6);
+    variable dummy : string(1 to 7);
   begin  -- ReadInputFrame
     read(L, dummy);
 
