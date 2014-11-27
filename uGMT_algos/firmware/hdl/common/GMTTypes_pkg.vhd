@@ -378,7 +378,9 @@ package body GMTTypes is
   begin  -- check_valid_bits
     for i in iValid_link'range loop
       for j in iValid_link(i)'range loop
-        oValid := oValid or iValid_link(i)(j);
+        if iValid_link(i)(j) = '1' then
+          oValid := '1';
+        end if;
       end loop;  -- j
     end loop;  -- i
 

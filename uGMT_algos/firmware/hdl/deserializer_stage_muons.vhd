@@ -79,8 +79,8 @@ begin
         oEmpty     => oEmpty(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oSortRanks => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oValid     => sValid(i)
-        -- TODO: Need output for calo idx bits (and optionally for coords at
-        -- vertex) here.
+       -- TODO: Need output for calo idx bits (and optionally for coords at
+       -- vertex) here.
         );
   end generate deserialize_loop;
 
@@ -88,9 +88,11 @@ begin
     variable tmpValid : std_logic := '0';
   begin  -- process combine_valid_bits
     for i in MU_QUAD_ASSIGNMENT'range loop
-      tmpValid := tmpValid or sValid(i);
+      if vValid(i) = '1' then
+        tmpValid := '1'
+      end if;
     end loop;  -- i
     oValid <= tmpValid;
   end process combine_valid_bits;
-  
+
 end Behavioral;
