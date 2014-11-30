@@ -84,15 +84,7 @@ begin
         );
   end generate deserialize_loop;
 
-  combine_valid_bits : process (sValid)
-    variable tmpValid : std_logic := '0';
-  begin  -- process combine_valid_bits
-    for i in MU_QUAD_ASSIGNMENT'range loop
-      if vValid(i) = '1' then
-        tmpValid := '1'
-      end if;
-    end loop;  -- i
-    oValid <= tmpValid;
-  end process combine_valid_bits;
+  
+  oValid <=  combine_or(sValid);
 
 end Behavioral;

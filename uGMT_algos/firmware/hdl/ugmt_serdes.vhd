@@ -31,10 +31,10 @@ architecture rtl of ugmt_serdes is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
-  constant GMT_ALGO_LATENCY : natural := 5;
-  signal sValid_buffer      : std_logic_vector(GMT_ALGO_LATENCY-1 downto 0);
-  signal sValid_muons       : std_logic;
-  signal sValid_energies    : std_logic;
+  constant GMT_ALGO_LATENCY : natural := 9;
+  signal   sValid_buffer    : std_logic_vector(GMT_ALGO_LATENCY-1 downto 0);
+  signal   sValid_muons     : std_logic;
+  signal   sValid_energies  : std_logic;
 
   signal sEnergies     : TCaloRegionEtaSlice_vector(27 downto 0);  -- All energies from Calo trigger.
   signal sEnergies_reg : TCaloRegionEtaSlice_vector(31 downto 0);

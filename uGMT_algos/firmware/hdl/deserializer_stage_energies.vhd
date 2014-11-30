@@ -40,11 +40,6 @@ begin  -- Behavioral
   end generate deserialize_loop;
 
 
-  combine_valid_bits : process (sValid)
-    variable tmpValid : std_logic := '0';
-  begin  -- process combine_valid_bits
-    for i in ENERGY_QUAD_ASSIGNMENT'range loop
-      tmpValid := tmpValid or sValid(i);
-    end loop;  -- i
-  end process combine_valid_bits;
+  oValid <= combine_or(sValid);
+  
 end Behavioral;
