@@ -13,6 +13,8 @@ entity deserialize_energy_quad is
     VALID_BIT : std_logic
     );
   port (
+    bunch_ctr : in  std_logic_vector(11 downto 0);
+    orb_ctr   : in  std_logic_vector(23 downto 0);
     clk240    : in  std_logic;
     clk40     : in  std_logic;
     d         : in  ldata(3 downto 0);

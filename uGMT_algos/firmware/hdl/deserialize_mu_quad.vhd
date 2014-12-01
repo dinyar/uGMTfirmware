@@ -14,6 +14,8 @@ entity deserialize_mu_quad is
     VALID_BIT : std_logic
     );
   port (
+    bunch_ctr  : in  std_logic_vector(11 downto 0);
+    orb_ctr    : in  std_logic_vector(23 downto 0);
     clk_ipb    : in  std_logic;
     rst        : in  std_logic;
     ipb_in     : in  ipb_wbus;
