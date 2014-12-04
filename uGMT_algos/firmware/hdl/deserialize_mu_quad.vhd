@@ -218,7 +218,7 @@ begin
     syncCounterErrors_register(i)  <= std_logic_vector(to_unsigned(syncCounterErrors(i), 32));
   end generate convert_error_counters;
 
-  bunchCounterErr : entity work.ipbus_reg_v
+  bunchCounterErr : entity work.ipbus_ctrlreg_v
     generic map (
       N_REG => 4)
     port map (
@@ -232,7 +232,7 @@ begin
                                         -- the reset in this way?
       stb       => open
       );    
-  bcZeroCounterErr : entity work.ipbus_reg_v
+  bcZeroCounterErr : entity work.ipbus_ctrlreg_v
     generic map (
       N_REG => 4)
     port map (
@@ -246,7 +246,7 @@ begin
                                         -- the reset in this way?
       stb       => open
       );    
-  syncCounterErr : entity work.ipbus_reg_v
+  syncCounterErr : entity work.ipbus_ctrlreg_v
     generic map (
       N_REG => 4)
     port map (
