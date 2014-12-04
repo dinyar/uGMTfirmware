@@ -14,8 +14,6 @@ entity deserializer_stage_muons is
     VALID_BIT : std_logic
     );
   port (
-    bunch_ctr  : in  std_logic_vector(11 downto 0);
-    orb_ctr    : in  std_logic_vector(23 downto 0);
     clk_ipb    : in  std_logic;
     rst        : in  std_logic;
     ipb_in     : in  ipb_wbus;
@@ -69,8 +67,6 @@ begin
       generic map (
         VALID_BIT => VALID_BIT)
       port map (
-        bunch_ctr  => bunch_ctr,
-        orb_ctr    => orb_ctr,
         clk_ipb    => clk_ipb,
         rst        => rst,
         ipb_in     => ipbw(i),

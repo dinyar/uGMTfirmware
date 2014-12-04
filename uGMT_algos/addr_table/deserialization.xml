@@ -1,10 +1,4 @@
 <!-- TODO: The entries below are actually groups of LUTs. This should be represented! -->
 <node description="Deserializer stage for uGMT">
   <node id="sort_ranks" address="0x40000" size="0x40000" mode="block" description="Group of LUTs containing the sort ranks for incoming muons." fwinfo="endpoint;width=14" />
-  <node id="bunch_ctr_err" address="0x80000" description="Status register for mismatches between bunch counters." fwinfo="endpoint;width=1">
-    <node id="link0" address="0x00000000" permission="r" />
-    <node id="link1" address="0x00000000" permission="r" />
-    <node id="link2" address="0x00000000" permission="r" />
-    <node id="link3" address="0x00000000" permission="r" />
-  </node>
 </node>

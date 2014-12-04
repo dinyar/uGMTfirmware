@@ -14,16 +14,14 @@ entity ugmt_serdes is
     VALID_BIT : std_logic := '0'
     );
   port(
-    clk_ipb   : in  std_logic;
-    rst       : in  std_logic;
-    ipb_in    : in  ipb_wbus;
-    ipb_out   : out ipb_rbus;
-    clk240    : in  std_logic;
-    clk40     : in  std_logic;
-    bunch_ctr : in  std_logic_vector(11 downto 0);
-    orb_ctr   : in  std_logic_vector(23 downto 0);
-    d         : in  ldata(NCHAN - 1 downto 0);
-    q         : out ldata(NCHAN - 1 downto 0)
+    clk_ipb : in  std_logic;
+    rst     : in  std_logic;
+    ipb_in  : in  ipb_wbus;
+    ipb_out : out ipb_rbus;
+    clk240  : in  std_logic;
+    clk40   : in  std_logic;
+    d       : in  ldata(NCHAN - 1 downto 0);
+    q       : out ldata(NCHAN - 1 downto 0)
     );
 
 end ugmt_serdes;
@@ -103,8 +101,6 @@ begin
       VALID_BIT => VALID_BIT
       )
     port map (
-      bunch_ctr  => bunch_ctr,
-      orb_ctr    => orb_ctr,
       clk_ipb    => clk_ipb,
       rst        => rst,
       ipb_in     => ipbw(N_SLV_DESERIALIZATION),
@@ -125,8 +121,6 @@ begin
       VALID_BIT => VALID_BIT
       )
     port map (
-      bunch_ctr  => bunch_ctr,
-      orb_ctr    => orb_ctr,
       --clk_ipb    => clk_ipb,
       --rst        => rst,
       --ipb_in     => ipbw(1),

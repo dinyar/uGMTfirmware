@@ -4,8 +4,6 @@ use IEEE.numeric_std.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_reg_types.all;
-use work.ipbus_ctrlreg_v.all;
 
 use work.GMTTypes.all;
 use work.ugmt_constants.all;
@@ -16,8 +14,6 @@ entity deserialize_mu_quad is
     VALID_BIT : std_logic
     );
   port (
-    bunch_ctr  : in  std_logic_vector(11 downto 0);
-    orb_ctr    : in  std_logic_vector(23 downto 0);
     clk_ipb    : in  std_logic;
     rst        : in  std_logic;
     ipb_in     : in  ipb_wbus;
@@ -41,7 +37,7 @@ architecture Behavioral of deserialize_mu_quad is
 
   signal in_buf : TQuadTransceiverBufferIn;
 
-  type   TSortRankInput is array (natural range <>) of std_logic_vector(12 downto 0);
+  type TSortRankInput is array (natural range <>) of std_logic_vector(12 downto 0);
   signal sSrtRnkIn : TSortRankInput(NCHAN-1 downto 0);
 
   signal sMuons_link : TFlatMuons(NCHAN-1 downto 0);  -- All input muons.
@@ -54,19 +50,11 @@ architecture Behavioral of deserialize_mu_quad is
 
   -- Stores sort ranks for each 32 bit word that arrives from TFs. Every second
   -- such rank is garbage and will be disregarded in second step.
-  type   TSortRankBuffer is array (2*2*NUM_MUONS_LINK-1 downto 0) of TSortRank10_vector(NCHAN-1 downto 0);
+  type TSortRankBuffer is array (2*2*NUM_MUONS_LINK-1 downto 0) of TSortRank10_vector(NCHAN-1 downto 0);
   signal sSortRank_buffer : TSortRankBuffer;
   signal sSortRank_link   : TSortRank_link(NCHAN-1 downto 0);
   signal ipbusWe_vector   : std_logic_vector(sSortRank_buffer(0)'range);
 
-  type   TControlBits_vector is array (NCHAN-1 downto 0) of std_logic_vector(5 downto 0);
-  type   TErrorCounter_vector is array (NCHAN-1 downto 0) of integer range 0 to 65535;
-  signal bunchCounterErrors          : TErrorCounter_vector;
-  signal bcZeroErrors                : TErrorCounter_vector;
-  signal syncCounterErrors           : TErrorCounter_vector;
-  signal bunchCounterErrors_register : ipb_reg_v(NCHAN-1 downto 0);
-  signal bcZeroErrors_register       : ipb_reg_v(NCHAN-1 downto 0);
-  signal syncCounterErrors_register  : ipb_reg_v(NCHAN-1 downto 0);
 begin
 
   -----------------------------------------------------------------------------
@@ -74,14 +62,15 @@ begin
   -----------------------------------------------------------------------------
   -- Use bits before start of addresses that truly point to addresses
   -- inside LUTs to address the LUTs themselves.
-  -- Need to address 4 LUTs, three additional register banks -> 2 bits needed.
-  -- SortRank LUT has 12 bit addresses for IPbus -> will use 14th to 12th bits.
-  sel_lut_group <= std_logic_vector(unsigned(ipb_in.ipb_addr(14 downto 12)));
+  -- Need to address 4 LUTs -> 2 bits needed.
+  -- SortRank LUT has 12 bit addresses for IPbus. -> will use 13th and 12th
+  -- bits.
+  sel_lut_group <= std_logic_vector(unsigned(ipb_in.ipb_addr(13 downto 12)));
 
   fabric : entity work.ipbus_fabric_sel
     generic map(
-      NSLV      => NCHAN+3,
-      SEL_WIDTH => 3)
+      NSLV      => NCHAN,
+      SEL_WIDTH => 2)
     port map(
       ipb_in          => ipb_in,
       ipb_out         => ipb_out,
@@ -130,21 +119,12 @@ begin
 
 
   gmt_in_reg : process (clk40)
-    variable vControlBits_raw : TControlBits_vector;
-
-    variable vSyncCounterErrors   : TErrorCounter_vector := (0, 0, 0, 0);
-    variable vBunchCounterErrors  : TErrorCounter_vector := (0, 0, 0, 0);
-    variable vBcZeroCounterErrors : TErrorCounter_vector := (0, 0, 0, 0);
   begin  -- process gmt_in_reg
     if clk40'event and clk40 = '1' then  -- rising clock edge
       for iChan in NCHAN-1 downto 0 loop
         for iFrame in 2*NUM_MUONS_LINK-1 downto 0 loop
           -- Store valid bit.
           sValid_link(iChan)(iFrame) <= in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).valid;
-
-          -- Store control bits that are encoded into the MSB of each input word.
-          vControlBits_raw(iChan)(iFrame) := in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).data(31);
-
           if (iFrame mod 2) = 0 then
             -- Get first half of muon.
             if in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).valid = VALID_BIT then
@@ -180,86 +160,9 @@ begin
             sSortRank_link(iChan)(iFrame/2) <= sSortRank_buffer(iFrame+BUFFER_IN_MU_POS_LOW)(iChan);
           end if;
         end loop;  -- iFrame
-
-        -- Check control bits and increment error counters.        
-        vBunchCounterErrors  := bunchCounterErrors;
-        vBcZeroCounterErrors := bcZeroErrors;
-        vSyncCounterErrors   := syncCounterErrors;
-
-        if vControlBits_raw(iChan)(iFrame)(B2 downto B0) /= bunch_ctr(2 downto 0) then
-          if vBunchCounterErrors < 65535 then
-            vBunchCounterErrors := vBunchCounterErrors+1;
-          else
-            vBunchCounterErrors := 1;
-          end if;
-        end if;
-
-        if vControlBits_raw(iChan)(SE_FRM).data(31) = '1' then
-          if vSyncCounterErrors < 65535 then
-            vSyncCounterErrors := vSyncCounterErrors+1;
-          else
-            vSyncCounterErrors := 1;
-          end if;
-        end if;
-
-        -- TODO: Resets and BC0 counter.
       end loop;  -- iChan
-
-      bunchCounterErrors <= vBunchCounterErrors;
-      bcZeroErrors       <= vBcZeroCounterErrors;
-      syncCounterErrors  <= vSyncCounterErrors;
-      
     end if;
   end process gmt_in_reg;
-
-  convert_error_counters : for i in NCHAN-1 downto 0 generate
-    bunchCounterErrors_register(i) <= std_logic_vector(to_unsigned(bunchCounterErrors(i), 32));
-    bcZeroErrors_register(i)       <= std_logic_vector(to_unsigned(bcZeroErrors(i), 32));
-    syncCounterErrors_register(i)  <= std_logic_vector(to_unsigned(syncCounterErrors(i), 32));
-  end generate convert_error_counters;
-
-  bunchCounterErr : entity work.ipbus_ctrlreg_v
-    generic map (
-      N_REG => 4)
-    port map (
-      clk       => clk_ipb,
-      reset     => rst,
-      ipbus_in  => ipb_wbus(4),
-      ipbus_out => ipb_rbus(4),
-      d         => bunchCounterErrors_register;
-      q         => open;                -- Can I plug in another bunchCounter
-                                        -- signal and loop it back to implement
-                                        -- the reset in this way?
-      stb       => open
-      );    
-  bcZeroCounterErr : entity work.ipbus_ctrlreg_v
-    generic map (
-      N_REG => 4)
-    port map (
-      clk       => clk_ipb,
-      reset     => rst,
-      ipbus_in  => ipb_wbus(5),
-      ipbus_out => ipb_rbus(5),
-      d         => bcZeroErrors_register;
-      q         => open;                -- Can I plug in another bcZeroCounter
-                                        -- signal and loop it back to implement
-                                        -- the reset in this way?
-      stb       => open
-      );    
-  syncCounterErr : entity work.ipbus_ctrlreg_v
-    generic map (
-      N_REG => 4)
-    port map (
-      clk       => clk_ipb,
-      reset     => rst,
-      ipbus_in  => ipb_wbus(6),
-      ipbus_out => ipb_rbus(6),
-      d         => syncCounterErrors_register;
-      q         => open;                -- Can I plug in another syncCounter
-                                        -- signal and loop it back to implement
-                                        -- the reset in this way?
-      stb       => open
-      );    
 
   sMuons_flat <= unroll_link_muons(sMuons_link(NCHAN-1 downto 0));
   unpack_muons : for i in sMuonsIn'range generate
@@ -272,6 +175,6 @@ begin
   oEmpty     <= unpack_empty_bits(sEmpty_link(NCHAN-1 downto 0));
   oSortRanks <= unpack_sort_rank(sSortRank_link(NCHAN-1 downto 0));
 
-  oValid <= check_valid_bits(sValid_link(NCHAN-1 downto 0));
+  oValid      <= check_valid_bits(sValid_link(NCHAN-1 downto 0));
 end Behavioral;
 
