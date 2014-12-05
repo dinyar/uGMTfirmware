@@ -27,8 +27,12 @@ end GhostCheckerUnit_spatialCoords;
 
 architecture Behavioral of GhostCheckerUnit_spatialCoords is
   signal ipbusWe     : std_logic;
-  signal deltaEta    : signed(0 to 9);
-  signal deltaPhi    : signed(0 to 10);
+  signal sEtaH       : signed(8 downto 0);
+  signal sEtaL       : signed(8 downto 0);
+  signal deltaEta    : signed(9 downto 0);
+  signal sPhiH       : unsigned(9 downto 0);
+  signal sPhiL       : unsigned(9 downto 0);
+  signal deltaPhi    : unsigned(9 downto 0);
   signal deltaEtaRed : unsigned(0 to 3);
   signal deltaPhiRed : unsigned(0 to 2);
   signal lutInput    : std_logic_vector(6 downto 0);
@@ -36,12 +40,30 @@ architecture Behavioral of GhostCheckerUnit_spatialCoords is
 begin
   ipbusWe <= ipb_in.ipb_write and ipb_in.ipb_strobe;
 
-  deltaEta    <= resize(eta1, 10) - resize(eta2, 10);
-  -- TODO: Delta phi calculation is wrong! Have to take mod144 here also, check
-  -- if I'm subtracting in correct "direction".
-  deltaPhi    <= signed(resize(phi1, 11)) - signed(resize(phi2, 11));
+  eta_assignment : process (eta1, eta2)
+  begin  -- process eta_assignment
+    if eta1 >= eta2 then
+      sEtaH <= eta1;
+      sEtaL <= eta2;
+    else
+      sEtaH <= eta2;
+      sEtaL <= eta1;
+    end if;
+  end process eta_assignment;
+  deltaEta <= resize(sEtaH, 10) - resize(sEtaL, 10);
+  phi_assignment : process (phi1, phi2)
+  begin  -- process phi_assignment
+    if phi1 >= phi2 then
+      sPhiH <= phi1;
+      sPhiL <= phi2;
+    else
+      sPhiH <= phi2;
+      sPhiL <= phi1;
+    end if;
+  end process phi_assignment;
+  deltaPhi    <= sPhiH - sPhiL;
   deltaEtaRed <= resize(unsigned(abs(deltaEta)), 4);
-  deltaPhiRed <= resize(unsigned(abs(deltaPhi)), 3);
+  deltaPhiRed <= resize(unsigned(deltaPhi), 3);
   lutInput    <= std_logic_vector(deltaEtaRed) & std_logic_vector(deltaPhiRed);
 
 
@@ -59,7 +81,10 @@ begin
 
   check_ghosts : process (match, qual1, qual2)
   begin  -- process check_ghosts
-    if match = "1" then
+    if deltaPhi(9 downto 3) /= (6 downto 0 => '0') or deltaEta(8 downto 4) /= (4 downto 0 => '0') then
+      ghost1 <= '0';
+      ghost2 <= '0';
+    elsif match = "1" then
       if qual1 > qual2 then
         ghost1 <= '0';
         ghost2 <= '1';
