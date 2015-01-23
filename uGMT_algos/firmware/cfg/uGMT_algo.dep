@@ -47,11 +47,11 @@ src MatchAndMerge/MergerUnit.vhd
 src MatchAndMerge/MuonMerger.vhd
 src MatchAndMerge/PairFindingUnit.vhd
 src MatchAndMerge/SortStage1_RPC_behavioral.vhd
-src Sorting/Stage0 HalfSortStage0.vhd
-src Sorting/Stage0 SortStage0_behavioral.vhd
-src Sorting/Stage0 SortStage0_countWins.vhd
-src Sorting/Stage0 SortStage0_Mux.vhd
-src Sorting/Stage1 SortStage1_behavioral.vhd
+src Sorting/Stage0/HalfSortStage0.vhd
+src Sorting/Stage0/SortStage0_behavioral.vhd
+src Sorting/Stage0/SortStage0_countWins.vhd
+src Sorting/Stage0/SortStage0_Mux.vhd
+src Sorting/Stage1/SortStage1_behavioral.vhd
 src common/comp10_ge_behavioral.vhd
 src Sorting/SorterUnit.vhd
 ?toolset=="ISE"?    src cores/matchingLUT_dist.vhd
