@@ -1,5 +1,5 @@
-?toolset=="ISE"?    src -d -s ucf algo_constraints.ucf
-?toolset=="Vivado"? src -d -s ucf algo_constraints.xdc
+?toolset=="ISE"?    src ../ucf/algo_constraints.ucf
+?toolset=="Vivado"? src ../ucf/algo_constraints.xdc
 addrtab -t extrapolation_mems.xml
 addrtab -t extrapolation.xml
 addrtab -t idx_bit_mems.xml
@@ -17,58 +17,58 @@ src deserializer_stage_muons.vhd
 src deserialize_mu_quad.vhd
 src GMT.vhd
 src serializer_stage.vhd
-src -s Isolation IsoAssignmentUnit.vhd
-src -s Isolation compute_complete_sums.vhd
-src -s Isolation compute_energy_strip_sums.vhd
-src -s Isolation extrapolation_unit.vhd
-src -s Isolation extrapolation_unit_regional.vhd
-src -s Isolation extrapolate_eta.vhd
-src -s Isolation extrapolate_phi.vhd
-src -s Isolation generate_index_bits.vhd
-src -s Isolation index_bits_generator.vhd
-src -s Isolation eta_index_bits_memories.vhd
-src -s Isolation phi_index_bits_memories.vhd
-src -s Isolation iso_check.vhd
-src -s Isolation iso_check_abs.vhd
-src -s Isolation iso_check_rel.vhd
-src -s Pile-up_subtraction pile_up_computation.vhd
-src -s Sorting SortAndCancelUnit.vhd
-src -s GhostBusting CancelOutUnit_BO.vhd
-src -s GhostBusting CancelOutUnit_FO.vhd
-src -s GhostBusting CancelOutUnit_Single.vhd
-src -s GhostBusting WedgeCheckerUnit.vhd
-src -s GhostBusting GhostCheckerUnit_spatialCoords.vhd
-src -s GhostBusting GhostCheckerUnit.vhd
-src -s MatchAndMerge FindMaxMatchQualities.vhd
-src -s MatchAndMerge MatchingUnit.vhd
-src -s MatchAndMerge MatchPairs.vhd
-src -s MatchAndMerge MatchQualityUnit.vhd
-src -s MatchAndMerge MergerUnit.vhd
-src -s MatchAndMerge MuonMerger.vhd
-src -s MatchAndMerge PairFindingUnit.vhd
-src -s MatchAndMerge SortStage1_RPC_behavioral.vhd
-src -s Sorting/Stage0 HalfSortStage0.vhd
-src -s Sorting/Stage0 SortStage0_behavioral.vhd
-src -s Sorting/Stage0 SortStage0_countWins.vhd
-src -s Sorting/Stage0 SortStage0_Mux.vhd
-src -s Sorting/Stage1 SortStage1_behavioral.vhd
-src -s common comp10_ge_behavioral.vhd
-src -s Sorting SorterUnit.vhd
-src -s cores matchingLUT_dist.vhd
+src Isolation/IsoAssignmentUnit.vhd
+src Isolation/compute_complete_sums.vhd
+src Isolation/compute_energy_strip_sums.vhd
+src Isolation/extrapolation_unit.vhd
+src Isolation/extrapolation_unit_regional.vhd
+src Isolation/extrapolate_eta.vhd
+src Isolation/extrapolate_phi.vhd
+src Isolation/generate_index_bits.vhd
+src Isolation/index_bits_generator.vhd
+src Isolation/eta_index_bits_memories.vhd
+src Isolation/phi_index_bits_memories.vhd
+src Isolation/iso_check.vhd
+src Isolation/iso_check_abs.vhd
+src Isolation/iso_check_rel.vhd
+src Pile-up_subtraction/pile_up_computation.vhd
+src Sorting/SortAndCancelUnit.vhd
+src GhostBusting/CancelOutUnit_BO.vhd
+src GhostBusting/CancelOutUnit_FO.vhd
+src GhostBusting/CancelOutUnit_Single.vhd
+src GhostBusting/WedgeCheckerUnit.vhd
+src GhostBusting/GhostCheckerUnit_spatialCoords.vhd
+src GhostBusting/GhostCheckerUnit.vhd
+src MatchAndMerge/FindMaxMatchQualities.vhd
+src MatchAndMerge/MatchingUnit.vhd
+src MatchAndMerge/MatchPairs.vhd
+src MatchAndMerge/MatchQualityUnit.vhd
+src MatchAndMerge/MergerUnit.vhd
+src MatchAndMerge/MuonMerger.vhd
+src MatchAndMerge/PairFindingUnit.vhd
+src MatchAndMerge/SortStage1_RPC_behavioral.vhd
+src Sorting/Stage0 HalfSortStage0.vhd
+src Sorting/Stage0 SortStage0_behavioral.vhd
+src Sorting/Stage0 SortStage0_countWins.vhd
+src Sorting/Stage0 SortStage0_Mux.vhd
+src Sorting/Stage1 SortStage1_behavioral.vhd
+src common/comp10_ge_behavioral.vhd
+src Sorting/SorterUnit.vhd
+?toolset=="ISE"?    src cores/matchingLUT_dist.vhd
 ?toolset=="ISE"?    src -n matchingLUT_dist.xco
-src -s cores sort_rank_lut.vhd
+?toolset=="ISE"?    src cores/sort_rank_lut.vhd
 ?toolset=="ISE"?    src -n sort_rank_lut.xco
-src -s cores eta_extrapolation_mem.vhd
+?toolset=="ISE"?    src cores/eta_extrapolation_mem.vhd
 ?toolset=="ISE"?    src -n eta_extrapolation_mem.xco
-src -s cores eta_sel_mem.vhd
+?toolset=="ISE"?    src cores/eta_sel_mem.vhd
 ?toolset=="ISE"?    src -n eta_sel_mem.xco
-src -s cores phi_extrapolation_mem.vhd
+?toolset=="ISE"?    src cores/phi_extrapolation_mem.vhd
 ?toolset=="ISE"?    src -n phi_extrapolation_mem.xco
-src -s cores phi_sel_mem.vhd
+?toolset=="ISE"?    src cores/phi_sel_mem.vhd
 ?toolset=="ISE"?    src -n phi_sel_mem.xco
-src -s cores rel_isolation_mem.vhd
+?toolset=="ISE"?    src cores/rel_isolation_mem.vhd
 ?toolset=="ISE"?    src -n rel_isolation_mem.xco
-src -s cores abs_iso_mem.vhd
+?toolset=="ISE"?    src cores/abs_iso_mem.vhd
 ?toolset=="ISE"?    src -n abs_iso_mem.xco
 src -c components/ipbus_slaves ipbus_dpram.vhd
 src ipbus_decode_deserialization.vhd
@@ -82,6 +82,6 @@ src ipbus_decode_single_mq_mems.vhd
 src ipbus_decode_sorting.vhd
 src ipbus_decode_uGMT.vhd
 src ipbus_decode_mp7_payload.vhd
-src -s common GMTTypes_pkg.vhd
-src -s common ugmt_constants.vhd
+src common/GMTTypes_pkg.vhd
+src common/ugmt_constants.vhd
 src -c components/ipbus_core ipbus_fabric_sel.vhd
