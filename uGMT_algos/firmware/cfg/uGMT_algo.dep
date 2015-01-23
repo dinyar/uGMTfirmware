@@ -1,4 +1,4 @@
-src -d -s ucf algo_constraints.ucf
+?toolset=="ISE"?    src -d -s ucf algo_constraints.ucf
 addrtab -t extrapolation_mems.xml
 addrtab -t extrapolation.xml
 addrtab -t idx_bit_mems.xml
@@ -54,21 +54,21 @@ src -s Sorting/Stage1 SortStage1_behavioral.vhd
 src -s common comp10_ge_behavioral.vhd
 src -s Sorting SorterUnit.vhd
 src -s cores matchingLUT_dist.vhd
-src -n matchingLUT_dist.xco
+?toolset=="ISE"?    src -n matchingLUT_dist.xco
 src -s cores sort_rank_lut.vhd
-src -n sort_rank_lut.xco
+?toolset=="ISE"?    src -n sort_rank_lut.xco
 src -s cores eta_extrapolation_mem.vhd
-src -n eta_extrapolation_mem.xco
+?toolset=="ISE"?    src -n eta_extrapolation_mem.xco
 src -s cores eta_sel_mem.vhd
-src -n eta_sel_mem.xco
+?toolset=="ISE"?    src -n eta_sel_mem.xco
 src -s cores phi_extrapolation_mem.vhd
-src -n phi_extrapolation_mem.xco
+?toolset=="ISE"?    src -n phi_extrapolation_mem.xco
 src -s cores phi_sel_mem.vhd
-src -n phi_sel_mem.xco
+?toolset=="ISE"?    src -n phi_sel_mem.xco
 src -s cores rel_isolation_mem.vhd
-src -n rel_isolation_mem.xco
+?toolset=="ISE"?    src -n rel_isolation_mem.xco
 src -s cores abs_iso_mem.vhd
-src -n abs_iso_mem.xco
+?toolset=="ISE"?    src -n abs_iso_mem.xco
 src -c components/ipbus_slaves ipbus_dpram.vhd
 src ipbus_decode_deserialization.vhd
 src ipbus_decode_extrapolation_mems.vhd
