@@ -1,4 +1,5 @@
 ?toolset=="ISE"?    src -d -s ucf algo_constraints.ucf
+?toolset=="Vivado"? src -d -s ucf algo_constraints.xdc
 addrtab -t extrapolation_mems.xml
 addrtab -t extrapolation.xml
 addrtab -t idx_bit_mems.xml
