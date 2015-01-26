@@ -59,10 +59,10 @@ begin
         we       => ipbusWe_vector(i),
         a        => ipbw(i).ipb_addr(4 downto 0),
         d        => ipbw(i).ipb_wdata(0 downto 0),
-        qspo     => ipbr(i).ipb_rdata(0 downto 0),
+        spo      => ipbr(i).ipb_rdata(0 downto 0),
         qdpo_clk => clk,
         dpra     => std_logic_vector(iAreaSums(i)),
-        qdpo     => oIsoBits(i downto i)
+        dpo      => oIsoBits(i downto i)
         );
 --    oIsoBits(i) <= sLutOutput(i)(0);
   end generate iso_check_loop;

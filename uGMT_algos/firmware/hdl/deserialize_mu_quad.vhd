@@ -95,17 +95,16 @@ begin
     ipbusWe_vector(i) <= ipbw(i).ipb_write and ipbw(i).ipb_strobe;
     sort_rank_assignment : entity work.sort_rank_lut
       port map (
-        clka   => clk_ipb,
-        wea(0) => ipbusWe_vector(i),
-        addra  => ipbw(i).ipb_addr(12 downto 0),
-        dina   => ipbw(i).ipb_wdata(9 downto 0),
-        douta  => ipbr(i).ipb_rdata(9 downto 0),
-        clkb   => clk240,
-        enb    => '1',
-        addrb  => sSrtRnkIn(i),
-        dinb   => (others => '0'),
-        doutb  => sSortRank_buffer(sSortRank_buffer'high)(i),
-        web    => "0"
+        clka   => clk240,
+        addra  => sSrtRnkIn(i),
+        dina   => (others => '0'),
+        douta  => sSortRank_buffer(sSortRank_buffer'high)(i),
+        wea    => "0",        
+        clkb   => clk_ipb,
+        web(0) => ipbusWe_vector(i),
+        addrb  => ipbw(i).ipb_addr(11 downto 0),
+        dinb   => ipbw(i).ipb_wdata(19 downto 0),
+        doutb  => ipbr(i).ipb_rdata(19 downto 0)
         );
 
   end generate assign_ranks;

@@ -83,9 +83,9 @@ begin
         douta  => sLutOutput(i)(3 downto 0),
         clkb   => clk_ipb,
         web(0) => ipbusWe_vector(i),
-        addrb  => ipbw(i).ipb_addr(12 downto 0),
-        dinb   => ipbw(i).ipb_wdata(3 downto 0),
-        doutb  => ipbr(i).ipb_rdata(3 downto 0)
+        addrb  => ipbw(i).ipb_addr(9 downto 0),
+        dinb   => ipbw(i).ipb_wdata(31 downto 0),
+        doutb  => ipbr(i).ipb_rdata(31 downto 0)
         );
     oDeltaEta(i) <= signed(sLutOutput(i)(3 downto 0));
   end generate extrapolation;

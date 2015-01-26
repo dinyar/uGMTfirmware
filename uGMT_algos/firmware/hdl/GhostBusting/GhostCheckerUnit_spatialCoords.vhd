@@ -67,16 +67,16 @@ begin
   lutInput    <= std_logic_vector(deltaEtaRed) & std_logic_vector(deltaPhiRed);
 
 
-  match_qual_calc : entity work.matchingLUT_dist
+  match_qual_calc : entity work.cancel_out_mem
     port map (
-      qdpo_clk => clk_ipb,
+      clk      => clk_ipb,
       we       => ipbusWe,
+      a        => ipb_in.ipb_addr(6 downto 0),
       d        => ipb_in.ipb_wdata(0 downto 0),
-      dpra     => ipb_in.ipb_addr(6 downto 0),
-      qdpo     => ipb_out.ipb_rdata(0 downto 0),
-      clk      => clk,
-      qspo     => match,
-      a        => lutInput
+      spo      => ipb_out.ipb_rdata(0 downto 0),
+      qdpo_clk => clk,
+      dpra     => lutInput,
+      dpo      => match
       );
 
   check_ghosts : process (match, qual1, qual2)

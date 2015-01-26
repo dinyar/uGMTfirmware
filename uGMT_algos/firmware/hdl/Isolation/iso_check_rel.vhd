@@ -58,18 +58,18 @@ begin
   iso_check_loop : for i in oIsoBits'range generate
     sRelInputVec(i)   <= std_logic_vector(iMuonPT(i)) & std_logic_vector(iAreaSums(i));
     ipbusWe_vector(i) <= ipbw(i).ipb_write and ipbw(i).ipb_strobe;
-    rel_iso_check : entity work.rel_isolation_mem
+    rel_iso_check : entity work.rel_iso_mem
       port map (
-        clka   => clk_ipb,
-        wea(0) => ipbusWe_vector(i),
-        addra  => ipbw(i).ipb_addr(13 downto 0),
-        dina   => ipbw(i).ipb_wdata(0 downto 0),
-        douta  => ipbr(i).ipb_rdata(0 downto 0),
-        clkb   => clk,
-        addrb  => sRelInputVec(i),
-        dinb   => (others => '0'),
-        doutb  => oIsoBits(i downto i),
-        web    => "0"
+        clka   => clk,
+        addra  => sRelInputVec(i),
+        dina   => (others => '0'),
+        douta  => oIsoBits(i downto i),
+        wea    => "0",
+        clkb   => clk_ipb,
+        web(0) => ipbusWe_vector(i),
+        addrb  => ipbw(i).ipb_addr(8 downto 0),
+        dinb   => ipbw(i).ipb_wdata(31 downto 0),
+        doutb  => ipbr(i).ipb_rdata(31 downto 0)
         );
 --    oIsoBits(i) <= sLutOutput(i)(0);
   end generate iso_check_loop;

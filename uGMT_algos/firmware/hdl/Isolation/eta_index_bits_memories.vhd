@@ -65,16 +65,16 @@ begin
     ipbusWe_vector(i) <= ipbw(i).ipb_write and ipbw(i).ipb_strobe;
     eta_idx_bits_mem : entity work.eta_sel_mem
       port map (
-        clka   => clk_ipb,
-        wea(0) => ipbusWe_vector(i),
-        addra  => ipbw(i).ipb_addr(8 downto 0),
-        dina   => ipbw(i).ipb_wdata(4 downto 0),
-        douta  => ipbr(i).ipb_rdata(4 downto 0),
-        clkb   => clk,
-        addrb  => std_logic_vector(iCoords(i)),
-        dinb   => (others => '0'),
-        doutb  => sLutOutput(i)(4 downto 0),
-        web    => "0"
+        clka   => clk,
+        addra  => std_logic_vector(iCoords(i)),
+        dina   => (others => '0'),
+        douta  => sLutOutput(i)(4 downto 0),
+        wea    => "0",
+        clkb   => clk_ipb,
+        web(0) => ipbusWe_vector(i),
+        addrb  => ipbw(i).ipb_addr(6 downto 0),
+        dinb   => ipbw(i).ipb_wdata(19 downto 0),
+        doutb  => ipbr(i).ipb_rdata(19 downto 0)
         );
     oCaloIdxBits(i) <= unsigned(sLutOutput(i)(4 downto 0));
   end generate convert_coords_to_index_bits;
