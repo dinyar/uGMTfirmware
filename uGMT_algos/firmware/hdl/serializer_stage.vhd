@@ -99,8 +99,8 @@ begin
     end generate split_coords;
   end generate serialize_extrapolated_coordinates;
 
-  shift_intermediates : process (clk40)
-  begin  -- process shift_intermediates
+  shift_intermediates_rising : process (clk40)
+  begin  -- process shift_intermediates_rising
     if clk40'event and clk40 = '1' then  -- rising clock edge
       --sOutBuf(sOutBuf'high downto BUFFER_INTERMEDIATES_POS_LOW) <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW-1 downto 0);
 
@@ -109,14 +109,19 @@ begin
       else
         clk40_pseudo1 <= '1';
       end if;
-    elsif clk40'event and clk40 = '0' then
+    end if;
+  end process shift_intermediates_rising;
+
+  shift_intermediates_falling : process (clk40)
+  begin  -- process shift_intermediates_falling
+    if clk40'event and clk40 = '0' then -- falling clock edge
       if clk40_pseudo2 = '0' then
         clk40_pseudo2 <= '1';
       else
         clk40_pseudo2 <= '0';
       end if;
     end if;
-  end process shift_intermediates;
+  end process shift_intermediates_falling;
 
   clk40_pseudo <= clk40_pseudo1 xor clk40_pseudo2;
   sSelRst      <= clk40_pseudo and (not clk40_delayed);
