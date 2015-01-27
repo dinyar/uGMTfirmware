@@ -53,23 +53,9 @@ To automatically generate an Vivado project file the following steps then need t
   ```
 
 ## Instructions for building the firmware
-An included script can be used to generate a bitfile in one step. The follwoign set up is necessary for this to work:
+The provided Makefile provides the facilities to build the project from the command line:
 
-1. Copy `runAllImplementationSteps.sh` from `uGMTfirmware` to `[mp7framework_directory]/mp7_690es` and make executable:
-
-  ```
-  cd [mp7framework_directory]/mp7_690es/top
-  cp [...]/uGMTfirmware/runAllImplementationStepsVivado.sh .
-  chmod u+x runAllImplementationStepsVivado.sh
-  ```
-2. Link `uGMT_vivado.tcl` from `uGMTfirmware` to `[mp7framework_directory]/mp7_690es`:
-  
-  ```
-  cd [mp7framework_directory]/mp7_690es/top
-  ln -s [...]/uGMTfirmware/uGMT_vivado.tcl .
-  ```
-5. Run the script:
-
-  ```
-  ./runAllImplementationStepsVivado.sh
-  ```
+```
+cd [mp7framework_directory]/mp7_690es
+make bitfile
+```
