@@ -20,52 +20,42 @@ cd [mp7framework_directory]/cactusupgrades/components
 ln -s [...]/uGMTfirmware/uGMT_algos uGMT_algos
 ```
 
-### Auto-generating the ISE project
-To automatically generate an ISE project file the following steps then need to be followed:
+### Auto-generating the Vivado project
+To automatically generate an Vivado project file the following steps then need to be followed:
 
 1. Add `include -c components/uGMT_algos uGMT_algo.dep` and `addrtab -t mp7_payload.xml` to `cactusupgrades/components/mp7_null_algo/firmware/cfg/mp7_null_algo.dep`
 2. Copy `mp7_payload.xml` from `uGMTfirmware` to `cactusupgrades/components/mp7_null_algo/addr_table`
 3. Replace the existing payload entry in `cactusupgrades/components/mp7_infra/addr_table/mp7_infra.xml` with `<node id="payload" module="file://mp7_payload.xml" address="0x1000000" fwinfo="endpoint"/>`
-4. Go back to the project folder `mp7_690es`, source the ISE environment and run `make project`:
-```
-cd [mp7framework_directory]/mp7_690es
-source /opt/Xilinx/14.6/ISE_DS/settings64.sh
-make project
-```
-5. Add the `ugmt_serdes.vhd` block definition to the top block. You can find it in `cactusupgrades/boards/mp7/base_fw/mp7_690es/firmware/hdl/mp7_690es.vhd`
+5. Replace the payload definition with the `ugmt_serdes.vhd` block definition
+
+  ```
+  algo : entity work.ugmt_serdes
+  generic map (
+    NCHAN     => 72,
+    VALID_BIT => '1'
+    )
+  port map (
+    clk_ipb => clk_ipb,
+    rst     => rst_ipb,
+    ipb_in  => ipb_in_payload,
+    ipb_out => ipb_out_payload,
+    clk240  => clk_p,
+    clk40   => clk40,
+    d       => payload_d,
+    q       => payload_q
+    );
+  ```
+  in the top block. You can find it in `cactusupgrades/boards/mp7/base_fw/mp7_690es/firmware/hdl/mp7_690es.vhd`
 6. Finally visit the project folder and execute `make project`:
-```
-cd 
-make project
-```
+  ```
+  cd [mp7framework_directory]/mp7_690es
+  make project
+  ```
 
 ## Instructions for building the firmware
-An included script can be used to generate a bitfile in one step. The follwoign set up is necessary for this to work:
+The provided Makefile provides the facilities to build the project from the command line:
 
-1. Copy `runAllImplementationSteps.sh` from `uGMTfirmware` to `[mp7framework_directory]/mp7_690es` and make executable:
 ```
 cd [mp7framework_directory]/mp7_690es
-cp [...]/uGMTfirmware/runAllImplementationSteps.sh .
-chmod u+x runAllImplementationSteps.sh
+make bitfile
 ```
-2. Link `uGMT.tcl` from `uGMTfirmware` to `[mp7framework_directory]/mp7_690es`:
-```
-cd [mp7framework_directory]/mp7_690es
-ln -s [...]/uGMTfirmware/uGMT.tcl .
-```
-3. Copy both smartxplorer config files to a directory of your choosing:
-```
-mkdir -p ~/workspace/smartxplorer/config/
-cp [...]/uGMTfirmware/smartxplorer_* ~/workspace/smartxplorer/config/.
-```
-4. Create a directory to store the results of all smartxplorer runs (N.B.: This should be a local directory as the results can become large (O(10 GB)):
-```
-mkdir /tmp/smartxplorer_resuls/
-```
-5. Modify the file with you favourite editor and set the path to the config files and the working directory according to the above. Finally uncomment the line outputting the warning.
-5. Run the script:
-```
-./runAllImplementationSteps.sh
-```
-
-To create (or modify the existing) custom strategies consult the Xilinx documentation (or contact me).
