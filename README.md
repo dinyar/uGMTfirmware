@@ -25,7 +25,7 @@ To automatically generate an Vivado project file the following steps then need t
 
 1. Add `include -c components/uGMT_algos uGMT_algo.dep` and `addrtab -t mp7_payload.xml` to `cactusupgrades/components/mp7_null_algo/firmware/cfg/mp7_null_algo.dep`
 2. Copy `mp7_payload.xml` from `uGMTfirmware` to `cactusupgrades/components/mp7_null_algo/addr_table`
-3. Replace the existing payload entry in `cactusupgrades/components/mp7_infra/addr_table/mp7_infra.xml` with `<node id="payload" module="file://mp7_payload.xml" address="0x1000000" fwinfo="endpoint"/>`
+3. Replace the existing payload entry in `cactusupgrades/components/mp7_infra/addr_table/mp7_infra.xml` with `<node id="payload" module="file://mp7_payload.xml" address="0x80000000" fwinfo="endpoint"/>`
 5. Replace the payload definition with the `ugmt_serdes.vhd` block definition
 
   ```
@@ -46,7 +46,8 @@ To automatically generate an Vivado project file the following steps then need t
     );
   ```
   in the top block. You can find it in `cactusupgrades/boards/mp7/base_fw/mp7_690es/firmware/hdl/mp7_690es.vhd`
-6. Finally visit the project folder and execute `make project`:
+6. Finally visit the project folder, source the Xilinx environment (if you haven't already) and execute `make project`:
+
   ```
   cd [mp7framework_directory]/mp7_690es
   make project
@@ -59,3 +60,5 @@ The provided Makefile provides the facilities to build the project from the comm
 cd [mp7framework_directory]/mp7_690es
 make bitfile
 ```
+
+The bitfile can then be found in `top/top.runs/impl_1/`
