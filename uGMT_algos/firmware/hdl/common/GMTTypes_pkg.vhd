@@ -227,7 +227,7 @@ package GMTTypes is
   function gmt_mu_from_in_mu (signal iMuonIn             : TGMTMuIn) return TGMTMu;
   function calo_etaslice_from_flat (constant flat        : std_logic_vector) return TCaloRegionEtaSlice;
   function track_addresses_from_in_mus(signal iGMTMu_vec : TGMTMuIn_vector) return TGMTMuTracks_vector;
-  function combine_or (signal or_vec                     : std_logic_vector) return std_logic;
+  function combine_or (or_vec                            : std_logic_vector) return std_logic;
   function check_valid_bits (signal iValid_link          : TValid_link) return std_logic;
   function unpack_idx_bits(signal iIdxBits               : TIndexBits_link) return TIndexBits_vector;
   function unpack_sort_rank(signal iSortRanks            : TSortRank_link) return TSortRank10_vector;
@@ -373,7 +373,7 @@ package body GMTTypes is
   -- Unpack valid bits
   -----------------------------------------------------------------------------
   function combine_or (
-    signal or_vec : std_logic_vector)
+    or_vec : std_logic_vector)
     return std_logic is
     variable tmpVar : std_logic := '0';
   begin  -- combine_or
@@ -387,10 +387,12 @@ package body GMTTypes is
   function check_valid_bits (
     signal iValid_link : TValid_link)
     return std_logic is
+    variable or_vec : std_logic_vector(2*NUM_MUONS_IN-1 downto 0);
     variable oValid : std_logic := '0';
   begin  -- check_valid_bits
     for i in iValid_link'range loop
-      oValid := oValid or combine_or(iValid_link(i));
+      or_vec := iValid_link(i);
+      oValid := oValid or combine_or(or_vec);
     end loop;  -- i
 
     return oValid;
