@@ -43,6 +43,7 @@ begin
     port map (
       clk240               => clk240,
       clk40                => clk40,
+      iValid               => '1',
       sMuons               => iMuons,
       sIso                 => iIso,
       iIntermediateMuonsB  => iIntermediateMuonsB,
@@ -77,7 +78,7 @@ begin
 
     -- Reset event buffer
     for iMu in event_buffer(1).muons'range loop
-      event_buffer(1).muons(iMu) := ('0', "00", "000000000", "0000", "000000000", "0000000000");
+      event_buffer(1).muons(iMu) := ("00", "000000000", "0000", "000000000", "0000000000");
       event_buffer(1).iso(iMu)   := "00";
     end loop;  -- iMu
 
