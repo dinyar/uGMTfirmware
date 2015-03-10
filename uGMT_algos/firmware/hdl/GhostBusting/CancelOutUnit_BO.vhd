@@ -56,7 +56,7 @@ begin
       sel             => sel_wedge,
       ipb_to_slaves   => ipbw,
       ipb_from_slaves => ipbr
-      );  
+      );
 
 
   -----------------------------------------------------------------------------
@@ -76,6 +76,7 @@ begin
   -- brl wedge, second adjacent brl wedge and finally with brl wedge below.
   -----------------------------------------------------------------------------
   g1 : for i in 0 to 5 generate
+      -- TODO: Move contents of this loop into it's own module?
     x0 : entity work.WedgeCheckerUnit
       port map (
         clk_ipb => clk_ipb,

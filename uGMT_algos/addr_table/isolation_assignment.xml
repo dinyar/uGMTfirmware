@@ -1,5 +1,4 @@
-<!-- TODO: The entries below are actually groups of LUTs. This should be represented! -->
-<node description="LUTs for the computation of isolation.">
-    <node id="abs_iso" address="0x0" size="0x10" mode="block" description="Group of LUTs to compute the absolute isolation value." fwinfo="endpoint;width=4" />
-    <node id="rel_iso" address="0x2000" size="0x2000" mode="block" description="Group of LUTs to compute the relative isolation." fwinfo="endpoint;width=13" />
+<node description="LUTs for the computation of isolation." fwinfo="endpoint">
+    <node id="abs_iso" module="file://isolation_mem_absolute.xml" address="0x0" description="Group of LUTs to compute the absolute isolation value."  />
+    <node id="rel_iso" module="file://isolation_mem_relative.xml" address="0x20000" description="Group of LUTs to compute the relative isolation."  />
 </node>

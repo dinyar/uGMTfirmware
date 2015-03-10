@@ -1,5 +1,5 @@
-<node description="Container for the three regional index bit generators.">
-  <node id="idx_bits_brl" module="file://idx_bit_mems.xml" address="0x0" description="Collection of index bit generators for barrel." fwinfo="endpoint" />
-  <node id="idx_bits_ovl" module="file://idx_bit_mems.xml" address="0x10000" description="Collection of index bit generators for overlap."  fwinfo="endpoint" />
-  <node id="idx_bits_fwd" module="file://idx_bit_mems.xml" address="0x20000" description="Collection of index bit generators for forward."  fwinfo="endpoint" />
+<node description="Container for the three regional index bit generators." fwinfo="endpoint">
+  <node id="idx_bits_brl" module="file://idx_bits_regional.xml" address="0x0" description="Collection of index bit generators for barrel." />
+  <node id="idx_bits_ovl" module="file://idx_bits_regional.xml" address="0x20000" description="Collection of index bit generators for overlap." />
+  <node id="idx_bits_fwd" module="file://idx_bits_regional.xml" address="0x40000" description="Collection of index bit generators for forward." />
 </node>

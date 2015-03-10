@@ -1,0 +1,10 @@
+<node description="LUTs for the relative computation of isolation." fwinfo="endpoint">
+    <node id="rel_iso_0" address="0x0" size="0x4000" mode="block" description="First lut for relative isolation." fwinfo="endpoint;width=14" />
+    <node id="rel_iso_1" address="0x4000" size="0x4000" mode="block" description="Second lut for relative isolation." fwinfo="endpoint;width=14" />
+    <node id="rel_iso_2" address="0x8000" size="0x4000" mode="block" description="Third lut for relative isolation." fwinfo="endpoint;width=14" />
+    <node id="rel_iso_3" address="0xC000" size="0x4000" mode="block" description="Fourth lut for relative isolation." fwinfo="endpoint;width=14" />
+    <node id="rel_iso_4" address="0x10000" size="0x4000" mode="block" description="Fifth lut for relative isolation." fwinfo="endpoint;width=14" />
+    <node id="rel_iso_5" address="0x14000" size="0x4000" mode="block" description="Sixth lut for relative isolation." fwinfo="endpoint;width=14" />
+    <node id="rel_iso_6" address="0x18000" size="0x4000" mode="block" description="Seventh lut for relative isolation." fwinfo="endpoint;width=14" />
+    <node id="rel_iso_7" address="0x1C000" size="0x4000" mode="block" description="Eighth lut for relative isolation." fwinfo="endpoint;width=14" />
+</node>

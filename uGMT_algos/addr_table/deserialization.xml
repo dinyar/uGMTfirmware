@@ -1,4 +1,10 @@
-<!-- TODO: The entries below are actually groups of LUTs. This should be represented! -->
-<node description="Deserializer stage for uGMT">
-  <node id="sort_ranks" address="0x40000" size="0x40000" mode="block" description="Group of LUTs containing the sort ranks for incoming muons." fwinfo="endpoint;width=14" />
+<node description="Deserializer stage for uGMT" fwinfo="endpoint">
+    <node id="sort_ranks" address="0x0" module="file://sort_rank_mems.xml" description="LUTs containing the sort ranks for incoming muons from one quad." />
+    <node id="sort_ranks" address="0x8000" module="file://sort_rank_mems.xml" description="LUTs containing the sort ranks for incoming muons from one quad." />
+    <node id="sort_ranks" address="0x10000" module="file://sort_rank_mems.xml" description="LUTs containing the sort ranks for incoming muons from one quad." />
+    <node id="sort_ranks" address="0x18000" module="file://sort_rank_mems.xml" description="LUTs containing the sort ranks for incoming muons from one quad." />
+    <node id="sort_ranks" address="0x20000" module="file://sort_rank_mems.xml" description="LUTs containing the sort ranks for incoming muons from one quad." />
+    <node id="sort_ranks" address="0x28000" module="file://sort_rank_mems.xml" description="LUTs containing the sort ranks for incoming muons from one quad." />
+    <node id="sort_ranks" address="0x30000" module="file://sort_rank_mems.xml" description="LUTs containing the sort ranks for incoming muons from one quad." />
+    <node id="sort_ranks" address="0x38000" module="file://sort_rank_mems.xml" description="LUTs containing the sort ranks for incoming muons from one quad." />
 </node>

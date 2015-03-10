@@ -1,5 +1,4 @@
-<node description="Top-level address table for uGMT algorithms">
-  <node id="isolation" module="file://isolation.xml" address="0x0" description="Isolation algorithms"  fwinfo="endpoint" />
-  <node id="sorting" module="file://sorting.xml" address="0x400000" description="Sorting and matching algorithms"  fwinfo="endpoint" />
+<node description="Top-level address table for uGMT algorithms" fwinfo="endpoint">
+  <node id="isolation" module="file://isolation.xml" address="0x0" description="Isolation algorithms" />
+  <node id="sorting" module="file://sorting.xml" address="0x2000000" description="Sorting and matching algorithms" />
 </node>
-

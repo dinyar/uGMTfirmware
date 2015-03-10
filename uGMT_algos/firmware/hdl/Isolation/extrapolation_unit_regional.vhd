@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_decode_extrapolation_mems.all;
+use work.ipbus_decode_extrapolation_regional.all;
 
 use work.GMTTypes.all;
 
@@ -47,7 +47,7 @@ begin
     port map(
       ipb_in          => ipb_in,
       ipb_out         => ipb_out,
-      sel             => ipbus_sel_extrapolation_mems(ipb_in.ipb_addr),
+      sel             => ipbus_sel_extrapolation_regional(ipb_in.ipb_addr),
       ipb_to_slaves   => ipbw,
       ipb_from_slaves => ipbr
       );
