@@ -62,6 +62,14 @@ src Sorting/SorterUnit.vhd
 ?toolset=="Vivado"? src ../cgn/phi_sel_mem.xci
 ?toolset=="Vivado"? src ../cgn/rel_iso_mem.xci
 ?toolset=="Vivado"? src ../cgn/sort_rank_lut.xci
+src ../cgn/abs_iso_mem.vhd
+src ../cgn/cancel_out_mem.vhd
+src ../cgn/eta_extrapolation_mem.vhd
+src ../cgn/eta_sel_mem.vhd
+src ../cgn/phi_extrapolation_mem.vhd
+src ../cgn/phi_sel_mem.vhd
+src ../cgn/rel_iso_mem.vhd
+src ../cgn/sort_rank_lut.vhd
 ?toolset=="ISE"?    src cores/matchingLUT_dist.vhd
 ?toolset=="ISE"?    src -n matchingLUT_dist.xco
 ?toolset=="ISE"?    src cores/sort_rank_lut.vhd
