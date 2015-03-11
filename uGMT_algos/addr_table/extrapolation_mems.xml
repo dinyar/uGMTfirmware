@@ -1,6 +1,0 @@
-<!-- TODO: The entries below are actually groups of LUTs. This should be represented! -->
-<node description="LUTs for the track extrapolation from muon system to vertex.">
-    <node id="eta_extrapolation" address="0x0" size="0x10000" mode="block" description="Group of LUTs containing the eta component of the extrapolation logic." fwinfo="endpoint;width=16" />
-<!-- TODO: I'm not entirely sure why I need the address 0x2000 here instead of 0x1000 -->
-    <node id="phi_extrapolation" address="0x20000" size="0x20000" mode="block" description="Group of LUTs containing the phi component of the extrapolation logic." fwinfo="endpoint;width=17" />
-</node>

@@ -1,0 +1,5 @@
+<node description="Collection of LUTs for cancel-out." fwinfo="endpoint">
+    <node id="cancel_out_mem_0" address="0x0" size="0x80" description="Cancel-out LUT." fwinfo="endpoint;width=7"/>
+    <node id="cancel_out_mem_1" address="0x80" size="0x80" description="Cancel-out LUT." fwinfo="endpoint;width=7"/>
+    <node id="cancel_out_mem_2" address="0x100" size="0x80" description="Cancel-out LUT." fwinfo="endpoint;width=7"/>
+</node>

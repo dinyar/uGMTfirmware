@@ -1,6 +1,5 @@
-<node description="Isolation algorithm LUTs">
-  <node id="extrapolation" module="file://extrapolation.xml" address="0x0" description="LUTs containing extrapolation information from muon system to vertex."  fwinfo="endpoint" />
-  <node id="idx_gen" module="file://index_bits.xml" address="0x100000" description="LUTs to convert coordinates to index bits."  fwinfo="endpoint" />
-  <node id="isolation_check" module="file://isolation_assignment.xml" address="0x200000" description="LUTs to calculate isolation for muons."  fwinfo="endpoint" />
+<node description="Isolation algorithm LUTs" fwinfo="endpoint">
+  <node id="extrapolation" module="file://extrapolation.xml" address="0x0" description="LUTs containing extrapolation information from muon system to vertex."/>
+  <node id="idx_gen" module="file://index_bits.xml" address="0x800000" description="LUTs to convert coordinates to index bits."/>
+  <node id="isolation_check" module="file://isolation_assignment.xml" address="1000000" description="LUTs to calculate isolation for muons."/>
 </node>
-

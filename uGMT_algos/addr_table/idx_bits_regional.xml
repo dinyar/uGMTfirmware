@@ -1,0 +1,4 @@
+<node description="LUTs for the generation of calorimeter index bits from coordinates." fwinfo="endpoint">
+    <node id="eta_idx_bits" address="0x0" module="file://idx_bit_mems_eta.xml" description="Group of LUTs containing the eta component of the index bits generator." />
+    <node id="phi_idx_bits" address="0x10000" module="file://idx_bit_mems_phi.xml" description="Group of LUTs containing the phi component of the index bits generator." />
+</node>
