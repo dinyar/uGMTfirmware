@@ -4,6 +4,7 @@ use IEEE.numeric_std.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
+use work.ipbus_decode_deserialization.all;
 
 use work.GMTTypes.all;
 use work.ugmt_constants.all;
@@ -33,34 +34,25 @@ architecture Behavioral of deserializer_stage_muons is
 
   signal sel_lut_group : std_logic_vector(3 downto 0);
 
-  signal ipbw : ipb_wbus_array(MU_QUAD_ASSIGNMENT'range);
-  signal ipbr : ipb_rbus_array(MU_QUAD_ASSIGNMENT'range);
+  signal ipbw : ipb_wbus_array(N_SLAVES-1 downto 0);
+  signal ipbr : ipb_rbus_array(N_SLAVES-1 downto 0);
 
   signal sValid : std_logic_vector(MU_QUAD_ASSIGNMENT'range);
 begin
 
-  -----------------------------------------------------------------------------
-  -- ipbus address decode
-  -----------------------------------------------------------------------------
-  -- Use bits before beginning of addresses that are required for later
-  -- addressing (i.e. addresses inside LUTs and yet-to-be-decoded LUT groups).
-  -- Need to address 9 quads -> 4 bits needed.
-  -- 14 bits used for addressing inside each quad -> Will use 17th to 14th
-  -- bits.
-
-  sel_lut_group <= std_logic_vector(unsigned(ipb_in.ipb_addr(17 downto 14)));
-
-  fabric : entity work.ipbus_fabric_sel
-    generic map(
-      NSLV      => 9,
-      SEL_WIDTH => 4)
-    port map(
-      ipb_in          => ipb_in,
-      ipb_out         => ipb_out,
-      sel             => sel_lut_group,
-      ipb_to_slaves   => ipbw,
-      ipb_from_slaves => ipbr
-      );
+    -- IPbus address decode
+    fabric : entity work.ipbus_fabric_sel
+      generic map(
+        NSLV      => N_SLAVES,
+        SEL_WIDTH => IPBUS_SEL_WIDTH
+        )
+      port map(
+        ipb_in          => ipb_in,
+        ipb_out         => ipb_out,
+        sel             => ipbus_sel_deserialization(ipb_in.ipb_addr),
+        ipb_to_slaves   => ipbw,
+        ipb_from_slaves => ipbr
+        );
 
   deserialize_loop : for i in MU_QUAD_ASSIGNMENT'range generate
     deserialize : entity work.deserialize_mu_quad
@@ -84,7 +76,7 @@ begin
         );
   end generate deserialize_loop;
 
-  
+
   oValid <=  combine_or(sValid);
 
 end Behavioral;

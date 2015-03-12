@@ -1,12 +1,25 @@
 ?toolset=="ISE"?    src ../ucf/algo_constraints.ucf
 ?toolset=="Vivado"? src ../ucf/algo_constraints.xdc
-addrtab -t extrapolation_mems.xml
+addrtab -t cancel_out_barrel.xml
+addrtab -t cancel_out_bo_wedge.xml
+addrtab -t cancel_out_bo.xml
+addrtab -t cancel_out_fo_wedge.xml
+addrtab -t cancel_out_fo.xml
+addrtab -t cancel_out_half_sorters.xml
+addrtab -t cancel_out_mems.xml
+addrtab -t extrapolation_eta.xml
+addrtab -t extrapolation_phi.xml
+addrtab -t extrapolation_regional.xml
 addrtab -t extrapolation.xml
-addrtab -t idx_bit_mems.xml
+addrtab -t idx_bit_mems_eta.xml
+addrtab -t idx_bit_mems_phi.xml
+addrtab -t idx_bits_regional.xml
 addrtab -t index_bits.xml
 addrtab -t isolation_assignment.xml
+addrtab -t isolation_mem_absolute.xml
+addrtab -t isolation_mem_relative.xml
 addrtab -t isolation.xml
-addrtab -t single_mq_mems.xml
+addrtab -t sort_rank_mems.xml
 addrtab -t sorting.xml
 addrtab -t deserialization.xml
 addrtab -t uGMT.xml
@@ -34,7 +47,9 @@ src Isolation/iso_check_rel.vhd
 src Pile-up_subtraction/pile_up_computation.vhd
 src Sorting/SortAndCancelUnit.vhd
 src GhostBusting/CancelOutUnit_BO.vhd
+src GhostBusting/CancelOutUnit_BO_WedgeComp.vhd
 src GhostBusting/CancelOutUnit_FO.vhd
+src GhostBusting/CancelOutUnit_FO_WedgeComp.vhd
 src GhostBusting/CancelOutUnit_Single.vhd
 src GhostBusting/WedgeCheckerUnit.vhd
 src GhostBusting/GhostCheckerUnit_spatialCoords.vhd
@@ -87,16 +102,28 @@ src ../cgn/sort_rank_lut.vhd
 ?toolset=="ISE"?    src cores/abs_iso_mem.vhd
 ?toolset=="ISE"?    src -n abs_iso_mem.xco
 src -c components/ipbus_slaves ipbus_dpram.vhd
-src ipbus_decode_deserialization.vhd
-src ipbus_decode_extrapolation_mems.vhd
+src ipbus_decode_extrapolation_eta.vhd
+src ipbus_decode_extrapolation_phi.vhd
+src ipbus_decode_extrapolation_regional.vhd
 src ipbus_decode_extrapolation.vhd
-src ipbus_decode_idx_bit_mems.vhd
+src ipbus_decode_idx_bit_mems_eta.vhd
+src ipbus_decode_idx_bit_mems_phi.vhd
+src ipbus_decode_idx_bits_regional.vhd
 src ipbus_decode_index_bits.vhd
 src ipbus_decode_isolation_assignment.vhd
+src ipbus_decode_isolation_mem_absolute.vhd
+src ipbus_decode_isolation_mem_relative.vhd
 src ipbus_decode_isolation.vhd
-src ipbus_decode_single_mq_mems.vhd
+src ipbus_decode_cancel_out_bo_wedge.vhd
+src ipbus_decode_cancel_out_bo.vhd
+src ipbus_decode_cancel_out_fo_wedge.vhd
+src ipbus_decode_cancel_out_fo.vhd
+src ipbus_decode_cancel_out_half_sorters.vhd
+src ipbus_decode_cancel_out_barrel.vhd
+src ipbus_decode_cancel_out_mems.vhd
 src ipbus_decode_sorting.vhd
 src ipbus_decode_uGMT.vhd
+src ipbus_decode_deserialization.vhd
 src ipbus_decode_mp7_payload.vhd
 src common/GMTTypes_pkg.vhd
 src common/ugmt_constants.vhd

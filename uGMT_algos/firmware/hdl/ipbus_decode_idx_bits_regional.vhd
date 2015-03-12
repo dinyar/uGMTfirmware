@@ -11,32 +11,32 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use ieee.numeric_std.all;
 
-package ipbus_decode_isolation_assignment is
+package ipbus_decode_idx_bits_regional is
 
   constant IPBUS_SEL_WIDTH: positive := 5; -- Should be enough for now?
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
-  function ipbus_sel_isolation_assignment(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
+  function ipbus_sel_idx_bits_regional(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
 -- START automatically  generated VHDL the Thu Mar 12 21:15:27 2015 
-  constant N_SLV_ABS_ISO: integer := 0;
-  constant N_SLV_REL_ISO: integer := 1;
+  constant N_SLV_ETA_IDX_BITS: integer := 0;
+  constant N_SLV_PHI_IDX_BITS: integer := 1;
   constant N_SLAVES: integer := 2;
 -- END automatically generated VHDL
 
     
-end ipbus_decode_isolation_assignment;
+end ipbus_decode_idx_bits_regional;
 
-package body ipbus_decode_isolation_assignment is
+package body ipbus_decode_idx_bits_regional is
 
-  function ipbus_sel_isolation_assignment(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t is
+  function ipbus_sel_idx_bits_regional(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t is
     variable sel: ipbus_sel_t;
   begin
 
 -- START automatically  generated VHDL the Thu Mar 12 21:15:27 2015 
-    if    std_match(addr, "--------------0-----------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO, IPBUS_SEL_WIDTH)); -- abs_iso / base 0x00000000 / mask 0x00020000
-    elsif std_match(addr, "--------------1-----------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_REL_ISO, IPBUS_SEL_WIDTH)); -- rel_iso / base 0x00020000 / mask 0x00020000
+    if    std_match(addr, "---------------0----------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_ETA_IDX_BITS, IPBUS_SEL_WIDTH)); -- eta_idx_bits / base 0x00000000 / mask 0x00010000
+    elsif std_match(addr, "---------------1----------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_PHI_IDX_BITS, IPBUS_SEL_WIDTH)); -- phi_idx_bits / base 0x00010000 / mask 0x00010000
 -- END automatically generated VHDL
 
     else
@@ -45,7 +45,7 @@ package body ipbus_decode_isolation_assignment is
 
     return sel;
 
-  end function ipbus_sel_isolation_assignment;
+  end function ipbus_sel_idx_bits_regional;
 
-end ipbus_decode_isolation_assignment;
+end ipbus_decode_idx_bits_regional;
 

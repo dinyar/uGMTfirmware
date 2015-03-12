@@ -17,9 +17,16 @@ package ipbus_decode_deserialization is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_deserialization(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Wed Oct  8 15:49:58 2014 
-  constant N_SLV_SORT_RANKS: integer := 0;
-  constant N_SLAVES: integer := 1;
+-- START automatically  generated VHDL the Thu Mar 12 21:15:28 2015 
+  constant N_SLV_SORT_RANKS_QUAD0: integer := 0;
+  constant N_SLV_SORT_RANKS_QUAD1: integer := 1;
+  constant N_SLV_SORT_RANKS_QUAD2: integer := 2;
+  constant N_SLV_SORT_RANKS_QUAD3: integer := 3;
+  constant N_SLV_SORT_RANKS_QUAD4: integer := 4;
+  constant N_SLV_SORT_RANKS_QUAD5: integer := 5;
+  constant N_SLV_SORT_RANKS_QUAD6: integer := 6;
+  constant N_SLV_SORT_RANKS_QUAD7: integer := 7;
+  constant N_SLAVES: integer := 8;
 -- END automatically generated VHDL
 
     
@@ -31,9 +38,23 @@ package body ipbus_decode_deserialization is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Wed Oct  8 15:49:58 2014 
-    if    std_match(addr, "--------------------------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_SORT_RANKS, IPBUS_SEL_WIDTH)); -- sort_ranks / base 0x00040000 / mask 0x00000000
+-- START automatically  generated VHDL the Thu Mar 12 21:15:28 2015 
+    if    std_match(addr, "--------------000---------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_SORT_RANKS_QUAD0, IPBUS_SEL_WIDTH)); -- sort_ranks_quad0 / base 0x00000000 / mask 0x00038000
+    elsif std_match(addr, "--------------001---------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_SORT_RANKS_QUAD1, IPBUS_SEL_WIDTH)); -- sort_ranks_quad1 / base 0x00008000 / mask 0x00038000
+    elsif std_match(addr, "--------------010---------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_SORT_RANKS_QUAD2, IPBUS_SEL_WIDTH)); -- sort_ranks_quad2 / base 0x00010000 / mask 0x00038000
+    elsif std_match(addr, "--------------011---------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_SORT_RANKS_QUAD3, IPBUS_SEL_WIDTH)); -- sort_ranks_quad3 / base 0x00018000 / mask 0x00038000
+    elsif std_match(addr, "--------------100---------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_SORT_RANKS_QUAD4, IPBUS_SEL_WIDTH)); -- sort_ranks_quad4 / base 0x00020000 / mask 0x00038000
+    elsif std_match(addr, "--------------101---------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_SORT_RANKS_QUAD5, IPBUS_SEL_WIDTH)); -- sort_ranks_quad5 / base 0x00028000 / mask 0x00038000
+    elsif std_match(addr, "--------------110---------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_SORT_RANKS_QUAD6, IPBUS_SEL_WIDTH)); -- sort_ranks_quad6 / base 0x00030000 / mask 0x00038000
+    elsif std_match(addr, "--------------111---------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_SORT_RANKS_QUAD7, IPBUS_SEL_WIDTH)); -- sort_ranks_quad7 / base 0x00038000 / mask 0x00038000
 -- END automatically generated VHDL
 
     else

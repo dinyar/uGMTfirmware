@@ -4,6 +4,7 @@ use IEEE.NUMERIC_STD.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
+use work.ipbus_dpram;
 
 use work.GMTTypes.all;
 
@@ -37,6 +38,8 @@ architecture Behavioral of GhostCheckerUnit_spatialCoords is
   signal deltaPhiRed : unsigned(0 to 2);
   signal lutInput    : std_logic_vector(6 downto 0);
   signal match       : std_logic_vector(0 downto 0);
+
+  signal dummy : std_logic_vector(30 downto 0);
 begin
   ipbusWe <= ipb_in.ipb_write and ipb_in.ipb_strobe;
 
@@ -66,18 +69,31 @@ begin
   deltaPhiRed <= resize(unsigned(deltaPhi), 3);
   lutInput    <= std_logic_vector(deltaEtaRed) & std_logic_vector(deltaPhiRed);
 
-
-  match_qual_calc : entity work.cancel_out_mem
-    port map (
-      clk      => clk_ipb,
-      we       => ipbusWe,
-      a        => ipb_in.ipb_addr(6 downto 0),
-      d        => ipb_in.ipb_wdata(0 downto 0),
-      spo      => ipb_out.ipb_rdata(0 downto 0),
-      qdpo_clk => clk,
-      dpra     => lutInput,
-      dpo      => match
-      );
+  match_qual_calc : entity work.ipbus_dpram
+      generic map (
+        ADDR_WIDTH => 7
+        )
+      port map (
+        clk     => clk_ipb,
+        rst     => rst,
+        ipb_in  => ipb_in,
+        ipb_out => ipb_out,
+        rclk    => clk,
+        q(0 downto 0)    => match,
+        q(31 downto 1) => dummy,
+        addr    => lutInput
+        );
+--  match_qual_calc : entity work.cancel_out_mem
+--    port map (
+--      clk      => clk_ipb,
+--      we       => ipbusWe,
+--      a        => ipb_in.ipb_addr(6 downto 0),
+--      d        => ipb_in.ipb_wdata(0 downto 0),
+--      spo      => ipb_out.ipb_rdata(0 downto 0),
+--      qdpo_clk => clk,
+--      dpra     => lutInput,
+--      dpo      => match
+--      );
 
   check_ghosts : process (match, qual1, qual2)
   begin  -- process check_ghosts

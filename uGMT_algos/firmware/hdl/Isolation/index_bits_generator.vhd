@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_decode_idx_bit_mems.all;
+use work.ipbus_decode_idx_bits_regional.all;
 
 use work.GMTTypes.all;
 
@@ -40,7 +40,7 @@ begin
     port map(
       ipb_in          => ipb_in,
       ipb_out         => ipb_out,
-      sel             => ipbus_sel_idx_bit_mems(ipb_in.ipb_addr),
+      sel             => ipbus_sel_idx_bits_regional(ipb_in.ipb_addr),
       ipb_to_slaves   => ipbw,
       ipb_from_slaves => ipbr
       );
@@ -76,4 +76,3 @@ begin
     oCaloIdxBits(i).phi <= sCaloPhiIdxBits(i);
   end generate merge_idx_bits;
 end Behavioral;
-

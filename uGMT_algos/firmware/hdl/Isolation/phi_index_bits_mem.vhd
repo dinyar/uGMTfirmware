@@ -4,6 +4,7 @@ use IEEE.NUMERIC_STD.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
+use work.ipbus_dpram;
 
 library types;
 use types.GMTTypes.all;
@@ -22,10 +23,10 @@ end phi_index_bits_mem;
 architecture Behavioral of phi_index_bits_mem is
 
 begin
-  phi_idx_bits_mem : entity work.ipbus_asymmetric_dpram
+  phi_idx_bits_mem : entity work.ipbus_dpram
     generic map (
-      ADDR_WIDTH => 10,
-      DATA_SIZE  => 6)
+      ADDR_WIDTH => 10
+      )
     port map (
       clk     => clk_ipb,
       rst     => rst,
@@ -36,4 +37,3 @@ begin
       addr    => iCoords
       );
 end Behavioral;
-

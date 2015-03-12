@@ -101,11 +101,24 @@ package GMTTypes is
   -----------------------------------------------------------------------------
   -- Select bits for calorimeter regions
   -----------------------------------------------------------------------------
+  type TEtaCaloIdxBit_vector is array (integer range <>) of unsigned(4 downto 0);
+  type TPhiCaloIdxBit_vector is array (integer range <>) of unsigned(5 downto 0);
+
+  type TCaloIndexBit is record
+    eta : unsigned(4 downto 0);
+    phi : unsigned(5 downto 0);
+  end record;
+  type TCaloIndexBit_vector is array (integer range <>) of TCaloIndexBit;
+
   type TCaloSelBit is record
     eta : unsigned(0 to 4);
     phi : unsigned(0 to 5);
   end record;
   type TCaloSelBit_vector is array (integer range <>) of TCaloSelBit;
+
+  -----------------------------------------------------------------------------
+  -- Vectors describing muon state
+  -----------------------------------------------------------------------------
 
   -- Sort Rank
   subtype TSortRank10 is std_logic_vector (9 downto 0);
@@ -179,16 +192,9 @@ package GMTTypes is
   type TSpatialCoordinate_vector is array (integer range <>) of TSpatialCoordinate;
 
   -----------------------------------------------------------------------------
-  -- Select bits for calorimeter regions
+  -- Vectors to store cancel bits
   -----------------------------------------------------------------------------
-  type TEtaCaloIdxBit_vector is array (integer range <>) of unsigned(4 downto 0);
-  type TPhiCaloIdxBit_vector is array (integer range <>) of unsigned(5 downto 0);
-
-  type TCaloIndexBit is record
-    eta : unsigned(4 downto 0);
-    phi : unsigned(5 downto 0);
-  end record;
-  type TCaloIndexBit_vector is array (integer range <>) of TCaloIndexBit;
+  type   TCancelWedge is array (0 to 3) of std_logic_vector(0 to 2);
 
   -----------------------------------------------------------------------------
   -- Types for Transceivers
@@ -317,7 +323,7 @@ package body GMTTypes is
 
     return oMuons_flat;
   end;
-  
+
   function unpack_mu_from_flat (
     signal iMuon_flat : TFlatMuon)
     return TGMTMuIn is
@@ -383,7 +389,7 @@ package body GMTTypes is
 
     return tmpVar;
   end combine_or;
-  
+
   function check_valid_bits (
     signal iValid_link : TValid_link)
     return std_logic is

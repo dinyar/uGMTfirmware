@@ -4,6 +4,7 @@ use IEEE.NUMERIC_STD.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
+use work.ipbus_decode_cancel_out_mems.all;
 
 use work.GMTTypes.all;
 
@@ -18,14 +19,13 @@ entity WedgeCheckerUnit is
     ghosts1 : out std_logic_vector (0 to 2);
     ghosts2 : out std_logic_vector (0 to 2);
     clk     : in  std_logic
-    ); 
+    );
 
 end WedgeCheckerUnit;
 
 architecture Behavioral of WedgeCheckerUnit is
-  signal sel_lut : std_logic_vector(3 downto 0);
-  signal ipbw    : ipb_wbus_array(wedge1'length*wedge2'length -1 downto 0);
-  signal ipbr    : ipb_rbus_array(wedge1'length*wedge2'length -1 downto 0);
+  signal ipbw    : ipb_wbus_array(N_SLAVES-1 downto 0);
+  signal ipbr    : ipb_rbus_array(N_SLAVES-1 downto 0);
 
   subtype muon_cancel is std_logic_vector(wedge2'range);
   type    muon_cancel_vec is array (integer range <>) of muon_cancel;
@@ -33,26 +33,19 @@ architecture Behavioral of WedgeCheckerUnit is
   signal  sCancel2 : muon_cancel_vec(wedge2'range);
 begin
 
-  -----------------------------------------------------------------------------
-  -- ipbus address decode
-  -----------------------------------------------------------------------------
-  -- Use bits before beginning of addresses that are required for later
-  -- addressing (i.e. addresses inside LUTs)
-  -- Need to address 3x3 LUTs -> 4 bits needed.
-  -- 2 bits used for addressing in LUTs themselves -> will use 5th to 2nd bits.
-  sel_lut <= std_logic_vector(unsigned(ipb_in.ipb_addr(5 downto 2)));
-
-  fabric : entity work.ipbus_fabric_sel
-    generic map(
-      NSLV      => 9,
-      SEL_WIDTH => 4)
-    port map(
-      ipb_in          => ipb_in,
-      ipb_out         => ipb_out,
-      sel             => sel_lut,
-      ipb_to_slaves   => ipbw,
-      ipb_from_slaves => ipbr
-      );  
+    -- IPbus address decode
+    fabric : entity work.ipbus_fabric_sel
+      generic map(
+        NSLV      => N_SLAVES,
+        SEL_WIDTH => IPBUS_SEL_WIDTH
+        )
+      port map(
+        ipb_in          => ipb_in,
+        ipb_out         => ipb_out,
+        sel             => ipbus_sel_cancel_out_mems(ipb_in.ipb_addr),
+        ipb_to_slaves   => ipbw,
+        ipb_from_slaves => ipbr
+        );
 
   -- Compare the two wedges' muons with each other.
   g1 : for i in wedge1'range generate
@@ -93,4 +86,3 @@ begin
     ghosts2(i) <= sCancel2(i)(0) or sCancel2(i)(1) or sCancel2(i)(2);
   end generate g3;
 end Behavioral;
-

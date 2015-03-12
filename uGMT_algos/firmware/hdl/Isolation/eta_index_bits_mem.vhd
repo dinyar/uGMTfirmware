@@ -4,6 +4,7 @@ use IEEE.NUMERIC_STD.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
+use work.ipbus_dpram;
 
 library types;
 use types.GMTTypes.all;
@@ -22,10 +23,9 @@ end eta_index_bits_mem;
 architecture Behavioral of eta_index_bits_mem is
 
 begin
-  eta_idx_bits_mem : entity work.ipbus_asymmetric_dpram
+  eta_idx_bits_mem : entity work.ipbus_dpram
     generic map (
-      ADDR_WIDTH => 9,
-      DATA_SIZE  => 5
+      ADDR_WIDTH => 9
       )
     port map (
       clk     => clk_ipb,
@@ -38,4 +38,3 @@ begin
       );
 
 end Behavioral;
-

@@ -4,6 +4,7 @@ use IEEE.numeric_std.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
+use work.ipbus_decode_sort_rank_mems.all;
 
 use work.GMTTypes.all;
 use work.ugmt_constants.all;
@@ -32,8 +33,8 @@ end deserialize_mu_quad;
 architecture Behavioral of deserialize_mu_quad is
   signal sel_lut_group : std_logic_vector(1 downto 0);
 
-  signal ipbw : ipb_wbus_array(NCHAN - 1 downto 0);
-  signal ipbr : ipb_rbus_array(NCHAN - 1 downto 0);
+  signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
+  signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
   signal in_buf : TQuadTransceiverBufferIn;
 
@@ -57,27 +58,19 @@ architecture Behavioral of deserialize_mu_quad is
 
 begin
 
-  -----------------------------------------------------------------------------
-  -- ipbus address decode
-  -----------------------------------------------------------------------------
-  -- Use bits before start of addresses that truly point to addresses
-  -- inside LUTs to address the LUTs themselves.
-  -- Need to address 4 LUTs -> 2 bits needed.
-  -- SortRank LUT has 12 bit addresses for IPbus. -> will use 13th and 12th
-  -- bits.
-  sel_lut_group <= std_logic_vector(unsigned(ipb_in.ipb_addr(13 downto 12)));
-
-  fabric : entity work.ipbus_fabric_sel
-    generic map(
-      NSLV      => NCHAN,
-      SEL_WIDTH => 2)
-    port map(
-      ipb_in          => ipb_in,
-      ipb_out         => ipb_out,
-      sel             => sel_lut_group,
-      ipb_to_slaves   => ipbw,
-      ipb_from_slaves => ipbr
-      );
+    -- IPbus address decode
+    fabric : entity work.ipbus_fabric_sel
+      generic map(
+        NSLV      => N_SLAVES,
+        SEL_WIDTH => IPBUS_SEL_WIDTH
+        )
+      port map(
+        ipb_in          => ipb_in,
+        ipb_out         => ipb_out,
+        sel             => ipbus_sel_sort_rank_mems(ipb_in.ipb_addr),
+        ipb_to_slaves   => ipbw,
+        ipb_from_slaves => ipbr
+        );
 
   in_buf(in_buf'high) <= d(NCHAN-1 downto 0);
 
@@ -99,7 +92,7 @@ begin
         addra  => sSrtRnkIn(i),
         dina   => (others => '0'),
         douta  => sSortRank_buffer(sSortRank_buffer'high)(i),
-        wea    => "0",        
+        wea    => "0",
         clkb   => clk_ipb,
         web(0) => ipbusWe_vector(i),
         addrb  => ipbw(i).ipb_addr(11 downto 0),
@@ -176,4 +169,3 @@ begin
 
   oValid      <= check_valid_bits(sValid_link(NCHAN-1 downto 0));
 end Behavioral;
-

@@ -4,6 +4,7 @@ use IEEE.numeric_std.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
+use work.ipbus_decode_cancel_out_bo.all;
 
 use work.GMTTypes.all;
 
@@ -22,41 +23,31 @@ entity CancelOutUnit_BO is
 end CancelOutUnit_BO;
 
 architecture Behavioral of CancelOutUnit_BO is
-  signal sel_wedge : std_logic_vector(4 downto 0);
-  signal ipbw      : ipb_wbus_array(4*iWedges_Ovl'length -1 downto 0);
-  signal ipbr      : ipb_rbus_array(4*iWedges_Ovl'length -1 downto 0);
-
+  signal ipbw      : ipb_wbus_array(N_SLAVES-1 downto 0);
+  signal ipbr      : ipb_rbus_array(N_SLAVES-1 downto 0);
 
   -- Need:
   -- vector of 3 to hold cancel bits for three muons
   -- vector of 4 to hold above vector for each wedge that is compared
   -- against.
-  -- vector of 12 to hold above wedge (all cancels for one subsystem)
-  type   cancel_wedge is array (0 to 3) of std_logic_vector(0 to 2);
-  type   cancel_vec is array (integer range <>) of cancel_wedge;
-  signal sCancel1 : cancel_vec(0 to 11);
+  -- vector of 6/12 to hold above wedge (all cancels for one subsystem)
+  type   cancel_vec is array (integer range <>) of TCancelWedge;
+  signal sCancel1 : cancel_vec(0 to 5);
   signal sCancel2 : cancel_vec(0 to 11);
 begin
-  -----------------------------------------------------------------------------
-  -- ipbus address decode
-  -----------------------------------------------------------------------------
-  -- Use bits before beginning of addresses that are required for later
-  -- addressing (i.e. addresses inside LUTs and possible substructure)
-  -- Need to address 6x4 wedges -> 5 bits needed.
-  -- 6 bits used in internal addressing of wedges -> will use 10th to 6th bit
-  sel_wedge <= std_logic_vector(unsigned(ipb_in.ipb_addr(10 downto 6)));
-
-  fabric : entity work.ipbus_fabric_sel
-    generic map(
-      NSLV      => 24,
-      SEL_WIDTH => 5)
-    port map(
-      ipb_in          => ipb_in,
-      ipb_out         => ipb_out,
-      sel             => sel_wedge,
-      ipb_to_slaves   => ipbw,
-      ipb_from_slaves => ipbr
-      );
+    -- IPbus address decode
+    fabric : entity work.ipbus_fabric_sel
+      generic map(
+        NSLV      => N_SLAVES,
+        SEL_WIDTH => IPBUS_SEL_WIDTH
+        )
+      port map(
+        ipb_in          => ipb_in,
+        ipb_out         => ipb_out,
+        sel             => ipbus_sel_cancel_out_bo(ipb_in.ipb_addr),
+        ipb_to_slaves   => ipbw,
+        ipb_from_slaves => ipbr
+        );
 
 
   -----------------------------------------------------------------------------
@@ -76,51 +67,24 @@ begin
   -- brl wedge, second adjacent brl wedge and finally with brl wedge below.
   -----------------------------------------------------------------------------
   g1 : for i in 0 to 5 generate
-      -- TODO: Move contents of this loop into it's own module?
-    x0 : entity work.WedgeCheckerUnit
+    x0 : entity work.CancelOutUnit_BO_WedgeComp
       port map (
         clk_ipb => clk_ipb,
         rst     => rst,
-        ipb_in  => ipbw(4*i),
-        ipb_out => ipbr(4*i),
-        wedge1  => iWedges_Ovl(i),
-        wedge2  => iWedges_B((2*i-1) mod iWedges_B'length),
-        ghosts1 => sCancel1(i)(0),
-        ghosts2 => sCancel2((2*i-1) mod iWedges_B'length)(0),
-        clk     => clk);
-    x1 : entity work.WedgeCheckerUnit
-      port map (
-        clk_ipb => clk_ipb,
-        rst     => rst,
-        ipb_in  => ipbw(4*i+1),
-        ipb_out => ipbr(4*i+1),
-        wedge1  => iWedges_Ovl(i),
-        wedge2  => iWedges_B(2*i),
-        ghosts1 => sCancel1(i)(1),
-        ghosts2 => sCancel2(2*i)(1),
-        clk     => clk);
-    x2 : entity work.WedgeCheckerUnit
-      port map (
-        clk_ipb => clk_ipb,
-        rst     => rst,
-        ipb_in  => ipbw(4*i+2),
-        ipb_out => ipbr(4*i+2),
-        wedge1  => iWedges_Ovl(i),
-        wedge2  => iWedges_B(2*i+1),
-        ghosts1 => sCancel1(i)(2),
-        ghosts2 => sCancel2(2*i+1)(1),
-        clk     => clk);
-    x3 : entity work.WedgeCheckerUnit
-      port map (
-        clk_ipb => clk_ipb,
-        rst     => rst,
-        ipb_in  => ipbw(4*i+3),
-        ipb_out => ipbr(4*i+3),
-        wedge1  => iWedges_Ovl(i),
-        wedge2  => iWedges_B((2*i+2) mod iWedges_B'length),
-        ghosts1 => sCancel1(i)(3),
-        ghosts2 => sCancel2((2*i+2) mod iWedges_B'length)(0),
-        clk     => clk);
+        ipb_in  => ipbw(i),
+        ipb_out => ipbr(i),
+        iWedge_Ovl  => iWedges_Ovl(i),
+        iWedge_B1  => iWedges_B((2*i-1) mod iWedges_B'length),
+        iWedge_B2  => iWedges_B(2*i),
+        iWedge_B3  => iWedges_B(2*i+1),
+        iWedge_B4  => iWedges_B((2*i+2) mod iWedges_B'length),
+        oCancel_Ovl  => sCancel1(i),
+        oCancel_B1 => sCancel2((2*i-1) mod iWedges_B'length)(0),
+        oCancel_B2 => sCancel2(2*i)(1),
+        oCancel_B3 => sCancel2(2*i+1)(1),
+        oCancel_B4 => sCancel2((2*i+2) mod iWedges_B'length)(0),
+        clk     => clk
+        );
   end generate g1;
 
   -- Now OR all i'th cancels.
