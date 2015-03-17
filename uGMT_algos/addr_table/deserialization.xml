@@ -7,4 +7,5 @@
     <node id="sort_ranks_quad5" address="0x28000" module="file://sort_rank_mems.xml" description="LUTs containing the sort ranks for incoming muons from one quad." />
     <node id="sort_ranks_quad6" address="0x30000" module="file://sort_rank_mems.xml" description="LUTs containing the sort ranks for incoming muons from one quad." />
     <node id="sort_ranks_quad7" address="0x38000" module="file://sort_rank_mems.xml" description="LUTs containing the sort ranks for incoming muons from one quad." />
+    <node id="sort_ranks_quad8" address="0x40000" module="file://sort_rank_mems.xml" description="LUTs containing the sort ranks for incoming muons from one quad." />
 </node>

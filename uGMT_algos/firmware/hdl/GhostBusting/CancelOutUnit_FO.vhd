@@ -14,10 +14,10 @@ entity CancelOutUnit_FO is
     rst         : in  std_logic;
     ipb_in      : in  ipb_wbus;
     ipb_out     : out ipb_rbus;
-    iWedges_Ovl : in  TGMTMuTracks_vector (0 to 5);
-    iWedges_F   : in  TGMTMuTracks_vector (0 to 5);
-    oCancel_Ovl : out std_logic_vector (0 to 17);
-    oCancel_F   : out std_logic_vector (0 to 17);
+    iWedges_Ovl : in  TGMTMuTracks_vector (5 downto 0);
+    iWedges_F   : in  TGMTMuTracks_vector (5 downto 0);
+    oCancel_Ovl : out std_logic_vector (17 downto 0);
+    oCancel_F   : out std_logic_vector (17 downto 0);
     clk         : in  std_logic
     );
 end CancelOutUnit_FO;
@@ -30,9 +30,9 @@ architecture Behavioral of CancelOutUnit_FO is
   -- vector of 3 to hold cancel bits for one muon (to all neighbouring wedges)
   -- vector of 3 to hold above vector (all cancels for one wedge)
   -- vector of 12 to hold above wedge (all cancels for one subsystem)
-  type   cancel_vec is array (integer range <>) of TCancelWedge;
-  signal sCancel1 : cancel_vec(0 to 5);
-  signal sCancel2 : cancel_vec(0 to 5);
+  type   cancel_vec is array (integer range <>) of TCancelWedge(2 downto 0);
+  signal sCancel1 : cancel_vec(5 downto 0);
+  signal sCancel2 : cancel_vec(5 downto 0);
 
 begin
     -- IPbus address decode
@@ -73,7 +73,7 @@ begin
 
   -- Now OR all i'th cancels.
   g3 : for i in iWedges_Ovl'range generate
-    oCancel_Ovl(i*3 to (i+1)*3-1) <= sCancel1(i)(0) or sCancel1(i)(1) or sCancel1(i)(2);
-    oCancel_F(i*3 to (i+1)*3-1)   <= sCancel2(i)(0) or sCancel2(i)(1) or sCancel2(i)(2);
+    oCancel_Ovl((i+1)*3-1 downto i*3) <= sCancel1(i)(0) or sCancel1(i)(1) or sCancel1(i)(2);
+    oCancel_F((i+1)*3-1 downto i*3)   <= sCancel2(i)(0) or sCancel2(i)(1) or sCancel2(i)(2);
   end generate g3;
 end Behavioral;

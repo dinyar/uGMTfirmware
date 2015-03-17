@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_decodeN_SLAVES-1 downto 0all;
+use work.ipbus_decode_extrapolation_phi.all;
 
 use work.GMTTypes.all;
 

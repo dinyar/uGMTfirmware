@@ -49,6 +49,7 @@ package tb_helpers is
     idxBits_ovl      : TIndexBits_vector(35 downto 0);
     idxBits_fwd      : TIndexBits_vector(35 downto 0);
     expectedMuons    : TGMTMu_vector(7 downto 0);
+    expectedIsoBits  : TIsoBits_vector(7 downto 0);
     expectedIntMuB   : TGMTMu_vector(7 downto 0);
     expectedIntMuO   : TGMTMu_vector(7 downto 0);
     expectedIntMuF   : TGMTMu_vector(7 downto 0);
@@ -59,15 +60,16 @@ package tb_helpers is
   type TGMTMuEvent_vec is array (integer range <>) of TGMTMuEvent;
 
   type TGMTCaloEvent is record
+    iEvent : integer;
     energies : TCaloRegionEtaSlice_vector(27 downto 0);
   end record;
-  type TGMTCaloEvent_vector is array (integer range <>) of TGMTCaloEvent;
+  type TGMTCaloEvent_vec is array (integer range <>) of TGMTCaloEvent;
 
   type TGMTEvent is record
     muons    : TGMTMuEvent;
     energies : TGMTCaloEvent;
   end record;
-  type TGMTEvent_vector is array (integer range <>) of TGMTEvent;
+  type TGMTEvent_vec is array (integer range <>) of TGMTEvent;
 
   procedure ReadOutEvent (
     file F          :     text;
@@ -79,13 +81,15 @@ package tb_helpers is
     variable iEvent : in  integer;
     variable event  : out TGMTMuEvent);
 
-  --procedure ReadCaloEvent (
-  --  file F         :     text;
-  --  variable event : out TGMTCaloEvent);
+  procedure ReadCaloEvent (
+    file F         :     text;
+    variable iEvent : in integer;
+    variable event : out TGMTCaloEvent);
 
-  --procedure ReadEvent (
-  --  file F         :     text;
-  --  variable event : out TGMTEvent);
+--  procedure ReadEvent (
+--    file F         :     text;
+--    variable iEvent : in integer;
+--    variable event : out TGMTEvent);
 
   procedure DumpOutEvent (
     variable event : in TGMTOutEvent);
@@ -96,11 +100,14 @@ package tb_helpers is
   procedure DumpMuEvent (
     variable event : in TGMTMuEvent);
 
-  --procedure DumpCaloEvent (
-  --  variable event : in TGMTCaloEvent);
+  procedure DumpCaloEvent (
+    variable event : in TGMTCaloEvent);
 
-  --procedure DumpEvent (
-  --  variable event : in TGMTEvent);
+--  procedure DumpEvent (
+--    variable event : in TGMTEvent);
+
+  procedure DumpIsoBits (
+    variable iIsoBits : in TIsoBits_vector(7 downto 0));
 
   procedure DumpTracks (
     variable iTracks : in TGMTMuTracks_vector;
@@ -110,6 +117,11 @@ package tb_helpers is
     variable iMuons     : in TGMTMu_vector;
     variable iSortRanks : in TSortRank10_vector;
     variable id         : in string(1 to 3));
+
+procedure ValidateIsolationOutput (
+    variable iIsoBits : in TIsoBits_vector(7 downto 0);
+    variable muEvent  : in TGMTMuEvent;
+    variable errors   : out integer);
 
   procedure ValidateSerializerOutput (
     variable iOutput : in  TOutTransceiverBuffer;
@@ -288,7 +300,50 @@ package body tb_helpers is
     end loop;
   end ReadOutEvent;
 
-  -- TODO: Add procedure for reading calo inputs.
+  procedure ReadEtaSlice (
+      variable L       : inout line;
+      variable oEnergies : out TCaloRegionEtaSlice(35 downto 0)) is
+      variable vEnergy : integer;
+      variable dummy : string(1 to 6);
+  begin
+      read(L, dummy);
+
+      for iEnergy in oEnergies'range loop
+        read(L, vEnergy);
+        oEnergies(iEnergy) := to_unsigned(vEnergy, 5);
+      end loop;
+  end ReadEtaSlice;
+
+  procedure ReadCaloEvent (
+    file F            : text;
+    variable iEvent   : in integer;
+    variable event    : out TGMTCaloEvent) is
+    variable L        : line;
+    variable energyNo : integer := 0;
+  begin
+    event.iEvent := iEvent;
+
+    while(energyNo < 28) loop
+        if L.all'length = 0 then
+          next;
+        elsif(L.all(1 to 1) = "#") then
+          next;
+        elsif L.all(1 to 3) = "EVT" then
+          -- TODO: Parse this maybe?
+          next;
+        elsif L.all(1 to 4) = "CALO" then
+          ReadEtaSlice(L, event.energies(energyNo));
+          energyNo := energyNo+1;
+        end if;
+    end loop;
+  end ReadCaloEvent;
+
+  -- procedure ReadEvent (
+  --  file F         :     text;
+  --  variable event : out TGMTEvent) is
+  -- begin
+  -- end ReadEvent;
+
   procedure ReadMuEvent (
     file F          :     text;
     variable iEvent : in  integer;
@@ -369,6 +424,41 @@ package body tb_helpers is
     end loop;
   end ReadMuEvent;
 
+  procedure DumpEnergyValues (
+    variable iEnergies : in TCaloRegionEtaSlice_vector(27 downto 0)) is
+    variable L1        : line;
+  begin
+      for iSlice in iEnergies'range loop
+        write(L1, string'("CALO"));
+        write(L1, iSlice);
+        write(L1, string'(": "));
+        for iEnergy in iEnergies(iSlice)'range loop
+            write(L1, to_integer(iEnergies(iSlice)(iEnergy)));
+            write(L1, string'(" "));
+        end loop;
+        writeline(OUTPUT, L1);
+      end loop;
+
+      write(L1, string'(""));
+      writeline(OUTPUT, L1);
+  end DumpEnergyValues;
+
+  procedure DumpCaloEvent (
+    variable event : in TGMTCaloEvent) is
+    variable L1        : line;
+  begin -- DumpCaloEvent
+    if event.iEvent /= -1 then
+        write(L1, string'("++++++++++++++++++++ Dump of event "));
+        write(L1, event.iEvent);
+        write(L1, string'(": ++++++++++++++++++++"));
+        writeline(OUTPUT, L1);
+
+        write(L1, string'("### Dumping energy sums: "));
+        writeline(OUTPUT, L1);
+        DumpEnergyValues(event.energies);
+    end if;
+  end DumpCaloEvent;
+
   procedure DumpOutEvent (
     variable event : in TGMTOutEvent) is
     variable L1              : line;
@@ -417,7 +507,7 @@ package body tb_helpers is
       writeline(OUTPUT, L);
     end loop;  -- iFrame
   end DumpOutput;
-  
+
   procedure DumpMuEvent (
     variable event : in TGMTMuEvent) is
     variable L1        : line;
@@ -443,6 +533,22 @@ package body tb_helpers is
 
     end if;
   end DumpMuEvent;
+
+  procedure DumpIsoBits (
+    variable iIsoBits : in TIsoBits_vector(7 downto 0)) is
+    variable L1            : line;
+  begin
+    write(L1, string'("++++++++++++++++++++ Dump of Iso bits from FW: "));
+    writeline(OUTPUT, L1);
+    for i in iIsoBits'range loop
+        write(L1, to_integer(unsigned(iIsoBits(i))));
+        write(L1, string'(" "));
+    end loop;
+    writeline(OUTPUT, L1);
+    write(L1, string'(""));
+    writeline(OUTPUT, L1);
+  end DumpIsoBits;
+
 
   procedure DumpTracks (
     variable iTracks : in TGMTMuTracks_vector;
@@ -555,7 +661,7 @@ package body tb_helpers is
       writeline(OUTPUT, LO);
     end if;
   end CheckMuon;
-  
+
   procedure CheckMuons (
     variable iMus        : in  TGMTMu_vector;
     variable iEmuMus     : in  TGMTMu_vector;
@@ -576,7 +682,7 @@ package body tb_helpers is
     errors := vErrors;
   end CheckMuons;
 
-  
+
   procedure CheckMuons (
     variable iMus    : in  TGMTMu_vector;
     variable iEmuMus : in  TGMTMu_vector;
@@ -625,6 +731,49 @@ package body tb_helpers is
     end loop;  --i
     errors := vErrors;
   end CheckSortRanks;
+
+  procedure ValidateIsolationOutput (
+      variable iIsoBits : in TIsoBits_vector(7 downto 0);
+      variable muEvent  : in TGMTMuEvent;
+      variable errors   : out integer) is
+      variable LO       : line;
+      variable tmpError : integer := 0;
+      variable vErrors  : integer := 0;
+  begin
+    if (muEvent.iEvent >= 0) then
+        write(LO, string'("@@@ Validating event "));
+        write(LO, muEvent.iEvent);
+        write(LO, string'(" @@@"));
+        writeline(OUTPUT, LO);
+        write(LO, string'(""));
+        writeline(OUTPUT, LO);
+
+        for i in iIsoBits'range loop
+            if iIsoBits(i) /= muEvent.expectedIsoBits(i) then
+                vErrors := vErrors + 1;
+
+                write(LO, string'("!!!!!! Error in muon #"));
+                write(LO, i);
+
+                if iIsoBits(i)(0) /= muEvent.expectedIsoBits(i)(0) then
+                    write(LO, string'(", iso bit 0"));
+                end if;
+                if iIsoBits(i)(1) /= muEvent.expectedIsoBits(i)(1) then
+                    write(LO, string'(", iso bit 1"));
+                end if;
+                writeline(OUTPUT, LO);
+                write(LO, string'("!!! Simulation output: "));
+                write(LO, to_integer(unsigned(iIsoBits(i))));
+                writeline(OUTPUT, LO);
+                write(LO, string'("!!!   Expected output: "));
+                write(LO, to_integer(unsigned(muEvent.expectedIsoBits(i))));
+                writeline(OUTPUT, LO);
+                write(LO, string'(""));
+                writeline(OUTPUT, LO);
+            end if;
+        end loop; -- i
+    end if;
+  end ValidateIsolationOutput;
 
   procedure ValidateSerializerOutput (
     variable iOutput : in  TOutTransceiverBuffer;

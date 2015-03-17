@@ -194,7 +194,7 @@ package GMTTypes is
   -----------------------------------------------------------------------------
   -- Vectors to store cancel bits
   -----------------------------------------------------------------------------
-  type   TCancelWedge is array (0 to 3) of std_logic_vector(0 to 2);
+  type   TCancelWedge is array (integer range <>) of std_logic_vector(2 downto 0);
 
   -----------------------------------------------------------------------------
   -- Types for Transceivers

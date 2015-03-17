@@ -18,10 +18,10 @@ entity CancelOutUnit_FO_WedgeComp is
     iWedge_Fwd1   : in  TGMTMuTracks;
     iWedge_Fwd2   : in  TGMTMuTracks;
     iWedge_Fwd3   : in  TGMTMuTracks;
-    oCancel_Ovl : out TCancelWedge;
-    oCancel_Fwd1   : out std_logic_vector (0 to 2);
-    oCancel_Fwd2   : out std_logic_vector (0 to 2);
-    oCancel_Fwd3   : out std_logic_vector (0 to 2);
+    oCancel_Ovl : out TCancelWedge(2 downto 0);
+    oCancel_Fwd1   : out std_logic_vector (2 downto 0);
+    oCancel_Fwd2   : out std_logic_vector (2 downto 0);
+    oCancel_Fwd3   : out std_logic_vector (2 downto 0);
     clk         : in  std_logic
     );
 end CancelOutUnit_FO_WedgeComp;

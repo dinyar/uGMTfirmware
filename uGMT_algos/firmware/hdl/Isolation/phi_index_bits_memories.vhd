@@ -64,11 +64,11 @@ begin
 --        );
     phi_idx_bits_mem : entity work.phi_index_bits_mem
       port map (
-      clk     => clk_ipb,
+      clk_ipb => clk_ipb,
       rst     => rst,
       ipb_in  => ipbw(i),
       ipb_out => ipbr(i),
-      rclk    => clk,
+      clk     => clk,
       q       => sLutOutput(i)(5 downto 0),
       addr    => std_logic_vector(iCoords(i))
       );

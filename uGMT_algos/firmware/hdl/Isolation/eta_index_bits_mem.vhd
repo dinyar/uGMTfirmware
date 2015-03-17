@@ -4,10 +4,9 @@ use IEEE.NUMERIC_STD.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_dpram;
+use work.ipbus_dpram_dist;
 
-library types;
-use types.GMTTypes.all;
+use work.GMTTypes.all;
 
 entity eta_index_bits_mem is
   port (
@@ -21,11 +20,11 @@ entity eta_index_bits_mem is
 end eta_index_bits_mem;
 
 architecture Behavioral of eta_index_bits_mem is
-
 begin
-  eta_idx_bits_mem : entity work.ipbus_dpram
+  eta_idx_bits_mem : entity work.ipbus_dpram_dist
     generic map (
-      ADDR_WIDTH => 9
+      ADDR_WIDTH => 9,
+      WORD_WIDTH => 5
       )
     port map (
       clk     => clk_ipb,
@@ -33,7 +32,7 @@ begin
       ipb_in  => ipb_in,
       ipb_out => ipb_out,
       rclk    => clk,
-      q       => q(2 downto 0),
+      q       => q,
       addr    => addr
       );
 

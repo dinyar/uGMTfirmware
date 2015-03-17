@@ -17,7 +17,7 @@ package ipbus_decode_cancel_out_mems is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_cancel_out_mems(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Thu Mar 12 21:15:27 2015 
+-- START automatically  generated VHDL the Fri Mar 13 10:08:29 2015 
   constant N_SLV_CANCEL_OUT_MEM_0: integer := 0;
   constant N_SLV_CANCEL_OUT_MEM_1: integer := 1;
   constant N_SLV_CANCEL_OUT_MEM_2: integer := 2;
@@ -39,7 +39,7 @@ package body ipbus_decode_cancel_out_mems is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Thu Mar 12 21:15:27 2015 
+-- START automatically  generated VHDL the Fri Mar 13 10:08:29 2015 
     if    std_match(addr, "---------------------0000-------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_0, IPBUS_SEL_WIDTH)); -- cancel_out_mem_0 / base 0x00000000 / mask 0x00000780
     elsif std_match(addr, "---------------------0001-------") then

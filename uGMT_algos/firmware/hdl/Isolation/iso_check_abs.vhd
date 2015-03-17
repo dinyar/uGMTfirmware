@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_dpram;
+use work.ipbus_dpram_dist;
 use work.ipbus_decode_isolation_mem_absolute.all;
 
 use work.GMTTypes.all;
@@ -30,6 +30,8 @@ architecture Behavioral of iso_check_abs is
   signal sLutOutput : TLutBuf(oIsoBits'range);
 
   signal ipbusWe_vector : std_logic_vector(iAreaSums'range);
+
+  signal dummy : std_logic_vector(30 downto 0);
 begin
 
   -- IPbus address decode
@@ -48,15 +50,16 @@ begin
 
 
   iso_check_loop : for i in oIsoBits'range generate
-    abs_iso_check : entity work.ipbus_dpram
+    abs_iso_check : entity work.ipbus_dpram_dist
         generic map (
-          ADDR_WIDTH => 5
+          ADDR_WIDTH => 5,
+          WORD_WIDTH => 1
           )
         port map (
           clk     => clk_ipb,
           rst     => rst,
-          ipb_in  => ipb_in,
-          ipb_out => ipb_out,
+          ipb_in  => ipbw(i),
+          ipb_out => ipbr(i),
           rclk    => clk,
           q       => oIsoBits(i downto i),
           addr    => std_logic_vector(iAreaSums(i))

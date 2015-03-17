@@ -19,11 +19,11 @@ entity CancelOutUnit_BO_WedgeComp is
     iWedge_B2   : in  TGMTMuTracks;
     iWedge_B3   : in  TGMTMuTracks;
     iWedge_B4   : in  TGMTMuTracks;
-    oCancel_Ovl : out TCancelWedge;
-    oCancel_B1  : out std_logic_vector(0 to 2);
-    oCancel_B2  : out std_logic_vector(0 to 2);
-    oCancel_B3  : out std_logic_vector(0 to 2);
-    oCancel_B4  : out std_logic_vector(0 to 2);
+    oCancel_Ovl : out TCancelWedge(3 downto 0);
+    oCancel_B1  : out std_logic_vector(2 downto 0);
+    oCancel_B2  : out std_logic_vector(2 downto 0);
+    oCancel_B3  : out std_logic_vector(2 downto 0);
+    oCancel_B4  : out std_logic_vector(2 downto 0);
     clk         : in  std_logic
     );
 end CancelOutUnit_BO_WedgeComp;

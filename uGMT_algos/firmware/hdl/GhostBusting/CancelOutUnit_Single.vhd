@@ -25,8 +25,8 @@ entity CancelOutUnit_Single is
     rst     : in  std_logic;
     ipb_in  : in  ipb_wbus;
     ipb_out : out ipb_rbus;
-    iWedges : in  TGMTMuTracks_vector (0 to num_wedges-1);
-    oCancel : out std_logic_vector (0 to num_tracks*num_wedges-1);
+    iWedges : in  TGMTMuTracks_vector (num_wedges-1 downto 0);
+    oCancel : out std_logic_vector (num_tracks*num_wedges-1 downto 0);
     clk     : in  std_logic
     );
 end CancelOutUnit_Single;
@@ -80,8 +80,8 @@ begin
         ipb_out => ipbr(i),
         wedge1  => iWedges(i),
         wedge2  => iWedges((i+1) mod iWedges'length),
-        ghosts1 => sCancel1(num_tracks*i to num_tracks*(i+1)-1),
-        ghosts2 => sCancel2(num_tracks*i to num_tracks*(i+1)-1),
+        ghosts1 => sCancel1(num_tracks*(i+1)-1 downto num_tracks*i),
+        ghosts2 => sCancel2(num_tracks*(i+1)-1 downto num_tracks*i),
         clk     => clk);
   end generate g1;
 

@@ -31,7 +31,6 @@ entity deserialize_mu_quad is
 end deserialize_mu_quad;
 
 architecture Behavioral of deserialize_mu_quad is
-  signal sel_lut_group : std_logic_vector(1 downto 0);
 
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
