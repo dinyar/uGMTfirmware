@@ -215,8 +215,8 @@ begin
         write(LO, iEvent);
         write(LO, string'("...."));
         writeline (OUTPUT, LO);
-        ReadMuEvent(F, iEvent, muEvent); -- Will work if no final muons??
         ReadCaloEvent(F, iEvent, caloEvent);
+        ReadMuEvent(F, iEvent, muEvent);
         -- Filling uGMT
         iMuonsB     <= muEvent.muons_brl;
         iMuonsO     <= muEvent.muons_ovl;
