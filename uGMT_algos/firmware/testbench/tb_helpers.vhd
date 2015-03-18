@@ -150,6 +150,7 @@ package body tb_helpers is
     variable emptyBit : out   std_logic;
     variable isoBit   : out   TIsoBits
     ) is
+    variable LO       : line;
     variable cable_no    : integer;
     variable sign, vsign : bit;
     variable eta         : integer;
@@ -180,6 +181,7 @@ package body tb_helpers is
     sortRank    := std_logic_vector(to_unsigned(rank, 10));
     read(L, empty);
     emptyBit    := to_stdulogic(empty);
+
     if id = string'("OUT") then
       read(L, iso);
       isoBit := std_logic_vector(to_unsigned(iso, 2));
@@ -318,12 +320,15 @@ package body tb_helpers is
     file F            : text;
     variable iEvent   : in integer;
     variable event    : out TGMTCaloEvent) is
-    variable L        : line;
+    variable L,L1        : line;
     variable energyNo : integer := 0;
   begin
     event.iEvent := iEvent;
 
-    while(energyNo < 28) loop
+    while(energyNo < 27) loop
+        readline(F, L);
+        write(L1, string'("Reading line"));
+        writeline(OUTPUT, L1);
         if L.all'length = 0 then
           next;
         elsif(L.all(1 to 1) = "#") then
@@ -361,8 +366,13 @@ package body tb_helpers is
     variable sortRanks     : TSortRank10_vector(107 downto 0);
     variable emptyBits     : std_logic_vector(107 downto 0);
     variable idxBits       : TIndexBits_vector(107 downto 0);
+    variable finId         : string(1 to 3)                 := "OUT";
+    variable bimId        : string(1 to 3)                 := "BIM";
+    variable oimId        : string(1 to 3)                 := "OIM";
+    variable fimId        : string(1 to 3)                 := "FIM";
     variable dummySrtRnk   : TSortRank10;
     variable dummyEmptyBit : std_logic;
+    variable dummyIsoBits  : TIsoBits;
     variable finMuNo       : integer := 0;
     variable intMuBNo      : integer := 0;
     variable intMuONo      : integer := 0;
@@ -409,16 +419,16 @@ package body tb_helpers is
         wedgeFwdNo := wedgeFwdNo+1;
         wedgeNo    := wedgeNo+1;
       elsif L.all(1 to 3) = "OUT" then
-        ReadInputMuon(L, event.expectedMuons(finMuNo), dummySrtRnk, dummyEmptyBit);
+        ReadInputMuon(L, finId, event.expectedMuons(finMuNo), dummySrtRnk, dummyEmptyBit, event.expectedIsoBits(finMuNo));
         finMuNo := finMuNo+1;
       elsif L.all(1 to 4) = "BIMD" then
-        ReadInputMuon(L, event.expectedIntMuB(intMuBNo), event.expectedSrtRnksB(intMuBNo), dummyEmptyBit);
+        ReadInputMuon(L, bimId, event.expectedIntMuB(intMuBNo), event.expectedSrtRnksB(intMuBNo), dummyEmptyBit, dummyIsoBits);
         intMuBNo := intMuBNo+1;
       elsif L.all(1 to 4) = "OIMD" then
-        ReadInputMuon(L, event.expectedIntMuO(intMuONo), event.expectedSrtRnksO(intMuONo), dummyEmptyBit);
+        ReadInputMuon(L, oimId, event.expectedIntMuO(intMuONo), event.expectedSrtRnksO(intMuONo), dummyEmptyBit, dummyIsoBits);
         intMuONo := intMuONo+1;
       elsif L.all(1 to 4) = "FIMD" then
-        ReadInputMuon(L, event.expectedIntMuF(intMuFNo), event.expectedSrtRnksF(intMuFNo), dummyEmptyBit);
+        ReadInputMuon(L, fimId, event.expectedIntMuF(intMuFNo), event.expectedSrtRnksF(intMuFNo), dummyEmptyBit, dummyIsoBits);
         intMuFNo := intMuFNo+1;
       end if;
     end loop;
@@ -754,12 +764,25 @@ package body tb_helpers is
 
                 write(LO, string'("!!!!!! Error in muon #"));
                 write(LO, i);
+                writeline(OUTPUT, LO);
 
                 if iIsoBits(i)(0) /= muEvent.expectedIsoBits(i)(0) then
-                    write(LO, string'(", iso bit 0"));
+                    write(LO, string'("Absolute isolation: "));
+                    writeline(OUTPUT, LO);
+                    write(LO, string'("Simulation: "));
+                    write(LO, iIsoBits(i)(0));
+                    write(LO, string'("; expected: "));
+                    write(LO, muEvent.expectedIsoBits(i)(0));
+                    writeline(OUTPUT, LO);
                 end if;
                 if iIsoBits(i)(1) /= muEvent.expectedIsoBits(i)(1) then
-                    write(LO, string'(", iso bit 1"));
+                    write(LO, string'("Relative isolation: "));
+                    writeline(OUTPUT, LO);
+                    write(LO, string'("Simulation: "));
+                    write(LO, iIsoBits(i)(1));
+                    write(LO, string'("; expected: "));
+                    write(LO, muEvent.expectedIsoBits(i)(1));
+                    writeline(OUTPUT, LO);
                 end if;
                 writeline(OUTPUT, LO);
                 write(LO, string'("!!! Simulation output: "));
@@ -772,6 +795,13 @@ package body tb_helpers is
                 writeline(OUTPUT, LO);
             end if;
         end loop; -- i
+        if vErrors > 0 then
+          errors := 1;
+        else
+          errors := 0;
+        end if;
+    else
+        errors := 0;
     end if;
   end ValidateIsolationOutput;
 
