@@ -31,7 +31,6 @@ architecture Behavioral of iso_check_abs is
 
   signal ipbusWe_vector : std_logic_vector(iAreaSums'range);
 
-  signal dummy : std_logic_vector(30 downto 0);
 begin
 
   -- IPbus address decode
