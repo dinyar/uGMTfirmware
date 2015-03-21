@@ -21,7 +21,6 @@ entity extrapolate_eta is
 end extrapolate_eta;
 
 architecture Behavioral of extrapolate_eta is
-  signal sel_lut_group : std_logic_vector(5 downto 0);
 
   signal ipbusWe_vector : std_logic_vector(iEtaExtrapolationAddress'range);
 

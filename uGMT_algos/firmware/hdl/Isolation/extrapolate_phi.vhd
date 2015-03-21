@@ -21,7 +21,6 @@ entity extrapolate_phi is
 end extrapolate_phi;
 
 architecture Behavioral of extrapolate_phi is
-  signal sel_lut_group : std_logic_vector(5 downto 0);
 
   signal ipbusWe_vector : std_logic_vector(iPhiExtrapolationAddress'range);
 
