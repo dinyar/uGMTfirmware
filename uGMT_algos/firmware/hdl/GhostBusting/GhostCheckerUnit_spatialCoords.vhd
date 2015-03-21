@@ -9,6 +9,9 @@ use work.ipbus_dpram_dist;
 use work.GMTTypes.all;
 
 entity GhostCheckerUnit_spatialCoords is
+  generic (
+    DATA_FILE: string
+    );
   port (
     clk_ipb : in  std_logic;
     rst     : in  std_logic;
@@ -69,12 +72,13 @@ begin
 
   match_qual_calc : entity work.ipbus_dpram_dist
       generic map (
+        DATA_FILE  => DATA_FILE,
         ADDR_WIDTH => 7,
         WORD_WIDTH => 1
         )
       port map (
         clk     => clk_ipb,
-        rst     => rst,
+        -- rst     => rst,
         ipb_in  => ipb_in,
         ipb_out => ipb_out,
         rclk    => clk,

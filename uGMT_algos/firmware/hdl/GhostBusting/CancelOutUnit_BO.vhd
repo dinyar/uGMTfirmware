@@ -9,6 +9,9 @@ use work.ipbus_decode_cancel_out_bo.all;
 use work.GMTTypes.all;
 
 entity CancelOutUnit_BO is
+  generic (
+    DATA_FILE: string
+    );
   port (
     clk_ipb     : in  std_logic;
     rst         : in  std_logic;
@@ -68,6 +71,9 @@ begin
   -----------------------------------------------------------------------------
   g1 : for i in 0 to 5 generate
     x0 : entity work.CancelOutUnit_BO_WedgeComp
+    generic map (
+      DATA_FILE  => DATA_FILE
+      )
       port map (
         clk_ipb => clk_ipb,
         rst     => rst,

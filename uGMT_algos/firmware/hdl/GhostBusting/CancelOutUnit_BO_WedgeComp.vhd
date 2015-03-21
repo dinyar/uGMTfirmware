@@ -9,6 +9,9 @@ use work.ipbus_decode_cancel_out_bo_wedge.all;
 use work.GMTTypes.all;
 
 entity CancelOutUnit_BO_WedgeComp is
+  generic (
+    DATA_FILE: string
+    );
   port (
     clk_ipb     : in  std_logic;
     rst         : in  std_logic;
@@ -48,6 +51,9 @@ begin
         );
 
     x0 : entity work.WedgeCheckerUnit
+    generic map (
+      DATA_FILE  => DATA_FILE
+      )
       port map (
         clk_ipb => clk_ipb,
         rst     => rst,
@@ -59,6 +65,9 @@ begin
         ghosts2 => oCancel_B1,
         clk     => clk);
     x1 : entity work.WedgeCheckerUnit
+    generic map (
+      DATA_FILE  => DATA_FILE
+      )
       port map (
         clk_ipb => clk_ipb,
         rst     => rst,
@@ -70,6 +79,9 @@ begin
         ghosts2 => oCancel_B2,
         clk     => clk);
     x2 : entity work.WedgeCheckerUnit
+    generic map (
+      DATA_FILE  => DATA_FILE
+      )
       port map (
         clk_ipb => clk_ipb,
         rst     => rst,
@@ -81,6 +93,9 @@ begin
         ghosts2 => oCancel_B3,
         clk     => clk);
     x3 : entity work.WedgeCheckerUnit
+    generic map (
+      DATA_FILE  => DATA_FILE
+      )
       port map (
         clk_ipb => clk_ipb,
         rst     => rst,

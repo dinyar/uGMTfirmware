@@ -9,6 +9,9 @@ use work.ipbus_decode_cancel_out_mems.all;
 use work.GMTTypes.all;
 
 entity WedgeCheckerUnit is
+  generic (
+    DATA_FILE: string
+    );
   port (
     clk_ipb : in  std_logic;
     rst     : in  std_logic;
@@ -64,6 +67,9 @@ begin
       --    ghost2  => sCancel2(j)(i)     -- TODO: Is this correct?
       --    );
       x : entity work.GhostCheckerUnit_spatialCoords
+      generic map (
+        DATA_FILE  => DATA_FILE
+        )
         port map (
           clk_ipb => clk_ipb,
           rst     => rst,

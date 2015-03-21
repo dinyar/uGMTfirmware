@@ -17,6 +17,7 @@ use work.GMTTypes.all;
 
 entity CancelOutUnit_Single is
   generic (
+    DATA_FILE: string;
     num_wedges : natural := 12;         -- number of wedges to be checked
     num_tracks : natural := 3           -- number of tracks per wedge
     );
@@ -73,6 +74,9 @@ begin
   -- Only compare muons with those from neighbouring wedges.
   g1 : for i in iWedges'range generate
     x1 : entity work.WedgeCheckerUnit
+    generic map (
+      DATA_FILE  => DATA_FILE
+      )
       port map (
         clk_ipb => clk_ipb,
         rst     => rst,
