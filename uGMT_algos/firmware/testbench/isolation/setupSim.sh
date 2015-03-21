@@ -16,6 +16,7 @@ vcom -check_synthesis ../../hdl/common/GMTTypes_pkg.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_core/firmware/hdl/ipbus_package.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_sorting.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_core/firmware/hdl/ipbus_fabric_sel.vhd
+vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_dpram_dist.vhd
 vcom -check_synthesis ../../hdl/Sorting/SorterUnit.vhd
 vcom -check_synthesis ../../hdl/MatchAndMerge/*
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit.vhd
@@ -39,7 +40,6 @@ vcom -check_synthesis ../../hdl/Sorting/SortAndCancelUnit.vhd
 vlib blk_mem_gen_v8_2
 vmap blk_mem_gen_v8_2 blk_mem_gen_v8_2
 vcom -work blk_mem_gen_v8_2 ../../cgn/mem_libs/blk/blk_mem_gen_v8_2.vhd
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_dpram_dist.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_extrapolation_eta.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_extrapolation_phi.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_extrapolation_regional.vhd
@@ -67,11 +67,24 @@ vcom -check_synthesis ../../hdl/Isolation/phi_index_bits_memories.vhd
 vcom -check_synthesis ../../hdl/Isolation/index_bits_generator.vhd
 vcom -check_synthesis ../../hdl/Isolation/generate_index_bits.vhd
 vcom -check_synthesis ../../cgn/rel_iso_mem.vhd
+vcom -check_synthesis ../../hdl/Isolation/iso_check_abs.vhd
 vcom -check_synthesis ../../hdl/Isolation/iso_check_rel.vhd
 vcom -check_synthesis ../../hdl/Isolation/iso_check.vhd
 vcom -check_synthesis ../../hdl/Isolation/IsoAssignmentUnit.vhd
 vcom -check_synthesis ../tb_helpers.vhd
 vcom -check_synthesis isolation_tb.vhd
+ln -s ../../hdl/ipbus_slaves/AbsIsoCheckMem.dat .
+ln -s ../../hdl/ipbus_slaves/IdxSelMemEta.dat .
+ln -s ../../hdl/ipbus_slaves/IdxSelMemPhi.dat .
+ln -s ../../hdl/ipbus_slaves/BrlSingleMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/OvlPosSingleMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/OvlNegSingleMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/FwdPosSingleMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/FwdNegSingleMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/BOPosMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/BONegMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/FOPosMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/FONegMatchQual.dat .
 vmake work > Makefile
 #bash update_testfiles.sh
 echo "WARNING: Using many_events.txt pattern file. Modify $PATTERNFILE link if other pattern file required."
