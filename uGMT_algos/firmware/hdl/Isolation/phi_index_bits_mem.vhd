@@ -23,12 +23,13 @@ architecture Behavioral of phi_index_bits_mem is
 begin
   phi_idx_bits_mem : entity work.ipbus_dpram_dist
     generic map (
+      DATA_FILE  => "IdxSelMemPhi.dat",
       ADDR_WIDTH => 10,
       WORD_WIDTH => 6
       )
     port map (
       clk     => clk_ipb,
-      rst     => rst,
+    --   rst     => rst,
       ipb_in  => ipb_in,
       ipb_out => ipb_out,
       rclk    => clk,

@@ -51,12 +51,13 @@ begin
   iso_check_loop : for i in oIsoBits'range generate
     abs_iso_check : entity work.ipbus_dpram_dist
         generic map (
+          DATA_FILE  => "AbsIsoCheckMem.dat",
           ADDR_WIDTH => 5,
           WORD_WIDTH => 1
           )
         port map (
           clk     => clk_ipb,
-          rst     => rst,
+        --   rst     => rst,
           ipb_in  => ipbw(i),
           ipb_out => ipbr(i),
           rclk    => clk,

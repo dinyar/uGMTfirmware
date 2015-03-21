@@ -23,12 +23,13 @@ architecture Behavioral of eta_index_bits_mem is
 begin
   eta_idx_bits_mem : entity work.ipbus_dpram_dist
     generic map (
+      DATA_FILE  => "IdxSelMemEta.dat",
       ADDR_WIDTH => 9,
       WORD_WIDTH => 5
       )
     port map (
       clk     => clk_ipb,
-      rst     => rst,
+    --   rst     => rst,
       ipb_in  => ipb_in,
       ipb_out => ipb_out,
       rclk    => clk,
