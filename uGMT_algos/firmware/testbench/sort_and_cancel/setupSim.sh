@@ -20,7 +20,7 @@ vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_core/firmw
 vcom -check_synthesis ../../hdl/Sorting/SorterUnit.vhd
 vcom -check_synthesis ../../hdl/MatchAndMerge/*
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit.vhd
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_dpram.vhd
+vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_dpram_dist.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_cancel_out_*.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_spatialCoords.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/WedgeCheckerUnit.vhd
@@ -39,6 +39,15 @@ vcom -check_synthesis ../../hdl/Sorting/SortAndCancelUnit.vhd
 vcom -check_synthesis ../tb_helpers.vhd
 vcom -check_synthesis SortAndCancelUnit_tb.vhd
 vmake work > Makefile
+ln -s ../../hdl/ipbus_slaves/BrlSingleMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/OvlPosSingleMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/OvlNegSingleMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/FwdPosSingleMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/FwdNegSingleMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/BOPosMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/BONegMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/FOPosMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/FONegMatchQual.dat .
 bash update_testfiles.sh
 echo "WARNING: Using many_events.txt pattern file. Modify $PATTERNFILE link if other pattern file required."
 if [ -f $PATTERNFILE ];
