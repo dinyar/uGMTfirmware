@@ -14,4 +14,14 @@ sort_test.txt
 transcript
 ugmt_testfile.dat
 work/
+BONegMatchQual.dat
+BOPosMatchQual.dat
+BrlSingleMatchQual.dat
+FONegMatchQual.dat
+FOPosMatchQual.dat
+FwdNegSingleMatchQual.dat
+FwdPosSingleMatchQual.dat
+OvlNegSingleMatchQual.dat
+OvlPosSingleMatchQual.dat
+sortAndCancel_tb/
 
