@@ -150,7 +150,6 @@ package body tb_helpers is
     variable emptyBit : out   std_logic;
     variable isoBit   : out   TIsoBits
     ) is
-    variable LO       : line;
     variable cable_no    : integer;
     variable sign, vsign : bit;
     variable eta         : integer;
@@ -320,15 +319,13 @@ package body tb_helpers is
     file F            : text;
     variable iEvent   : in integer;
     variable event    : out TGMTCaloEvent) is
-    variable L,L1        : line;
+    variable L        : line;
     variable energyNo : integer := 0;
   begin
     event.iEvent := iEvent;
 
-    while(energyNo < 27) loop
+    while(energyNo < 28) loop
         readline(F, L);
-        write(L1, string'("Reading line"));
-        writeline(OUTPUT, L1);
         if L.all'length = 0 then
           next;
         elsif(L.all(1 to 1) = "#") then
@@ -366,7 +363,7 @@ package body tb_helpers is
     variable sortRanks     : TSortRank10_vector(107 downto 0);
     variable emptyBits     : std_logic_vector(107 downto 0);
     variable idxBits       : TIndexBits_vector(107 downto 0);
-    variable finId         : string(1 to 3)                 := "OUT";
+    variable finId         : string(1 to 3)                := "OUT";
     variable bimId        : string(1 to 3)                 := "BIM";
     variable oimId        : string(1 to 3)                 := "OIM";
     variable fimId        : string(1 to 3)                 := "FIM";
@@ -422,13 +419,13 @@ package body tb_helpers is
         ReadInputMuon(L, finId, event.expectedMuons(finMuNo), dummySrtRnk, dummyEmptyBit, event.expectedIsoBits(finMuNo));
         finMuNo := finMuNo+1;
       elsif L.all(1 to 4) = "BIMD" then
-        ReadInputMuon(L, bimId, event.expectedIntMuB(intMuBNo), event.expectedSrtRnksB(intMuBNo), dummyEmptyBit, dummyIsoBits);
+        ReadInputMuon(L, event.expectedIntMuB(intMuBNo), event.expectedSrtRnksB(intMuBNo), dummyEmptyBit);
         intMuBNo := intMuBNo+1;
       elsif L.all(1 to 4) = "OIMD" then
-        ReadInputMuon(L, oimId, event.expectedIntMuO(intMuONo), event.expectedSrtRnksO(intMuONo), dummyEmptyBit, dummyIsoBits);
+        ReadInputMuon(L, event.expectedIntMuO(intMuONo), event.expectedSrtRnksO(intMuONo), dummyEmptyBit);
         intMuONo := intMuONo+1;
       elsif L.all(1 to 4) = "FIMD" then
-        ReadInputMuon(L, fimId, event.expectedIntMuF(intMuFNo), event.expectedSrtRnksF(intMuFNo), dummyEmptyBit, dummyIsoBits);
+        ReadInputMuon(L, event.expectedIntMuF(intMuFNo), event.expectedSrtRnksF(intMuFNo), dummyEmptyBit);
         intMuFNo := intMuFNo+1;
       end if;
     end loop;
