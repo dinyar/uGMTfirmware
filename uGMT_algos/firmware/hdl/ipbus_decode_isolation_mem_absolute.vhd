@@ -17,7 +17,7 @@ package ipbus_decode_isolation_mem_absolute is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_isolation_mem_absolute(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Fri Mar 13 10:08:30 2015 
+-- START automatically  generated VHDL the Thu Mar 19 16:46:46 2015 
   constant N_SLV_ABS_ISO_0: integer := 0;
   constant N_SLV_ABS_ISO_1: integer := 1;
   constant N_SLV_ABS_ISO_2: integer := 2;
@@ -38,23 +38,23 @@ package body ipbus_decode_isolation_mem_absolute is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Fri Mar 13 10:08:30 2015 
-    if    std_match(addr, "-----------------------------000") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_0, IPBUS_SEL_WIDTH)); -- abs_iso_0 / base 0x00000000 / mask 0x00000007
-    elsif std_match(addr, "-----------------------------001") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_1, IPBUS_SEL_WIDTH)); -- abs_iso_1 / base 0x00000001 / mask 0x00000007
-    elsif std_match(addr, "-----------------------------010") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_2, IPBUS_SEL_WIDTH)); -- abs_iso_2 / base 0x00000002 / mask 0x00000007
-    elsif std_match(addr, "-----------------------------011") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_3, IPBUS_SEL_WIDTH)); -- abs_iso_3 / base 0x00000003 / mask 0x00000007
-    elsif std_match(addr, "-----------------------------100") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_4, IPBUS_SEL_WIDTH)); -- abs_iso_4 / base 0x00000004 / mask 0x00000007
-    elsif std_match(addr, "-----------------------------101") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_5, IPBUS_SEL_WIDTH)); -- abs_iso_5 / base 0x00000005 / mask 0x00000007
-    elsif std_match(addr, "-----------------------------110") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_6, IPBUS_SEL_WIDTH)); -- abs_iso_6 / base 0x00000006 / mask 0x00000007
-    elsif std_match(addr, "-----------------------------111") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_7, IPBUS_SEL_WIDTH)); -- abs_iso_7 / base 0x00000007 / mask 0x00000007
+-- START automatically  generated VHDL the Thu Mar 19 16:46:46 2015 
+    if    std_match(addr, "------------------------000-----") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_0, IPBUS_SEL_WIDTH)); -- abs_iso_0 / base 0x00000000 / mask 0x000000e0
+    elsif std_match(addr, "------------------------001-----") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_1, IPBUS_SEL_WIDTH)); -- abs_iso_1 / base 0x00000020 / mask 0x000000e0
+    elsif std_match(addr, "------------------------010-----") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_2, IPBUS_SEL_WIDTH)); -- abs_iso_2 / base 0x00000040 / mask 0x000000e0
+    elsif std_match(addr, "------------------------011-----") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_3, IPBUS_SEL_WIDTH)); -- abs_iso_3 / base 0x00000060 / mask 0x000000e0
+    elsif std_match(addr, "------------------------100-----") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_4, IPBUS_SEL_WIDTH)); -- abs_iso_4 / base 0x00000080 / mask 0x000000e0
+    elsif std_match(addr, "------------------------101-----") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_5, IPBUS_SEL_WIDTH)); -- abs_iso_5 / base 0x000000a0 / mask 0x000000e0
+    elsif std_match(addr, "------------------------110-----") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_6, IPBUS_SEL_WIDTH)); -- abs_iso_6 / base 0x000000c0 / mask 0x000000e0
+    elsif std_match(addr, "------------------------111-----") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO_7, IPBUS_SEL_WIDTH)); -- abs_iso_7 / base 0x000000e0 / mask 0x000000e0
 -- END automatically generated VHDL
 
     else
