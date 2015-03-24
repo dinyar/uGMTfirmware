@@ -29,14 +29,14 @@ architecture rtl of ipbus_dpram_dist is
 	-- to first address.
 	type ram_array is array(0 to 2 ** ADDR_WIDTH - 1) of std_logic_vector(WORD_WIDTH - 1 downto 0);
 
-    impure function InitRamFromFile (RamFileName : in string) return ram_array is
-        file RamFile : text is in RamFileName;
-        variable RamFileLine : line;
+    impure function InitRamFromFile (file_name : in string) return ram_array is
+        file F : text is in file_name;
+        variable L : line;
         variable ram : ram_array;
     begin
         for i in ram_array'range loop
-            readline (RamFile, RamFileLine);
-            read (RamFileLine, ram(i));
+            readline (F, L);
+            hread (L, ram(i));
         end loop;
         return ram;
     end function;
