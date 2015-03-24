@@ -1,38 +1,38 @@
 <node description="Eta extrapolation LUTs" fwinfo="endpoint">
-    <node id="eta_extrapolation_mem_0" address="0x0" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_1" address="0x2000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_2" address="0x4000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_3" address="0x6000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_4" address="0x8000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_5" address="0xA000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_6" address="0xC000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_7" address="0xE000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_8" address="0x10000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_9" address="0x12000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_10" address="0x14000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_11" address="0x16000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_12" address="0x18000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_13" address="0x1A000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_14" address="0x1C000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_15" address="0x1E000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_16" address="0x20000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_17" address="0x22000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_18" address="0x24000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_19" address="0x26000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_20" address="0x28000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_21" address="0x2A000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_22" address="0x2C000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_23" address="0x2E000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_24" address="0x30000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_25" address="0x32000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_26" address="0x34000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_27" address="0x36000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_28" address="0x38000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_29" address="0x3A000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_30" address="0x3C000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_31" address="0x3E000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_32" address="0x40000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_33" address="0x42000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_34" address="0x44000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
-    <node id="eta_extrapolation_mem_35" address="0x46000" size="0x400" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_0" address="0x0" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_1" address="0x2000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_2" address="0x4000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_3" address="0x6000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_4" address="0x8000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_5" address="0xA000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_6" address="0xC000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_7" address="0xE000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_8" address="0x10000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_9" address="0x12000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_10" address="0x14000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_11" address="0x16000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_12" address="0x18000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_13" address="0x1A000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_14" address="0x1C000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_15" address="0x1E000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_16" address="0x20000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_17" address="0x22000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_18" address="0x24000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_19" address="0x26000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_20" address="0x28000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_21" address="0x2A000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_22" address="0x2C000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_23" address="0x2E000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_24" address="0x30000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_25" address="0x32000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_26" address="0x34000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_27" address="0x36000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_28" address="0x38000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_29" address="0x3A000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_30" address="0x3C000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_31" address="0x3E000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_32" address="0x40000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_33" address="0x42000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_34" address="0x44000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
+    <node id="eta_extrapolation_mem_35" address="0x46000" size="0x400" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=10" />
 </node>

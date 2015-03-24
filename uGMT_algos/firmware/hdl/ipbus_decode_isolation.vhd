@@ -17,7 +17,7 @@ package ipbus_decode_isolation is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_isolation(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Sat Mar 21 12:07:15 2015 
+-- START automatically  generated VHDL the Tue Mar 24 15:04:23 2015 
   constant N_SLV_EXTRAPOLATION: integer := 0;
   constant N_SLV_IDX_GEN: integer := 1;
   constant N_SLV_ISOLATION_CHECK: integer := 2;
@@ -33,7 +33,7 @@ package body ipbus_decode_isolation is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Sat Mar 21 12:07:15 2015 
+-- START automatically  generated VHDL the Tue Mar 24 15:04:23 2015 
     if    std_match(addr, "-------00-----------------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_EXTRAPOLATION, IPBUS_SEL_WIDTH)); -- extrapolation / base 0x00000000 / mask 0x01800000
     elsif std_match(addr, "-------01-----------------------") then

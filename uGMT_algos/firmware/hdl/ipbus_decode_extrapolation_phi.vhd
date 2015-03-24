@@ -17,7 +17,7 @@ package ipbus_decode_extrapolation_phi is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_extrapolation_phi(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Sat Mar 21 12:07:14 2015 
+-- START automatically  generated VHDL the Tue Mar 24 15:04:23 2015 
   constant N_SLV_PHI_EXTRAPOLATION_MEM_0: integer := 0;
   constant N_SLV_PHI_EXTRAPOLATION_MEM_1: integer := 1;
   constant N_SLV_PHI_EXTRAPOLATION_MEM_2: integer := 2;
@@ -66,7 +66,7 @@ package body ipbus_decode_extrapolation_phi is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Sat Mar 21 12:07:14 2015 
+-- START automatically  generated VHDL the Tue Mar 24 15:04:23 2015 
     if    std_match(addr, "------------000000--------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_PHI_EXTRAPOLATION_MEM_0, IPBUS_SEL_WIDTH)); -- phi_extrapolation_mem_0 / base 0x00000000 / mask 0x000fc000
     elsif std_match(addr, "------------000001--------------") then
