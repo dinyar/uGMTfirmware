@@ -1,6 +1,14 @@
 <!-- This file should be copied to cactusupgrades/components/null_algo/addr_tab -->
 
-<node description="Top-level address table for uGMT board">
-  <node id="deserialization" module="file://deserialization.xml" address="0x0" description="LUTs used during deserialization." fwinfo="endpoint" />
-  <node id="ugmt" module="file://uGMT.xml" address="0x4000000" description="The core uGMT algorithms." fwinfo="endpoint" />
+<node description="Top-level address table for uGMT board" fwinfo="endpoint">
+  <node id="deserialization" module="file://deserialization.xml" address="0x0" description="LUTs used during deserialization."/>
+  <node id="ugmt" module="file://uGMT.xml" address="0x4000000" description="The core uGMT algorithms."/>
+  <node id="input_enable_reg" address="0x8000000" description="Register to disable/enable inputs." fwinfo="endpoint;width=0">
+      <node id="energy_sum" mask="0x1" />
+      <node id="barrel" mask="0x2" />
+      <node id="overlap_positive" mask="0x4" />
+      <node id="overlap_negative" mask="0x8" />
+      <node id="forward_positive" mask="0x10" />
+      <node id="forward_negative" mask="0x20" />
+  </node>
 </node>

@@ -3,6 +3,7 @@ use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
 use work.mp7_data_types.all;
 use work.ipbus.all;
+use work.ipbus_reg_types.all;
 use work.ipbus_decode_mp7_payload.all;
 
 use work.ugmt_constants.all;
@@ -36,7 +37,17 @@ architecture rtl of ugmt_serdes is
   signal   sValid_muons     : std_logic;
   signal   sValid_energies  : std_logic;
 
+  -- Register to disable/enable inputs
+  signal sInputEnable : ipb_reg_v(0 downto 0);
+
+  signal sEmptyB : std_logic_vector(35 downto 0);
+  signal sEmptyO_plus : std_logic_vector(17 downto 0);
+  signal sEmptyO_minus : std_logic_vector(17 downto 0);
+  signal sEmptyF_plus : std_logic_vector(17 downto 0);
+  signal sEmptyF_minus : std_logic_vector(17 downto 0);
+
   signal sEnergies     : TCaloRegionEtaSlice_vector(27 downto 0);  -- All energies from Calo trigger.
+  signal sEnergies_tmp : TCaloRegionEtaSlice_vector(31 downto 0);
   signal sEnergies_reg : TCaloRegionEtaSlice_vector(31 downto 0);
 
   signal sMuons         : TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
@@ -157,11 +168,11 @@ begin
       sTracks_reg                                  <= sTracks;
       sEmpty_reg                                   <= sEmpty;
       sSortRanks_reg                               <= sSortRanks;
-      sEnergies_reg(0)                             <= (others => "00000");
-      sEnergies_reg(1)                             <= (others => "00000");
-      sEnergies_reg(sEnergies_reg'high)            <= (others => "00000");
-      sEnergies_reg(sEnergies_reg'high-1)          <= (others => "00000");
-      sEnergies_reg(sEnergies_reg'high-2 downto 2) <= sEnergies;
+      sEnergies_tmp(0)                             <= (others => "00000");
+      sEnergies_tmp(1)                             <= (others => "00000");
+      sEnergies_tmp(sEnergies_reg'high)            <= (others => "00000");
+      sEnergies_tmp(sEnergies_reg'high-1)          <= (others => "00000");
+      sEnergies_tmp(sEnergies_reg'high-2 downto 2) <= sEnergies;
 
       --gen_idx_bits : for index in sMuons'range generate
       --  sIndexBits(index) <= to_unsigned(index, sIndexBits(index)'length);
@@ -174,7 +185,58 @@ begin
     end if;
   end process gmt_in_reg;
 
+  enable_inputs_reg : entity work.ipbus_reg_v
+    generic map(
+        N_REG => 1
+    )
+    port map(
+        clk => clk_ipb,
+        reset => rst,
+        ipbus_in => ipbw(N_SLV_INPUT_ENABLE_REG),
+        ipbus_out => ipbr(N_SLV_INPUT_ENABLE_REG),
+        q => sInputEnable
+    );
 
+  disable_inputs : process (sEmpty_reg, sEnergies_tmp)
+  begin
+      if sInputEnable(0)(0) = '0' then -- disable energies
+          for i in sEnergies_reg'range loop
+              sEnergies_reg(i) <= (others => "00000");
+          end loop;
+      else
+          sEnergies_reg <= sEnergies_tmp;
+      end if;
+
+      if sInputEnable(0)(1) = '0' then -- disable barrel
+          sEmptyB <= (others => '0');
+      else
+          sEmptyB <= sEmpty_reg((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
+      end if;
+
+      if sInputEnable(0)(2) = '0' then -- disable ovl pos
+          sEmptyO_plus <= (others => '0');
+      else
+          sEmptyO_plus <= sEmpty_reg((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
+      end if;
+
+      if sInputEnable(0)(3) = '0' then -- disable ovl neg
+          sEmptyO_minus <= (others => '0');
+      else
+          sEmptyO_minus <= sEmpty_reg((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN);
+      end if;
+
+      if sInputEnable(0)(4) = '0' then -- disable fwd pos
+          sEmptyF_plus <= (others => '0');
+      else
+          sEmptyF_plus <= sEmpty_reg((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+      end if;
+
+      if sInputEnable(0)(5) = '0' then -- disable fwd neg
+          sEmptyF_minus <= (others => '0');
+      else
+          sEmptyF_minus <= sEmpty_reg((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN);
+      end if;
+  end process disable_inputs;
 
   uGMT : entity work.GMT
     port map (
@@ -196,11 +258,11 @@ begin
       iIdxBitsO_minus   => sIndexBits((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN),
       iIdxBitsF_plus    => sIndexBits((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN),
       iIdxBitsF_minus   => sIndexBits((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN),
-      iEmptyB           => sEmpty_reg((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN),
-      iEmptyO_plus      => sEmpty_reg((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN),
-      iEmptyO_minus     => sEmpty_reg((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN),
-      iEmptyF_plus      => sEmpty_reg((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN),
-      iEmptyF_minus     => sEmpty_reg((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN),
+      iEmptyB           => sEmptyB,
+      iEmptyO_plus      => sEmptyO_plus,
+      iEmptyO_minus     => sEmptyO_minus,
+      iEmptyF_plus      => sEmptyF_minus,
+      iEmptyF_minus     => sEmptyF_plus,
 
       iEnergies => sEnergies_reg,
 
