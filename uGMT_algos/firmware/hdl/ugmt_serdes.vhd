@@ -38,7 +38,7 @@ architecture rtl of ugmt_serdes is
   signal   sValid_energies  : std_logic;
 
   -- Register to disable/enable inputs
-  signal sInputEnable : ipb_reg_v(0 downto 0);
+  signal sInputDisable : ipb_reg_v(0 downto 0);
 
   signal sEmptyB : std_logic_vector(35 downto 0);
   signal sEmptyO_plus : std_logic_vector(17 downto 0);
@@ -185,7 +185,7 @@ begin
     end if;
   end process gmt_in_reg;
 
-  enable_inputs_reg : entity work.ipbus_reg_v
+  disable_inputs_reg : entity work.ipbus_reg_v
     generic map(
         N_REG => 1
     )
@@ -194,12 +194,12 @@ begin
         reset => rst,
         ipbus_in => ipbw(N_SLV_INPUT_ENABLE_REG),
         ipbus_out => ipbr(N_SLV_INPUT_ENABLE_REG),
-        q => sInputEnable
+        q => sInputDisable
     );
 
   disable_inputs : process (sEmpty_reg, sEnergies_tmp)
   begin
-      if sInputEnable(0)(0) = '0' then -- disable energies
+      if sInputDisable(0)(0) = '1' then -- disable energies
           for i in sEnergies_reg'range loop
               sEnergies_reg(i) <= (others => "00000");
           end loop;
@@ -207,31 +207,31 @@ begin
           sEnergies_reg <= sEnergies_tmp;
       end if;
 
-      if sInputEnable(0)(1) = '0' then -- disable barrel
+      if sInputDisable(0)(1) = '1' then -- disable barrel
           sEmptyB <= (others => '0');
       else
           sEmptyB <= sEmpty_reg((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
       end if;
 
-      if sInputEnable(0)(2) = '0' then -- disable ovl pos
+      if sInputDisable(0)(2) = '1' then -- disable ovl pos
           sEmptyO_plus <= (others => '0');
       else
           sEmptyO_plus <= sEmpty_reg((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
       end if;
 
-      if sInputEnable(0)(3) = '0' then -- disable ovl neg
+      if sInputDisable(0)(3) = '1' then -- disable ovl neg
           sEmptyO_minus <= (others => '0');
       else
           sEmptyO_minus <= sEmpty_reg((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN);
       end if;
 
-      if sInputEnable(0)(4) = '0' then -- disable fwd pos
+      if sInputDisable(0)(4) = '1' then -- disable fwd pos
           sEmptyF_plus <= (others => '0');
       else
           sEmptyF_plus <= sEmpty_reg((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
       end if;
 
-      if sInputEnable(0)(5) = '0' then -- disable fwd neg
+      if sInputDisable(0)(5) = '1' then -- disable fwd neg
           sEmptyF_minus <= (others => '0');
       else
           sEmptyF_minus <= sEmpty_reg((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN);

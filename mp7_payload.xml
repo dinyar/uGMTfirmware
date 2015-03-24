@@ -3,7 +3,7 @@
 <node description="Top-level address table for uGMT board" fwinfo="endpoint">
   <node id="deserialization" module="file://deserialization.xml" address="0x0" description="LUTs used during deserialization."/>
   <node id="ugmt" module="file://uGMT.xml" address="0x4000000" description="The core uGMT algorithms."/>
-  <node id="input_enable_reg" address="0x8000000" description="Register to disable/enable inputs." fwinfo="endpoint;width=0">
+  <node id="input_disable_reg" address="0x8000000" description="Register to disable inputs ('1' is disabled)." fwinfo="endpoint;width=0">
       <node id="energy_sum" mask="0x1" />
       <node id="barrel" mask="0x2" />
       <node id="overlap_positive" mask="0x4" />
