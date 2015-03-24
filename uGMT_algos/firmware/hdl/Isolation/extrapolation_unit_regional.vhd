@@ -56,11 +56,14 @@ begin
     sEtaAbs(i) <= unsigned(abs(signed(iMuons(i).eta)));
 
     sEtaExtrapolationAddress(i) <= std_logic_vector(iMuons(i).sysign(0 downto 0)) &
-                                   std_logic_vector(sEtaAbs(i)(8 downto 2)) &
-                                   std_logic_vector(iMuons(i).pt(4 downto 0));
-    sPhiExtrapolationAddress(i) <= std_logic_vector(iMuons(i).sysign(0 downto 0)) &
-                                   std_logic_vector(sEtaAbs(i)(8 downto 1)) &
-                                   std_logic_vector(iMuons(i).pt(4 downto 0));
+                                   std_logic_vector(sEtaAbs(i)(7 downto 2)) &
+                                   std_logic_vector(iMuons(i).pt(5 downto 0));
+    sPhiExtrapolationAddress(i) <= "0" & -- Temporarily added padding '0' until
+                                         -- we figure out if we need the added
+                                         -- precision at the inputs.
+                                   std_logic_vector(iMuons(i).sysign(0 downto 0)) &
+                                   std_logic_vector(sEtaAbs(i)(7 downto 2)) &
+                                   std_logic_vector(iMuons(i).pt(5 downto 0));
   end generate calc_extrap_addresses;
 
   extrapolation_eta : entity work.extrapolate_eta
@@ -90,17 +93,13 @@ begin
   assign_coords : process (iMuons, sDeltaEta, sDeltaPhi)
   begin  -- process assign_coords
     for i in iMuons'range loop
-      if unsigned(iMuons(i).pt) > 31 then
+      if unsigned(iMuons(i).pt) > 63 then
         -- If muon is high-pT we won't extrapolate.
         sExtrapolatedCoords(i).eta <= signed(iMuons(i).eta);
         sExtrapolatedCoords(i).phi <= unsigned(iMuons(i).phi);
-      elsif (abs signed(iMuons(i).eta)) > 127 then
-        -- If muon is low-pT and has high eta we etrapolate both coordinates.
-        sExtrapolatedCoords(i).eta <= signed(iMuons(i).eta) + sDeltaEta(i);
-        sExtrapolatedCoords(i).phi <= unsigned(signed(iMuons(i).phi) + sDeltaPhi(i));
       else
-        -- If muon is low-pT but low is in the barrel we only extrapolate phi.
-        sExtrapolatedCoords(i).eta <= signed(iMuons(i).eta);
+        -- If muon is low-pT we etrapolate both coordinates.
+        sExtrapolatedCoords(i).eta <= signed(iMuons(i).eta) + sDeltaEta(i);
         sExtrapolatedCoords(i).phi <= unsigned(signed(iMuons(i).phi) + sDeltaPhi(i));
       end if;
     end loop;  -- i
