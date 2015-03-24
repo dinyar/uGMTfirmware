@@ -30,7 +30,7 @@ architecture rtl of ipbus_dpram_dist is
 	type ram_array is array(0 to 2 ** ADDR_WIDTH - 1) of std_logic_vector(WORD_WIDTH - 1 downto 0);
 
     impure function InitRamFromFile (file_name : in string) return ram_array is
-        file F : text is in file_name;
+        file F : text open read_mode is file_name;
         variable L : line;
         variable ram : ram_array;
     begin
