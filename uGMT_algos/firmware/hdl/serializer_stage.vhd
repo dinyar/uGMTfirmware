@@ -102,7 +102,7 @@ begin
   shift_intermediates_rising : process (clk40)
   begin  -- process shift_intermediates_rising
     if clk40'event and clk40 = '1' then  -- rising clock edge
-      --sOutBuf(sOutBuf'high downto BUFFER_INTERMEDIATES_POS_LOW) <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW-1 downto 0);
+      sOutBuf(sOutBuf'high downto BUFFER_INTERMEDIATES_POS_LOW) <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW-1 downto 0);
 
       if clk40_pseudo1 = '1' then
         clk40_pseudo1 <= '0';
@@ -134,13 +134,15 @@ begin
       clk40_delayed <= clk40_pseudo;
 
       for i in 0 to NUM_OUT_CHANS-1 loop
+        q(i).strobe <= '1';
         q(i).valid <= sOutBuf(sSel)(i).valid;
         q(i).data <= sOutBuf(sSel)(i).data;
-        q(i).strobe <= '1';
       end loop;  -- i
-      --for i in NUM_OUT_CHANS to q'high loop
-      --  q(i) <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i);
-      --end loop;  -- i
+      for i in NUM_OUT_CHANS to q'high loop
+       q(i).strobe <= '1';
+       q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
+       q(i).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).data;
+      end loop;  -- i
       if sSelRst = '1' then
         sSel <= 1;
       elsif sSel < 5 then
