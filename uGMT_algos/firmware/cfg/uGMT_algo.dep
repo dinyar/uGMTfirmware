@@ -71,6 +71,7 @@ src Sorting/Stage0/SortStage0_Mux.vhd
 src Sorting/Stage1/SortStage1_behavioral.vhd
 src common/comp10_ge_behavioral.vhd
 src Sorting/SorterUnit.vhd
+src ipbus_slaves/ipbus_dpram.vhd
 src ipbus_slaves/ipbus_dpram_dist.vhd
 ?toolset=="Vivado"? src ../cgn/eta_extrapolation_mem.xci
 ?toolset=="Vivado"? src ../cgn/phi_extrapolation_mem.xci

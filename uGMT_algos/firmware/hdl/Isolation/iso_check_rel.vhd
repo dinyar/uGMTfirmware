@@ -50,20 +50,36 @@ begin
 
 
   iso_check_loop : for i in oIsoBits'range generate
+    -- ipbusWe_vector(i) <= ipbw(i).ipb_write and ipbw(i).ipb_strobe;
+    -- rel_iso_check : entity work.rel_iso_mem
+    --   port map (
+    --     clka   => clk,
+    --     addra  => sRelInputVec(i),
+    --     dina   => (others => '0'),
+    --     douta  => oIsoBits(i downto i),
+    --     wea    => "0",
+    --     clkb   => clk_ipb,
+    --     web(0) => ipbusWe_vector(i),
+    --     addrb  => ipbw(i).ipb_addr(8 downto 0),
+    --     dinb   => ipbw(i).ipb_wdata(31 downto 0),
+    --     doutb  => ipbr(i).ipb_rdata(31 downto 0)
+    --     );
+
     sRelInputVec(i)   <= std_logic_vector(iMuonPT(i)) & std_logic_vector(iAreaSums(i));
-    ipbusWe_vector(i) <= ipbw(i).ipb_write and ipbw(i).ipb_strobe;
-    rel_iso_check : entity work.rel_iso_mem
-      port map (
-        clka   => clk,
-        addra  => sRelInputVec(i),
-        dina   => (others => '0'),
-        douta  => oIsoBits(i downto i),
-        wea    => "0",
-        clkb   => clk_ipb,
-        web(0) => ipbusWe_vector(i),
-        addrb  => ipbw(i).ipb_addr(8 downto 0),
-        dinb   => ipbw(i).ipb_wdata(31 downto 0),
-        doutb  => ipbr(i).ipb_rdata(31 downto 0)
+    rel_iso_check : entity work.ipbus_dpram
+        generic map (
+          DATA_FILE  => "RelIsoCheckMem.dat",
+          ADDR_WIDTH => 14,
+          WORD_WIDTH => 1
+          )
+        port map (
+            clk => clk_ipb,
+            rst => rst,
+            ipb_in => ipbw(i),
+            ipb_out => ipbr(i),
+            rclk => clk,
+            q => oIsoBits(i downto i),
+            addr => sRelInputVec(i)
         );
 --    oIsoBits(i) <= sLutOutput(i)(0);
   end generate iso_check_loop;

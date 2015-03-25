@@ -48,19 +48,34 @@ begin
 
   extrapolation : for i in iEtaExtrapolationAddress'range generate
 
-    ipbusWe_vector(i) <= ipbw(i).ipb_write and ipbw(i).ipb_strobe;
-    eta_extrapolation : entity work.eta_extrapolation_mem
-      port map (
-        clka   => clk,
-        wea    => "0",
-        addra  => iEtaExtrapolationAddress(i),
-        dina   => (others => '0'),
-        douta  => sLutOutput(i)(3 downto 0),
-        clkb   => clk_ipb,
-        web(0) => ipbusWe_vector(i),
-        addrb  => ipbw(i).ipb_addr(9 downto 0),
-        dinb   => ipbw(i).ipb_wdata(31 downto 0),
-        doutb  => ipbr(i).ipb_rdata(31 downto 0)
+    -- ipbusWe_vector(i) <= ipbw(i).ipb_write and ipbw(i).ipb_strobe;
+    -- eta_extrapolation : entity work.eta_extrapolation_mem
+    --   port map (
+        -- clka   => clk,
+        -- wea    => "0",
+        -- addra  => iEtaExtrapolationAddress(i),
+        -- dina   => (others => '0'),
+        -- douta  => sLutOutput(i)(3 downto 0),
+        -- clkb   => clk_ipb,
+    --     web(0) => ipbusWe_vector(i),
+    --     addrb  => ipbw(i).ipb_addr(9 downto 0),
+    --     dinb   => ipbw(i).ipb_wdata(31 downto 0),
+    --     doutb  => ipbr(i).ipb_rdata(31 downto 0)
+    --     );
+    eta_extrapolation : entity work.ipbus_dpram
+        generic map (
+          DATA_FILE  => "FEtaExtrapolation.dat",
+          ADDR_WIDTH => 13,
+          WORD_WIDTH => 4
+          )
+        port map (
+            clk => clk_ipb,
+            rst => rst,
+            ipb_in => ipbw(i),
+            ipb_out => ipbr(i),
+            rclk => clk,
+            q => sLutOutput(i)(3 downto 0),
+            addr => iEtaExtrapolationAddress(i)
         );
     oDeltaEta(i) <= signed(sLutOutput(i)(3 downto 0));
   end generate extrapolation;
