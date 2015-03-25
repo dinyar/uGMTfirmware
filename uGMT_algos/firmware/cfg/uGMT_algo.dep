@@ -73,14 +73,6 @@ src common/comp10_ge_behavioral.vhd
 src Sorting/SorterUnit.vhd
 src ipbus_slaves/ipbus_dpram.vhd
 src ipbus_slaves/ipbus_dpram_dist.vhd
-?toolset=="Vivado"? src ../cgn/eta_extrapolation_mem.xci
-?toolset=="Vivado"? src ../cgn/phi_extrapolation_mem.xci
-?toolset=="Vivado"? src ../cgn/rel_iso_mem.xci
-?toolset=="Vivado"? src ../cgn/sort_rank_lut.xci
-#src ../cgn/eta_extrapolation_mem.vhd
-#src ../cgn/phi_extrapolation_mem.vhd
-#src ../cgn/rel_iso_mem.vhd
-#src ../cgn/sort_rank_lut.vhd
 ?toolset=="ISE"?    src cores/matchingLUT_dist.vhd
 ?toolset=="ISE"?    src -n matchingLUT_dist.xco
 ?toolset=="ISE"?    src cores/sort_rank_lut.vhd
