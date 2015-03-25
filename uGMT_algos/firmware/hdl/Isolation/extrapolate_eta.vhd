@@ -9,6 +9,9 @@ use work.ipbus_decode_extrapolation_eta.all;
 use work.GMTTypes.all;
 
 entity extrapolate_eta is
+  generic (
+    DATA_FILE: string
+      );
   port (
     clk_ipb                  : in  std_logic;
     rst                      : in  std_logic;
@@ -64,7 +67,7 @@ begin
     --     );
     eta_extrapolation : entity work.ipbus_dpram
         generic map (
-          DATA_FILE  => "FEtaExtrapolation.dat",
+          DATA_FILE  => DATA_FILE,
           ADDR_WIDTH => 13,
           WORD_WIDTH => 4
           )

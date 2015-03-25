@@ -9,6 +9,9 @@ use work.ipbus_decode_extrapolation_phi.all;
 use work.GMTTypes.all;
 
 entity extrapolate_phi is
+  generic (
+  	DATA_FILE: string
+      );
   port (
     clk_ipb                  : in  std_logic;
     rst                      : in  std_logic;
@@ -63,7 +66,7 @@ begin
     --     );
     phi_extrapolation : entity work.ipbus_dpram
         generic map (
-          DATA_FILE  => "FPhiExtrapolation.dat",
+          DATA_FILE  => DATA_FILE,
           ADDR_WIDTH => 14,
           WORD_WIDTH => 4
           )

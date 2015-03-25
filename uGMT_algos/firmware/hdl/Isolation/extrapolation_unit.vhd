@@ -42,6 +42,10 @@ begin
       );
 
   extrapolate_barrel : entity work.extrapolation_unit_regional
+  generic map (
+    ETA_DATA_FILE  => "BEtaExtrapolation.dat",
+    PHI_DATA_FILE  => "BPhiExtrapolation.dat"
+  )
     port map (
       iMuons              => iMuonsB,
       oExtrapolatedCoords => oExtrapolatedCoordsB,
@@ -52,6 +56,10 @@ begin
       ipb_out             => ipbr(N_SLV_EXTRAPOLATE_BRL)
       );
   extrapolate_overlap : entity work.extrapolation_unit_regional
+  generic map (
+    ETA_DATA_FILE  => "OEtaExtrapolation.dat",
+    PHI_DATA_FILE  => "OPhiExtrapolation.dat"
+  )
     port map (
       iMuons              => iMuonsO,
       oExtrapolatedCoords => oExtrapolatedCoordsO,
@@ -62,6 +70,10 @@ begin
       ipb_out             => ipbr(N_SLV_EXTRAPOLATE_OVL)
       );
   extrapolate_forward : entity work.extrapolation_unit_regional
+  generic map (
+    ETA_DATA_FILE  => "FEtaExtrapolation.dat",
+    PHI_DATA_FILE  => "FPhiExtrapolation.dat"
+  )
     port map (
       iMuons              => iMuonsF,
       oExtrapolatedCoords => oExtrapolatedCoordsF,
@@ -73,4 +85,3 @@ begin
       );
 
 end Behavioral;
-

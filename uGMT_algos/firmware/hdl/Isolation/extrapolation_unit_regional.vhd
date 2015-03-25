@@ -9,6 +9,10 @@ use work.ipbus_decode_extrapolation_regional.all;
 use work.GMTTypes.all;
 
 entity extrapolation_unit_regional is
+  generic (
+    ETA_DATA_FILE: string;
+    PHI_DATA_FILE: string
+    );
   port (
     iMuons              : in  TGMTMu_vector(35 downto 0);
     oExtrapolatedCoords : out TSpatialCoordinate_vector(35 downto 0);
@@ -67,6 +71,9 @@ begin
   end generate calc_extrap_addresses;
 
   extrapolation_eta : entity work.extrapolate_eta
+    generic map (
+      DATA_FILE  => ETA_DATA_FILE
+      )
     port map (
       clk_ipb                  => clk_ipb,
       rst                      => rst,
@@ -77,6 +84,9 @@ begin
       oDeltaEta                => sDeltaEta
       );
   extrapolation_phi : entity work.extrapolate_phi
+    generic map (
+      DATA_FILE  => PHI_DATA_FILE
+      )
     port map (
       clk_ipb                  => clk_ipb,
       rst                      => rst,
