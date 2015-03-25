@@ -7,6 +7,7 @@ use work.ipbus.all;
 use work.ipbus_decode_extrapolation_phi.all;
 
 use work.GMTTypes.all;
+use work.ugmt_constants.all;
 
 entity extrapolate_phi is
   generic (
@@ -50,25 +51,11 @@ begin
 
 
   extrapolation : for i in iPhiExtrapolationAddress'range generate
-    -- ipbusWe_vector(i) <= ipbw(i).ipb_write and ipbw(i).ipb_strobe;
-    -- phi_extrapolation : entity work.phi_extrapolation_mem
-    --   port map (
-    --     clka   => clk,
-    --     wea    => "0",
-    --     addra  => std_logic_vector(iPhiExtrapolationAddress(i)),
-    --     dina   => (others => '0'),
-    --     douta  => sLutOutput(i)(3 downto 0),
-    --     clkb   => clk_ipb,
-    --     web(0) => ipbusWe_vector(i),
-    --     addrb  => ipbw(i).ipb_addr(10 downto 0),
-    --     dinb   => ipbw(i).ipb_wdata(31 downto 0),
-    --     doutb  => ipbr(i).ipb_rdata(31 downto 0)
-    --     );
     phi_extrapolation : entity work.ipbus_dpram
         generic map (
           DATA_FILE  => DATA_FILE,
-          ADDR_WIDTH => 14,
-          WORD_WIDTH => 4
+          ADDR_WIDTH => PHI_EXTRAPOLATION_ADDR_WIDTH,
+          WORD_WIDTH => PHI_EXTRAPOLATION_WORD_SIZE
           )
         port map (
             clk => clk_ipb,

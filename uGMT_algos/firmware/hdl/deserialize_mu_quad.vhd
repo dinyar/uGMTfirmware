@@ -53,7 +53,6 @@ architecture Behavioral of deserialize_mu_quad is
   type TSortRankBuffer is array (2*2*NUM_MUONS_LINK-1 downto 0) of TSortRank10_vector(NCHAN-1 downto 0);
   signal sSortRank_buffer : TSortRankBuffer;
   signal sSortRank_link   : TSortRank_link(NCHAN-1 downto 0);
-  signal ipbusWe_vector   : std_logic_vector(sSortRank_buffer(0)'range);
 
 begin
 
@@ -84,26 +83,12 @@ begin
 
     sSrtRnkIn(i) <= d(i).data(QUAL_IN_HIGH downto QUAL_IN_LOW) &
                     d(i).data(PT_IN_HIGH downto PT_IN_LOW);
-    -- ipbusWe_vector(i) <= ipbw(i).ipb_write and ipbw(i).ipb_strobe;
-    -- sort_rank_assignment : entity work.sort_rank_lut
-    --   port map (
-    --     clka   => clk240,
-    --     addra  => sSrtRnkIn(i),
-    --     dina   => (others => '0'),
-    --     douta  => sSortRank_buffer(sSortRank_buffer'high)(i),
-    --     wea    => "0",
-    --     clkb   => clk_ipb,
-    --     web(0) => ipbusWe_vector(i),
-    --     addrb  => ipbw(i).ipb_addr(11 downto 0),
-    --     dinb   => ipbw(i).ipb_wdata(19 downto 0),
-    --     doutb  => ipbr(i).ipb_rdata(19 downto 0)
-    --     );
 
     sort_rank_assignment : entity work.ipbus_dpram
         generic map (
           DATA_FILE  => "SortRank.dat",
-          ADDR_WIDTH => 13,
-          WORD_WIDTH => 10
+          ADDR_WIDTH => SORT_RANK_MEM_ADDR_WIDTH,
+          WORD_WIDTH => SORT_RANK_MEM_WORD_SIZE
           )
         port map (
             clk => clk_ipb,

@@ -7,6 +7,7 @@ use work.ipbus.all;
 use work.ipbus_decode_isolation_mem_relative.all;
 
 use work.GMTTypes.all;
+use work.ugmt_constants.all;
 
 entity iso_check_rel is
   port (
@@ -47,13 +48,12 @@ begin
 
 
   iso_check_loop : for i in oIsoBits'range generate
-
     sRelInputVec(i)   <= std_logic_vector(iMuonPT(i)) & std_logic_vector(iAreaSums(i));
     rel_iso_check : entity work.ipbus_dpram
         generic map (
           DATA_FILE  => "RelIsoCheckMem.dat",
-          ADDR_WIDTH => 14,
-          WORD_WIDTH => 1
+          ADDR_WIDTH => REL_ISO_ADDR_WIDTH,
+          WORD_WIDTH => REL_ISO_WORD_SIZE
           )
         port map (
             clk => clk_ipb,

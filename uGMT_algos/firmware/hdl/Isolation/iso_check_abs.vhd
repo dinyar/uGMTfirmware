@@ -8,6 +8,7 @@ use work.ipbus_dpram_dist;
 use work.ipbus_decode_isolation_mem_absolute.all;
 
 use work.GMTTypes.all;
+use work.ugmt_constants.all;
 
 entity iso_check_abs is
   port (
@@ -52,8 +53,8 @@ begin
     abs_iso_check : entity work.ipbus_dpram_dist
         generic map (
           DATA_FILE  => "AbsIsoCheckMem.dat",
-          ADDR_WIDTH => 5,
-          WORD_WIDTH => 1
+          ADDR_WIDTH => ABS_ISO_ADDR_WIDTH,
+          WORD_WIDTH => ABS_ISO_WORD_SIZE
           )
         port map (
           clk     => clk_ipb,

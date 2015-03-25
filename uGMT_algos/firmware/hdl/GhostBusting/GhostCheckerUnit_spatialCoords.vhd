@@ -7,6 +7,7 @@ use work.ipbus.all;
 use work.ipbus_dpram_dist;
 
 use work.GMTTypes.all;
+use work.ugmt_constants.all;
 
 entity GhostCheckerUnit_spatialCoords is
   generic (
@@ -73,8 +74,8 @@ begin
   match_qual_calc : entity work.ipbus_dpram_dist
       generic map (
         DATA_FILE  => DATA_FILE,
-        ADDR_WIDTH => 7,
-        WORD_WIDTH => 1
+        ADDR_WIDTH => COU_MEM_ADDR_WIDTH,
+        WORD_WIDTH => COU_MEM_WORD_SIZE
         )
       port map (
         clk     => clk_ipb,
@@ -85,17 +86,6 @@ begin
         q       => match,
         addr    => lutInput
         );
---  match_qual_calc : entity work.cancel_out_mem
---    port map (
---      clk      => clk_ipb,
---      we       => ipbusWe,
---      a        => ipb_in.ipb_addr(6 downto 0),
---      d        => ipb_in.ipb_wdata(0 downto 0),
---      spo      => ipb_out.ipb_rdata(0 downto 0),
---      qdpo_clk => clk,
---      dpra     => lutInput,
---      dpo      => match
---      );
 
   check_ghosts : process (match, qual1, qual2, deltaPhi, deltaEta)
   begin  -- process check_ghosts

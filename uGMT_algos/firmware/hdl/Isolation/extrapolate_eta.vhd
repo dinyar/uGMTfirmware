@@ -7,6 +7,7 @@ use work.ipbus.all;
 use work.ipbus_decode_extrapolation_eta.all;
 
 use work.GMTTypes.all;
+use work.ugmt_constants.all;
 
 entity extrapolate_eta is
   generic (
@@ -50,26 +51,11 @@ begin
 
 
   extrapolation : for i in iEtaExtrapolationAddress'range generate
-
-    -- ipbusWe_vector(i) <= ipbw(i).ipb_write and ipbw(i).ipb_strobe;
-    -- eta_extrapolation : entity work.eta_extrapolation_mem
-    --   port map (
-        -- clka   => clk,
-        -- wea    => "0",
-        -- addra  => iEtaExtrapolationAddress(i),
-        -- dina   => (others => '0'),
-        -- douta  => sLutOutput(i)(3 downto 0),
-        -- clkb   => clk_ipb,
-    --     web(0) => ipbusWe_vector(i),
-    --     addrb  => ipbw(i).ipb_addr(9 downto 0),
-    --     dinb   => ipbw(i).ipb_wdata(31 downto 0),
-    --     doutb  => ipbr(i).ipb_rdata(31 downto 0)
-    --     );
     eta_extrapolation : entity work.ipbus_dpram
         generic map (
           DATA_FILE  => DATA_FILE,
-          ADDR_WIDTH => 13,
-          WORD_WIDTH => 4
+          ADDR_WIDTH => ETA_EXTRAPOLATION_ADDR_WIDTH,
+          WORD_WIDTH => ETA_EXTRAPOLATION_WORD_SIZE
           )
         port map (
             clk => clk_ipb,

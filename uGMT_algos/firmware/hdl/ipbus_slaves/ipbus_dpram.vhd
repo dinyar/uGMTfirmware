@@ -1,7 +1,8 @@
 -- ipbus_dpram
 --
--- Generic dual-port memory with asymmetric port widths and ipbus access on one
--- port
+-- Generic dual-port memory with ipbus access on one port.
+-- Requires data file with one value per line in hexadecimal notation (no
+-- '0x' though) for initialization.
 --
 -- Should lead to an inferred block RAM in Xilinx parts with modern tools
 --

@@ -70,7 +70,7 @@ package ugmt_constants is
   -- indicates the muon (2->empty, 1->second muon, 0->first muon); the entry at the position
   -- indicates the position in the buffer.)
   constant MU_ASSIGNMENT : Assignment_vector(2 downto 0) := (0, 2, 1);
-  
+
   -----------------------------------------------------------------------------
   -- Bit boundaries for input and output muons.
   -----------------------------------------------------------------------------
@@ -121,7 +121,32 @@ package ugmt_constants is
 
   constant PHI_OUT_HIGH : natural := 9;
   constant PHI_OUT_LOW  : natural := 0;
-  
+
+  -----------------------------------------------------------------------------
+  -- Constants for LUTs
+  -----------------------------------------------------------------------------
+  constant ETA_IXD_MEM_ADDR_WIDTH : natural := 9;
+  constant ETA_IXD_MEM_WORD_SIZE : natural := 5;
+  constant PHI_IXD_MEM_ADDR_WIDTH : natural := 10;
+  constant PHI_IXD_MEM_WORD_SIZE : natural := 6;
+
+  constant ETA_EXTRAPOLATION_ADDR_WIDTH : natural := 13;
+  constant ETA_EXTRAPOLATION_WORD_SIZE : natural := 4;
+  constant PHI_EXTRAPOLATION_ADDR_WIDTH : natural := 14;
+  constant PHI_EXTRAPOLATION_WORD_SIZE : natural := 4;
+
+  constant REL_ISO_ADDR_WIDTH : natural := 14;
+  constant REL_ISO_WORD_SIZE : natural := 1;
+  constant ABS_ISO_ADDR_WIDTH : natural := 5;
+  constant ABS_ISO_WORD_SIZE : natural := 1;
+
+  constant COU_MEM_ADDR_WIDTH : natural := 7;
+  constant COU_MEM_WORD_SIZE : natural := 1;
+
+  constant SORT_RANK_MEM_ADDR_WIDTH : natural := 13;
+  constant SORT_RANK_MEM_WORD_SIZE : natural := 10;
+
+
 end ugmt_constants;
 
 package body ugmt_constants is

@@ -7,6 +7,7 @@ use work.ipbus.all;
 use work.ipbus_dpram_dist;
 
 use work.GMTTypes.all;
+use work.ugmt_constants.all;
 
 entity phi_index_bits_mem is
   port (
@@ -24,12 +25,11 @@ begin
   phi_idx_bits_mem : entity work.ipbus_dpram_dist
     generic map (
       DATA_FILE  => "IdxSelMemPhi.dat",
-      ADDR_WIDTH => 10,
-      WORD_WIDTH => 6
+      ADDR_WIDTH => PHI_IXD_MEM_ADDR_WIDTH,
+      WORD_WIDTH => PHI_IXD_MEM_WORD_SIZE
       )
     port map (
       clk     => clk_ipb,
-    --   rst     => rst,
       ipb_in  => ipb_in,
       ipb_out => ipb_out,
       rclk    => clk,
