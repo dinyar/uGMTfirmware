@@ -207,32 +207,35 @@ begin
           sEnergies_reg <= sEnergies_tmp;
       end if;
 
+      ---- Disabling barrel ----
       if sInputDisable(0)(1) = '1' then -- disable barrel
-          sEmptyB <= (others => '0');
+          sEmptyB <= (others => '1');
       else
           sEmptyB <= sEmpty_reg((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
       end if;
 
+      ---- Disable overlap ----
       if sInputDisable(0)(2) = '1' then -- disable ovl pos
-          sEmptyO_plus <= (others => '0');
+          sEmptyO_plus <= (others => '1');
       else
           sEmptyO_plus <= sEmpty_reg((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
       end if;
 
       if sInputDisable(0)(3) = '1' then -- disable ovl neg
-          sEmptyO_minus <= (others => '0');
+          sEmptyO_minus <= (others => '1');
       else
           sEmptyO_minus <= sEmpty_reg((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN);
       end if;
 
+      ---- Disable forward ----
       if sInputDisable(0)(4) = '1' then -- disable fwd pos
-          sEmptyF_plus <= (others => '0');
+          sEmptyF_plus <= (others => '1');
       else
           sEmptyF_plus <= sEmpty_reg((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
       end if;
 
       if sInputDisable(0)(5) = '1' then -- disable fwd neg
-          sEmptyF_minus <= (others => '0');
+          sEmptyF_minus <= (others => '1');
       else
           sEmptyF_minus <= sEmpty_reg((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN);
       end if;
