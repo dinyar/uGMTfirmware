@@ -1,6 +1,7 @@
 -- ipbus_dpram
 --
--- Generic 32b wide dual-port memory with ipbus access on one port
+-- Generic dual-port memory with asymmetric port widths and ipbus access on one
+-- port
 --
 -- Should lead to an inferred block RAM in Xilinx parts with modern tools
 --
@@ -8,6 +9,7 @@
 -- Can combine with peephole_ram access method for full speed access.
 --
 -- Dave Newbold, July 2013
+-- Dinyar Rabady, March 2015
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -60,7 +62,7 @@ architecture rtl of ipbus_dpram is
 	signal sel, rsel: integer range 0 to 2 ** ADDR_WIDTH - 1 := 0;
 	signal ack: std_logic;
 
-    signal reduced_ipbus_in, reduced_ipbus_out : std_logic_vector(WORD_WIDTH - 1 downto 0);
+	signal reduced_ipbus_in, reduced_ipbus_out : std_logic_vector(WORD_WIDTH - 1 downto 0);
 
 begin
 

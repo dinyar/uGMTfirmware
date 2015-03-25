@@ -1,6 +1,6 @@
-<node description="" fwinfo="endpoint">
-    <node id="sort_rank_mem_0" address="0x0" size="0x1000" mode="block" description="SortRank LUT for first channel." fwinfo="endpoint;width=12" />
-    <node id="sort_rank_mem_1" address="0x2000" size="0x1000" mode="block" description="SortRank LUT for second channel." fwinfo="endpoint;width=12" />
-    <node id="sort_rank_mem_2" address="0x4000" size="0x1000" mode="block" description="SortRank LUT for third channel." fwinfo="endpoint;width=12" />
-    <node id="sort_rank_mem_3" address="0x6000" size="0x1000" mode="block" description="SortRank LUT for fourth channel." fwinfo="endpoint;width=12" />
+<node description="Sort Rank memories" fwinfo="endpoint">
+    <node id="sort_rank_mem_0" address="0x0" size="0x2000" mode="block" description="SortRank LUT for first channel." fwinfo="endpoint;width=13" />
+    <node id="sort_rank_mem_1" address="0x2000" size="0x2000" mode="block" description="SortRank LUT for second channel." fwinfo="endpoint;width=13" />
+    <node id="sort_rank_mem_2" address="0x4000" size="0x2000" mode="block" description="SortRank LUT for third channel." fwinfo="endpoint;width=13" />
+    <node id="sort_rank_mem_3" address="0x6000" size="0x2000" mode="block" description="SortRank LUT for fourth channel." fwinfo="endpoint;width=13" />
 </node>

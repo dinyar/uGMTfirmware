@@ -1,3 +1,16 @@
+-- ipbus_dpram_dist
+--
+-- Dual-port (one input, two outputs) RAM that should synthesise as distributed
+-- RAM. Requires data file with one value per line in hexadecimal notation (no
+-- '0x' though) for initialization.
+--
+-- Modelled after ipbus_dpram core by D. Newbold.
+--
+-- Note the wait state on ipbus access - full speed access is not possible
+-- Can combine with peephole_ram access method for full speed access.
+--
+-- Dinyar Rabady, March 2015
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
