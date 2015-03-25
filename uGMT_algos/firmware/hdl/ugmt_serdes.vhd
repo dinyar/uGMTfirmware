@@ -336,4 +336,11 @@ begin
       iExtrapolatedCoordsF => sExtrapolatedCoordsF_reg,
       q                    => q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0));
 
+  strobe_high : process
+  begin
+    for i in q'high downto (NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS) loop
+        q(i).strobe <= '1';
+    end loop;
+  end process strobe_high;
+
 end rtl;
