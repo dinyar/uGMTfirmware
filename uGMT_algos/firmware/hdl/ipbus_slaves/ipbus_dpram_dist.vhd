@@ -49,7 +49,7 @@ architecture rtl of ipbus_dpram_dist is
     begin
         for i in ram_array'range loop
             readline (F, L);
-            hread (L, ram(i));
+            read (L, ram(i));
         end loop;
         return ram;
     end function;
