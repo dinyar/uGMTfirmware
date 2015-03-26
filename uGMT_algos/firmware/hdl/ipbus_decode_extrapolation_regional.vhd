@@ -17,7 +17,7 @@ package ipbus_decode_extrapolation_regional is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_extrapolation_regional(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Tue Mar 24 15:04:23 2015 
+-- START automatically  generated VHDL the Thu Mar 26 14:43:17 2015 
   constant N_SLV_ETA_EXTRAPOLATION: integer := 0;
   constant N_SLV_PHI_EXTRAPOLATION: integer := 1;
   constant N_SLAVES: integer := 2;
@@ -32,7 +32,7 @@ package body ipbus_decode_extrapolation_regional is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Tue Mar 24 15:04:23 2015 
+-- START automatically  generated VHDL the Thu Mar 26 14:43:17 2015 
     if    std_match(addr, "-----------0--------------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_ETA_EXTRAPOLATION, IPBUS_SEL_WIDTH)); -- eta_extrapolation / base 0x00000000 / mask 0x00100000
     elsif std_match(addr, "-----------1--------------------") then
