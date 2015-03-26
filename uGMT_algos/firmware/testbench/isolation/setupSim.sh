@@ -37,9 +37,7 @@ vcom -check_synthesis ../../hdl/Sorting/Stage0/HalfSortStage0.vhd
 vcom -check_synthesis ../../hdl/Sorting/Stage1/SortStage1_behavioral.vhd
 vcom -check_synthesis ../../hdl/Sorting/SortAndCancelUnit.vhd
 # Insert iso stuff here.
-vlib blk_mem_gen_v8_2
-vmap blk_mem_gen_v8_2 blk_mem_gen_v8_2
-vcom -work blk_mem_gen_v8_2 ../../cgn/mem_libs/blk/blk_mem_gen_v8_2.vhd
+vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_dpram.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_extrapolation_eta.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_extrapolation_phi.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_extrapolation_regional.vhd
@@ -73,6 +71,13 @@ vcom -check_synthesis ../../hdl/Isolation/iso_check.vhd
 vcom -check_synthesis ../../hdl/Isolation/IsoAssignmentUnit.vhd
 vcom -check_synthesis ../tb_helpers.vhd
 vcom -check_synthesis isolation_tb.vhd
+ln -s ../../hdl/ipbus_slaves/BEtaExtrapolation.dat .
+ln -s ../../hdl/ipbus_slaves/BPhiExtrapolation.dat .
+ln -s ../../hdl/ipbus_slaves/OEtaExtrapolation.dat .
+ln -s ../../hdl/ipbus_slaves/OPhiExtrapolation.dat .
+ln -s ../../hdl/ipbus_slaves/FEtaExtrapolation.dat .
+ln -s ../../hdl/ipbus_slaves/FPhiExtrapolation.dat .
+ln -s ../../hdl/ipbus_slaves/RelIsoCheckMem.dat .
 ln -s ../../hdl/ipbus_slaves/AbsIsoCheckMem.dat .
 ln -s ../../hdl/ipbus_slaves/IdxSelMemEta.dat .
 ln -s ../../hdl/ipbus_slaves/IdxSelMemPhi.dat .
