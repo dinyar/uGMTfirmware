@@ -140,6 +140,11 @@ begin
       end loop;  -- i
       for i in NUM_OUT_CHANS to q'high loop
        q(i).strobe <= '1';
+--       q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
+--       q(i).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).data;
+      end loop;  -- i
+      for i in NUM_OUT_CHANS to NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS - 1 loop
+       q(i).strobe <= '1';
        q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
        q(i).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).data;
       end loop;  -- i
