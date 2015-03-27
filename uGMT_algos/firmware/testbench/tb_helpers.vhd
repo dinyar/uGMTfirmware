@@ -107,7 +107,11 @@ package tb_helpers is
 --    variable event : in TGMTEvent);
 
   procedure DumpIsoBits (
-    variable iIsoBits : in TIsoBits_vector(7 downto 0));
+    variable iIsoBits : in TIsoBits_vector(7 downto 0);
+    variable id : in string(1 to 3));
+
+  procedure DumpEventMuons (
+    variable event : in TGMTMuEvent);
 
   procedure DumpTracks (
     variable iTracks : in TGMTMuTracks_vector;
@@ -530,9 +534,7 @@ package body tb_helpers is
       write(L1, event.iEvent);
       write(L1, string'(": ++++++++++++++++++++"));
       writeline(OUTPUT, L1);
-      DumpMuons(event.muons_brl, event.sortRanks_brl, brl_id);
-      DumpMuons(event.muons_ovl, event.sortRanks_ovl, ovl_id);
-      DumpMuons(event.muons_fwd, event.sortRanks_fwd, fwd_id);
+      DumpEventMuons(event);
 
       DumpTracks(event.tracks_brl, brlTrk_id);
       DumpTracks(event.tracks_ovl, ovlTrk_id);
@@ -541,11 +543,32 @@ package body tb_helpers is
     end if;
   end DumpMuEvent;
 
+  procedure DumpEventMuons (
+    variable event : in TGMTMuEvent) is
+    variable L1        : line;
+    variable brl_id    : string(1 to 3) := "BRL";
+    variable ovl_id    : string(1 to 3) := "OVL";
+    variable fwd_id    : string(1 to 3) := "FWD";
+  begin -- DumpEventMuons
+      if event.iEvent /= -1 then
+        write(L1, string'("++++++++++++++++++++ Dump of input muons: "));
+        write(L1, event.iEvent);
+        write(L1, string'(": ++++++++++++++++++++"));
+        writeline(OUTPUT, L1);
+        DumpMuons(event.muons_brl, event.sortRanks_brl, brl_id);
+        DumpMuons(event.muons_ovl, event.sortRanks_ovl, ovl_id);
+        DumpMuons(event.muons_fwd, event.sortRanks_fwd, fwd_id);
+      end if;
+  end DumpEventMuons;
+
   procedure DumpIsoBits (
-    variable iIsoBits : in TIsoBits_vector(7 downto 0)) is
+    variable iIsoBits : in TIsoBits_vector(7 downto 0);
+    variable id : in string(1 to 3)) is
     variable L1            : line;
   begin
-    write(L1, string'("++++++++++++++++++++ Dump of Iso bits from FW: "));
+    write(L1, string'("++++++++++++++++++++ Dump of Iso bits from "));
+    write(L1, id);
+    write(L1, string'(": "));
     writeline(OUTPUT, L1);
     for i in iIsoBits'range loop
         write(L1, to_integer(unsigned(iIsoBits(i))));

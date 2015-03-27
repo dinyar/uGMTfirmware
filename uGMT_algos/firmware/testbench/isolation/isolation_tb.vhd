@@ -129,6 +129,8 @@ begin
     variable cntError                    : integer                        := 0;
     variable remainingEvents             : integer                        := ISO_LATENCY;
     variable vIsoBits                    : TIsoBits_vector (7 downto 0);
+    variable emu_id    : string(1 to 3) := "EMU";
+    variable fw_id    : string(1 to 3) := "SIM";
   begin
         -- Reset event buffer
     for iEvent in muEvent_buffer'range loop
@@ -251,9 +253,10 @@ begin
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
-        DumpMuEvent(muEvent_buffer(Iso_LATENCY-1));
+        DumpIsoBits(vIsoBits, fw_id);
+        DumpIsoBits(muEvent_buffer(Iso_LATENCY-1).expectedIsoBits, emu_id);
         DumpCaloEvent(caloEvent_buffer(Iso_LATENCY-1));
-        DumpIsoBits(vIsoBits);
+        DumpEventMuons(muEvent_buffer(Iso_LATENCY-1));
         write(LO, string'(""));
         writeline (OUTPUT, LO);
       end if;
