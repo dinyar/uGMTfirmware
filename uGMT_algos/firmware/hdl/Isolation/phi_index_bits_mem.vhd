@@ -24,7 +24,7 @@ architecture Behavioral of phi_index_bits_mem is
 begin
   phi_idx_bits_mem : entity work.ipbus_dpram_dist
     generic map (
-      DATA_FILE  => "IdxSelMemPhi.dat",
+      DATA_FILE  => "IdxSelMemPhi.mif",
       ADDR_WIDTH => PHI_IXD_MEM_ADDR_WIDTH,
       WORD_WIDTH => PHI_IXD_MEM_WORD_SIZE
       )

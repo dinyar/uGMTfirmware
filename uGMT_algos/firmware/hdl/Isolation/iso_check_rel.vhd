@@ -51,7 +51,7 @@ begin
     sRelInputVec(i)   <= std_logic_vector(iMuonPT(i)) & std_logic_vector(iAreaSums(i));
     rel_iso_check : entity work.ipbus_dpram
         generic map (
-          DATA_FILE  => "RelIsoCheckMem.dat",
+          DATA_FILE  => "RelIsoCheckMem.mif",
           ADDR_WIDTH => REL_ISO_ADDR_WIDTH,
           WORD_WIDTH => REL_ISO_WORD_SIZE
           )

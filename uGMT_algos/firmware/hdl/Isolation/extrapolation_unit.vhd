@@ -43,8 +43,8 @@ begin
 
   extrapolate_barrel : entity work.extrapolation_unit_regional
   generic map (
-    ETA_DATA_FILE  => "BEtaExtrapolation.dat",
-    PHI_DATA_FILE  => "BPhiExtrapolation.dat"
+    ETA_DATA_FILE  => "BEtaExtrapolation.mif",
+    PHI_DATA_FILE  => "BPhiExtrapolation.mif"
   )
     port map (
       iMuons              => iMuonsB,
@@ -57,8 +57,8 @@ begin
       );
   extrapolate_overlap : entity work.extrapolation_unit_regional
   generic map (
-    ETA_DATA_FILE  => "OEtaExtrapolation.dat",
-    PHI_DATA_FILE  => "OPhiExtrapolation.dat"
+    ETA_DATA_FILE  => "OEtaExtrapolation.mif",
+    PHI_DATA_FILE  => "OPhiExtrapolation.mif"
   )
     port map (
       iMuons              => iMuonsO,
@@ -71,8 +71,8 @@ begin
       );
   extrapolate_forward : entity work.extrapolation_unit_regional
   generic map (
-    ETA_DATA_FILE  => "FEtaExtrapolation.dat",
-    PHI_DATA_FILE  => "FPhiExtrapolation.dat"
+    ETA_DATA_FILE  => "FEtaExtrapolation.mif",
+    PHI_DATA_FILE  => "FPhiExtrapolation.mif"
   )
     port map (
       iMuons              => iMuonsF,

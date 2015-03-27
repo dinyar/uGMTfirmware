@@ -17,10 +17,10 @@ vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_core/firmw
 vcom -check_synthesis ../../hdl/ipbus_decode_sorting.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_core/firmware/hdl/ipbus_fabric_sel.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_dpram_dist.vhd
+vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_dpram.vhd
 vcom -check_synthesis ../../hdl/Sorting/SorterUnit.vhd
 vcom -check_synthesis ../../hdl/MatchAndMerge/*
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit.vhd
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_dpram.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_cancel_out_*.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_spatialCoords.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/WedgeCheckerUnit.vhd
@@ -37,7 +37,6 @@ vcom -check_synthesis ../../hdl/Sorting/Stage0/HalfSortStage0.vhd
 vcom -check_synthesis ../../hdl/Sorting/Stage1/SortStage1_behavioral.vhd
 vcom -check_synthesis ../../hdl/Sorting/SortAndCancelUnit.vhd
 # Insert iso stuff here.
-vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_dpram.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_extrapolation_eta.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_extrapolation_phi.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_extrapolation_regional.vhd
@@ -71,25 +70,25 @@ vcom -check_synthesis ../../hdl/Isolation/iso_check.vhd
 vcom -check_synthesis ../../hdl/Isolation/IsoAssignmentUnit.vhd
 vcom -check_synthesis ../tb_helpers.vhd
 vcom -check_synthesis isolation_tb.vhd
-ln -s ../../hdl/ipbus_slaves/BEtaExtrapolation.dat .
-ln -s ../../hdl/ipbus_slaves/BPhiExtrapolation.dat .
-ln -s ../../hdl/ipbus_slaves/OEtaExtrapolation.dat .
-ln -s ../../hdl/ipbus_slaves/OPhiExtrapolation.dat .
-ln -s ../../hdl/ipbus_slaves/FEtaExtrapolation.dat .
-ln -s ../../hdl/ipbus_slaves/FPhiExtrapolation.dat .
-ln -s ../../hdl/ipbus_slaves/RelIsoCheckMem.dat .
-ln -s ../../hdl/ipbus_slaves/AbsIsoCheckMem.dat .
-ln -s ../../hdl/ipbus_slaves/IdxSelMemEta.dat .
-ln -s ../../hdl/ipbus_slaves/IdxSelMemPhi.dat .
-ln -s ../../hdl/ipbus_slaves/BrlSingleMatchQual.dat .
-ln -s ../../hdl/ipbus_slaves/OvlPosSingleMatchQual.dat .
-ln -s ../../hdl/ipbus_slaves/OvlNegSingleMatchQual.dat .
-ln -s ../../hdl/ipbus_slaves/FwdPosSingleMatchQual.dat .
-ln -s ../../hdl/ipbus_slaves/FwdNegSingleMatchQual.dat .
-ln -s ../../hdl/ipbus_slaves/BOPosMatchQual.dat .
-ln -s ../../hdl/ipbus_slaves/BONegMatchQual.dat .
-ln -s ../../hdl/ipbus_slaves/FOPosMatchQual.dat .
-ln -s ../../hdl/ipbus_slaves/FONegMatchQual.dat .
+ln -s ../../hdl/ipbus_slaves/BEtaExtrapolation.mif .
+ln -s ../../hdl/ipbus_slaves/BPhiExtrapolation.mif .
+ln -s ../../hdl/ipbus_slaves/OEtaExtrapolation.mif .
+ln -s ../../hdl/ipbus_slaves/OPhiExtrapolation.mif .
+ln -s ../../hdl/ipbus_slaves/FEtaExtrapolation.mif .
+ln -s ../../hdl/ipbus_slaves/FPhiExtrapolation.mif .
+ln -s ../../hdl/ipbus_slaves/RelIsoCheckMem.mif .
+ln -s ../../hdl/ipbus_slaves/AbsIsoCheckMem.mif .
+ln -s ../../hdl/ipbus_slaves/IdxSelMemEta.mif .
+ln -s ../../hdl/ipbus_slaves/IdxSelMemPhi.mif .
+ln -s ../../hdl/ipbus_slaves/BrlSingleMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/OvlPosSingleMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/OvlNegSingleMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/FwdPosSingleMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/FwdNegSingleMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/BOPosMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/BONegMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/FOPosMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/FONegMatchQual.mif .
 vmake work > Makefile
 bash update_testfiles.sh
 echo "WARNING: Using many_events.txt pattern file. Modify $PATTERNFILE link if other pattern file required."
@@ -98,4 +97,3 @@ then
     rm -f $PATTERNFILE
 fi
 ln -s many_events.txt $PATTERNFILE
-

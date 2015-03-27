@@ -339,7 +339,7 @@ begin
   -- If match found then cancel out (non-)ovl mu (configurable?)
   cou_bo_plus : entity work.CancelOutUnit_BO
     generic map (
-        DATA_FILE  => "BOPosMatchQual.dat"
+        DATA_FILE  => "BOPosMatchQual.mif"
         )
     port map (
       clk_ipb     => clk_ipb,
@@ -354,7 +354,7 @@ begin
       );
   cou_bo_minus : entity work.CancelOutUnit_BO
     generic map (
-      DATA_FILE  => "BONegMatchQual.dat"
+      DATA_FILE  => "BONegMatchQual.mif"
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -370,7 +370,7 @@ begin
 
   cou_fo_plus : entity work.CancelOutUnit_FO
     generic map (
-      DATA_FILE  => "FOPosMatchQual.dat"
+      DATA_FILE  => "FOPosMatchQual.mif"
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -385,7 +385,7 @@ begin
       );
   cou_fo_minus : entity work.CancelOutUnit_FO
     generic map (
-      DATA_FILE  => "FONegMatchQual.dat"
+      DATA_FILE  => "FONegMatchQual.mif"
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -401,7 +401,7 @@ begin
 
   cou_b : entity work.CancelOutUnit_Single
     generic map (
-      DATA_FILE  => "BrlSingleMatchQual.dat",
+      DATA_FILE  => "BrlSingleMatchQual.mif",
       num_wedges => 12,
       num_tracks => 3
       )
@@ -416,7 +416,7 @@ begin
       );
   cou_o_plus : entity work.CancelOutUnit_Single
     generic map (
-      DATA_FILE  => "OvlPosSingleMatchQual.dat",
+      DATA_FILE  => "OvlPosSingleMatchQual.mif",
       num_wedges => 6,
       num_tracks => 3
       )
@@ -431,7 +431,7 @@ begin
       );
   cou_o_minus : entity work.CancelOutUnit_Single
     generic map (
-      DATA_FILE  => "OvlNegSingleMatchQual.dat",
+      DATA_FILE  => "OvlNegSingleMatchQual.mif",
       num_wedges => 6,
       num_tracks => 3
       )
@@ -446,7 +446,7 @@ begin
       );
   cou_f_plus : entity work.CancelOutUnit_Single
     generic map (
-      DATA_FILE  => "FwdPosSingleMatchQual.dat",
+      DATA_FILE  => "FwdPosSingleMatchQual.mif",
       num_wedges => 6,
       num_tracks => 3
       )
@@ -461,7 +461,7 @@ begin
       );
   cou_f_minus : entity work.CancelOutUnit_Single
     generic map (
-      DATA_FILE  => "FwdNegSingleMatchQual.dat",
+      DATA_FILE  => "FwdNegSingleMatchQual.mif",
       num_wedges => 6,
       num_tracks => 3
       )

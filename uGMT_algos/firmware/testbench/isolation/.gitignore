@@ -4,5 +4,5 @@ isolation_tb/
 many_events.txt
 modelsim.ini
 transcript
-*.dat
-
+dinyar/uGMTfirmware
+*.mif
