@@ -41,7 +41,14 @@ architecture behavior of testbench is
   signal sIdxBits            : TIndexBits_vector(7 downto 0);
   signal sMuPt               : TMuonPT_vector(7 downto 0);
 
-  signal oIsoBits            : TIsoBits_vector (7 downto 0);
+  signal oIsoBits             : TIsoBits_vector (7 downto 0);
+  signal oSelectedEnergies    : TCaloArea_vector(7 downto 0);
+  signal oSelectedCaloIdxBits : TCaloIndexBit_vector(7 downto 0);
+  signal oExtrapolatedCoordsF : TSpatialCoordinate_vector(35 downto 0);
+  signal oExtrapolatedCoordsO : TSpatialCoordinate_vector(35 downto 0);
+  signal oExtrapolatedCoordsB : TSpatialCoordinate_vector(35 downto 0);
+  signal oMuIdxBits           : TIndexBits_vector(7 downto 0);
+  signal oMuPt               : TMuonPT_vector(7 downto 0);
 
 begin
 
@@ -54,10 +61,13 @@ begin
         iMuIdxBits           => sIdxBits,
         iFinalMuPt           => sMuPt,
         oIsoBits             => oIsoBits,
-        oFinalEnergies       => open,
-        oExtrapolatedCoordsB => open,
-        oExtrapolatedCoordsO => open,
-        oExtrapolatedCoordsF => open,
+        oFinalEnergies       => oSelectedEnergies,
+        oFinalCaloIdxBits    => oSelectedCaloIdxBits,
+        oExtrapolatedCoordsB => oExtrapolatedCoordsB,
+        oExtrapolatedCoordsO => oExtrapolatedCoordsO,
+        oExtrapolatedCoordsF => oExtrapolatedCoordsF,
+        oMuIdxBits           => oMuIdxBits,
+        oFinalMuPt           => oMuPt,
         clk                  => clk40,
         clk_ipb              => clk240,
         sinit                => rst,
@@ -117,20 +127,30 @@ begin
 
   --  Test Bench Statements
   tb : process
-    file F                               : text open read_mode is "ugmt_testfile.dat";
-    variable L, LO                       : line;
-    variable caloEvent                   : TGMTCaloEvent;
-    variable muEvent                     : TGMTMuEvent;
-    constant ISO_LATENCY                 : integer                        := 7;
-    variable caloEvent_buffer            : TGMTCaloEvent_vec(ISO_LATENCY-1 downto 0);
-    variable muEvent_buffer              : TGMTMuEvent_vec(ISO_LATENCY-1 downto 0);
-    variable iEvent                      : integer                        := 0;
-    variable tmpError                    : integer;
-    variable cntError                    : integer                        := 0;
-    variable remainingEvents             : integer                        := ISO_LATENCY;
-    variable vIsoBits                    : TIsoBits_vector (7 downto 0);
-    variable emu_id    : string(1 to 3) := "EMU";
-    variable fw_id    : string(1 to 3) := "SIM";
+    file F                        : text open read_mode is "ugmt_testfile.dat";
+    variable L, LO                : line;
+    variable caloEvent            : TGMTCaloEvent;
+    variable muEvent              : TGMTMuEvent;
+    constant ISO_LATENCY          : integer                        := 7;
+    variable caloEvent_buffer     : TGMTCaloEvent_vec(ISO_LATENCY-1 downto 0);
+    variable muEvent_buffer       : TGMTMuEvent_vec(ISO_LATENCY-1 downto 0);
+    variable iEvent               : integer                        := 0;
+    variable tmpError             : integer;
+    variable cntError             : integer                        := 0;
+    variable remainingEvents      : integer                        := ISO_LATENCY;
+    variable vMuPt                : TMuonPT_vector(7 downto 0);
+    variable vIsoBits             : TIsoBits_vector (7 downto 0);
+    variable vSelectedEnergies    : TCaloArea_vector(7 downto 0);
+    variable vSelectedCaloIdxBits : TCaloIndexBit_vector(7 downto 0);
+    variable vExtrapolatedCoordsF : TSpatialCoordinate_vector(35 downto 0);
+    variable vExtrapolatedCoordsO : TSpatialCoordinate_vector(35 downto 0);
+    variable vExtrapolatedCoordsB : TSpatialCoordinate_vector(35 downto 0);
+    variable vMuIdxBits           : TIndexBits_vector(7 downto 0);
+    variable emu_id               : string(1 to 3) := "EMU";
+    variable fw_id                : string(1 to 3) := "SIM";
+    variable brl_id               : string(1 to 3) := "BRL";
+    variable ovl_id               : string(1 to 3) := "OVL";
+    variable fwd_id               : string(1 to 3) := "FWD";
   begin
         -- Reset event buffer
     for iEvent in muEvent_buffer'range loop
@@ -213,12 +233,9 @@ begin
     while remainingEvents > 0 loop
       tmpError := 99999999;
       if not endfile(F) then
-        write(LO, string'("++ reading event "));
-        write(LO, iEvent);
-        write(LO, string'("...."));
-        writeline (OUTPUT, LO);
         ReadCaloEvent(F, iEvent, caloEvent);
         ReadMuEvent(F, iEvent, muEvent);
+        ReadIdxBits(F); -- Dummy procedure.
         -- Filling uGMT
         iMuonsB     <= muEvent.muons_brl;
         iMuonsO     <= muEvent.muons_ovl;
@@ -245,9 +262,16 @@ begin
         remainingEvents := remainingEvents-1;
       end if;
 
-      muEvent_buffer(ISO_LATENCY-1 downto 1)                    := muEvent_buffer(ISO_LATENCY-2 downto 0);
-      caloEvent_buffer(ISO_LATENCY-1 downto 1)                  := caloEvent_buffer(ISO_LATENCY-2 downto 0);
-      vIsoBits                                                  := oIsoBits;
+      muEvent_buffer(ISO_LATENCY-1 downto 1)   := muEvent_buffer(ISO_LATENCY-2 downto 0);
+      caloEvent_buffer(ISO_LATENCY-1 downto 1) := caloEvent_buffer(ISO_LATENCY-2 downto 0);
+      vMuPt                                    := oMuPt;
+      vSelectedEnergies                        := oSelectedEnergies;
+      vSelectedCaloIdxBits                     := oSelectedCaloIdxBits;
+      vExtrapolatedCoordsB                     := oExtrapolatedCoordsB;
+      vExtrapolatedCoordsO                     := oExtrapolatedCoordsO;
+      vExtrapolatedCoordsF                     := oExtrapolatedCoordsF;
+      vMuIdxBits                               := oMuIdxBits;
+      vIsoBits                                 := oIsoBits;
 
       ValidateIsolationOutput(vIsoBits, muEvent_buffer(ISO_LATENCY-1), tmpError);
       cntError := cntError+tmpError;
@@ -255,8 +279,15 @@ begin
       if verbose or (tmpError > 0) then
         DumpIsoBits(vIsoBits, fw_id);
         DumpIsoBits(muEvent_buffer(Iso_LATENCY-1).expectedIsoBits, emu_id);
+        DumpFinalPt(vMuPt);
+        DumpMuIdxBits(vMuIdxBits);
+        DumpSelectedEnergies(vSelectedEnergies);
+        DumpCaloIdxBits(vSelectedCaloIdxBits);
         DumpCaloEvent(caloEvent_buffer(Iso_LATENCY-1));
         DumpEventMuons(muEvent_buffer(Iso_LATENCY-1));
+        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsB, brl_id);
+        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsO, ovl_id);
+        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsF, fwd_id);
         write(LO, string'(""));
         writeline (OUTPUT, LO);
       end if;

@@ -86,6 +86,9 @@ package tb_helpers is
     variable iEvent : in integer;
     variable event : out TGMTCaloEvent);
 
+  procedure ReadIdxBits (
+    file F : text);
+
 --  procedure ReadEvent (
 --    file F         :     text;
 --    variable iEvent : in integer;
@@ -108,6 +111,22 @@ package tb_helpers is
 
   procedure DumpIsoBits (
     variable iIsoBits : in TIsoBits_vector(7 downto 0);
+    variable id : in string(1 to 3));
+
+  procedure DumpFinalPt (
+    variable iFinalPt : in TMuonPT_vector);
+
+  procedure DumpSelectedEnergies (
+    variable iEnergies : in TCaloArea_vector);
+
+  procedure DumpMuIdxBits (
+    variable iIdxBits : in TIndexBits_vector);
+
+  procedure DumpCaloIdxBits (
+    variable iIdxBits : in TCaloIndexBit_vector);
+
+  procedure DumpExtrapolatedCoordiantes (
+    variable iExtrapolatedCoords : in TSpatialCoordinate_vector;
     variable id : in string(1 to 3));
 
   procedure DumpEventMuons (
@@ -313,7 +332,7 @@ package body tb_helpers is
   begin
       read(L, dummy);
 
-      for iEnergy in oEnergies'range loop
+      for iEnergy in oEnergies'low to oEnergies'high loop
         read(L, vEnergy);
         oEnergies(iEnergy) := to_unsigned(vEnergy, 5);
       end loop;
@@ -435,15 +454,42 @@ package body tb_helpers is
     end loop;
   end ReadMuEvent;
 
+  procedure ReadIdxBits (
+    file F : text) is
+    variable L : line;
+    variable idxNo : integer := 0;
+    variable index : integer;
+    variable phi : integer;
+    variable eta : integer;
+  begin
+      while idxNo < 8 loop
+          readline(F, L);
+          if L.all'length = 0 then
+            next;
+          elsif(L.all(1 to 1) = "#") then
+            next;
+          elsif L.all(1 to 3) = "EVT" then
+            -- TODO: Parse this maybe?
+            next;
+        elsif L.all(1 to 6) = "TWRIDX" then
+            -- read(L, index);
+            -- read(L, phi);
+            -- read(L, eta);
+            -- TODO: Store this somewhere.
+            idxNo := idxNo+1;
+          end if;
+      end loop;
+  end ReadIdxBits;
+
   procedure DumpEnergyValues (
     variable iEnergies : in TCaloRegionEtaSlice_vector(27 downto 0)) is
     variable L1        : line;
   begin
-      for iSlice in iEnergies'range loop
+      for iSlice in iEnergies'low to iEnergies'high loop
         write(L1, string'("CALO"));
         write(L1, iSlice);
         write(L1, string'(": "));
-        for iEnergy in iEnergies(iSlice)'range loop
+        for iEnergy in iEnergies(iSlice)'low to iEnergies(iSlice)'high loop
             write(L1, to_integer(iEnergies(iSlice)(iEnergy)));
             write(L1, string'(" "));
         end loop;
@@ -552,8 +598,6 @@ package body tb_helpers is
   begin -- DumpEventMuons
       if event.iEvent /= -1 then
         write(L1, string'("++++++++++++++++++++ Dump of input muons: "));
-        write(L1, event.iEvent);
-        write(L1, string'(": ++++++++++++++++++++"));
         writeline(OUTPUT, L1);
         DumpMuons(event.muons_brl, event.sortRanks_brl, brl_id);
         DumpMuons(event.muons_ovl, event.sortRanks_ovl, ovl_id);
@@ -570,7 +614,7 @@ package body tb_helpers is
     write(L1, id);
     write(L1, string'(": "));
     writeline(OUTPUT, L1);
-    for i in iIsoBits'range loop
+    for i in iIsoBits'low to iIsoBits'high loop
         write(L1, to_integer(unsigned(iIsoBits(i))));
         write(L1, string'(" "));
     end loop;
@@ -579,6 +623,99 @@ package body tb_helpers is
     writeline(OUTPUT, L1);
   end DumpIsoBits;
 
+  procedure DumpFinalPt (
+    variable iFinalPt : in TMuonPT_vector) is
+    variable L1 : line;
+  begin
+    write(L1, string'("++++++++++++++++++++ Dump of final pT values: "));
+    writeline(OUTPUT, L1);
+    for i in iFinalPt'low to iFinalPt'high loop
+        write(L1, to_integer(iFinalPt(i)));
+        write(L1, string'(" "));
+    end loop;
+    writeline(OUTPUT, L1);
+    write(L1, string'(""));
+    writeline(OUTPUT, L1);
+  end DumpFinalPt;
+
+  procedure DumpSelectedEnergies (
+    variable iEnergies : in TCaloArea_vector) is
+    variable L1 : line;
+  begin
+    write(L1, string'("++++++++++++++++++++ Dump of selected energy sums: "));
+    writeline(OUTPUT, L1);
+    for i in iEnergies'low to iEnergies'high loop
+        write(L1, to_integer(iEnergies(i)));
+        write(L1, string'(" "));
+    end loop;
+    writeline(OUTPUT, L1);
+    write(L1, string'(""));
+    writeline(OUTPUT, L1);
+  end DumpSelectedEnergies;
+
+  procedure DumpMuIdxBits (
+    variable iIdxBits : in TIndexBits_vector) is
+    variable L1 : line;
+  begin
+    write(L1, string'("++++++++++++++++++++ Dump of final muon index bits: "));
+    writeline(OUTPUT, L1);
+    write(L1, string'("# MuNo   Idx"));
+    writeline(OUTPUT, L1);
+    for i in iIdxBits'low to iIdxBits'high loop
+        write(L1, string'("  "));
+        write(L1, i);
+        write(L1, string'("    "));
+        write(L1, to_integer(iIdxBits(i)));
+        writeline(OUTPUT, L1);
+    end loop;
+    write(L1, string'(""));
+    writeline(OUTPUT, L1);
+  end DumpMuIdxBits;
+
+  procedure DumpCaloIdxBits (
+    variable iIdxBits : in TCaloIndexBit_vector) is
+    variable L1 : line;
+  begin
+    write(L1, string'("++++++++++++++++++++ Dump of selected calo index bits: "));
+    writeline(OUTPUT, L1);
+    write(L1, string'("# MuNo   Phi   Eta"));
+    writeline(OUTPUT, L1);
+    for i in iIdxBits'low to iIdxBits'high loop
+        write(L1, string'("  "));
+        write(L1, i);
+        write(L1, string'("    "));
+        write(L1, to_integer(iIdxBits(i).phi));
+        write(L1, string'("    "));
+        write(L1, to_integer(iIdxBits(i).eta));
+        writeline(OUTPUT, L1);
+    end loop;
+    write(L1, string'(""));
+    writeline(OUTPUT, L1);
+  end DumpCaloIdxBits;
+
+  procedure DumpExtrapolatedCoordiantes (
+    variable iExtrapolatedCoords : in TSpatialCoordinate_vector;
+    variable id : in string(1 to 3)) is
+    variable L1 : line;
+  begin
+    write(L1, string'("++++++++++++++++++++ Dump of extrapolated coordinates from "));
+    write(L1, id);
+    write(L1, string'(": "));
+    writeline(OUTPUT, L1);
+    write(L1, string'(" # MuNo        Phi        Eta"));
+    writeline(OUTPUT, L1);
+    for i in iExtrapolatedCoords'range loop
+        write(L1, string'("   "));
+        write(L1, i);
+        write(L1, string'("          "));
+        write(L1, to_integer(iExtrapolatedCoords(i).phi));
+        write(L1, string'("        "));
+        write(L1, to_integer(iExtrapolatedCoords(i).eta));
+        writeline(OUTPUT, L1);
+    end loop;
+    write(L1, string'(""));
+    writeline(OUTPUT, L1);
+  end DumpExtrapolatedCoordiantes;
 
   procedure DumpTracks (
     variable iTracks : in TGMTMuTracks_vector;
