@@ -86,7 +86,7 @@ begin
 
     sort_rank_assignment : entity work.ipbus_dpram
         generic map (
-          DATA_FILE  => "SortRank.dat",
+          DATA_FILE  => "SortRank.mif",
           ADDR_WIDTH => SORT_RANK_MEM_ADDR_WIDTH,
           WORD_WIDTH => SORT_RANK_MEM_WORD_SIZE
           )
