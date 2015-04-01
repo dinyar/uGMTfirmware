@@ -82,7 +82,7 @@ begin
   assign_iso_bits : process (sMuonPT_reg, sAbsIsoBits, sRelIsoBits)
   begin  -- process assign_iso_bits
     for i in oIsoBits'range loop
-      if sMuonPT_reg(i) = (8 downto 0 => '0') then
+      if sMuonPT_reg(i) = (sMuonPT_reg(i)'range => '0') then
         oIsoBits(i)(0) <= '0';
         oIsoBits(i)(1) <= '0';
       else
