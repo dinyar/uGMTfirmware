@@ -125,10 +125,10 @@ package ugmt_constants is
   -----------------------------------------------------------------------------
   -- Constants for LUTs
   -----------------------------------------------------------------------------
-  constant ETA_IXD_MEM_ADDR_WIDTH : natural := 9;
-  constant ETA_IXD_MEM_WORD_SIZE : natural := 5;
-  constant PHI_IXD_MEM_ADDR_WIDTH : natural := 10;
-  constant PHI_IXD_MEM_WORD_SIZE : natural := 6;
+  constant ETA_IDX_MEM_ADDR_WIDTH : natural := 9;
+  constant ETA_IDX_MEM_WORD_SIZE : natural := 5;
+  constant PHI_IDX_MEM_ADDR_WIDTH : natural := 10;
+  constant PHI_IDX_MEM_WORD_SIZE : natural := 6;
 
   constant ETA_EXTRAPOLATION_ADDR_WIDTH : natural := 13;
   constant ETA_EXTRAPOLATION_WORD_SIZE : natural := 4;

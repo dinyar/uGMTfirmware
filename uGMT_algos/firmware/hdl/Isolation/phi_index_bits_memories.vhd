@@ -48,7 +48,7 @@ begin
 
 
   convert_coords_to_index_bits : for i in iCoords'range generate
-    ipbusWe_vector(i) <= ipbw(i).ipb_write and ipbw(i).ipb_strobe;
+    -- ipbusWe_vector(i) <= ipbw(i).ipb_write and ipbw(i).ipb_strobe;
 --    phi_idx_bits_mem : entity work.phi_sel_mem
 --      port map (
 --        clka   => clk,

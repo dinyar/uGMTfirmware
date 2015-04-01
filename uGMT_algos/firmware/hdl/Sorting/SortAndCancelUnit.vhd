@@ -789,7 +789,7 @@ begin
     end if;
   end process final_mu_reg;
 
-  extract_mu_pt : for i in sFinalMuons_store'range generate
+  extract_mu_pt : for i in sFinalMuons_reg'range generate
     oMuPt(i) <= sFinalMuons_reg(i).pt;
   end generate extract_mu_pt;
 

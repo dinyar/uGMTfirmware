@@ -25,8 +25,8 @@ begin
   phi_idx_bits_mem : entity work.ipbus_dpram_dist
     generic map (
       DATA_FILE  => "IdxSelMemPhi.mif",
-      ADDR_WIDTH => PHI_IXD_MEM_ADDR_WIDTH,
-      WORD_WIDTH => PHI_IXD_MEM_WORD_SIZE
+      ADDR_WIDTH => PHI_IDX_MEM_ADDR_WIDTH,
+      WORD_WIDTH => PHI_IDX_MEM_WORD_SIZE
       )
     port map (
       clk     => clk_ipb,

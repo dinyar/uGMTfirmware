@@ -25,8 +25,8 @@ begin
   eta_idx_bits_mem : entity work.ipbus_dpram_dist
     generic map (
       DATA_FILE  => "IdxSelMemEta.mif",
-      ADDR_WIDTH => ETA_IXD_MEM_ADDR_WIDTH,
-      WORD_WIDTH => ETA_IXD_MEM_WORD_SIZE
+      ADDR_WIDTH => ETA_IDX_MEM_ADDR_WIDTH,
+      WORD_WIDTH => ETA_IDX_MEM_WORD_SIZE
       )
     port map (
       clk     => clk_ipb,
