@@ -174,10 +174,6 @@ begin
       sEnergies_tmp(sEnergies_reg'high-1)          <= (others => "00000");
       sEnergies_tmp(sEnergies_reg'high-2 downto 2) <= sEnergies;
 
-      --gen_idx_bits : for index in sMuons'range generate
-      --  sIndexBits(index) <= to_unsigned(index, sIndexBits(index)'length);
-      --end generate gen_idx_bits;
-
       for index in sMuons'range loop
         sIndexBits(index) <= to_unsigned(index, sIndexBits(index)'length);
       end loop;  -- index

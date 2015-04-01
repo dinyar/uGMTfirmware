@@ -148,6 +148,7 @@ begin
        q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
        q(i).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).data;
       end loop;  -- i
+      
       if sSelRst = '1' then
         sSel <= 1;
       elsif sSel < 5 then
