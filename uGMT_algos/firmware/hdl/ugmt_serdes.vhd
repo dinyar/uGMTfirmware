@@ -260,8 +260,8 @@ begin
       iEmptyB           => sEmptyB,
       iEmptyO_plus      => sEmptyO_plus,
       iEmptyO_minus     => sEmptyO_minus,
-      iEmptyF_plus      => sEmptyF_minus,
-      iEmptyF_minus     => sEmptyF_plus,
+      iEmptyF_plus      => sEmptyF_plus,
+      iEmptyF_minus     => sEmptyF_minus,
 
       iEnergies => sEnergies_reg,
 
