@@ -44,10 +44,12 @@ entity GMT is
     oIntermediateSortRanksB : out TSortRank10_vector(7 downto 0);
     oIntermediateSortRanksO : out TSortRank10_vector(7 downto 0);
     oIntermediateSortRanksF : out TSortRank10_vector(7 downto 0);
+    oFinalCaloIdxBits       : out TCaloIndexBit_vector(7 downto 0);
     oFinalEnergies          : out TCaloArea_vector(7 downto 0);
     oExtrapolatedCoordsB    : out TSpatialCoordinate_vector(35 downto 0);
     oExtrapolatedCoordsO    : out TSpatialCoordinate_vector(35 downto 0);
     oExtrapolatedCoordsF    : out TSpatialCoordinate_vector(35 downto 0);
+    oMuIdxBits              : out TIndexBits_vector (7 downto 0);
 
     oMuons : out TGMTMu_vector(7 downto 0);
     oIso   : out TIsoBits_vector(7 downto 0);
@@ -107,6 +109,8 @@ architecture Behavioral of GMT is
   signal sIntermediateSortRanksB : TSortRank10_vector(7 downto 0);
   signal sIntermediateSortRanksO : TSortRank10_vector(7 downto 0);
   signal sIntermediateSortRanksF : TSortRank10_vector(7 downto 0);
+  signal sSelectedCaloIdxBits    : TCaloIndexBit_vector(7 downto 0);
+  signal sFinalMuIdxBits         : TIndexBits_vector(7 downto 0);
 
 begin
 
@@ -131,7 +135,7 @@ begin
   sEmptyO     <= iEmptyO_minus & iEmptyO_plus;
   sEmptyF     <= iEmptyF_minus & iEmptyF_plus;
   sIdxBitsO   <= iIdxBitsO_minus & iIdxBitsO_plus;
-  sIdxBitsO   <= iIdxBitsO_minus & iIdxBitsO_plus;
+  sIdxBitsF   <= iIdxBitsF_minus & iIdxBitsF_plus;
 
   -----------------------------------------------------------------------------
   -- calo stuff
@@ -146,11 +150,11 @@ begin
       iFinalMuPt           => sFinalMuPt,
       oIsoBits             => sIsoBits,
       oFinalEnergies       => sFinalEnergies,
-      oFinalCaloIdxBits    => open,
+      oFinalCaloIdxBits    => sSelectedCaloIdxBits,
       oExtrapolatedCoordsB => sExtrapolatedCoordsB,
       oExtrapolatedCoordsO => sExtrapolatedCoordsO,
       oExtrapolatedCoordsF => sExtrapolatedCoordsF,
-      oMuIdxBits           => open,
+      oMuIdxBits           => sFinalMuIdxBits,
       oFinalMuPt           => open,
       clk                  => clk,
       clk_ipb              => clk_ipb,
@@ -225,10 +229,12 @@ begin
       oIntermediateSortRanksO <= sIntermediateSortRanksO;
       oIntermediateSortRanksF <= sIntermediateSortRanksF;
 
+      oFinalCaloIdxBits    <= sSelectedCaloIdxBits;
       oFinalEnergies       <= sFinalEnergies;
       oExtrapolatedCoordsB <= sExtrapolatedCoordsB;
       oExtrapolatedCoordsO <= sExtrapolatedCoordsO;
       oExtrapolatedCoordsF <= sExtrapolatedCoordsF;
+      oMuIdxBits           <= sFinalMuIdxBits;
 
       oMuons <= sMuons_sorted;
       oIso   <= sIsoBits;
