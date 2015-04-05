@@ -141,7 +141,7 @@ package tb_helpers is
     variable iSortRanks : in TSortRank10_vector;
     variable id         : in string(1 to 3));
 
-procedure ValidateIsolationOutput (
+  procedure ValidateIsolationOutput (
     variable iIsoBits : in TIsoBits_vector(7 downto 0);
     variable muEvent  : in TGMTMuEvent;
     variable errors   : out integer);
@@ -150,6 +150,11 @@ procedure ValidateIsolationOutput (
     variable iOutput : in  TOutTransceiverBuffer;
     variable event   : in  TGMTOutEvent;
     variable errors  : out integer);
+
+  procedure ValidateSorterOutput (
+    variable iFinalMus : in  TGMTMu_vector(7 downto 0);
+    variable iEvent    : in  TGMTMuEvent;
+    variable error     : out integer);
 
   procedure ValidateSorterOutput (
     variable iFinalMus : in  TGMTMu_vector(7 downto 0);
@@ -908,7 +913,7 @@ package body tb_helpers is
       variable vErrors  : integer := 0;
   begin
     if (muEvent.iEvent >= 0) then
-        write(LO, string'("@@@ Validating event "));
+        write(LO, string'("@@@ Validating calo event "));
         write(LO, muEvent.iEvent);
         write(LO, string'(" @@@"));
         writeline(OUTPUT, LO);
@@ -1013,6 +1018,38 @@ package body tb_helpers is
       errors := 0;
     end if;
   end ValidateSerializerOutput;
+
+  procedure ValidateSorterOutput (
+    variable iFinalMus : in  TGMTMu_vector(7 downto 0);
+    variable iEvent    : in  TGMTMuEvent;
+    variable error     : out integer) is
+    variable LO       : line;
+    variable vError   : integer        := 0;
+    variable tmpError : integer        := 0;
+    variable idFin    : string(1 to 3) := "FIN";
+  begin
+    if (iEvent.iEvent >= 0) then
+      write(LO, string'("@@@ Validating muon event "));
+      write(LO, iEvent.iEvent);
+      write(LO, string'(" @@@"));
+      writeline(OUTPUT, LO);
+      write(LO, string'(""));
+      writeline(OUTPUT, LO);
+
+      tmpError := 0;
+      CheckMuons(iFinalMus, iEvent.expectedMuons, idFin, tmpError);
+      vError   := tmpError;
+      tmpError := 0;
+
+      if vError > 0 then
+        error := 1;
+      else
+        error := 0;
+      end if;
+    else
+      error := 0;
+    end if;
+  end ValidateSorterOutput;
 
   procedure ValidateSorterOutput (
     variable iFinalMus : in  TGMTMu_vector(7 downto 0);

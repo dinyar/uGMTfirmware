@@ -224,10 +224,6 @@ begin
     while remainingEvents > 0 loop
       tmpError := 99999999;
       if not endfile(F) then
-        write(LO, string'("++ reading event "));
-        write(LO, iEvent);
-        write(LO, string'("...."));
-        writeline (OUTPUT, LO);
         ReadMuEvent(F, iEvent, event);
 
         -- Filling uGMT
