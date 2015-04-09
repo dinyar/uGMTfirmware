@@ -168,11 +168,11 @@ begin
       sTracks_reg                                  <= sTracks;
       sEmpty_reg                                   <= sEmpty;
       sSortRanks_reg                               <= sSortRanks;
-      sEnergies_tmp(0)                             <= (others => "00000");
-      sEnergies_tmp(1)                             <= (others => "00000");
-      sEnergies_tmp(sEnergies_reg'high)            <= (others => "00000");
+      sEnergies_tmp(sEnergies_reg'high downto 0)   <= sEnergies;
+      sEnergies_tmp(sEnergies_reg'high-3)          <= (others => "00000");
+      sEnergies_tmp(sEnergies_reg'high-2)          <= (others => "00000");
       sEnergies_tmp(sEnergies_reg'high-1)          <= (others => "00000");
-      sEnergies_tmp(sEnergies_reg'high-2 downto 2) <= sEnergies;
+      sEnergies_tmp(sEnergies_reg'high)            <= (others => "00000");
 
       for index in sMuons'range loop
         sIndexBits(index) <= to_unsigned(index, sIndexBits(index)'length);
