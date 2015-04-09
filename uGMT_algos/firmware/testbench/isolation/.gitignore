@@ -1,8 +1,11 @@
 Makefile
 blk_mem_gen_v8_2/
 isolation_tb/
+iso_test.txt
 many_events.txt
+ugmt_testfile.dat
 modelsim.ini
 transcript
 dinyar/uGMTfirmware
 *.mif
+

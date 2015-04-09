@@ -1,0 +1,16 @@
+GMT_tb/
+iso_test.txt
+FakeMuons.txt
+Makefile
+SingleMuPt100.txt
+TTbar.txt
+WM.txt
+ZMM.txt
+many_events.txt
+modelsim.ini
+single_muons.txt
+single_tfs.txt
+transcript
+ugmt_testfile.dat
+*.mif
+
