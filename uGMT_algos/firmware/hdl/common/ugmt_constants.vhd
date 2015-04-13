@@ -61,7 +61,7 @@ package ugmt_constants is
   constant MU_QUAD_ASSIGNMENT : Assignment_vector(8 downto 0) := (17, 16, 15, 14, 13, 12, 11, 10, 9);
 
   -- Calo
-  constant ENERGY_QUAD_ASSIGNMENT : Assignment_vector(6 downto 0) := (2, 3, 4, 5, 6, 7, 8);
+  constant ENERGY_QUAD_ASSIGNMENT : Assignment_vector(6 downto 0) := (8, 7, 6, 5, 4, 3, 2);
 
   -----------------------------------------------------------------------------
   -- Output word assignment
