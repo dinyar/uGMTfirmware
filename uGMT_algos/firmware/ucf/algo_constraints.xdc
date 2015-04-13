@@ -56,25 +56,25 @@ resize_pblock [get_pblocks deser_x0y8] -add {RAMB18_X2Y160:RAMB18_X2Y179}
 resize_pblock [get_pblocks deser_x0y8] -add {RAMB36_X2Y80:RAMB36_X2Y89}
 
 create_pblock deser_x1y0
-add_cells_to_pblock [get_pblocks deser_x1y0] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[0].deserialize}]]
+add_cells_to_pblock [get_pblocks deser_x1y0] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[6].deserialize}]]
 resize_pblock [get_pblocks deser_x1y0] -add {SLICE_X172Y0:SLICE_X179Y49}
 create_pblock deser_x1y1
-add_cells_to_pblock [get_pblocks deser_x1y1] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[1].deserialize}]]
+add_cells_to_pblock [get_pblocks deser_x1y1] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[5].deserialize}]]
 resize_pblock [get_pblocks deser_x1y1] -add {SLICE_X172Y50:SLICE_X179Y99}
 create_pblock deser_x1y2
-add_cells_to_pblock [get_pblocks deser_x1y2] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[2].deserialize}]]
+add_cells_to_pblock [get_pblocks deser_x1y2] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[4].deserialize}]]
 resize_pblock [get_pblocks deser_x1y2] -add {SLICE_X172Y100:SLICE_X179Y149}
 create_pblock deser_x1y3
 add_cells_to_pblock [get_pblocks deser_x1y3] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[3].deserialize}]]
 resize_pblock [get_pblocks deser_x1y3] -add {SLICE_X172Y150:SLICE_X179Y199}
 create_pblock deser_x1y4
-add_cells_to_pblock [get_pblocks deser_x1y4] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[4].deserialize}]]
+add_cells_to_pblock [get_pblocks deser_x1y4] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[2].deserialize}]]
 resize_pblock [get_pblocks deser_x1y4] -add {SLICE_X172Y200:SLICE_X179Y249}
 create_pblock deser_x1y5
-add_cells_to_pblock [get_pblocks deser_x1y5] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[5].deserialize}]]
+add_cells_to_pblock [get_pblocks deser_x1y5] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[1].deserialize}]]
 resize_pblock [get_pblocks deser_x1y5] -add {SLICE_X172Y250:SLICE_X179Y299}
 create_pblock deser_x1y6
-add_cells_to_pblock [get_pblocks deser_x1y6] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[6].deserialize}]]
+add_cells_to_pblock [get_pblocks deser_x1y6] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[0].deserialize}]]
 resize_pblock [get_pblocks deser_x1y6] -add {SLICE_X172Y300:SLICE_X179Y349}
 
 create_pblock ser_x1y8
