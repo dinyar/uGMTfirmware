@@ -23,7 +23,7 @@ end deserialize_energy_quad;
 
 architecture Behavioral of deserialize_energy_quad is
   signal in_buf    : TQuadTransceiverBufferIn;
-  type TQuadDataBuffer is array (natural range <>) of std_logic_vector(191 downto 0);
+  type TQuadDataBuffer is array (natural range <>) of std_logic_vector(179 downto 0);
   signal sLinkData : TQuadDataBuffer(NCHAN-1 downto 0);
 
   signal sValid_link : TValid_link(NCHAN-1 downto 0);
@@ -40,7 +40,7 @@ begin  -- Behavioral
 
   unroll_links : for chan in NCHAN-1 downto 0 generate
     unroll_bx : for bx in BUFFER_IN_MU_POS_HIGH downto BUFFER_IN_MU_POS_LOW generate
-      sLinkData(chan)(32*(bx-BUFFER_IN_MU_POS_LOW)+31 downto 32*(bx-BUFFER_IN_MU_POS_LOW)) <= in_buf(bx)(chan).data;
+      sLinkData(chan)(30*(bx-BUFFER_IN_MU_POS_LOW)+29 downto 30*(bx-BUFFER_IN_MU_POS_LOW)) <= in_buf(bx)(chan).data(29 downto 0);
     end generate unroll_bx;
   end generate unroll_links;
 
@@ -63,5 +63,5 @@ begin  -- Behavioral
 
   oValid <= check_valid_bits(sValid_link(NCHAN-1 downto 0));
 
-  
+
 end Behavioral;
