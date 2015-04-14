@@ -1,11 +1,17 @@
 #!/bin/bash
 
+# TODO: Add warning to modify path to CACTUSREPO here!
+
+################## MODIFY HERE ##################
+CACTUSREPOPATH=/home/scratch/vhdl/uGMT/vivado/prod/1.5.2/
+#################################################
+
 PATTERNFILE=ugmt_testfile.dat
 
 vlib serializer_tb
 vmap work serializer_tb
 vcom -check_synthesis ../../hdl/common/ugmt_constants.vhd
-vcom -check_synthesis /home/scratch/vhdl/uGMT/dev/1.2.0/uGMT/cactusupgrades/components/mp7_datapath/firmware/hdl/mp7_data_types.vhd
+vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/mp7_datapath/firmware/hdl/mp7_data_types.vhd
 vcom -check_synthesis ../../hdl/common/GMTTypes_pkg.vhd
 vcom -check_synthesis ../../hdl/serializer_stage.vhd
 vcom -check_synthesis ../tb_helpers.vhd
