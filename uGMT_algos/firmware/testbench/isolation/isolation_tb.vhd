@@ -137,7 +137,7 @@ begin
     variable iEvent               : integer                        := 0;
     variable tmpError             : integer;
     variable cntError             : integer                        := 0;
-    variable remainingEvents      : integer                        := ISO_LATENCY;
+    variable remainingEvents      : integer                        := ISO_LATENCY-2;
     variable vMuPt                : TMuonPT_vector(7 downto 0);
     variable vIsoBits             : TIsoBits_vector (7 downto 0);
     variable vSelectedEnergies    : TCaloArea_vector(7 downto 0);
