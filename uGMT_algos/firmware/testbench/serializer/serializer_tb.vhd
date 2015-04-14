@@ -35,7 +35,7 @@ architecture behavior of testbench is
   signal iExtrapolatedCoordsB    : TSpatialCoordinate_vector(35 downto 0);
   signal iExtrapolatedCoordsO    : TSpatialCoordinate_vector(35 downto 0);
   signal iExtrapolatedCoordsF    : TSpatialCoordinate_vector(35 downto 0);
-  signal oQ                      : ldata(NOUTCHAN-1 downto 0);
+  signal oQ                      : ldata(N_SERIALIZER_CHAN-1 downto 0);
 
 begin
 
@@ -120,7 +120,7 @@ begin
         wait for half_period_240;
         wait for half_period_240;
 
-        vOutput(cnt) := oQ(NCHAN-1 downto 0);
+        vOutput(cnt) := oQ(NOUTCHAN-1 downto 0);
 
       end loop;  -- cnt
 
