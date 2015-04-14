@@ -122,7 +122,7 @@ begin
     variable iEvent                      : integer                        := 0;
     variable tmpError                    : integer;
     variable cntError                    : integer                        := 0;
-    variable remainingEvents             : integer                        := SORTER_LATENCY;
+    variable remainingEvents             : integer                        := SORTER_LATENCY-2;
   begin
 
     -- Reset event buffer
@@ -226,7 +226,7 @@ begin
       if not endfile(F) then
         ReadMuEvent(F, iEvent, event);
         ReadIdxBits(F);
-        
+
         -- Filling uGMT
         iMuonsB     <= event.muons_brl;
         iMuonsO     <= event.muons_ovl;
