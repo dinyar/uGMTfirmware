@@ -32,7 +32,7 @@ architecture rtl of ugmt_serdes is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
-  constant GMT_ALGO_LATENCY : natural := 9;
+  constant GMT_ALGO_LATENCY : natural := 8;
   signal   sValid_buffer    : std_logic_vector(GMT_ALGO_LATENCY-1 downto 0);
   signal   sValid_muons     : std_logic;
   signal   sValid_energies  : std_logic;
