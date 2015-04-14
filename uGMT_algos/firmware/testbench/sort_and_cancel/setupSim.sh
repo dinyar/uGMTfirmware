@@ -10,7 +10,6 @@ PATTERNFILE=ugmt_testfile.dat
 
 vlib sortAndCancel_tb
 vmap work sortAndCancel_tb
-vcom ../../cgn/mem_libs/blk/blk_mem_gen_v8_2.vhd
 vcom -check_synthesis ../../hdl/common/ugmt_constants.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/mp7_datapath/firmware/hdl/mp7_data_types.vhd
 vcom -check_synthesis ../../hdl/common/GMTTypes_pkg.vhd
