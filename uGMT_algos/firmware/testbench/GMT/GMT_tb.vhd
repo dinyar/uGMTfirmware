@@ -125,7 +125,7 @@ begin
     variable tmpErrorSorter       : integer;
     variable tmpErrorIso          : integer;
     variable cntError             : integer                        := 0;
-    variable remainingEvents      : integer                        := GMT_LATENCY;
+    variable remainingEvents      : integer                        := GMT_LATENCY-2;
     variable vMuPt                : TMuonPT_vector(7 downto 0);
     variable vMuons               : TGMTMu_vector(7 downto 0);
     variable vIsoBits             : TIsoBits_vector (7 downto 0);
