@@ -23,7 +23,7 @@ end deserializer_stage_energies;
 architecture Behavioral of deserializer_stage_energies is
 
   signal sValid : std_logic_vector(ENERGY_QUAD_ASSIGNMENT'range);
-  
+
 begin  -- Behavioral
 
   deserialize_loop : for i in ENERGY_QUAD_ASSIGNMENT'range generate
@@ -41,5 +41,5 @@ begin  -- Behavioral
 
 
   oValid <= combine_or(sValid);
-  
+
 end Behavioral;

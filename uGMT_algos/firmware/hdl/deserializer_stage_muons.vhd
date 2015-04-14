@@ -22,7 +22,7 @@ entity deserializer_stage_muons is
     clk240     : in  std_logic;
     clk40      : in  std_logic;
     d          : in  ldata (NCHAN-1 downto 0);
-    oMuons     : out TGMTMu_vector(NUM_MU_CHANS*3-1 downto 0);
+    oMuons     : out TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
     oTracks    : out TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
     oEmpty     : out std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
     oSortRanks : out TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);

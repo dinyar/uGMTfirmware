@@ -26,6 +26,7 @@ architecture Behavioral of deserialize_energy_quad is
   type TQuadDataBuffer is array (natural range <>) of std_logic_vector(179 downto 0);
   signal sLinkData : TQuadDataBuffer(NCHAN-1 downto 0);
 
+  signal sEnergies   : TCaloRegionEtaSlice_vector(NCHAN-1 downto 0);
   signal sValid_link : TValid_link(NCHAN-1 downto 0);
 begin  -- Behavioral
 
@@ -52,16 +53,16 @@ begin  -- Behavioral
           -- Store valid bit.
           sValid_link(chan)(bx) <= in_buf(bx)(chan).valid;
           if in_buf(bx)(chan).valid = VALID_BIT then
-            oEnergies(chan) <= calo_etaslice_from_flat(sLinkData(chan));
+            sEnergies(chan) <= calo_etaslice_from_flat(sLinkData(chan));
           else
-            oEnergies(chan) <= (others => (others => '0'));
+            sEnergies(chan) <= (others => (others => '0'));
           end if;
+
         end loop;  -- bx
       end loop;  -- chan
+      oEnergies <= sEnergies;
+      oValid <= check_valid_bits(sValid_link(NCHAN-1 downto 0));
     end if;
   end process gmt_in_reg;
-
-  oValid <= check_valid_bits(sValid_link(NCHAN-1 downto 0));
-
 
 end Behavioral;
