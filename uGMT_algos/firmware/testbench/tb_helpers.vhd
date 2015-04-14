@@ -9,9 +9,24 @@ use work.ugmt_constants.all;
 
 package tb_helpers is
 
-  constant NOUTCHAN : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS;
-  constant NCHAN    : integer := NUM_OUT_CHANS;
-  type     TOutTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NCHAN-1 downto 0);
+  constant N_SERIALIZER_CHAN : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS;
+  constant NINCHAN    : integer := 72;
+  constant NOUTCHAN    : integer := NUM_OUT_CHANS;
+  type     TInTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NINCHAN-1 downto 0);
+  type     TOutTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NOUTCHAN-1 downto 0);
+
+  type TGMTInEvent is record
+    iEvent                 : integer;
+    iD                     : TInTransceiverBuffer;
+    expectedMuons          : TGMTMu_vector(107 downto 0);
+    expectedTracks         : TGMTMuTracks_vector(35 downto 0);
+    expectedEmpty          : std_logic_vector(107 downto 0);
+    expectedSortRanks      : TSortRank10_vector(107 downto 0);
+    expectedValid_muons    : std_logic;
+    expectedEnergies       : TCaloRegionEtaSlice_vector(NUM_CALO_CHANS-1 downto 0);
+    expectedValid_energies : std_logic;
+  end record;
+  type TGMTInEvent_vec is array (integer range <>) of TGMTInEvent;
 
   type TGMTOutEvent is record
     iEvent           : integer;
@@ -71,6 +86,11 @@ package tb_helpers is
   end record;
   type TGMTEvent_vec is array (integer range <>) of TGMTEvent;
 
+  procedure ReadInEvent (
+    file F          :     text;
+    variable iEvent : in  integer;
+    variable event  : out TGMTInEvent);
+
   procedure ReadOutEvent (
     file F          :     text;
     variable iEvent : in  integer;
@@ -94,6 +114,9 @@ package tb_helpers is
 --    variable iEvent : in integer;
 --    variable event : out TGMTEvent);
 
+  procedure DumpInEvent (
+    variable event : in TGMTInEvent);
+
   procedure DumpOutEvent (
     variable event : in TGMTOutEvent);
 
@@ -108,6 +131,9 @@ package tb_helpers is
 
 --  procedure DumpEvent (
 --    variable event : in TGMTEvent);
+
+  procedure DumpEnergyValues (
+    variable iEnergies : in TCaloRegionEtaSlice_vector(27 downto 0));
 
   procedure DumpIsoBits (
     variable iIsoBits : in TIsoBits_vector(7 downto 0);
@@ -141,10 +167,27 @@ package tb_helpers is
     variable iSortRanks : in TSortRank10_vector;
     variable id         : in string(1 to 3));
 
+  procedure DumpMuons (
+    variable iMuons     : in TGMTMu_vector;
+    variable iSortRanks : in TSortRank10_vector;
+    variable iEmptyBits : in std_logic_vector;
+    variable id         : in string(1 to 3));
+
   procedure ValidateIsolationOutput (
     variable iIsoBits : in TIsoBits_vector(7 downto 0);
     variable muEvent  : in TGMTMuEvent;
     variable errors   : out integer);
+
+  procedure ValidateDeserializerOutput (
+    variable iMuons          : in  TGMTMu_vector(107 downto 0);
+    variable iTracks         : in  TGMTMuTracks_vector(35 downto 0);
+    variable iSrtRnks        : in  TSortRank10_vector(107 downto 0);
+    variable iEmpty          : in  std_logic_vector(107 downto 0);
+    variable iValid_muons    : in  std_logic;
+    variable iEnergies       : in  TCaloRegionEtaSlice_vector(NUM_CALO_CHANS-1 downto 0);
+    variable iValid_energies : in  std_logic;
+    variable event           : in  TGMTInEvent;
+    variable errors          : out integer);
 
   procedure ValidateSerializerOutput (
     variable iOutput : in  TOutTransceiverBuffer;
@@ -264,20 +307,76 @@ package body tb_helpers is
 
   procedure ReadInputFrame (
     variable L       : inout line;
-    variable oOutput : out   ldata(NCHAN-1 downto 0)) is
+    variable oOutput : out   ldata) is
     variable word  : std_logic_vector(31 downto 0);
     variable valid : bit;
     variable dummy : string(1 to 7);
   begin  -- ReadInputFrame
     read(L, dummy);
 
-    for iWord in 0 to NCHAN-1 loop
+    for iWord in oOutput'low to oOutput'high loop
+      oOutput(iWord).strobe := '1';
       read(L, valid);
       oOutput(iWord).valid := to_stdulogic(valid);
       hread(L, word);
       oOutput(iWord).data  := word;
     end loop;  -- iWord
   end ReadInputFrame;
+
+  procedure ReadEtaSlice (
+      variable L       : inout line;
+      variable oEnergies : out TCaloRegionEtaSlice(35 downto 0)) is
+      variable vEnergy : integer;
+      variable dummy : string(1 to 6);
+  begin
+      read(L, dummy);
+
+      for iEnergy in oEnergies'low to oEnergies'high loop
+        read(L, vEnergy);
+        oEnergies(iEnergy) := to_unsigned(vEnergy, 5);
+      end loop;
+  end ReadEtaSlice;
+
+  procedure ReadInEvent (
+    file F          :     text;
+    variable iEvent : in  integer;
+    variable event  : out TGMTInEvent) is
+    variable L             : line;
+    variable muNo          : integer := 0;
+    variable wedgeNo       : integer := 0;
+    variable srtRnkNo      : integer := 0;
+    variable emptyNo       : integer := 0;
+    variable frameNo       : integer := 0;
+    variable energyNo      : integer := 0;
+  begin  -- ReadInEvent
+    event.iEvent := iEvent;
+
+    while (muNo < 108) or (frameNo < 6) or (wedgeNo < 36) or (energyNo < 28) loop
+      readline(F, L);
+
+      if L.all'length = 0 then
+        next;
+      elsif(L.all(1 to 1) = "#") then
+        next;
+      elsif L.all(1 to 3) = "EVT" then
+        -- TODO: Parse this maybe?
+        next;
+    --   elsif L.all(1 to 4) = "BTRK" or L.all(1 to 4) = "OTRK" or L.all(1 to 4) = "FTRK" then
+      elsif L.all(2 to 4) = "TRK" then
+        ReadTrack(L, event.expectedTracks(wedgeNo));
+        wedgeNo    := wedgeNo+1;
+    elsif L.all(1 to 3) = "BAR" or L.all(1 to 3) = "OVL" or L.all(1 to 3) = "FWD" then
+        ReadInputMuon(L, event.expectedMuons(muNo), event.expectedSortRanks(muNo), event.expectedEmpty(muNo));
+        muNo := muNo+1;
+      elsif L.all(1 to 3) = "FRM" then
+        ReadInputFrame(L, event.iD(frameNo));
+        frameNo := frameNo+1;
+      elsif L.all(1 to 4) = "CALO" then
+        ReadEtaSlice(L, event.expectedEnergies(energyNo));
+        energyNo := energyNo+1;
+      end if;
+    end loop;
+  end ReadInEvent;
 
   procedure ReadOutEvent (
     file F          :     text;
@@ -295,7 +394,7 @@ package body tb_helpers is
   begin  -- ReadOutEvent
     event.iEvent := iEvent;
 
-    while muFinNo < 8 or muIntBNo < 8 or muIntONo < 8 or muIntFNo < 8 or frameNo < 6 loop
+    while (muFinNo < 8) or (muIntBNo < 8) or (muIntONo < 8) or (muIntFNo < 8) or (frameNo < 6) loop
       readline(F, L);
 
       if L.all'length = 0 then
@@ -328,20 +427,6 @@ package body tb_helpers is
       end if;
     end loop;
   end ReadOutEvent;
-
-  procedure ReadEtaSlice (
-      variable L       : inout line;
-      variable oEnergies : out TCaloRegionEtaSlice(35 downto 0)) is
-      variable vEnergy : integer;
-      variable dummy : string(1 to 6);
-  begin
-      read(L, dummy);
-
-      for iEnergy in oEnergies'low to oEnergies'high loop
-        read(L, vEnergy);
-        oEnergies(iEnergy) := to_unsigned(vEnergy, 5);
-      end loop;
-  end ReadEtaSlice;
 
   procedure ReadCaloEvent (
     file F            : text;
@@ -520,6 +605,45 @@ package body tb_helpers is
         DumpEnergyValues(event.energies);
     end if;
   end DumpCaloEvent;
+
+  procedure DumpInput (
+    variable tbuf : in TInTransceiverBuffer) is
+    variable L : line;
+  begin  -- DumpInput
+    for iFrame in tbuf'low to tbuf'high loop
+      write(L, string'("FRM"));
+      write(L, iFrame);
+      write(L, string'("    "));
+      for iChan in tbuf(iFrame)'low to tbuf(iFrame)'high loop
+        write(L, tbuf(iFrame)(iChan).valid);
+        write(L, string'(" "));
+        hwrite(L, tbuf(iFrame)(iChan).data);
+        write(L, string'("    "));
+      end loop;  -- iChan
+      writeline(OUTPUT, L);
+    end loop;  -- iFrame
+  end DumpInput;
+
+  procedure DumpInEvent (
+    variable event : in TGMTInEvent) is
+    variable L1              : line;
+    variable in_id           : string(1 to 3)                 := "INE";
+  begin  -- DumpInEvent
+    if event.iEvent /= -1 then
+      write(L1, string'("++++++++++++++++++++ Dump of event "));
+      write(L1, event.iEvent);
+      write(L1, string'(": ++++++++++++++++++++"));
+      writeline(OUTPUT, L1);
+
+      write(L1, string'("### Dumping input frames: "));
+      writeline(OUTPUT, L1);
+      DumpInput(event.iD);
+      write(L1, string'("### Dumping expected output: "));
+      writeline(OUTPUT, L1);
+      DumpMuons(event.expectedMuons, event.expectedSortRanks, event.expectedEmpty, in_id);
+      DumpEnergyValues(event.expectedEnergies);
+    end if;
+  end DumpInEvent;
 
   procedure DumpOutEvent (
     variable event : in TGMTOutEvent) is
@@ -762,6 +886,7 @@ package body tb_helpers is
     noMu               : in integer;
     variable iMu       : in TGMTMu;
     variable iSortRank : in TSortRank10;
+    variable iEmpty    : in std_logic;
     variable id        : in string(1 to 3)) is
     variable L1 : line;
   begin  -- DumpMuon
@@ -783,6 +908,11 @@ package body tb_helpers is
     write(L1, to_bit(iMu.sysign(1)));
     write(L1, string'(" "));
     write(L1, to_integer(iMu.qual));
+    -- If we're looking at an input muon the empty bit is of interest.
+    if id = string'("INS") or id = string'("INE") then
+        write(L1, string'(" "));
+        write(L1, to_bit(iEmpty));
+    end if;
     -- For final muons no sort rank information is available and is thus
     -- faked by the testbench. We therefore won't display it.
     if id /= string'("OUT") then
@@ -790,6 +920,17 @@ package body tb_helpers is
       write(L1, to_integer(unsigned(iSortRank)));
     end if;
     writeline(OUTPUT, L1);
+  end DumpMuon;
+
+  procedure DumpMuon (
+    noMu               : in integer;
+    variable iMu       : in TGMTMu;
+    variable iSortRank : in TSortRank10;
+    variable id        : in string(1 to 3)) is
+    variable L1 : line;
+    variable dummyEmpty : std_logic := '0';
+  begin  -- DumpMuon
+    DumpMuon(noMu, iMu, iSortRank, dummyEmpty, id);
   end DumpMuon;
 
   procedure DumpMuons (
@@ -800,6 +941,20 @@ package body tb_helpers is
   begin  -- DumpMuons
     for iMu in iMuons'range loop
       DumpMuon(iMu, iMuons(iMu), iSortRanks(iMu), id);
+    end loop;  -- iMu
+    write(L1, string'(""));
+    writeline(OUTPUT, L1);
+  end DumpMuons;
+
+  procedure DumpMuons (
+    variable iMuons     : in TGMTMu_vector;
+    variable iSortRanks : in TSortRank10_vector;
+    variable iEmptyBits : in std_logic_vector;
+    variable id         : in string(1 to 3)) is
+    variable L1 : line;
+  begin  -- DumpMuons
+    for iMu in iMuons'range loop
+      DumpMuon(iMu, iMuons(iMu), iSortRanks(iMu), iEmptyBits(iMu), id);
     end loop;  -- iMu
     write(L1, string'(""));
     writeline(OUTPUT, L1);
@@ -854,7 +1009,6 @@ package body tb_helpers is
     errors := vErrors;
   end CheckMuons;
 
-
   procedure CheckMuons (
     variable iMus    : in  TGMTMu_vector;
     variable iEmuMus : in  TGMTMu_vector;
@@ -903,6 +1057,64 @@ package body tb_helpers is
     end loop;  --i
     errors := vErrors;
   end CheckSortRanks;
+
+  procedure CheckEmptyBits (
+    variable iEmpty    : in  std_logic_vector;
+    variable iEmuEmpty : in  std_logic_vector;
+    variable errors      : out integer) is
+    variable LO      : line;
+    variable vErrors : integer := 0;
+  begin  -- CheckEmptyBits
+    for i in iEmpty'range loop
+      if iEmpty(i) /= iEmuEmpty(i) then
+        vErrors := vErrors+1;
+
+        write(LO, string'("!!!!!! Error in empty bit #"));
+        write(LO, i);
+        writeline(OUTPUT, LO);
+        write(LO, string'("!!! Simulation output: "));
+        write(LO, to_bit(iEmpty(i)));
+        writeline(OUTPUT, LO);
+        write(LO, string'("!!!   Expected output: "));
+        write(LO, to_bit(iEmuEmpty(i)));
+        writeline(OUTPUT, LO);
+        write(LO, string'(""));
+        writeline(OUTPUT, LO);
+      end if;
+    end loop;  --i
+    errors := vErrors;
+  end CheckEmptyBits;
+
+  procedure CheckEnergies (
+    variable iEnergies    : in  TCaloRegionEtaSlice_vector(NUM_CALO_CHANS-1 downto 0);
+    variable iEmuEnergies : in  TCaloRegionEtaSlice_vector(NUM_CALO_CHANS-1 downto 0);
+    variable errors       : out integer) is
+    variable LO      : line;
+    variable vErrors : integer := 0;
+  begin  -- CheckEnergies
+    for i in iEnergies'range loop
+      for j in iEnergies(i)'range loop
+        if iEnergies(i)(j) /= iEmuEnergies(i)(j) then
+          vErrors := vErrors+1;
+
+          write(LO, string'("!!!!!! Error in energy #"));
+          write(LO, i);
+          write(LO, string'(" "));
+          write(LO, j);
+          writeline(OUTPUT, LO);
+          write(LO, string'("!!! Simulation output: "));
+          write(LO, to_integer(iEnergies(i)(j)));
+          writeline(OUTPUT, LO);
+          write(LO, string'("!!!   Expected output: "));
+          write(LO, to_integer(iEmuEnergies(i)(j)));
+          writeline(OUTPUT, LO);
+          write(LO, string'(""));
+          writeline(OUTPUT, LO);
+        end if;
+      end loop;  --j
+    end loop;  --i
+    errors := vErrors;
+  end CheckEnergies;
 
   procedure ValidateIsolationOutput (
       variable iIsoBits : in TIsoBits_vector(7 downto 0);
@@ -966,6 +1178,59 @@ package body tb_helpers is
         errors := 0;
     end if;
   end ValidateIsolationOutput;
+
+  procedure ValidateDeserializerOutput (
+    variable iMuons          : in  TGMTMu_vector(107 downto 0);
+    variable iTracks         : in  TGMTMuTracks_vector(35 downto 0);
+    variable iSrtRnks        : in  TSortRank10_vector(107 downto 0);
+    variable iEmpty          : in  std_logic_vector(107 downto 0);
+    variable iValid_muons    : in  std_logic;
+    variable iEnergies       : in  TCaloRegionEtaSlice_vector(NUM_CALO_CHANS-1 downto 0);
+    variable iValid_energies : in  std_logic;
+    variable event           : in  TGMTInEvent;
+    variable errors          : out integer) is
+    variable LO       : line;
+    variable tmpError : integer := 0;
+    variable vErrors  : integer := 0;
+    variable idInMus  : string(1 to 3) := "INM";
+  begin
+    if (event.iEvent >= 0) then
+      write(LO, string'("@@@ Validating event "));
+      write(LO, event.iEvent);
+      write(LO, string'(" @@@"));
+      writeline(OUTPUT, LO);
+      write(LO, string'(""));
+      writeline(OUTPUT, LO);
+
+      tmpError := 0;
+      CheckMuons(iMuons, event.expectedMuons, iSrtRnks, event.expectedSortRanks, idInMus, tmpError);
+      vErrors   := tmpError;
+      tmpError := 0;
+      CheckSortRanks(iSrtRnks, event.expectedSortRanks, idInMus, tmpError);
+      vErrors   := vErrors + tmpError;
+      tmpError := 0;
+      CheckEmptyBits(iEmpty, event.expectedEmpty, tmpError);
+      vErrors   := vErrors + tmpError;
+      tmpError := 0;
+      -- TODO: Check valid bits.
+      vErrors   := vErrors + tmpError;
+      tmpError := 0;
+      CheckEnergies(iEnergies, event.expectedEnergies, tmpError);
+    --   write(LO, string'("@@@ DEBUG DUMPING ENERGIES HERE: "));
+    --   write(LO, string'(" @@@"));
+    --   writeline(OUTPUT, LO);
+    --   DumpEnergyValues(event.expectedEnergies);
+      vErrors   := vErrors + tmpError;
+
+      if vErrors > 0 then
+        errors := 1;
+      else
+        errors := 0;
+      end if;
+    else
+      errors := 0;
+    end if;
+  end ValidateDeserializerOutput;
 
   procedure ValidateSerializerOutput (
     variable iOutput : in  TOutTransceiverBuffer;
