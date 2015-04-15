@@ -1,0 +1,9 @@
+*.mif
+ugmt_testfile.dat
+transcript
+Makefile
+ugmt_datafile.dat
+modelsim.ini
+ugmt_serdes/
+integration_many_events.txt
+

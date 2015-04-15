@@ -12,12 +12,18 @@ package tb_helpers is
   constant N_SERIALIZER_CHAN : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS;
   constant NINCHAN    : integer := 72;
   constant NOUTCHAN    : integer := NUM_OUT_CHANS;
-  type     TInTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NINCHAN-1 downto 0);
-  type     TOutTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NOUTCHAN-1 downto 0);
+  type     TTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NINCHAN-1 downto 0);
+
+  type TGMTEvent is record
+    iEvent         : integer;
+    iD             : TTransceiverBuffer;
+    expectedOutput : TTransceiverBuffer;
+  end record;
+  type TGMTEvent_vec is array (integer range <>) of TGMTEvent;
 
   type TGMTInEvent is record
     iEvent                 : integer;
-    iD                     : TInTransceiverBuffer;
+    iD                     : TTransceiverBuffer;
     expectedMuons          : TGMTMu_vector(107 downto 0);
     expectedTracks         : TGMTMuTracks_vector(35 downto 0);
     expectedEmpty          : std_logic_vector(107 downto 0);
@@ -42,7 +48,7 @@ package tb_helpers is
     extrCoords_brl   : TSpatialCoordinate_vector(35 downto 0);
     extrCoords_ovl   : TSpatialCoordinate_vector(35 downto 0);
     extrCoords_fwd   : TSpatialCoordinate_vector(35 downto 0);
-    expectedOutput   : TOutTransceiverBuffer;
+    expectedOutput   : TTransceiverBuffer;
   end record;
   type TGMTOutEvent_vec is array (integer range <>) of TGMTOutEvent;
 
@@ -80,12 +86,6 @@ package tb_helpers is
   end record;
   type TGMTCaloEvent_vec is array (integer range <>) of TGMTCaloEvent;
 
-  type TGMTEvent is record
-    muons    : TGMTMuEvent;
-    energies : TGMTCaloEvent;
-  end record;
-  type TGMTEvent_vec is array (integer range <>) of TGMTEvent;
-
   procedure ReadInEvent (
     file F          :     text;
     variable iEvent : in  integer;
@@ -109,10 +109,13 @@ package tb_helpers is
   procedure ReadIdxBits (
     file F : text);
 
---  procedure ReadEvent (
---    file F         :     text;
---    variable iEvent : in integer;
---    variable event : out TGMTEvent);
+ procedure ReadEvent (
+   file F          :     text;
+   variable iEvent : in  integer;
+   variable event  : out TGMTEvent);
+
+  procedure DumpEvent (
+    variable event : in TGMTEvent);
 
   procedure DumpInEvent (
     variable event : in TGMTInEvent);
@@ -120,17 +123,14 @@ package tb_helpers is
   procedure DumpOutEvent (
     variable event : in TGMTOutEvent);
 
-  procedure DumpOutput (
-    variable tbuf : in TOutTransceiverBuffer);
+  procedure DumpFrames (
+    variable tbuf : in TTransceiverBuffer);
 
   procedure DumpMuEvent (
     variable event : in TGMTMuEvent);
 
   procedure DumpCaloEvent (
     variable event : in TGMTCaloEvent);
-
---  procedure DumpEvent (
---    variable event : in TGMTEvent);
 
   procedure DumpEnergyValues (
     variable iEnergies : in TCaloRegionEtaSlice_vector(27 downto 0));
@@ -178,6 +178,11 @@ package tb_helpers is
     variable muEvent  : in TGMTMuEvent;
     variable errors   : out integer);
 
+  procedure ValidateGMTOutput (
+    variable iOutput : in  TTransceiverBuffer;
+    variable event   : in  TGMTEvent;
+    variable errors  : out integer);
+
   procedure ValidateDeserializerOutput (
     variable iMuons          : in  TGMTMu_vector(107 downto 0);
     variable iTracks         : in  TGMTMuTracks_vector(35 downto 0);
@@ -190,7 +195,7 @@ package tb_helpers is
     variable errors          : out integer);
 
   procedure ValidateSerializerOutput (
-    variable iOutput : in  TOutTransceiverBuffer;
+    variable iOutput : in  TTransceiverBuffer;
     variable event   : in  TGMTOutEvent;
     variable errors  : out integer);
 
@@ -336,6 +341,36 @@ package body tb_helpers is
         oEnergies(iEnergy) := to_unsigned(vEnergy, 5);
       end loop;
   end ReadEtaSlice;
+
+  procedure ReadEvent (
+    file F          :     text;
+    variable iEvent : in  integer;
+    variable event  : out TGMTEvent) is
+    variable L          : line;
+    variable inFrameNo  : integer := 0;
+    variable outFrameNo : integer := 0;
+  begin -- ReadEvent
+    event.iEvent := iEvent;
+
+    while (inFrameNo < 6) or (outFrameNo < 6) loop
+      readline(F, L);
+
+      if L.all'length = 0 then
+        next;
+      elsif(L.all(1 to 1) = "#") then
+        next;
+      elsif L.all(1 to 3) = "EVT" then
+        -- TODO: Parse this maybe?
+        next;
+    elsif L.all(1 to 3) = "IFR" then
+        ReadInputFrame(L, event.iD(inFrameNo));
+        inFrameNo := inFrameNo+1;
+    elsif L.all(1 to 3) = "OFR" then
+        ReadInputFrame(L, event.expectedOutput(outFrameNo));
+        outFrameNo := outFrameNo+1;
+      end if;
+    end loop;
+  end ReadEvent;
 
   procedure ReadInEvent (
     file F          :     text;
@@ -606,10 +641,10 @@ package body tb_helpers is
     end if;
   end DumpCaloEvent;
 
-  procedure DumpInput (
-    variable tbuf : in TInTransceiverBuffer) is
+  procedure DumpFrames (
+    variable tbuf : in TTransceiverBuffer) is
     variable L : line;
-  begin  -- DumpInput
+  begin  -- DumpFrames
     for iFrame in tbuf'low to tbuf'high loop
       write(L, string'("FRM"));
       write(L, iFrame);
@@ -622,7 +657,26 @@ package body tb_helpers is
       end loop;  -- iChan
       writeline(OUTPUT, L);
     end loop;  -- iFrame
-  end DumpInput;
+  end DumpFrames;
+
+  procedure DumpEvent (
+    variable event : in TGMTEvent) is
+    variable L1              : line;
+  begin  -- DumpEvent
+    if event.iEvent /= -1 then
+      write(L1, string'("++++++++++++++++++++ Dump of event "));
+      write(L1, event.iEvent);
+      write(L1, string'(": ++++++++++++++++++++"));
+      writeline(OUTPUT, L1);
+
+      write(L1, string'("### Dumping input frames: "));
+      writeline(OUTPUT, L1);
+      DumpFrames(event.iD);
+      write(L1, string'("### Dumping expected output: "));
+      writeline(OUTPUT, L1);
+      DumpFrames(event.expectedOutput);
+    end if;
+  end DumpEvent;
 
   procedure DumpInEvent (
     variable event : in TGMTInEvent) is
@@ -637,7 +691,7 @@ package body tb_helpers is
 
       write(L1, string'("### Dumping input frames: "));
       writeline(OUTPUT, L1);
-      DumpInput(event.iD);
+      DumpFrames(event.iD);
       write(L1, string'("### Dumping expected output: "));
       writeline(OUTPUT, L1);
       DumpMuons(event.expectedMuons, event.expectedSortRanks, event.expectedEmpty, in_id);
@@ -671,28 +725,10 @@ package body tb_helpers is
       DumpMuons(event.intMuons_fwd, event.intSortRanks_fwd, fwd_id);
       write(L1, string'("### Dumping expected output: "));
       writeline(OUTPUT, L1);
-      DumpOutput(event.expectedOutput);
+      DumpFrames(event.expectedOutput);
       -- TODO: Missing final energies, extrapolated coordinates and iso bits.
     end if;
   end DumpOutEvent;
-
-  procedure DumpOutput (
-    variable tbuf : in TOutTransceiverBuffer) is
-    variable L : line;
-  begin  -- DumpOutput
-    for iFrame in tbuf'low to tbuf'high loop
-      write(L, string'("FRM"));
-      write(L, iFrame);
-      write(L, string'("    "));
-      for iChan in tbuf(iFrame)'low to tbuf(iFrame)'high loop
-        write(L, tbuf(iFrame)(iChan).valid);
-        write(L, string'(" "));
-        hwrite(L, tbuf(iFrame)(iChan).data);
-        write(L, string'("    "));
-      end loop;  -- iChan
-      writeline(OUTPUT, L);
-    end loop;  -- iFrame
-  end DumpOutput;
 
   procedure DumpMuEvent (
     variable event : in TGMTMuEvent) is
@@ -1116,6 +1152,38 @@ package body tb_helpers is
     errors := vErrors;
   end CheckEnergies;
 
+  procedure CheckFrame (
+    variable iFrame    : in  ldata;
+    variable iEmuFrame : in  ldata;
+    variable errors    : out integer) is
+    variable LO        :     line;
+    variable vErrors   :     integer := 0;
+  begin  -- CheckFrame
+
+    for iChan in iFrame'range loop
+      if iFrame(iChan) /= iEmuFrame(iChan) then
+        vErrors := vErrors+1;
+
+        write(LO, string'("Errors found in channel #"));
+        write(LO, iChan);
+        writeline(OUTPUT, LO);
+        write(LO, string'("!!! Simulation output: "));
+        write(LO, iFrame(iChan).valid);
+        write(LO, string'(" "));
+        hwrite(LO, iFrame(iChan).data);
+        writeline(OUTPUT, LO);
+        write(LO, string'("!!!   Expected output: "));
+        write(LO, iEmuFrame(iChan).valid);
+        write(LO, string'(" "));
+        hwrite(LO, iEmuFrame(iChan).data);
+        writeline(OUTPUT, LO);
+      end if;
+    end loop;  -- iChan
+
+    errors := vErrors;
+  end CheckFrame;
+
+
   procedure ValidateIsolationOutput (
       variable iIsoBits : in TIsoBits_vector(7 downto 0);
       variable muEvent  : in TGMTMuEvent;
@@ -1179,6 +1247,44 @@ package body tb_helpers is
     end if;
   end ValidateIsolationOutput;
 
+  procedure ValidateGMTOutput (
+    variable iOutput  : in  TTransceiverBuffer;
+    variable event    : in  TGMTEvent;
+    variable errors   : out integer) is
+    variable LO       :     line;
+    variable tmpError :     integer := 0;
+    variable vErrors  :     integer := 0;
+  begin
+      if (event.iEvent >= 0) then
+        write(LO, string'("@@@ Validating event "));
+        write(LO, event.iEvent);
+        write(LO, string'(" @@@"));
+        writeline(OUTPUT, LO);
+        write(LO, string'(""));
+        writeline(OUTPUT, LO);
+
+        for iFrame in iOutput'range loop
+        CheckFrame(iOutput(iFrame)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS - 1 downto 0), event.expectedOutput(iFrame)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS - 1 downto 0), tmpError);
+          if tmpError > 0 then
+              write(LO, string'("!!!!!! of frame #"));
+              write(LO, iFrame);
+              writeline(OUTPUT, LO);
+              write(LO, string'(""));
+              writeline(OUTPUT, LO);
+          end if;
+          vErrors := vErrors + tmpError;
+        end loop;  -- frame
+
+        if vErrors > 0 then
+          errors := 1;
+        else
+          errors := 0;
+        end if;
+      else
+        errors := 0;
+      end if;
+  end ValidateGMTOutput;
+
   procedure ValidateDeserializerOutput (
     variable iMuons          : in  TGMTMu_vector(107 downto 0);
     variable iTracks         : in  TGMTMuTracks_vector(35 downto 0);
@@ -1216,10 +1322,6 @@ package body tb_helpers is
       vErrors   := vErrors + tmpError;
       tmpError := 0;
       CheckEnergies(iEnergies, event.expectedEnergies, tmpError);
-    --   write(LO, string'("@@@ DEBUG DUMPING ENERGIES HERE: "));
-    --   write(LO, string'(" @@@"));
-    --   writeline(OUTPUT, LO);
-    --   DumpEnergyValues(event.expectedEnergies);
       vErrors   := vErrors + tmpError;
 
       if vErrors > 0 then
@@ -1233,7 +1335,7 @@ package body tb_helpers is
   end ValidateDeserializerOutput;
 
   procedure ValidateSerializerOutput (
-    variable iOutput : in  TOutTransceiverBuffer;
+    variable iOutput : in  TTransceiverBuffer;
     variable event   : in  TGMTOutEvent;
     variable errors  : out integer) is
     variable LO       : line;
@@ -1249,29 +1351,15 @@ package body tb_helpers is
       writeline(OUTPUT, LO);
 
       for iFrame in iOutput'range loop
-        for iChan in iOutput(iFrame)'range loop
-          if iOutput(iFrame)(iChan) /= event.expectedOutput(iFrame)(iChan) then
-            vErrors := vErrors+1;
-
-            write(LO, string'("!!!!!! Error in frame #"));
+        CheckFrame(iOutput(iFrame)(NOUTCHAN-1 downto 0), event.expectedOutput(iFrame)(NOUTCHAN-1 downto 0), tmpError);
+        if tmpError > 0 then
+            write(LO, string'("!!!!!! of frame #"));
             write(LO, iFrame);
-            write(LO, string'(", channel #"));
-            write(LO, iChan);
-            writeline(OUTPUT, LO);
-            write(LO, string'("!!! Simulation output: "));
-            write(LO, iOutput(iFrame)(iChan).valid);
-            write(LO, string'(" "));
-            hwrite(LO, iOutput(iFrame)(iChan).data);
-            writeline(OUTPUT, LO);
-            write(LO, string'("!!!   Expected output: "));
-            write(LO, event.expectedOutput(iFrame)(iChan).valid);
-            write(LO, string'(" "));
-            hwrite(LO, event.expectedOutput(iFrame)(iChan).data);
             writeline(OUTPUT, LO);
             write(LO, string'(""));
             writeline(OUTPUT, LO);
-          end if;
-        end loop;  -- iChan
+        end if;
+        vErrors := vErrors + tmpError;
       end loop;  -- frame
 
       if vErrors > 0 then

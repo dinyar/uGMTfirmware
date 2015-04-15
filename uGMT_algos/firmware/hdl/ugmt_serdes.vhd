@@ -168,11 +168,11 @@ begin
       sTracks_reg                                  <= sTracks;
       sEmpty_reg                                   <= sEmpty;
       sSortRanks_reg                               <= sSortRanks;
-      sEnergies_tmp(sEnergies_reg'high downto 0)   <= sEnergies;
-      sEnergies_tmp(sEnergies_reg'high-3)          <= (others => "00000");
-      sEnergies_tmp(sEnergies_reg'high-2)          <= (others => "00000");
-      sEnergies_tmp(sEnergies_reg'high-1)          <= (others => "00000");
-      sEnergies_tmp(sEnergies_reg'high)            <= (others => "00000");
+      sEnergies_tmp(sEnergies_tmp'high-4 downto 0) <= sEnergies;
+      sEnergies_tmp(sEnergies_tmp'high-3)          <= (others => "00000");
+      sEnergies_tmp(sEnergies_tmp'high-2)          <= (others => "00000");
+      sEnergies_tmp(sEnergies_tmp'high-1)          <= (others => "00000");
+      sEnergies_tmp(sEnergies_tmp'high)            <= (others => "00000");
 
       for index in sMuons'range loop
         sIndexBits(index) <= to_unsigned(index, sIndexBits(index)'length);
@@ -193,7 +193,7 @@ begin
         q => sInputDisable
     );
 
-  disable_inputs : process (sEmpty_reg, sEnergies_tmp)
+  disable_inputs : process (sEmpty_reg, sEnergies_tmp, sInputDisable)
   begin
       if sInputDisable(0)(0) = '1' then -- disable energies
           for i in sEnergies_reg'range loop
@@ -332,11 +332,8 @@ begin
       iExtrapolatedCoordsF => sExtrapolatedCoordsF_reg,
       q                    => q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0));
 
-  strobe_high : process
-  begin
-    for i in q'high downto (NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS) loop
+  strobe_high : for i in q'high downto (NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS) generate
         q(i).strobe <= '1';
-    end loop;
-  end process strobe_high;
+  end generate;
 
 end rtl;

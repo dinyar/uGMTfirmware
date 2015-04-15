@@ -72,7 +72,7 @@ begin
     variable tmpError           : integer;
     variable cntError           : integer := 0;
     variable remainingEvents    : integer := SERIALIZER_LATENCY-1;
-    variable vOutput            : TOutTransceiverBuffer;
+    variable vOutput            : TTransceiverBuffer;
 
   begin  -- process tb
 
@@ -120,7 +120,7 @@ begin
         wait for half_period_240;
         wait for half_period_240;
 
-        vOutput(cnt) := oQ(NOUTCHAN-1 downto 0);
+        vOutput(cnt)(N_SERIALIZER_CHAN-1 downto 0) := oQ;
 
       end loop;  -- cnt
 
@@ -135,7 +135,7 @@ begin
         writeline (OUTPUT, LO);
         write(LO, string'("### Dumping sim output :"));
         writeline (OUTPUT, LO);
-        DumpOutput(vOutput);
+        DumpFrames(vOutput);
         write(LO, string'(""));
         writeline (OUTPUT, LO);
         write(LO, string'(""));

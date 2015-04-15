@@ -1,9 +1,9 @@
+Makefile
+SortRank.mif
+deserializer_many_events.txt
+modelsim.ini
+transcript
 deserializer_tb/
-deserializer_many_events.txt  
-Makefile      
-SortRank.mif 
 ugmt_testfile.dat
 deserializer_iso_test.txt
-modelsim.ini  
-transcript    
 

@@ -17,10 +17,11 @@ package ipbus_decode_mp7_payload is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_mp7_payload(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Wed Oct  8 15:49:59 2014 
+-- START automatically  generated VHDL the Thu Mar 26 14:43:18 2015 
   constant N_SLV_DESERIALIZATION: integer := 0;
   constant N_SLV_UGMT: integer := 1;
-  constant N_SLAVES: integer := 2;
+  constant N_SLV_INPUT_ENABLE_REG: integer := 2;
+  constant N_SLAVES: integer := 3;
 -- END automatically generated VHDL
 
     
@@ -32,11 +33,13 @@ package body ipbus_decode_mp7_payload is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Wed Oct  8 15:49:59 2014 
-    if    std_match(addr, "--------0-----------------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_DESERIALIZATION, IPBUS_SEL_WIDTH)); -- deserialization / base 0x00000000 / mask 0x00800000
-    elsif std_match(addr, "--------1-----------------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_UGMT, IPBUS_SEL_WIDTH)); -- ugmt / base 0x00800000 / mask 0x00800000
+-- START automatically  generated VHDL the Thu Mar 26 14:43:18 2015 
+    if    std_match(addr, "----00--------------------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_DESERIALIZATION, IPBUS_SEL_WIDTH)); -- deserialization / base 0x00000000 / mask 0x0c000000
+    elsif std_match(addr, "----01--------------------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_UGMT, IPBUS_SEL_WIDTH)); -- ugmt / base 0x04000000 / mask 0x0c000000
+    elsif std_match(addr, "----10--------------------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_INPUT_ENABLE_REG, IPBUS_SEL_WIDTH)); -- input_enable_reg / base 0x08000000 / mask 0x0c000000
 -- END automatically generated VHDL
 
     else
