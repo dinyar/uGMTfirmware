@@ -6,4 +6,5 @@ ugmt_datafile.dat
 modelsim.ini
 ugmt_serdes/
 integration_many_events.txt
+integration_iso_test.txt
 
