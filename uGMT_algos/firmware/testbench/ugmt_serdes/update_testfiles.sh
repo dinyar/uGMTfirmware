@@ -10,3 +10,8 @@ if [ -f integration_iso_test.txt.1 ];
 then
 	mv integration_iso_test.txt.1 integration_iso_test.txt
 fi
+wget https://github.com/jlingema/uGMTScripts/raw/master/ugmt_patterns/data/patterns/testbench/integration_fwd_iso_scan.txt --no-check-certificate
+if [ -f integration_fwd_iso_scan.txt.1 ];
+then
+	mv integration_fwd_iso_scan.txt.1 integration_fwd_iso_scan.txt
+fi
