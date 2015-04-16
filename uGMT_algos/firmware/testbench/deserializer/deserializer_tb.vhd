@@ -34,7 +34,6 @@ architecture behavior of testbench is
 
 begin
 
-
     uut_muons : entity work.deserializer_stage_muons
       generic map (
         NCHAN     => NINCHAN,

@@ -30,12 +30,12 @@ architecture Behavioral of deserialize_energy_quad is
   signal sValid_link : TValid_link(NCHAN-1 downto 0);
 begin  -- Behavioral
 
-  in_buf(0) <= d(NCHAN-1 downto 0);
+  in_buf(2*NUM_MUONS_IN-1) <= d(NCHAN-1 downto 0);
 
   fill_buffer : process (clk240)
   begin  -- process fill_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      in_buf(2*NUM_MUONS_IN-1 downto 1) <= in_buf(2*NUM_MUONS_IN-2 downto 0);
+      in_buf(2*NUM_MUONS_IN-2 downto 0) <= in_buf(2*NUM_MUONS_IN-1 downto 1);
     end if;
   end process fill_buffer;
 
