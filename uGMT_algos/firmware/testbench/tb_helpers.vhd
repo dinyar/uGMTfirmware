@@ -1193,13 +1193,6 @@ package body tb_helpers is
       variable vErrors  : integer := 0;
   begin
     if (muEvent.iEvent >= 0) then
-        write(LO, string'("@@@ Validating calo event "));
-        write(LO, muEvent.iEvent);
-        write(LO, string'(" @@@"));
-        writeline(OUTPUT, LO);
-        write(LO, string'(""));
-        writeline(OUTPUT, LO);
-
         for i in iIsoBits'range loop
             if iIsoBits(i) /= muEvent.expectedIsoBits(i) then
                 vErrors := vErrors + 1;
@@ -1256,13 +1249,6 @@ package body tb_helpers is
     variable vErrors  :     integer := 0;
   begin
       if (event.iEvent >= 0) then
-        write(LO, string'("@@@ Validating event "));
-        write(LO, event.iEvent);
-        write(LO, string'(" @@@"));
-        writeline(OUTPUT, LO);
-        write(LO, string'(""));
-        writeline(OUTPUT, LO);
-
         for iFrame in iOutput'range loop
         CheckFrame(iOutput(iFrame)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS - 1 downto 0), event.expectedOutput(iFrame)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS - 1 downto 0), tmpError);
           if tmpError > 0 then
@@ -1301,13 +1287,6 @@ package body tb_helpers is
     variable idInMus  : string(1 to 3) := "INM";
   begin
     if (event.iEvent >= 0) then
-      write(LO, string'("@@@ Validating event "));
-      write(LO, event.iEvent);
-      write(LO, string'(" @@@"));
-      writeline(OUTPUT, LO);
-      write(LO, string'(""));
-      writeline(OUTPUT, LO);
-
       tmpError := 0;
       CheckMuons(iMuons, event.expectedMuons, iSrtRnks, event.expectedSortRanks, idInMus, tmpError);
       vErrors   := tmpError;
@@ -1343,13 +1322,6 @@ package body tb_helpers is
     variable vErrors  : integer := 0;
   begin
     if (event.iEvent >= 0) then
-      write(LO, string'("@@@ Validating event "));
-      write(LO, event.iEvent);
-      write(LO, string'(" @@@"));
-      writeline(OUTPUT, LO);
-      write(LO, string'(""));
-      writeline(OUTPUT, LO);
-
       for iFrame in iOutput'range loop
         CheckFrame(iOutput(iFrame)(NOUTCHAN-1 downto 0), event.expectedOutput(iFrame)(NOUTCHAN-1 downto 0), tmpError);
         if tmpError > 0 then
@@ -1382,13 +1354,6 @@ package body tb_helpers is
     variable idFin    : string(1 to 3) := "FIN";
   begin
     if (iEvent.iEvent >= 0) then
-      write(LO, string'("@@@ Validating muon event "));
-      write(LO, iEvent.iEvent);
-      write(LO, string'(" @@@"));
-      writeline(OUTPUT, LO);
-      write(LO, string'(""));
-      writeline(OUTPUT, LO);
-
       tmpError := 0;
       CheckMuons(iFinalMus, iEvent.expectedMuons, idFin, tmpError);
       vError   := tmpError;
@@ -1423,13 +1388,6 @@ package body tb_helpers is
     variable idIntF   : string(1 to 3) := "IMF";
   begin
     if (iEvent.iEvent >= 0) then
-      write(LO, string'("@@@ Validating event "));
-      write(LO, iEvent.iEvent);
-      write(LO, string'(" @@@"));
-      writeline(OUTPUT, LO);
-      write(LO, string'(""));
-      writeline(OUTPUT, LO);
-
       tmpError := 0;
       CheckMuons(iFinalMus, iEvent.expectedMuons, idFin, tmpError);
       vError   := tmpError;

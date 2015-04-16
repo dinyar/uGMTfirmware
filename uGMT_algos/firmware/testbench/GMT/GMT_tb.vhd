@@ -1,3 +1,6 @@
+library std;
+use std.env.all;
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -115,6 +118,7 @@ begin
   --  Test Bench Statements
   tb : process
     file F                        : text open read_mode is "ugmt_testfile.dat";
+    file FO                       : text open write_mode is "../results/GMT_tb.results";
     variable L, LO                : line;
     variable caloEvent            : TGMTCaloEvent;
     variable muEvent              : TGMTMuEvent;
@@ -216,9 +220,6 @@ begin
       end loop;  -- i
     end loop;  -- event
     wait for 250 ns;  -- wait until global set/reset completes
-    write (LO, string'("******************* start of tests  ********************** "));
-    writeline (OUTPUT, LO);
-    -- Add user defined stimulus here
     while remainingEvents > 0 loop
       tmpErrorSorter := 99999999;
       tmpErrorIso    := 99999999;
@@ -275,6 +276,14 @@ begin
       cntError := cntError+tmpErrorIso;
 
       if verbose or (tmpErrorSorter > 0) or (tmpErrorIso > 0) then
+        if (tmpErrorSorter > 0) or (tmpErrorIso > 0) then
+          write(LO, string'("@@@ ERROR in event "));
+        else
+          write(LO, string'("@@@ Dumping event "));
+        end if;
+        write(LO, muEvent_buffer(GMT_LATENCY-1).iEvent);
+        writeline (FO, LO);
+
         DumpIsoBits(vIsoBits, fw_id);
         DumpIsoBits(muEvent_buffer(GMT_LATENCY-1).expectedIsoBits, emu_id);
         DumpMuIdxBits(vMuIdxBits);
@@ -286,7 +295,7 @@ begin
         DumpExtrapolatedCoordiantes(vExtrapolatedCoordsO, ovl_id);
         DumpExtrapolatedCoordiantes(vExtrapolatedCoordsF, fwd_id);
         write(LO, string'(""));
-        writeline (OUTPUT, LO);
+        writeline (FO, LO);
       end if;
 
 
@@ -295,8 +304,8 @@ begin
   end loop;
   write(LO, string'("!!!!! Number of events with errors: "));
   write(LO, cntError);
-  writeline(OUTPUT, LO);
-  wait;                               -- will wait forever
+  writeline(FO, LO);
+  finish(0);
 end process tb;
 --  End Test Bench
 

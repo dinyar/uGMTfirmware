@@ -1,3 +1,6 @@
+library std;
+use std.env.all;
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -52,7 +55,8 @@ begin
   clk40  <= not clk40  after half_period_40;
 
   tb : process
-    file F                   : text open read_mode is "ugmt_testfile.dat";
+    file F                   : text open read_mode  is "ugmt_testfile.dat";
+    file FO                  : text open write_mode is "../results/ugmt_serdes_tb.results";
     variable L, LO           : line;
     constant uGMT_LATENCY    : integer := 11;
     variable event           : TGMTEvent;
@@ -64,9 +68,6 @@ begin
     variable vOutput         : TTransceiverBuffer;
 
   begin  -- process tb
-
-  write (LO, string'("******************* Reset event buffer ********************** "));
-  writeline (OUTPUT, LO);
     -- Reset event buffer
     for i in event_buffer'range loop
         for j in event_buffer(i).iD'range loop
@@ -79,17 +80,10 @@ begin
     end loop;  -- i
 
     wait for 50 ns;  -- wait until global set/reset completes
-
-    write (LO, string'("******************* start of tests  ********************** "));
-    writeline (OUTPUT, LO);
     -- Add user defined stimulus here
     while remainingEvents > 0 loop
       tmpError := 99999999;
       if not endfile(F) then
-        write(LO, string'("++ reading event "));
-        write(LO, iEvent);
-        write(LO, string'("...."));
-        writeline (OUTPUT, LO);
         ReadEvent(F, iEvent, event);
 
         -- Filling uGMT
@@ -125,24 +119,32 @@ begin
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
+        if tmpError > 0 then
+            write(LO, string'("@@@ ERROR in event "));
+        else
+            write(LO, string'("@@@ Dumping event "));
+        end if;
+        write(LO, event_buffer(uGMT_LATENCY-1).iEvent);
+        writeline (FO, LO);
+
         DumpEvent(event_buffer(uGMT_LATENCY-1));
         write(LO, string'(""));
-        writeline (OUTPUT, LO);
+        writeline (FO, LO);
         write(LO, string'("### Dumping sim output :"));
-        writeline (OUTPUT, LO);
+        writeline (FO, LO);
         DumpFrames(vOutput);
         write(LO, string'(""));
-        writeline (OUTPUT, LO);
+        writeline (FO, LO);
         write(LO, string'(""));
-        writeline (OUTPUT, LO);
+        writeline (FO, LO);
       end if;
 
       iEvent := iEvent+1;
     end loop;
     write(LO, string'("!!!!! Number of events with errors: "));
     write(LO, cntError);
-    writeline(OUTPUT, LO);
-    wait;                               -- will wait forever
+    writeline(FO, LO);
+    finish(0);
   end process tb;
 
 end;

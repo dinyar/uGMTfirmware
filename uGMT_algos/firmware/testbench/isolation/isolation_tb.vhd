@@ -1,3 +1,6 @@
+library std;
+use std.env.all;
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -128,6 +131,7 @@ begin
   --  Test Bench Statements
   tb : process
     file F                        : text open read_mode is "ugmt_testfile.dat";
+    file FO                       : text open write_mode is "../results/isolation_tb.results";
     variable L, LO                : line;
     variable caloEvent            : TGMTCaloEvent;
     variable muEvent              : TGMTMuEvent;
@@ -227,9 +231,6 @@ begin
       end loop;  -- i
     end loop;  -- event
     wait for 250 ns;  -- wait until global set/reset completes
-    write (LO, string'("******************* start of tests  ********************** "));
-    writeline (OUTPUT, LO);
-    -- Add user defined stimulus here
     while remainingEvents > 0 loop
       tmpError := 99999999;
       if not endfile(F) then
@@ -277,19 +278,27 @@ begin
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
+        if tmpError > 0 then
+          write(LO, string'("@@@ ERROR in event "));
+        else
+          write(LO, string'("@@@ Dumping event "));
+        end if;
+        write(LO, muEvent_buffer(ISO_LATENCY-1).iEvent);
+        writeline (FO, LO);
+
         DumpIsoBits(vIsoBits, fw_id);
-        DumpIsoBits(muEvent_buffer(Iso_LATENCY-1).expectedIsoBits, emu_id);
+        DumpIsoBits(muEvent_buffer(ISO_LATENCY-1).expectedIsoBits, emu_id);
         DumpFinalPt(vMuPt);
         DumpMuIdxBits(vMuIdxBits);
         DumpSelectedEnergies(vSelectedEnergies);
         DumpCaloIdxBits(vSelectedCaloIdxBits);
-        DumpCaloEvent(caloEvent_buffer(Iso_LATENCY-1));
-        DumpEventMuons(muEvent_buffer(Iso_LATENCY-1));
+        DumpCaloEvent(caloEvent_buffer(ISO_LATENCY-1));
+        DumpEventMuons(muEvent_buffer(ISO_LATENCY-1));
         DumpExtrapolatedCoordiantes(vExtrapolatedCoordsB, brl_id);
         DumpExtrapolatedCoordiantes(vExtrapolatedCoordsO, ovl_id);
         DumpExtrapolatedCoordiantes(vExtrapolatedCoordsF, fwd_id);
         write(LO, string'(""));
-        writeline (OUTPUT, LO);
+        writeline (FO, LO);
       end if;
 
 
@@ -298,8 +307,8 @@ begin
   end loop;
   write(LO, string'("!!!!! Number of events with errors: "));
   write(LO, cntError);
-  writeline(OUTPUT, LO);
-  wait;                               -- will wait forever
+  writeline(FO, LO);
+  finish(0);
 end process tb;
 --  End Test Bench
 

@@ -1,3 +1,6 @@
+library std;
+use std.env.all;
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -103,6 +106,7 @@ begin
   --  Test Bench Statements
   tb : process
     file F                               : text open read_mode is "ugmt_testfile.dat";
+    file FO                              : text open write_mode is "../results/SortAndCancel_tb.results";
     variable L, LO                       : line;
     variable event                       : TGMTMuEvent;
     constant SORTER_LATENCY              : integer                        := 7;
@@ -218,8 +222,6 @@ begin
     end loop;  -- iInt
 
     wait for 250 ns;  -- wait until global set/reset completes
-    write (LO, string'("******************* start of tests  ********************** "));
-    writeline (OUTPUT, LO);
     -- Add user defined stimulus here
     while remainingEvents > 0 loop
       tmpError := 99999999;
@@ -269,13 +271,21 @@ begin
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
+        if tmpError > 0 then
+          write(LO, string'("@@@ ERROR in event "));
+        else
+          write(LO, string'("@@@ Dumping event "));
+        end if;
+        write(LO, event_buffer(SORTER_LATENCY-1).iEvent);
+        writeline (FO, LO);
+
         DumpMuEvent(event_buffer(SORTER_LATENCY-1));
         DumpMuons(vIntermediateB_buffer(vIntermediateB_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), int_id);
         DumpMuons(vIntermediateO_buffer(vIntermediateO_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), int_id);
         DumpMuons(vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), int_id);
         DumpMuons(vMuons, vDummySortRanks, fin_id);
         write(LO, string'(""));
-        writeline (OUTPUT, LO);
+        writeline (FO, LO);
       end if;
 
 
@@ -284,8 +294,8 @@ begin
     end loop;
     write(LO, string'("!!!!! Number of events with errors: "));
     write(LO, cntError);
-    writeline(OUTPUT, LO);
-    wait;                               -- will wait forever
+    writeline(FO, LO);
+    finish(0);
   end process tb;
   --  End Test Bench
 
