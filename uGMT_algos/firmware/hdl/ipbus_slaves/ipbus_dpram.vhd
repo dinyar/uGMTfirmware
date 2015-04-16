@@ -82,6 +82,7 @@ begin
 	end process;
 
 	ipb_out.ipb_rdata(WORD_WIDTH - 1 downto 0) <= reduced_ipbus_out;
+	ipb_out.ipb_rdata(31 downto WORD_WIDTH) <= (others => '0');
 	ipb_out.ipb_ack <= ack;
 	ipb_out.ipb_err <= '0';
 
