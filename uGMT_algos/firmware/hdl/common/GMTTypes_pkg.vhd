@@ -171,13 +171,14 @@ package GMTTypes is
   -----------------------------------------------------------------------------
   -- Addresses used for extrapolation memories
   -----------------------------------------------------------------------------
-  type TEtaExtrapolationAddress is array (integer range <>) of std_logic_vector(0 to 12);
-  type TPhiExtrapolationAddress is array (integer range <>) of std_logic_vector(0 to 13);
+  type TEtaExtrapolationAddress is array (integer range <>) of std_logic_vector(ETA_EXTRAPOLATION_ADDR_WIDTH -1 downto 0);
+  type TPhiExtrapolationAddress is array (integer range <>) of std_logic_vector(PHI_EXTRAPOLATION_ADDR_WIDTH -1 downto 0);
 
   -----------------------------------------------------------------------------
   -- Type containing difference between spatial coordinates
   -----------------------------------------------------------------------------
-  type TDelta_vector is array (integer range <>) of signed(3 downto 0);
+  type TDeltaEta_vector is array (integer range <>) of signed(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0);
+  type TDeltaPhi_vector is array (integer range <>) of signed(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0);
 
   -----------------------------------------------------------------------------
   -- Extrapolated coordinates at vertex

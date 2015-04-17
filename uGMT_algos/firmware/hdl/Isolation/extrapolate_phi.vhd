@@ -63,10 +63,11 @@ begin
             ipb_in => ipbw(i),
             ipb_out => ipbr(i),
             rclk => clk,
-            q => sLutOutput(i)(3 downto 0),
+            q => sLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0),
             addr => std_logic_vector(iPhiExtrapolationAddress(i))
         );
-    oDeltaPhi(i) <= signed(sLutOutput(i)(3 downto 0));
+    -- TODO: Do I need this intermediate signal?
+    oDeltaPhi(i) <= unsigned(sLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0));
   end generate extrapolation;
 
 end Behavioral;

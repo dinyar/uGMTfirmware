@@ -35,8 +35,8 @@ architecture Behavioral of extrapolation_unit_regional is
   type   TEtaAbs is array (integer range <>) of unsigned(8 downto 0);
   signal sEtaAbs : TEtaAbs(iMuons'range);
 
-  signal sDeltaEta : TDelta_vector(iMuons'range);
-  signal sDeltaPhi : TDelta_vector(iMuons'range);
+  signal sDeltaEta : TEtaDelta_vector(iMuons'range);
+  signal sDeltaPhi : TPhiDelta_vector(iMuons'range);
 
   signal sExtrapolatedCoords : TSpatialCoordinate_vector(oExtrapolatedCoords'range);
 
@@ -57,16 +57,16 @@ begin
       );
 
   calc_extrap_addresses : for i in iMuons'range generate
-    sEtaAbs(i) <= unsigned(abs(signed(iMuons(i).eta)));
+      -- TODO: Can we cut more due to the abs? (We're not using the full eta
+      --       scale and we're centering the center bin at 0, so we don't have
+      --       an asymmetry, therefore the MSB is guaranteed to be unused after
+      --       the abs operation.)
+    sEtaAbs(i) <= unsigned(abs(iMuons(i).eta));
 
-    sEtaExtrapolationAddress(i) <= std_logic_vector(iMuons(i).sysign(0 downto 0)) &
-                                   std_logic_vector(sEtaAbs(i)(7 downto 2)) &
+    -- TODO: Merge the two types of extrapolation addresses?
+    sEtaExtrapolationAddress(i) <= std_logic_vector(sEtaAbs(i)(7 downto 2)) &
                                    std_logic_vector(iMuons(i).pt(5 downto 0));
-    sPhiExtrapolationAddress(i) <= "0" & -- Temporarily added padding '0' until
-                                         -- we figure out if we need the added
-                                         -- precision at the inputs.
-                                   std_logic_vector(iMuons(i).sysign(0 downto 0)) &
-                                   std_logic_vector(sEtaAbs(i)(7 downto 2)) &
+    sPhiExtrapolationAddress(i) <= std_logic_vector(sEtaAbs(i)(7 downto 2)) &
                                    std_logic_vector(iMuons(i).pt(5 downto 0));
   end generate calc_extrap_addresses;
 
@@ -105,12 +105,17 @@ begin
     for i in iMuons'range loop
       if unsigned(iMuons(i).pt) > 63 then
         -- If muon is high-pT we won't extrapolate.
-        sExtrapolatedCoords(i).eta <= signed(iMuons(i).eta);
-        sExtrapolatedCoords(i).phi <= unsigned(iMuons(i).phi);
+        sExtrapolatedCoords(i).eta <= iMuons(i).eta;
+        sExtrapolatedCoords(i).phi <= iMuons(i).phi;
       else
-        -- If muon is low-pT we etrapolate both coordinates.
-        sExtrapolatedCoords(i).eta <= signed(iMuons(i).eta) + sDeltaEta(i);
-        sExtrapolatedCoords(i).phi <= unsigned(signed(iMuons(i).phi) + sDeltaPhi(i));
+        -- If muon is low-pT we etrapolate.
+        sExtrapolatedCoords(i).eta <= iMuons(i).eta + sDeltaEta(i);
+
+        if iMuons(i).sysign(0) = '1' then
+            sExtrapolatedCoords(i).phi <= iMuons(i).phi + sDeltaPhi(i);
+        else
+            sExtrapolatedCoords(i).phi <= iMuons(i).phi - sDeltaPhi(i);
+        end if;
       end if;
     end loop;  -- i
   end process assign_coords;
