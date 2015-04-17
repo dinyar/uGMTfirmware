@@ -35,8 +35,8 @@ architecture Behavioral of extrapolation_unit_regional is
   type   TEtaAbs is array (integer range <>) of unsigned(8 downto 0);
   signal sEtaAbs : TEtaAbs(iMuons'range);
 
-  signal sDeltaEta : TEtaDelta_vector(iMuons'range);
-  signal sDeltaPhi : TPhiDelta_vector(iMuons'range);
+  signal sDeltaEta : TDeltaEta_vector(iMuons'range);
+  signal sDeltaPhi : TDeltaPhi_vector(iMuons'range);
 
   signal sExtrapolatedCoords : TSpatialCoordinate_vector(oExtrapolatedCoords'range);
 

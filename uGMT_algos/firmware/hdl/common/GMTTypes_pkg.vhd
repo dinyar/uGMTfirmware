@@ -178,7 +178,7 @@ package GMTTypes is
   -- Type containing difference between spatial coordinates
   -----------------------------------------------------------------------------
   type TDeltaEta_vector is array (integer range <>) of signed(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0);
-  type TDeltaPhi_vector is array (integer range <>) of signed(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0);
+  type TDeltaPhi_vector is array (integer range <>) of unsigned(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0);
 
   -----------------------------------------------------------------------------
   -- Extrapolated coordinates at vertex

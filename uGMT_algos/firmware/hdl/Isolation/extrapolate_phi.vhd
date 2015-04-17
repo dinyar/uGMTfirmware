@@ -20,7 +20,7 @@ entity extrapolate_phi is
     ipb_out                  : out ipb_rbus;
     clk                      : in  std_logic;
     iPhiExtrapolationAddress : in  TPhiExtrapolationAddress(35 downto 0);
-    oDeltaPhi                : out TDelta_vector(35 downto 0)
+    oDeltaPhi                : out TDeltaPhi_vector(35 downto 0)
     );
 end extrapolate_phi;
 

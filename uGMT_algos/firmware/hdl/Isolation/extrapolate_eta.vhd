@@ -20,7 +20,7 @@ entity extrapolate_eta is
     ipb_out                  : out ipb_rbus;
     clk                      : in  std_logic;
     iEtaExtrapolationAddress : in  TEtaExtrapolationAddress(35 downto 0);
-    oDeltaEta                : out TDelta_vector(35 downto 0)
+    oDeltaEta                : out TDeltaEta_vector(35 downto 0)
     );
 end extrapolate_eta;
 
