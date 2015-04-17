@@ -22,37 +22,42 @@ cd deserializer
 rm -f ugmt_testfile.dat
 ln -s deserializer_$testfile.txt ugmt_testfile.dat
 ./runSim.sh &> /dev/null
+
 echo "Running GMT testbench.. "
 cd ../GMT
 ./setupSim.sh &> /dev/null
 rm -f ugmt_testfile.dat
 ln -s $testfile.txt ugmt_testfile.dat
 ./runSim.sh &> /dev/null
+
 echo "Running Isolation testbench.. "
 cd ../isolation
 ./setupSim.sh &> /dev/null
 rm -f ugmt_testfile.dat
 ln -s $testfile.txt ugmt_testfile.dat
 ./runSim.sh &> /dev/null
+
 echo "Running Serializer testbench.. "
 cd ../serializer
 ./setupSim.sh &> /dev/null
 rm -f ugmt_testfile.dat
 ln -s serializer_$testfile.txt ugmt_testfile.dat
-#./runSim.sh &> /dev/null
+./runSim.sh &> /dev/null
+
 echo "Running SortAndCancel testbench.. "
 cd ../sort_and_cancel
 ./setupSim.sh &> /dev/null
 rm -f ugmt_testfile.dat
 ln -s $testfile.txt ugmt_testfile.dat
 ./runSim.sh &> /dev/null
+
 echo "Running uGMTserdes testbench.. "
 cd ../ugmt_serdes
 ./setupSim.sh &> /dev/null
 rm -f ugmt_testfile.dat
 ln -s integration_$testfile.txt ugmt_testfile.dat
 ./runSim.sh &> /dev/null
-cd ..
 
 echo "Checking results.. "
+cd ..
 python ../../../scripts/check_results.py

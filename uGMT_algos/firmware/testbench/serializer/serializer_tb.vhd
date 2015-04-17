@@ -75,7 +75,7 @@ begin
     variable iEvent             : integer := 0;
     variable tmpError           : integer;
     variable cntError           : integer := 0;
-    variable remainingEvents    : integer := SERIALIZER_LATENCY-1;
+    variable remainingEvents    : integer := SERIALIZER_LATENCY-2;
     variable vOutput            : TTransceiverBuffer;
 
   begin  -- process tb
@@ -94,14 +94,14 @@ begin
         ReadOutEvent(F, iEvent, event);
 
         -- Filling serializer
-        iMuons                  <= event_buffer(1).muons;
-        iIso                    <= event_buffer(1).iso;
-        iIntermediateMuonsB     <= event.intMuons_brl;
-        iIntermediateMuonsO     <= event.intMuons_ovl;
-        iIntermediateMuonsF     <= event.intMuons_fwd;
-        iIntermediateSortRanksB <= event.intSortRanks_brl;
-        iIntermediateSortRanksO <= event.intSortRanks_ovl;
-        iIntermediateSortRanksF <= event.intSortRanks_fwd;
+        iMuons                  <= event_buffer(SERIALIZER_LATENCY).muons;
+        iIso                    <= event_buffer(SERIALIZER_LATENCY).iso;
+        iIntermediateMuonsB     <= event_buffer(SERIALIZER_LATENCY-1).intMuons_brl;
+        iIntermediateMuonsO     <= event_buffer(SERIALIZER_LATENCY-1).intMuons_ovl;
+        iIntermediateMuonsF     <= event_buffer(SERIALIZER_LATENCY-1).intMuons_fwd;
+        iIntermediateSortRanksB <= event_buffer(SERIALIZER_LATENCY-1).intSortRanks_brl;
+        iIntermediateSortRanksO <= event_buffer(SERIALIZER_LATENCY-1).intSortRanks_ovl;
+        iIntermediateSortRanksF <= event_buffer(SERIALIZER_LATENCY-1).intSortRanks_fwd;
         iFinalEnergies          <= (others => "00000");
         iExtrapolatedCoordsB    <= (others => ("000000000", "0000000000"));
         iExtrapolatedCoordsO    <= (others => ("000000000", "0000000000"));
