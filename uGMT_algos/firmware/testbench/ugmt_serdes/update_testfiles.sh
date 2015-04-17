@@ -15,3 +15,8 @@ if [ -f integration_fwd_iso_scan.txt.1 ];
 then
 	mv integration_fwd_iso_scan.txt.1 integration_fwd_iso_scan.txt
 fi
+wget https://github.com/jlingema/uGMTScripts/raw/master/ugmt_patterns/data/patterns/testbench/integration_ttbar_small_sample.txt --no-check-certificate
+if [ -f integration_ttbar_small_sample.txt.1 ];
+then
+	mv integration_ttbar_small_sample.txt.1 integration_ttbar_small_sample.txt
+fi

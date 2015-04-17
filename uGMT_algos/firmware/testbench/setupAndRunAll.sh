@@ -9,24 +9,31 @@ if [ ! -d results ];
 then
 	mkdir results
 fi
+echo "Running deserializer testbench.. "
 cd deserializer
-./configureSim.sh > /dev/null
+./setupSim.sh > /dev/null
 ./runSim.sh > /dev/null
+echo "Running GMT testbench.. "
 cd ../GMT
-./configureSim.sh > /dev/null
+./setupSim.sh > /dev/null
 ./runSim.sh > /dev/null
+echo "Running Isolation testbench.. "
 cd ../isolation
-./configureSim.sh > /dev/null
+./setupSim.sh > /dev/null
 ./runSim.sh > /dev/null
+echo "Running Serializer testbench.. "
 cd ../serializer
-./configureSim.sh > /dev/null
-./runSim.sh > /dev/null
+./setupSim.sh > /dev/null
+# ./runSim.sh > /dev/null
+echo "Running SortAndCancel testbench.. "
 cd ../sort_and_cancel
-./configureSim.sh > /dev/null
+./setupSim.sh > /dev/null
 ./runSim.sh > /dev/null
+echo "Running uGMTserdes testbench.. "
 cd ../ugmt_serdes
-./configureSim.sh > /dev/null
+./setupSim.sh > /dev/null
 ./runSim.sh > /dev/null
 cd ..
 
+echo "Checking results.. "
 python ../../../scripts/check_results.py

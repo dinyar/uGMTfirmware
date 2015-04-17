@@ -16,3 +16,7 @@ ugmt_testfile.dat
 *.mif
 work/
 sortAndCancel_tb/
+fwd_iso_scan.txt
+iso_test.txt
+ttbar_small_sample.txt
+

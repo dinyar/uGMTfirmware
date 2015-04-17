@@ -8,4 +8,6 @@ modelsim.ini
 transcript
 dinyar/uGMTfirmware
 *.mif
+fwd_iso_scan.txt
+ttbar_small_sample.txt
 

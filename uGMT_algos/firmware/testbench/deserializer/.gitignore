@@ -6,4 +6,6 @@ transcript
 deserializer_tb/
 ugmt_testfile.dat
 deserializer_iso_test.txt
+deserializer_fwd_iso_scan.txt
+deserializer_ttbar_small_sample.txt
 

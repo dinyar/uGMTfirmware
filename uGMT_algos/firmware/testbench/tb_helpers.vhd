@@ -403,7 +403,7 @@ package body tb_helpers is
     elsif L.all(1 to 3) = "BAR" or L.all(1 to 3) = "OVL" or L.all(1 to 3) = "FWD" then
         ReadInputMuon(L, event.expectedMuons(muNo), event.expectedSortRanks(muNo), event.expectedEmpty(muNo));
         muNo := muNo+1;
-      elsif L.all(1 to 3) = "FRM" then
+    elsif L.all(1 to 3) = "IFR" then
         ReadInputFrame(L, event.iD(frameNo));
         frameNo := frameNo+1;
       elsif L.all(1 to 4) = "CALO" then
@@ -456,7 +456,7 @@ package body tb_helpers is
         ReadInputMuon(L, event.intMuons_fwd(muIntFNo), event.intSortRanks_fwd(muIntFNo), dummyEmpty);
         muIntFNo := muIntFNo+1;
         muNo     := muNo+1;
-      elsif L.all(1 to 3) = "FRM" then
+    elsif L.all(1 to 3) = "OFR" then
         ReadInputFrame(L, event.expectedOutput(frameNo));
         frameNo := frameNo+1;
       end if;

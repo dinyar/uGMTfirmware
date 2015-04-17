@@ -8,4 +8,5 @@ ugmt_serdes/
 integration_many_events.txt
 integration_iso_test.txt
 integration_fwd_iso_scan.txt
+integration_ttbar_small_sample.txt
 

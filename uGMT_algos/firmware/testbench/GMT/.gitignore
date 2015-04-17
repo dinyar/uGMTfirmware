@@ -13,4 +13,6 @@ single_tfs.txt
 transcript
 ugmt_testfile.dat
 *.mif
+fwd_iso_scan.txt
+ttbar_small_sample.txt
 
