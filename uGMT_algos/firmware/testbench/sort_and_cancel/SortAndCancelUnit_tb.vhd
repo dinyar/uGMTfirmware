@@ -267,7 +267,7 @@ begin
       vSortRankF_buffer(vSortRankF_buffer'high downto 1)         := vSortRankF_buffer(vSortRankF_buffer'high-1 downto 0);
       vMuons                                                     := oMuons;
 
-      ValidateSorterOutput(vMuons, vIntermediateB_buffer(vIntermediateB_buffer'high), vIntermediateO_buffer(vIntermediateO_buffer'high), vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), event_buffer(SORTER_LATENCY-1), tmpError);
+      ValidateSorterOutput(vMuons, vIntermediateB_buffer(vIntermediateB_buffer'high), vIntermediateO_buffer(vIntermediateO_buffer'high), vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), event_buffer(SORTER_LATENCY-1), FO, tmpError);
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
@@ -279,11 +279,11 @@ begin
         write(LO, event_buffer(SORTER_LATENCY-1).iEvent);
         writeline (FO, LO);
 
-        DumpMuEvent(event_buffer(SORTER_LATENCY-1));
-        DumpMuons(vIntermediateB_buffer(vIntermediateB_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), int_id);
-        DumpMuons(vIntermediateO_buffer(vIntermediateO_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), int_id);
-        DumpMuons(vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), int_id);
-        DumpMuons(vMuons, vDummySortRanks, fin_id);
+        DumpMuEvent(event_buffer(SORTER_LATENCY-1), FO);
+        DumpMuons(vIntermediateB_buffer(vIntermediateB_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), FO, int_id);
+        DumpMuons(vIntermediateO_buffer(vIntermediateO_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), FO, int_id);
+        DumpMuons(vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), FO, int_id);
+        DumpMuons(vMuons, vDummySortRanks, FO, fin_id);
         write(LO, string'(""));
         writeline (FO, LO);
       end if;

@@ -10,8 +10,8 @@ use work.ugmt_constants.all;
 package tb_helpers is
 
   constant N_SERIALIZER_CHAN : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS;
-  constant NINCHAN    : integer := 72;
-  constant NOUTCHAN    : integer := NUM_OUT_CHANS;
+  constant NINCHAN           : integer := 72;
+  constant NOUTCHAN          : integer := NUM_OUT_CHANS;
   type     TTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NINCHAN-1 downto 0);
 
   type TGMTEvent is record
@@ -115,72 +115,96 @@ package tb_helpers is
    variable event  : out TGMTEvent);
 
   procedure DumpEvent (
-    variable event : in TGMTEvent);
+    variable event : in TGMTEvent;
+    variable FO    : in text);
 
   procedure DumpInEvent (
-    variable event : in TGMTInEvent);
+    variable event : in TGMTInEvent;
+    variable FO    : in text);
 
   procedure DumpOutEvent (
-    variable event : in TGMTOutEvent);
+    variable event : in TGMTOutEvent;
+    variable FO    : in text);
 
   procedure DumpFrames (
-    variable tbuf : in TTransceiverBuffer);
+    variable tbuf : in TTransceiverBuffer;
+    variable FO   : in text);
 
   procedure DumpMuEvent (
-    variable event : in TGMTMuEvent);
+    variable event : in TGMTMuEvent;
+    variable FO    : in text);
 
   procedure DumpCaloEvent (
-    variable event : in TGMTCaloEvent);
+    variable event : in TGMTCaloEvent;
+    variable FO    : in text);
 
   procedure DumpEnergyValues (
-    variable iEnergies : in TCaloRegionEtaSlice_vector(27 downto 0));
+    variable iEnergies : in TCaloRegionEtaSlice_vector(27 downto 0);
+    variable FO        : in text);
 
   procedure DumpIsoBits (
     variable iIsoBits : in TIsoBits_vector(7 downto 0);
-    variable id : in string(1 to 3));
+    variable FO       : in text;
+    variable id       : in string(1 to 3));
 
   procedure DumpFinalPt (
-    variable iFinalPt : in TMuonPT_vector);
+    variable iFinalPt : in TMuonPT_vector;
+    variable FO       : in text);
 
   procedure DumpSelectedEnergies (
-    variable iEnergies : in TCaloArea_vector);
+    variable iEnergies : in TCaloArea_vector;
+    variable FO        : in text);
 
   procedure DumpMuIdxBits (
-    variable iIdxBits : in TIndexBits_vector);
+    variable iIdxBits : in TIndexBits_vector;
+    variable FO       : in text);
 
   procedure DumpCaloIdxBits (
-    variable iIdxBits : in TCaloIndexBit_vector);
+    variable iIdxBits : in TCaloIndexBit_vector;
+    variable FO       : in text);
 
   procedure DumpExtrapolatedCoordiantes (
     variable iExtrapolatedCoords : in TSpatialCoordinate_vector;
-    variable id : in string(1 to 3));
+    variable FO                  : in text;
+    variable id                  : in string(1 to 3));
 
   procedure DumpEventMuons (
-    variable event : in TGMTMuEvent);
+    variable event : in TGMTMuEvent;
+    variable FO    : in text);
 
   procedure DumpTracks (
     variable iTracks : in TGMTMuTracks_vector;
+    variable FO      : in text;
     variable id      : in string(1 to 4));
 
   procedure DumpMuons (
     variable iMuons     : in TGMTMu_vector;
     variable iSortRanks : in TSortRank10_vector;
+    variable FO         : in text;
     variable id         : in string(1 to 3));
 
   procedure DumpMuons (
     variable iMuons     : in TGMTMu_vector;
     variable iSortRanks : in TSortRank10_vector;
     variable iEmptyBits : in std_logic_vector;
+    variable FO         : in text;
     variable id         : in string(1 to 3));
 
+  procedure DumpValidBits (
+    variable iValid_muons    : in std_logic;
+    variable iValid_energies : in std_logic;
+    variable FO              : in text);
+
   procedure ValidateIsolationOutput (
-    variable iIsoBits : in TIsoBits_vector(7 downto 0);
-    variable muEvent  : in TGMTMuEvent;
+    variable iIsoBits : in  TIsoBits_vector(7 downto 0);
+    variable muEvent  : in  TGMTMuEvent;
+    variable FO       : in  text;
     variable errors   : out integer);
 
   procedure ValidateGMTOutput (
     variable iOutput : in  TTransceiverBuffer;
     variable event   : in  TGMTEvent;
+    variable FO      : in  text;
     variable errors  : out integer);
 
   procedure ValidateDeserializerOutput (
@@ -192,16 +216,19 @@ package tb_helpers is
     variable iEnergies       : in  TCaloRegionEtaSlice_vector(NUM_CALO_CHANS-1 downto 0);
     variable iValid_energies : in  std_logic;
     variable event           : in  TGMTInEvent;
+    variable FO              : in  text;
     variable errors          : out integer);
 
   procedure ValidateSerializerOutput (
     variable iOutput : in  TTransceiverBuffer;
     variable event   : in  TGMTOutEvent;
+    variable FO      : in  text;
     variable errors  : out integer);
 
   procedure ValidateSorterOutput (
     variable iFinalMus : in  TGMTMu_vector(7 downto 0);
     variable iEvent    : in  TGMTMuEvent;
+    variable FO        : in  text;
     variable error     : out integer);
 
   procedure ValidateSorterOutput (
@@ -213,6 +240,7 @@ package tb_helpers is
     variable iSrtRnksO : in  TSortRank10_vector(7 downto 0);
     variable iSrtRnksF : in  TSortRank10_vector(7 downto 0);
     variable iEvent    : in  TGMTMuEvent;
+    variable FO        : in  text;
     variable error     : out integer);
 end;
 
@@ -607,7 +635,8 @@ package body tb_helpers is
   end ReadIdxBits;
 
   procedure DumpEnergyValues (
-    variable iEnergies : in TCaloRegionEtaSlice_vector(27 downto 0)) is
+    variable iEnergies : in TCaloRegionEtaSlice_vector(27 downto 0);
+    variable FO        : in text) is
     variable L1        : line;
   begin
       for iSlice in iEnergies'low to iEnergies'high loop
@@ -618,32 +647,34 @@ package body tb_helpers is
             write(L1, to_integer(iEnergies(iSlice)(iEnergy)));
             write(L1, string'(" "));
         end loop;
-        writeline(OUTPUT, L1);
+        writeline(FO, L1);
       end loop;
 
       write(L1, string'(""));
-      writeline(OUTPUT, L1);
+      writeline(FO, L1);
   end DumpEnergyValues;
 
   procedure DumpCaloEvent (
-    variable event : in TGMTCaloEvent) is
-    variable L1        : line;
+    variable event : in TGMTCaloEvent;
+    variable FO    : in text) is
+    variable L1    : line;
   begin -- DumpCaloEvent
     if event.iEvent /= -1 then
         write(L1, string'("++++++++++++++++++++ Dump of event "));
         write(L1, event.iEvent);
         write(L1, string'(": ++++++++++++++++++++"));
-        writeline(OUTPUT, L1);
+        writeline(FO, L1);
 
         write(L1, string'("### Dumping energy sums: "));
-        writeline(OUTPUT, L1);
-        DumpEnergyValues(event.energies);
+        writeline(FO, L1);
+        DumpEnergyValues(event.energies, FO);
     end if;
   end DumpCaloEvent;
 
   procedure DumpFrames (
-    variable tbuf : in TTransceiverBuffer) is
-    variable L : line;
+    variable tbuf : in TTransceiverBuffer;
+    variable FO   : in text) is
+    variable L    : line;
   begin  -- DumpFrames
     for iFrame in tbuf'low to tbuf'high loop
       write(L, string'("FRM"));
@@ -655,52 +686,55 @@ package body tb_helpers is
         hwrite(L, tbuf(iFrame)(iChan).data);
         write(L, string'("    "));
       end loop;  -- iChan
-      writeline(OUTPUT, L);
+      writeline(FO, L);
     end loop;  -- iFrame
   end DumpFrames;
 
   procedure DumpEvent (
-    variable event : in TGMTEvent) is
-    variable L1              : line;
+    variable event : in TGMTEvent;
+    variable FO    : in text) is
+    variable L1    : line;
   begin  -- DumpEvent
     if event.iEvent /= -1 then
       write(L1, string'("++++++++++++++++++++ Dump of event "));
       write(L1, event.iEvent);
       write(L1, string'(": ++++++++++++++++++++"));
-      writeline(OUTPUT, L1);
+      writeline(FO, L1);
 
       write(L1, string'("### Dumping input frames: "));
-      writeline(OUTPUT, L1);
-      DumpFrames(event.iD);
+      writeline(FO, L1);
+      DumpFrames(event.iD, FO);
       write(L1, string'("### Dumping expected output: "));
-      writeline(OUTPUT, L1);
-      DumpFrames(event.expectedOutput);
+      writeline(FO, L1);
+      DumpFrames(event.expectedOutput, FO);
     end if;
   end DumpEvent;
 
   procedure DumpInEvent (
-    variable event : in TGMTInEvent) is
-    variable L1              : line;
-    variable in_id           : string(1 to 3)                 := "INE";
+    variable event : in TGMTInEvent;
+    variable FO    : in  text) is
+    variable L1    : line;
+    variable in_id : string(1 to 3)                 := "INE";
   begin  -- DumpInEvent
     if event.iEvent /= -1 then
       write(L1, string'("++++++++++++++++++++ Dump of event "));
       write(L1, event.iEvent);
       write(L1, string'(": ++++++++++++++++++++"));
-      writeline(OUTPUT, L1);
+      writeline(FO, L1);
 
       write(L1, string'("### Dumping input frames: "));
-      writeline(OUTPUT, L1);
-      DumpFrames(event.iD);
+      writeline(FO, L1);
+      DumpFrames(event.iD, FO);
       write(L1, string'("### Dumping expected output: "));
-      writeline(OUTPUT, L1);
-      DumpMuons(event.expectedMuons, event.expectedSortRanks, event.expectedEmpty, in_id);
-      DumpEnergyValues(event.expectedEnergies);
+      writeline(FO, L1);
+      DumpMuons(event.expectedMuons, event.expectedSortRanks, event.expectedEmpty, FO, in_id);
+      DumpEnergyValues(event.expectedEnergies, FO);
     end if;
   end DumpInEvent;
 
   procedure DumpOutEvent (
-    variable event : in TGMTOutEvent) is
+    variable event           : in TGMTOutEvent;
+    variable FO              : in text) is
     variable L1              : line;
     variable fin_id          : string(1 to 3)                 := "OUT";
     variable brl_id          : string(1 to 3)                 := "INB";
@@ -713,25 +747,26 @@ package body tb_helpers is
       write(L1, string'("++++++++++++++++++++ Dump of event "));
       write(L1, event.iEvent);
       write(L1, string'(": ++++++++++++++++++++"));
-      writeline(OUTPUT, L1);
+      writeline(FO, L1);
 
       write(L1, string'("### Dumping final muons: "));
-      writeline(OUTPUT, L1);
-      DumpMuons(event.muons, vDummySortRanks, fin_id);
+      writeline(FO, L1);
+      DumpMuons(event.muons, vDummySortRanks, FO, fin_id);
       write(L1, string'("### Dumping intermediate muons: "));
-      writeline(OUTPUT, L1);
-      DumpMuons(event.intMuons_brl, event.intSortRanks_brl, brl_id);
-      DumpMuons(event.intMuons_ovl, event.intSortRanks_ovl, ovl_id);
-      DumpMuons(event.intMuons_fwd, event.intSortRanks_fwd, fwd_id);
+      writeline(FO, L1);
+      DumpMuons(event.intMuons_brl, event.intSortRanks_brl, FO, brl_id);
+      DumpMuons(event.intMuons_ovl, event.intSortRanks_ovl, FO, ovl_id);
+      DumpMuons(event.intMuons_fwd, event.intSortRanks_fwd, FO, fwd_id);
       write(L1, string'("### Dumping expected output: "));
-      writeline(OUTPUT, L1);
-      DumpFrames(event.expectedOutput);
+      writeline(FO, L1);
+      DumpFrames(event.expectedOutput, FO);
       -- TODO: Missing final energies, extrapolated coordinates and iso bits.
     end if;
   end DumpOutEvent;
 
   procedure DumpMuEvent (
-    variable event : in TGMTMuEvent) is
+    variable event     : in TGMTMuEvent;
+    variable FO        : in text) is
     variable L1        : line;
     variable brl_id    : string(1 to 3) := "BRL";
     variable ovl_id    : string(1 to 3) := "OVL";
@@ -744,107 +779,112 @@ package body tb_helpers is
       write(L1, string'("++++++++++++++++++++ Dump of event "));
       write(L1, event.iEvent);
       write(L1, string'(": ++++++++++++++++++++"));
-      writeline(OUTPUT, L1);
-      DumpEventMuons(event);
+      writeline(FO, L1);
+      DumpEventMuons(event, FO);
 
-      DumpTracks(event.tracks_brl, brlTrk_id);
-      DumpTracks(event.tracks_ovl, ovlTrk_id);
-      DumpTracks(event.tracks_fwd, fwdTrk_id);
-
+      DumpTracks(event.tracks_brl, FO, brlTrk_id);
+      DumpTracks(event.tracks_ovl, FO, ovlTrk_id);
+      DumpTracks(event.tracks_fwd, FO, fwdTrk_id);
     end if;
   end DumpMuEvent;
 
   procedure DumpEventMuons (
-    variable event : in TGMTMuEvent) is
-    variable L1        : line;
-    variable brl_id    : string(1 to 3) := "BRL";
-    variable ovl_id    : string(1 to 3) := "OVL";
-    variable fwd_id    : string(1 to 3) := "FWD";
+    variable event  : in TGMTMuEvent;
+    variable FO     : in text) is
+    variable L1     : line;
+    variable brl_id : string(1 to 3) := "BRL";
+    variable ovl_id : string(1 to 3) := "OVL";
+    variable fwd_id : string(1 to 3) := "FWD";
   begin -- DumpEventMuons
       if event.iEvent /= -1 then
         write(L1, string'("++++++++++++++++++++ Dump of input muons: "));
-        writeline(OUTPUT, L1);
-        DumpMuons(event.muons_brl, event.sortRanks_brl, brl_id);
-        DumpMuons(event.muons_ovl, event.sortRanks_ovl, ovl_id);
-        DumpMuons(event.muons_fwd, event.sortRanks_fwd, fwd_id);
+        writeline(FO, L1);
+        DumpMuons(event.muons_brl, event.sortRanks_brl, FO, brl_id);
+        DumpMuons(event.muons_ovl, event.sortRanks_ovl, FO, ovl_id);
+        DumpMuons(event.muons_fwd, event.sortRanks_fwd, FO, fwd_id);
       end if;
   end DumpEventMuons;
 
   procedure DumpIsoBits (
     variable iIsoBits : in TIsoBits_vector(7 downto 0);
-    variable id : in string(1 to 3)) is
+    variable FO       : in text;
+    variable id       : in string(1 to 3)) is
     variable L1            : line;
   begin
     write(L1, string'("++++++++++++++++++++ Dump of Iso bits from "));
     write(L1, id);
     write(L1, string'(": "));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
     for i in iIsoBits'low to iIsoBits'high loop
         write(L1, to_integer(unsigned(iIsoBits(i))));
         write(L1, string'(" "));
     end loop;
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
     write(L1, string'(""));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
   end DumpIsoBits;
 
   procedure DumpFinalPt (
-    variable iFinalPt : in TMuonPT_vector) is
+    variable iFinalPt : in TMuonPT_vector;
+    variable FO       : in text) is
     variable L1 : line;
   begin
     write(L1, string'("++++++++++++++++++++ Dump of final pT values: "));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
     for i in iFinalPt'low to iFinalPt'high loop
         write(L1, to_integer(iFinalPt(i)));
         write(L1, string'(" "));
     end loop;
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
     write(L1, string'(""));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
   end DumpFinalPt;
 
   procedure DumpSelectedEnergies (
-    variable iEnergies : in TCaloArea_vector) is
+    variable iEnergies : in TCaloArea_vector;
+    variable FO        : in  text) is
     variable L1 : line;
   begin
     write(L1, string'("++++++++++++++++++++ Dump of selected energy sums: "));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
     for i in iEnergies'low to iEnergies'high loop
         write(L1, to_integer(iEnergies(i)));
         write(L1, string'(" "));
     end loop;
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
     write(L1, string'(""));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
   end DumpSelectedEnergies;
 
   procedure DumpMuIdxBits (
-    variable iIdxBits : in TIndexBits_vector) is
-    variable L1 : line;
+    variable iIdxBits : in TIndexBits_vector;
+    variable FO       : in text) is
+    variable L1       : line;
   begin
     write(L1, string'("++++++++++++++++++++ Dump of final muon index bits: "));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
     write(L1, string'("# MuNo   Idx"));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
     for i in iIdxBits'low to iIdxBits'high loop
         write(L1, string'("  "));
         write(L1, i);
         write(L1, string'("    "));
         write(L1, to_integer(iIdxBits(i)));
-        writeline(OUTPUT, L1);
+        writeline(FO, L1);
     end loop;
     write(L1, string'(""));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
   end DumpMuIdxBits;
 
   procedure DumpCaloIdxBits (
-    variable iIdxBits : in TCaloIndexBit_vector) is
-    variable L1 : line;
+    variable iIdxBits : in TCaloIndexBit_vector;
+    variable FO       : in text) is
+    variable L1       : line;
   begin
     write(L1, string'("++++++++++++++++++++ Dump of selected calo index bits: "));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
     write(L1, string'("# MuNo   Phi   Eta"));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
     for i in iIdxBits'low to iIdxBits'high loop
         write(L1, string'("  "));
         write(L1, i);
@@ -852,23 +892,24 @@ package body tb_helpers is
         write(L1, to_integer(iIdxBits(i).phi));
         write(L1, string'("    "));
         write(L1, to_integer(iIdxBits(i).eta));
-        writeline(OUTPUT, L1);
+        writeline(FO, L1);
     end loop;
     write(L1, string'(""));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
   end DumpCaloIdxBits;
 
   procedure DumpExtrapolatedCoordiantes (
     variable iExtrapolatedCoords : in TSpatialCoordinate_vector;
-    variable id : in string(1 to 3)) is
-    variable L1 : line;
+    variable FO                  : in text;
+    variable id                  : in string(1 to 3)) is
+    variable L1                  : line;
   begin
     write(L1, string'("++++++++++++++++++++ Dump of extrapolated coordinates from "));
     write(L1, id);
     write(L1, string'(": "));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
     write(L1, string'(" # MuNo        Phi        Eta"));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
     for i in iExtrapolatedCoords'range loop
         write(L1, string'("   "));
         write(L1, i);
@@ -876,14 +917,15 @@ package body tb_helpers is
         write(L1, to_integer(iExtrapolatedCoords(i).phi));
         write(L1, string'("        "));
         write(L1, to_integer(iExtrapolatedCoords(i).eta));
-        writeline(OUTPUT, L1);
+        writeline(FO, L1);
     end loop;
     write(L1, string'(""));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
   end DumpExtrapolatedCoordiantes;
 
   procedure DumpTracks (
     variable iTracks : in TGMTMuTracks_vector;
+    variable FO      : in text;
     variable id      : in string(1 to 4)) is
     variable L1            : line;
     variable display_track : boolean := false;
@@ -911,11 +953,11 @@ package body tb_helpers is
           write(L1, string'(" "));
           write(L1, to_integer(iTracks(iTrack)(i).qual));
         end loop;  -- i
-        writeline(OUTPUT, L1);
+        writeline(FO, L1);
       end if;
     end loop;  -- iTrack
     write(L1, string'(""));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
   end DumpTracks;
 
   procedure DumpMuon (
@@ -923,6 +965,7 @@ package body tb_helpers is
     variable iMu       : in TGMTMu;
     variable iSortRank : in TSortRank10;
     variable iEmpty    : in std_logic;
+    variable FO        : in text;
     variable id        : in string(1 to 3)) is
     variable L1 : line;
   begin  -- DumpMuon
@@ -955,46 +998,63 @@ package body tb_helpers is
       write(L1, string'(" "));
       write(L1, to_integer(unsigned(iSortRank)));
     end if;
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
   end DumpMuon;
 
   procedure DumpMuon (
     noMu               : in integer;
     variable iMu       : in TGMTMu;
     variable iSortRank : in TSortRank10;
+    variable FO        : in text;
     variable id        : in string(1 to 3)) is
     variable L1 : line;
     variable dummyEmpty : std_logic := '0';
   begin  -- DumpMuon
-    DumpMuon(noMu, iMu, iSortRank, dummyEmpty, id);
+    DumpMuon(noMu, iMu, iSortRank, dummyEmpty, FO, id);
   end DumpMuon;
 
   procedure DumpMuons (
     variable iMuons     : in TGMTMu_vector;
     variable iSortRanks : in TSortRank10_vector;
+    variable FO         : in text;
     variable id         : in string(1 to 3)) is
     variable L1 : line;
   begin  -- DumpMuons
     for iMu in iMuons'range loop
-      DumpMuon(iMu, iMuons(iMu), iSortRanks(iMu), id);
+      DumpMuon(iMu, iMuons(iMu), iSortRanks(iMu), FO, id);
     end loop;  -- iMu
     write(L1, string'(""));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
   end DumpMuons;
 
   procedure DumpMuons (
     variable iMuons     : in TGMTMu_vector;
     variable iSortRanks : in TSortRank10_vector;
     variable iEmptyBits : in std_logic_vector;
+    variable FO         : in text;
     variable id         : in string(1 to 3)) is
     variable L1 : line;
   begin  -- DumpMuons
     for iMu in iMuons'range loop
-      DumpMuon(iMu, iMuons(iMu), iSortRanks(iMu), iEmptyBits(iMu), id);
+      DumpMuon(iMu, iMuons(iMu), iSortRanks(iMu), iEmptyBits(iMu), FO, id);
     end loop;  -- iMu
     write(L1, string'(""));
-    writeline(OUTPUT, L1);
+    writeline(FO, L1);
   end DumpMuons;
+
+  procedure DumpValidBits (
+    variable iValid_muons    : in std_logic;
+    variable iValid_energies : in std_logic;
+    variable FO              : in text) is
+    variable L1 : line;
+  begin  -- DumpValidBits
+    write(L1, string'("Valid bit from muons: "));
+    write(L1, to_bit(iValid_muons));
+    write(L1, string'(". Valid bit from calo: "));
+    write(L1, to_bit(iValid_energies));
+    write(L1, string'(""));
+    writeline(FO, L1);
+  end DumpValidBits;
 
   procedure CheckMuon (
     noMu                : in  integer;
@@ -1003,6 +1063,7 @@ package body tb_helpers is
     variable iSrtRnk    : in  TSortRank10;
     variable iEmuSrtRnk : in  TSortRank10;
     variable id         : in  string(1 to 3);
+    variable FO         : in  text;
     variable error      : out integer) is
     variable LO    : line;
     variable idEmu : string(1 to 3) := "EMU";
@@ -1015,13 +1076,13 @@ package body tb_helpers is
       write(LO, id);
       write(LO, string'(" muon #"));
       write(LO, noMu);
-      writeline(OUTPUT, LO);
+      writeline(FO, LO);
       write(LO, string'("!!! Comparison: "));
-      writeline(OUTPUT, LO);
-      DumpMuon(noMu, iMu, iSrtRnk, id);
-      DumpMuon(noMu, iEmuMu, iEmuSrtRnk, idEmu);
+      writeline(FO, LO);
+      DumpMuon(noMu, iMu, iSrtRnk, FO, id);
+      DumpMuon(noMu, iEmuMu, iEmuSrtRnk, FO, idEmu);
       write(LO, string'(""));
-      writeline(OUTPUT, LO);
+      writeline(FO, LO);
     end if;
   end CheckMuon;
 
@@ -1031,6 +1092,7 @@ package body tb_helpers is
     variable iSrtRnks    : in  TSortRank10_vector;
     variable iEmuSrtRnks : in  TSortRank10_vector;
     variable id          : in  string(1 to 3);
+    variable FO          : in  text;
     variable errors      : out integer) is
     variable LO       : line;
     variable vErrors  : integer := 0;
@@ -1039,7 +1101,7 @@ package body tb_helpers is
     errors := 0;
     for i in iMus'range loop
       tmpError := 0;
-      CheckMuon(i, iMus(i), iEmuMus(i), iSrtRnks(i), iEmuSrtRnks(i), id, tmpError);
+      CheckMuon(i, iMus(i), iEmuMus(i), iSrtRnks(i), iEmuSrtRnks(i), id, FO, tmpError);
       vErrors  := vErrors+tmpError;
     end loop;  -- i
     errors := vErrors;
@@ -1049,6 +1111,7 @@ package body tb_helpers is
     variable iMus    : in  TGMTMu_vector;
     variable iEmuMus : in  TGMTMu_vector;
     variable id      : in  string(1 to 3);
+    variable FO      : in  text;
     variable errors  : out integer) is
     variable LO          : line;
     variable vErrors     : integer     := 0;
@@ -1058,7 +1121,7 @@ package body tb_helpers is
     errors := 0;
     for i in iMus'range loop
       tmpError := 0;
-      CheckMuon(i, iMus(i), iEmuMus(i), dummySrtRnk, dummySrtRnk, id, tmpError);
+      CheckMuon(i, iMus(i), iEmuMus(i), dummySrtRnk, dummySrtRnk, id, FO, tmpError);
       vErrors  := vErrors+tmpError;
     end loop;  -- i
     errors := vErrors;
@@ -1068,6 +1131,7 @@ package body tb_helpers is
     variable iSrtRnks    : in  TSortRank10_vector;
     variable iEmuSrtRnks : in  TSortRank10_vector;
     variable id          : in  string(1 to 3);
+    variable FO          : in  text;
     variable errors      : out integer) is
     variable LO      : line;
     variable vErrors : integer := 0;
@@ -1080,23 +1144,24 @@ package body tb_helpers is
         write(LO, id);
         write(LO, string'(" sort rank #"));
         write(LO, i);
-        writeline(OUTPUT, LO);
+        writeline(FO, LO);
         write(LO, string'("!!! Simulation output: "));
         write(LO, to_integer(unsigned(iSrtRnks(i))));
-        writeline(OUTPUT, LO);
+        writeline(FO, LO);
         write(LO, string'("!!!   Expected output: "));
         write(LO, to_integer(unsigned(iEmuSrtRnks(i))));
-        writeline(OUTPUT, LO);
+        writeline(FO, LO);
         write(LO, string'(""));
-        writeline(OUTPUT, LO);
+        writeline(FO, LO);
       end if;
     end loop;  --i
     errors := vErrors;
   end CheckSortRanks;
 
   procedure CheckEmptyBits (
-    variable iEmpty    : in  std_logic_vector;
-    variable iEmuEmpty : in  std_logic_vector;
+    variable iEmpty      : in  std_logic_vector;
+    variable iEmuEmpty   : in  std_logic_vector;
+    variable FO          : in  text;
     variable errors      : out integer) is
     variable LO      : line;
     variable vErrors : integer := 0;
@@ -1107,15 +1172,15 @@ package body tb_helpers is
 
         write(LO, string'("!!!!!! Error in empty bit #"));
         write(LO, i);
-        writeline(OUTPUT, LO);
+        writeline(FO, LO);
         write(LO, string'("!!! Simulation output: "));
         write(LO, to_bit(iEmpty(i)));
-        writeline(OUTPUT, LO);
+        writeline(FO, LO);
         write(LO, string'("!!!   Expected output: "));
         write(LO, to_bit(iEmuEmpty(i)));
-        writeline(OUTPUT, LO);
+        writeline(FO, LO);
         write(LO, string'(""));
-        writeline(OUTPUT, LO);
+        writeline(FO, LO);
       end if;
     end loop;  --i
     errors := vErrors;
@@ -1124,6 +1189,7 @@ package body tb_helpers is
   procedure CheckEnergies (
     variable iEnergies    : in  TCaloRegionEtaSlice_vector(NUM_CALO_CHANS-1 downto 0);
     variable iEmuEnergies : in  TCaloRegionEtaSlice_vector(NUM_CALO_CHANS-1 downto 0);
+    variable FO           : in  text;
     variable errors       : out integer) is
     variable LO      : line;
     variable vErrors : integer := 0;
@@ -1137,15 +1203,15 @@ package body tb_helpers is
           write(LO, i);
           write(LO, string'(" "));
           write(LO, j);
-          writeline(OUTPUT, LO);
+          writeline(FO, LO);
           write(LO, string'("!!! Simulation output: "));
           write(LO, to_integer(iEnergies(i)(j)));
-          writeline(OUTPUT, LO);
+          writeline(FO, LO);
           write(LO, string'("!!!   Expected output: "));
           write(LO, to_integer(iEmuEnergies(i)(j)));
-          writeline(OUTPUT, LO);
+          writeline(FO, LO);
           write(LO, string'(""));
-          writeline(OUTPUT, LO);
+          writeline(FO, LO);
         end if;
       end loop;  --j
     end loop;  --i
@@ -1155,6 +1221,7 @@ package body tb_helpers is
   procedure CheckFrame (
     variable iFrame    : in  ldata;
     variable iEmuFrame : in  ldata;
+    variable FO        : in  text;
     variable errors    : out integer) is
     variable LO        :     line;
     variable vErrors   :     integer := 0;
@@ -1166,27 +1233,41 @@ package body tb_helpers is
 
         write(LO, string'("Errors found in channel #"));
         write(LO, iChan);
-        writeline(OUTPUT, LO);
+        writeline(FO, LO);
         write(LO, string'("!!! Simulation output: "));
         write(LO, iFrame(iChan).valid);
         write(LO, string'(" "));
         hwrite(LO, iFrame(iChan).data);
-        writeline(OUTPUT, LO);
+        writeline(FO, LO);
         write(LO, string'("!!!   Expected output: "));
         write(LO, iEmuFrame(iChan).valid);
         write(LO, string'(" "));
         hwrite(LO, iEmuFrame(iChan).data);
-        writeline(OUTPUT, LO);
+        writeline(FO, LO);
       end if;
     end loop;  -- iChan
 
     errors := vErrors;
   end CheckFrame;
 
+  procedure CheckValidBits (
+    variable iValid_mu       : in  std_logic;
+    variable iValid_energies : in  std_logic;
+    variable FO              : in  text;
+    variable errors          : out integer) is
+    variable L1              : line;
+  begin
+    if iValid_mu /= iValid_energies then
+      write(L1, string'("!!!!!! Valid bits inconsistent:"));
+      writeline(FO, L1);
+      DumpValidBits(iValid_mu, iValid_energies, FO);
+    end if;
+  end CheckValidBits;
 
   procedure ValidateIsolationOutput (
       variable iIsoBits : in TIsoBits_vector(7 downto 0);
       variable muEvent  : in TGMTMuEvent;
+    variable FO         : in  text;
       variable errors   : out integer) is
       variable LO       : line;
       variable tmpError : integer := 0;
@@ -1199,35 +1280,35 @@ package body tb_helpers is
 
                 write(LO, string'("!!!!!! Error in muon #"));
                 write(LO, i);
-                writeline(OUTPUT, LO);
+                writeline(FO, LO);
 
                 if iIsoBits(i)(0) /= muEvent.expectedIsoBits(i)(0) then
                     write(LO, string'("Absolute isolation: "));
-                    writeline(OUTPUT, LO);
+                    writeline(FO, LO);
                     write(LO, string'("Simulation: "));
                     write(LO, iIsoBits(i)(0));
                     write(LO, string'("; expected: "));
                     write(LO, muEvent.expectedIsoBits(i)(0));
-                    writeline(OUTPUT, LO);
+                    writeline(FO, LO);
                 end if;
                 if iIsoBits(i)(1) /= muEvent.expectedIsoBits(i)(1) then
                     write(LO, string'("Relative isolation: "));
-                    writeline(OUTPUT, LO);
+                    writeline(FO, LO);
                     write(LO, string'("Simulation: "));
                     write(LO, iIsoBits(i)(1));
                     write(LO, string'("; expected: "));
                     write(LO, muEvent.expectedIsoBits(i)(1));
-                    writeline(OUTPUT, LO);
+                    writeline(FO, LO);
                 end if;
-                writeline(OUTPUT, LO);
+                writeline(FO, LO);
                 write(LO, string'("!!! Simulation output: "));
                 write(LO, to_integer(unsigned(iIsoBits(i))));
-                writeline(OUTPUT, LO);
+                writeline(FO, LO);
                 write(LO, string'("!!!   Expected output: "));
                 write(LO, to_integer(unsigned(muEvent.expectedIsoBits(i))));
-                writeline(OUTPUT, LO);
+                writeline(FO, LO);
                 write(LO, string'(""));
-                writeline(OUTPUT, LO);
+                writeline(FO, LO);
             end if;
         end loop; -- i
         if vErrors > 0 then
@@ -1243,6 +1324,7 @@ package body tb_helpers is
   procedure ValidateGMTOutput (
     variable iOutput  : in  TTransceiverBuffer;
     variable event    : in  TGMTEvent;
+    variable FO       : in  text;
     variable errors   : out integer) is
     variable LO       :     line;
     variable tmpError :     integer := 0;
@@ -1250,13 +1332,13 @@ package body tb_helpers is
   begin
       if (event.iEvent >= 0) then
         for iFrame in iOutput'range loop
-        CheckFrame(iOutput(iFrame)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS - 1 downto 0), event.expectedOutput(iFrame)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS - 1 downto 0), tmpError);
+        CheckFrame(iOutput(iFrame)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS - 1 downto 0), event.expectedOutput(iFrame)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS - 1 downto 0), FO, tmpError);
           if tmpError > 0 then
               write(LO, string'("!!!!!! of frame #"));
               write(LO, iFrame);
-              writeline(OUTPUT, LO);
+              writeline(FO, LO);
               write(LO, string'(""));
-              writeline(OUTPUT, LO);
+              writeline(FO, LO);
           end if;
           vErrors := vErrors + tmpError;
         end loop;  -- frame
@@ -1280,6 +1362,7 @@ package body tb_helpers is
     variable iEnergies       : in  TCaloRegionEtaSlice_vector(NUM_CALO_CHANS-1 downto 0);
     variable iValid_energies : in  std_logic;
     variable event           : in  TGMTInEvent;
+    variable FO              : in  text;
     variable errors          : out integer) is
     variable LO       : line;
     variable tmpError : integer := 0;
@@ -1288,19 +1371,19 @@ package body tb_helpers is
   begin
     if (event.iEvent >= 0) then
       tmpError := 0;
-      CheckMuons(iMuons, event.expectedMuons, iSrtRnks, event.expectedSortRanks, idInMus, tmpError);
+      CheckMuons(iMuons, event.expectedMuons, iSrtRnks, event.expectedSortRanks, idInMus, FO, tmpError);
       vErrors   := tmpError;
       tmpError := 0;
-      CheckSortRanks(iSrtRnks, event.expectedSortRanks, idInMus, tmpError);
+      CheckSortRanks(iSrtRnks, event.expectedSortRanks, idInMus, FO, tmpError);
       vErrors   := vErrors + tmpError;
       tmpError := 0;
-      CheckEmptyBits(iEmpty, event.expectedEmpty, tmpError);
+      CheckEmptyBits(iEmpty, event.expectedEmpty, FO, tmpError);
       vErrors   := vErrors + tmpError;
       tmpError := 0;
-      -- TODO: Check valid bits.
+      CheckValidBits(iValid_muons, iValid_energies, FO, tmpError);
       vErrors   := vErrors + tmpError;
       tmpError := 0;
-      CheckEnergies(iEnergies, event.expectedEnergies, tmpError);
+      CheckEnergies(iEnergies, event.expectedEnergies, FO, tmpError);
       vErrors   := vErrors + tmpError;
 
       if vErrors > 0 then
@@ -1316,6 +1399,7 @@ package body tb_helpers is
   procedure ValidateSerializerOutput (
     variable iOutput : in  TTransceiverBuffer;
     variable event   : in  TGMTOutEvent;
+    variable FO      : in  text;
     variable errors  : out integer) is
     variable LO       : line;
     variable tmpError : integer := 0;
@@ -1323,13 +1407,13 @@ package body tb_helpers is
   begin
     if (event.iEvent >= 0) then
       for iFrame in iOutput'range loop
-        CheckFrame(iOutput(iFrame)(NOUTCHAN-1 downto 0), event.expectedOutput(iFrame)(NOUTCHAN-1 downto 0), tmpError);
+        CheckFrame(iOutput(iFrame)(NOUTCHAN-1 downto 0), event.expectedOutput(iFrame)(NOUTCHAN-1 downto 0), FO, tmpError);
         if tmpError > 0 then
             write(LO, string'("!!!!!! of frame #"));
             write(LO, iFrame);
-            writeline(OUTPUT, LO);
+            writeline(FO, LO);
             write(LO, string'(""));
-            writeline(OUTPUT, LO);
+            writeline(FO, LO);
         end if;
         vErrors := vErrors + tmpError;
       end loop;  -- frame
@@ -1347,6 +1431,7 @@ package body tb_helpers is
   procedure ValidateSorterOutput (
     variable iFinalMus : in  TGMTMu_vector(7 downto 0);
     variable iEvent    : in  TGMTMuEvent;
+    variable FO        : in  text;
     variable error     : out integer) is
     variable LO       : line;
     variable vError   : integer        := 0;
@@ -1355,7 +1440,7 @@ package body tb_helpers is
   begin
     if (iEvent.iEvent >= 0) then
       tmpError := 0;
-      CheckMuons(iFinalMus, iEvent.expectedMuons, idFin, tmpError);
+      CheckMuons(iFinalMus, iEvent.expectedMuons, idFin, FO, tmpError);
       vError   := tmpError;
       tmpError := 0;
 
@@ -1378,6 +1463,7 @@ package body tb_helpers is
     variable iSrtRnksO : in  TSortRank10_vector(7 downto 0);
     variable iSrtRnksF : in  TSortRank10_vector(7 downto 0);
     variable iEvent    : in  TGMTMuEvent;
+    variable FO        : in  text;
     variable error     : out integer) is
     variable LO       : line;
     variable vError   : integer        := 0;
@@ -1389,26 +1475,26 @@ package body tb_helpers is
   begin
     if (iEvent.iEvent >= 0) then
       tmpError := 0;
-      CheckMuons(iFinalMus, iEvent.expectedMuons, idFin, tmpError);
+      CheckMuons(iFinalMus, iEvent.expectedMuons, idFin, FO, tmpError);
       vError   := tmpError;
       tmpError := 0;
-      CheckMuons(iIntMusB, iEvent.expectedIntMuB, iSrtRnksB, iEvent.expectedSrtRnksB, idIntB, tmpError);
+      CheckMuons(iIntMusB, iEvent.expectedIntMuB, iSrtRnksB, iEvent.expectedSrtRnksB, idIntB, FO, tmpError);
       vError   := vError + tmpError;
       tmpError := 0;
-      CheckMuons(iIntMusO, iEvent.expectedIntMuO, iSrtRnksO, iEvent.expectedSrtRnksO, idIntO, tmpError);
+      CheckMuons(iIntMusO, iEvent.expectedIntMuO, iSrtRnksO, iEvent.expectedSrtRnksO, idIntO, FO, tmpError);
       vError   := vError + tmpError;
       tmpError := 0;
-      CheckMuons(iIntMusF, iEvent.expectedIntMuF, iSrtRnksF, iEvent.expectedSrtRnksF, idIntF, tmpError);
+      CheckMuons(iIntMusF, iEvent.expectedIntMuF, iSrtRnksF, iEvent.expectedSrtRnksF, idIntF, FO, tmpError);
       vError   := vError + tmpError;
 
       tmpError := 0;
-      CheckSortRanks(iSrtRnksB, iEvent.expectedSrtRnksB, idIntB, tmpError);
+      CheckSortRanks(iSrtRnksB, iEvent.expectedSrtRnksB, idIntB, FO, tmpError);
       vError   := vError + tmpError;
       tmpError := 0;
-      CheckSortRanks(iSrtRnksO, iEvent.expectedSrtRnksO, idIntO, tmpError);
+      CheckSortRanks(iSrtRnksO, iEvent.expectedSrtRnksO, idIntO, FO, tmpError);
       vError   := vError + tmpError;
       tmpError := 0;
-      CheckSortRanks(iSrtRnksF, iEvent.expectedSrtRnksF, idIntF, tmpError);
+      CheckSortRanks(iSrtRnksF, iEvent.expectedSrtRnksF, idIntF, FO, tmpError);
       vError   := vError + tmpError;
 
       if vError > 0 then

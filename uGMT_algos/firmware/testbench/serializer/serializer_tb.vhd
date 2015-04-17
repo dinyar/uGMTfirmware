@@ -123,7 +123,7 @@ begin
 
       event_buffer(SERIALIZER_LATENCY downto 1) := event_buffer(SERIALIZER_LATENCY-1 downto 0);
 
-      ValidateSerializerOutput(vOutput, event_buffer(SERIALIZER_LATENCY), tmpError);
+      ValidateSerializerOutput(vOutput, event_buffer(SERIALIZER_LATENCY), FO, tmpError);
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
@@ -135,12 +135,12 @@ begin
         write(LO, event_buffer(SERIALIZER_LATENCY-1).iEvent);
         writeline (FO, LO);
 
-        DumpOutEvent(event_buffer(SERIALIZER_LATENCY));
+        DumpOutEvent(event_buffer(SERIALIZER_LATENCY), FO);
         write(LO, string'(""));
         writeline (FO, LO);
         write(LO, string'("### Dumping sim output :"));
         writeline (FO, LO);
-        DumpFrames(vOutput);
+        DumpFrames(vOutput, FO);
         write(LO, string'(""));
         writeline (FO, LO);
         write(LO, string'(""));

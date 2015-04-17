@@ -270,9 +270,9 @@ begin
       vIsoBits := oIsoBits;
       vMuons   := oMuons;
 
-      ValidateSorterOutput(vMuons, muEvent_buffer(GMT_LATENCY-1), tmpErrorSorter);
+      ValidateSorterOutput(vMuons, muEvent_buffer(GMT_LATENCY-1), FO, tmpErrorSorter);
       cntError := cntError+tmpErrorSorter;
-      ValidateIsolationOutput(vIsoBits, muEvent_buffer(GMT_LATENCY-1), tmpErrorIso);
+      ValidateIsolationOutput(vIsoBits, muEvent_buffer(GMT_LATENCY-1), FO, tmpErrorIso);
       cntError := cntError+tmpErrorIso;
 
       if verbose or (tmpErrorSorter > 0) or (tmpErrorIso > 0) then
@@ -284,16 +284,16 @@ begin
         write(LO, muEvent_buffer(GMT_LATENCY-1).iEvent);
         writeline (FO, LO);
 
-        DumpIsoBits(vIsoBits, fw_id);
-        DumpIsoBits(muEvent_buffer(GMT_LATENCY-1).expectedIsoBits, emu_id);
-        DumpMuIdxBits(vMuIdxBits);
-        DumpSelectedEnergies(vSelectedEnergies);
-        DumpCaloIdxBits(vSelectedCaloIdxBits);
-        DumpCaloEvent(caloEvent_buffer(GMT_LATENCY-1));
-        DumpEventMuons(muEvent_buffer(GMT_LATENCY-1));
-        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsB, brl_id);
-        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsO, ovl_id);
-        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsF, fwd_id);
+        DumpIsoBits(vIsoBits, FO, fw_id);
+        DumpIsoBits(muEvent_buffer(GMT_LATENCY-1).expectedIsoBits, FO, emu_id);
+        DumpMuIdxBits(vMuIdxBits, FO);
+        DumpSelectedEnergies(vSelectedEnergies, FO);
+        DumpCaloIdxBits(vSelectedCaloIdxBits, FO);
+        DumpCaloEvent(caloEvent_buffer(GMT_LATENCY-1), FO);
+        DumpEventMuons(muEvent_buffer(GMT_LATENCY-1), FO);
+        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsB, FO, brl_id);
+        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsO, FO, ovl_id);
+        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsF, FO, fwd_id);
         write(LO, string'(""));
         writeline (FO, LO);
       end if;

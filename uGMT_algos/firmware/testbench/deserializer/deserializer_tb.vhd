@@ -151,7 +151,7 @@ begin
       vEnergies       := sEnergies;
       vValid_energies := sValid_energies;
 
-      ValidateDeserializerOutput(vMuons, vTracks, vSortRanks, vEmpty, vValid_muons, vEnergies, vValid_energies, event_buffer(DESERIALIZER_LATENCY-1), tmpError);
+      ValidateDeserializerOutput(vMuons, vTracks, vSortRanks, vEmpty, vValid_muons, vEnergies, vValid_energies, event_buffer(DESERIALIZER_LATENCY-1), FO, tmpError);
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
@@ -163,14 +163,14 @@ begin
         write(LO, event_buffer(DESERIALIZER_LATENCY-1).iEvent);
         writeline (FO, LO);
 
-        DumpInEvent(event_buffer(DESERIALIZER_LATENCY-1));
+        DumpInEvent(event_buffer(DESERIALIZER_LATENCY-1), FO);
         write(LO, string'(""));
         writeline (FO, LO);
         write(LO, string'("### Dumping sim output :"));
         writeline (FO, LO);
-        -- TODO: Dump valid bits.
-        DumpMuons(vMuons, vSortRanks, vEmpty, in_id);
-        DumpEnergyValues(vEnergies);
+        DumpValidBits(vValid_muons, vValid_energies, FO);
+        DumpMuons(vMuons, vSortRanks, vEmpty, FO, in_id);
+        DumpEnergyValues(vEnergies, FO);
         write(LO, string'(""));
         writeline (FO, LO);
         write(LO, string'(""));

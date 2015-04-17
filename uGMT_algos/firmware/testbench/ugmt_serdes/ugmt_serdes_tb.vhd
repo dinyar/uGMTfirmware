@@ -115,7 +115,7 @@ begin
 
       event_buffer(uGMT_LATENCY-1 downto 1) := event_buffer(uGMT_LATENCY-2 downto 0);
 
-      ValidateGMTOutput(vOutput, event_buffer(uGMT_LATENCY-1), tmpError);
+      ValidateGMTOutput(vOutput, event_buffer(uGMT_LATENCY-1), FO, tmpError);
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
@@ -127,12 +127,12 @@ begin
         write(LO, event_buffer(uGMT_LATENCY-1).iEvent);
         writeline (FO, LO);
 
-        DumpEvent(event_buffer(uGMT_LATENCY-1));
+        DumpEvent(event_buffer(uGMT_LATENCY-1), FO);
         write(LO, string'(""));
         writeline (FO, LO);
         write(LO, string'("### Dumping sim output :"));
         writeline (FO, LO);
-        DumpFrames(vOutput);
+        DumpFrames(vOutput, FO);
         write(LO, string'(""));
         writeline (FO, LO);
         write(LO, string'(""));

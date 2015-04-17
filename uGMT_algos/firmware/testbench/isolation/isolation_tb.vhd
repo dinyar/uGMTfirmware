@@ -274,7 +274,7 @@ begin
       vMuIdxBits                               := oMuIdxBits;
       vIsoBits                                 := oIsoBits;
 
-      ValidateIsolationOutput(vIsoBits, muEvent_buffer(ISO_LATENCY-1), tmpError);
+      ValidateIsolationOutput(vIsoBits, muEvent_buffer(ISO_LATENCY-1), FO, tmpError);
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
@@ -286,17 +286,17 @@ begin
         write(LO, muEvent_buffer(ISO_LATENCY-1).iEvent);
         writeline (FO, LO);
 
-        DumpIsoBits(vIsoBits, fw_id);
-        DumpIsoBits(muEvent_buffer(ISO_LATENCY-1).expectedIsoBits, emu_id);
-        DumpFinalPt(vMuPt);
-        DumpMuIdxBits(vMuIdxBits);
-        DumpSelectedEnergies(vSelectedEnergies);
-        DumpCaloIdxBits(vSelectedCaloIdxBits);
-        DumpCaloEvent(caloEvent_buffer(ISO_LATENCY-1));
-        DumpEventMuons(muEvent_buffer(ISO_LATENCY-1));
-        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsB, brl_id);
-        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsO, ovl_id);
-        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsF, fwd_id);
+        DumpIsoBits(vIsoBits, FO, fw_id);
+        DumpIsoBits(muEvent_buffer(ISO_LATENCY-1).expectedIsoBits, FO, emu_id);
+        DumpFinalPt(vMuPt, FO);
+        DumpMuIdxBits(vMuIdxBits, FO);
+        DumpSelectedEnergies(vSelectedEnergies, FO);
+        DumpCaloIdxBits(vSelectedCaloIdxBits, FO);
+        DumpCaloEvent(caloEvent_buffer(ISO_LATENCY-1), FO);
+        DumpEventMuons(muEvent_buffer(ISO_LATENCY-1), FO);
+        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsB, FO, brl_id);
+        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsO, FO, ovl_id);
+        DumpExtrapolatedCoordiantes(vExtrapolatedCoordsF, FO, fwd_id);
         write(LO, string'(""));
         writeline (FO, LO);
       end if;
