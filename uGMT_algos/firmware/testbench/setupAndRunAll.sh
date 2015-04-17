@@ -10,16 +10,22 @@ then
 	mkdir results
 fi
 cd deserializer
+./configureSum.sh > /dev/null
 ./runSim.sh > /dev/null
 cd ../GMT
+./configureSum.sh > /dev/null
 ./runSim.sh > /dev/null
 cd ../isolation
+./configureSum.sh > /dev/null
 ./runSim.sh > /dev/null
 cd ../serializer
+./configureSum.sh > /dev/null
 ./runSim.sh > /dev/null
 cd ../sort_and_cancel
+./configureSum.sh > /dev/null
 ./runSim.sh > /dev/null
 cd ../ugmt_serdes
+./configureSum.sh > /dev/null
 ./runSim.sh > /dev/null
 cd ..
 
