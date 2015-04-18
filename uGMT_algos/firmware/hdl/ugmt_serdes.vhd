@@ -132,10 +132,6 @@ begin
       VALID_BIT => VALID_BIT
       )
     port map (
-      --clk_ipb    => clk_ipb,
-      --rst        => rst,
-      --ipb_in     => ipbw(1),
-      --ipb_out    => ipbr(1),
       clk240    => clk240,
       clk40     => clk40,
       d         => d(NCHAN-1 downto 0),
@@ -188,8 +184,8 @@ begin
     port map(
         clk => clk_ipb,
         reset => rst,
-        ipbus_in => ipbw(N_SLV_INPUT_ENABLE_REG),
-        ipbus_out => ipbr(N_SLV_INPUT_ENABLE_REG),
+        ipbus_in => ipbw(N_SLV_INPUT_DISABLE_REG),
+        ipbus_out => ipbr(N_SLV_INPUT_DISABLE_REG),
         q => sInputDisable
     );
 
