@@ -85,9 +85,9 @@ architecture Behavioral of IsoAssignmentUnit is
   signal sExtrapolatedCoordsO_buffer : TCoordsBuffer(COORD_INTERMEDIATE_DELAY-1 downto 0);
   signal sExtrapolatedCoordsF_buffer : TCoordsBuffer(COORD_INTERMEDIATE_DELAY-1 downto 0);
 
-  signal sVertexCoordsB_buffer : TCoordsBuffer(2 downto 0);
-  signal sVertexCoordsO_buffer : TCoordsBuffer(2 downto 0);
-  signal sVertexCoordsF_buffer : TCoordsBuffer(2 downto 0);
+  signal sVertexCoordsB_buffer : TCoordsBuffer(1 downto 0);
+  signal sVertexCoordsO_buffer : TCoordsBuffer(1 downto 0);
+  signal sVertexCoordsF_buffer : TCoordsBuffer(1 downto 0);
 
   signal sSelectedCaloIdxBits : TCaloIndexBit_vector(7 downto 0);
   signal sMuIdxBits_reg       : TIndexBits_vector(7 downto 0);

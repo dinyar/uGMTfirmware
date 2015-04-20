@@ -29,6 +29,8 @@ architecture Behavioral of extrapolation_unit_regional is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
+  signal sMuons_reg : TGMTMu_vector(35 downto 0);
+
   signal sEtaExtrapolationAddress : TEtaExtrapolationAddress(iMuons'range);
   signal sPhiExtrapolationAddress : TPhiExtrapolationAddress(iMuons'range);
 
@@ -97,24 +99,30 @@ begin
       oDeltaPhi                => sDeltaPhi
       );
 
-  -- TODO: Fix this!
+  reg_muons : process(clk)
+  begin  -- process reg_muons
+    if clk'event and clk = '1' then     -- rising clock edge
+      sMuons_reg <= iMuons;
+    end if;
+  end process reg_muons;
+
   -- purpose: Assign corrected coordinates to muons.
   -- outputs: sExtrapolatedCoords
-  assign_coords : process (iMuons, sDeltaEta, sDeltaPhi)
+  assign_coords : process (sMuons_reg, sDeltaEta, sDeltaPhi)
   begin  -- process assign_coords
-    for i in iMuons'range loop
+    for i in sMuons_reg'range loop
       if unsigned(iMuons(i).pt) > 63 then
         -- If muon is high-pT we won't extrapolate.
-        sExtrapolatedCoords(i).eta <= iMuons(i).eta;
-        sExtrapolatedCoords(i).phi <= iMuons(i).phi;
+        sExtrapolatedCoords(i).eta <= sMuons_reg(i).eta;
+        sExtrapolatedCoords(i).phi <= sMuons_reg(i).phi;
       else
         -- If muon is low-pT we etrapolate.
-        sExtrapolatedCoords(i).eta <= iMuons(i).eta + sDeltaEta(i);
+        sExtrapolatedCoords(i).eta <= sMuons_reg(i).eta + sDeltaEta(i);
 
         if iMuons(i).sysign(0) = '1' then
-            sExtrapolatedCoords(i).phi <= iMuons(i).phi + sDeltaPhi(i);
+            sExtrapolatedCoords(i).phi <= sMuons_reg(i).phi + sDeltaPhi(i);
         else
-            sExtrapolatedCoords(i).phi <= iMuons(i).phi - sDeltaPhi(i);
+            sExtrapolatedCoords(i).phi <= sMuons_reg(i).phi - sDeltaPhi(i);
         end if;
       end if;
     end loop;  -- i
