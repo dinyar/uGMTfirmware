@@ -17,7 +17,7 @@ EOM
 
 cat << EOM > setupImplementation.tcl
 open_project $PROJECTFILE
-set_property STEPS.POST_ROUTE_PHYS_OPT_DESIGN.TCL.POST "stopBuildifFailedTiming.tcl" [get_runs impl_1]
+set_property STEPS.POST_ROUTE_PHYS_OPT_DESIGN.TCL.POST "$(pwd)/stopBuildIfFailedTiming.tcl" [get_runs impl_1]
 launch_runs impl_1 -scripts_only
 exit
 EOM
@@ -28,7 +28,7 @@ launch_runs impl_1 -to_step write_bitstream
 exit
 EOM
 
-cat << EOM > stopBuildifFailedTiming.tcl
+cat << EOM > stopBuildIfFailedTiming.tcl
 # Halt the flow with an error if the timing constraints weren't met
 
 set minireport [report_timing_summary -no_header -no_detailed_paths -return_string]
