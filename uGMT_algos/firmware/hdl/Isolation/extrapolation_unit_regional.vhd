@@ -111,7 +111,7 @@ begin
   assign_coords : process (sMuons_reg, sDeltaEta, sDeltaPhi)
   begin  -- process assign_coords
     for i in sMuons_reg'range loop
-      if unsigned(iMuons(i).pt) > 63 then
+      if unsigned(sMuons_reg(i).pt) > 63 then
         -- If muon is high-pT we won't extrapolate.
         sExtrapolatedCoords(i).eta <= sMuons_reg(i).eta;
         sExtrapolatedCoords(i).phi <= sMuons_reg(i).phi;
@@ -119,7 +119,7 @@ begin
         -- If muon is low-pT we etrapolate.
         sExtrapolatedCoords(i).eta <= sMuons_reg(i).eta + sDeltaEta(i);
 
-        if iMuons(i).sysign(0) = '1' then
+        if sMuons_reg(i).sysign(0) = '1' then
             sExtrapolatedCoords(i).phi <= sMuons_reg(i).phi + sDeltaPhi(i);
         else
             sExtrapolatedCoords(i).phi <= sMuons_reg(i).phi - sDeltaPhi(i);
