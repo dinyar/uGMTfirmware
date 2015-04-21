@@ -17,7 +17,7 @@ EOM
 
 cat << EOM > setupImplementation.tcl
 open_project $PROJECTFILE
-set_property STEPS.POST_ROUTE_PHYS_OPT_DESIGN.TCL.POST "$(pwd)/stopBuildIfFailedTiming.tcl" [get_runs impl_1]
+set_property STEPS.ROUTE_DESIGN.TCL.POST "$(pwd)/stopBuildIfFailedTiming.tcl" [get_runs impl_1]
 launch_runs impl_1 -scripts_only
 exit
 EOM
