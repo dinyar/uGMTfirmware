@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.all;
 use work.mp7_data_types.all;
 use work.ipbus.all;
 use work.ipbus_reg_types.all;
-use work.ipbus_decode_mp7_payload.all;
+use work.ipbus_decode_ugmt_serdes.all;
 
 use work.ugmt_constants.all;
 use work.GMTTypes.all;
@@ -97,7 +97,7 @@ begin
     port map(
       ipb_in          => ipb_in,
       ipb_out         => ipb_out,
-      sel             => ipbus_sel_mp7_payload(ipb_in.ipb_addr),
+      sel             => ipbus_sel_ugmt_serdes(ipb_in.ipb_addr),
       ipb_to_slaves   => ipbw,
       ipb_from_slaves => ipbr
       );
