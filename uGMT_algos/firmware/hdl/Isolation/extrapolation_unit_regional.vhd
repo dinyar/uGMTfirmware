@@ -109,6 +109,7 @@ begin
   -- purpose: Assign corrected coordinates to muons.
   -- outputs: sExtrapolatedCoords
   assign_coords : process (sMuons_reg, sDeltaEta, sDeltaPhi)
+    variable tmpPhi : unsigned(9 downto 0);
   begin  -- process assign_coords
     for i in sMuons_reg'range loop
       if unsigned(sMuons_reg(i).pt) > 63 then
@@ -120,10 +121,11 @@ begin
         sExtrapolatedCoords(i).eta <= sMuons_reg(i).eta + SHIFT_LEFT("000" & sDeltaEta(i), 3);
 
         if sMuons_reg(i).sysign(0) = '1' then
-            sExtrapolatedCoords(i).phi <= sMuons_reg(i).phi + SHIFT_LEFT("000" & sDeltaPhi(i), 3);
+            tmpPhi := sMuons_reg(i).phi + SHIFT_LEFT("000" & sDeltaPhi(i), 3);
         else
-            sExtrapolatedCoords(i).phi <= sMuons_reg(i).phi - SHIFT_LEFT("000" & sDeltaPhi(i), 3);
+            tmpPhi := sMuons_reg(i).phi - SHIFT_LEFT("000" & sDeltaPhi(i), 3);
         end if;
+        sExtrapolatedCoords(i).phi <= tmpPhi mod 576;
       end if;
     end loop;  -- i
   end process assign_coords;
