@@ -3,10 +3,14 @@
 # TODO: Add warning to modify path to CACTUSREPO here!
 
 ################## MODIFY HERE ##################
-CACTUSREPOPATH=/home/scratch/vhdl/uGMT/vivado/prod/1.5.2/
+CACTUSREPOPATH=/afs/cern.ch/work/d/dinyar/ugmt_firmware/mp7fw_current
 #################################################
 
 PATTERNFILE=ugmt_testfile.dat
+
+pushd ..
+bash update_testfiles.sh
+popd
 
 vlib isolation_tb
 vmap work isolation_tb
@@ -70,6 +74,7 @@ vcom -check_synthesis ../../hdl/Isolation/iso_check.vhd
 vcom -check_synthesis ../../hdl/Isolation/IsoAssignmentUnit.vhd
 vcom -check_synthesis ../tb_helpers.vhd
 vcom -check_synthesis isolation_tb.vhd
+
 ln -s ../../hdl/ipbus_slaves/BEtaExtrapolation.mif .
 ln -s ../../hdl/ipbus_slaves/BPhiExtrapolation.mif .
 ln -s ../../hdl/ipbus_slaves/OEtaExtrapolation.mif .
@@ -90,7 +95,6 @@ ln -s ../../hdl/ipbus_slaves/BONegMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FOPosMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FONegMatchQual.mif .
 vmake work > Makefile
-bash ../update_testfiles.sh
 echo "WARNING: Using many_events.txt pattern file. Modify $PATTERNFILE link if other pattern file required."
 if [ -f $PATTERNFILE ];
 then

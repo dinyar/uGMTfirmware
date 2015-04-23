@@ -3,8 +3,10 @@
 # TODO: Add warning to modify path to CACTUSREPO here!
 
 ################## MODIFY HERE ##################
-CACTUSREPOPATH=/home/scratch/vhdl/uGMT/vivado/prod/1.5.2/
+CACTUSREPOPATH=/afs/cern.ch/work/d/dinyar/ugmt_firmware/mp7fw_current
 #################################################
+
+PATTERNFILE=ugmt_testfile.dat
 
 PATTERNFILE=ugmt_testfile.dat
 
@@ -24,9 +26,9 @@ vcom -check_synthesis ../../hdl/deserializer_stage_energies.vhd
 vcom -check_synthesis ../../hdl/deserializer_stage_muons.vhd
 vcom -check_synthesis ../tb_helpers.vhd
 vcom -check_synthesis deserializer_tb.vhd
+
 ln -s ../../hdl/ipbus_slaves/SortRank.mif .
 vmake work > Makefile
-bash ../update_testfiles.sh
 echo "WARNING: Using deserializer_many_events.txt pattern file. Modify $PATTERNFILE link if other pattern file required."
 if [ -f $PATTERNFILE ];
 then

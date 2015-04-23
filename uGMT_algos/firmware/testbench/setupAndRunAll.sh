@@ -16,46 +16,50 @@ if [ ! -d results ];
 then
 	mkdir results
 fi
+
+echo "Updating test pattern and LUT content files.. "
+bash update_testfiles.sh
+
 echo "Running deserializer testbench.. "
 cd deserializer
-./setupSim.sh &> /dev/null
+./buildSim.sh &> /dev/null
 rm -f ugmt_testfile.dat
-ln -s deserializer_$testfile.txt ugmt_testfile.dat
+ln -s ../patterns/deserializer_$testfile.txt ugmt_testfile.dat
 ./runSim.sh &> /dev/null
 
 echo "Running GMT testbench.. "
 cd ../GMT
-./setupSim.sh &> /dev/null
+./buildSim.sh &> /dev/null
 rm -f ugmt_testfile.dat
-ln -s $testfile.txt ugmt_testfile.dat
+ln -s ../patterns/$testfile.txt ugmt_testfile.dat
 ./runSim.sh &> /dev/null
 
 echo "Running Isolation testbench.. "
 cd ../isolation
-./setupSim.sh &> /dev/null
+./buildSim.sh &> /dev/null
 rm -f ugmt_testfile.dat
-ln -s $testfile.txt ugmt_testfile.dat
+ln -s ../patterns/$testfile.txt ugmt_testfile.dat
 ./runSim.sh &> /dev/null
 
 echo "Running Serializer testbench.. "
 cd ../serializer
-./setupSim.sh &> /dev/null
+./buildSim.sh &> /dev/null
 rm -f ugmt_testfile.dat
-ln -s serializer_$testfile.txt ugmt_testfile.dat
+ln -s ../patterns/serializer_$testfile.txt ugmt_testfile.dat
 ./runSim.sh &> /dev/null
 
 echo "Running SortAndCancel testbench.. "
 cd ../sort_and_cancel
-./setupSim.sh &> /dev/null
+./buildSim.sh &> /dev/null
 rm -f ugmt_testfile.dat
-ln -s $testfile.txt ugmt_testfile.dat
+ln -s ../patterns/$testfile.txt ugmt_testfile.dat
 ./runSim.sh &> /dev/null
 
 echo "Running uGMTserdes testbench.. "
 cd ../ugmt_serdes
-./setupSim.sh &> /dev/null
+./buildSim.sh &> /dev/null
 rm -f ugmt_testfile.dat
-ln -s integration_$testfile.txt ugmt_testfile.dat
+ln -s ../patterns/integration_$testfile.txt ugmt_testfile.dat
 ./runSim.sh &> /dev/null
 
 echo "Checking results.. "
