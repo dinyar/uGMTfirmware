@@ -23,7 +23,7 @@ EOM
 
 cat << EOM > makeBitfile.tcl
 open_project $PROJECTFILE
-launch_runs impl_1 -to_step write_bitstream
+launch_runs impl_1 -to_step write_bitstream -scripts_only
 exit
 EOM
 
@@ -45,6 +45,7 @@ bash -ex top/top.runs/synth_1/runme.sh
 vivado -mode batch -source setupImplementation.tcl
 bash -ex top/top.runs/impl_1/runme.sh
 vivado -mode batch -source makeBitfile.tcl
+bash -ex top/top.runs/impl_1/runme.sh
 
 make package
 
