@@ -1,18 +1,22 @@
 #!/bin/bash
 
-usage="# Call with the following options:
-# $0 [tag] ["unstable"/"stable"] [username for svn]
-# e.g. $0 mp7fw_v1_6_0 stable dinyar
-# or   $0 mp7fw_v1_7_1 unstable dinyar
+usage="
+# Call with the following options:
+# source $0 [tag] ['unstable'/'stable'] [username for svn]
+# e.g. source $0 mp7fw_v1_6_0 stable dinyar
+# or   source $0 mp7fw_v1_7_1 unstable dinyar
 "
 
 if [ ! $# -eq 3 ];
 then
 	echo "ERROR: Expected 3 arguments."
-	echo "Usage:"
+	echo "########### Usage: ###########"
 	echo "$usage"
 	exit
 fi
+
+export XILINXD_LICENSE_FILE='2112@lxlic01,2112@lxlic02,2112@lxlic03'
+source /home/scratch/Xilinx/Vivado/2014.4/settings64.sh
 
 tag=$1
 username=$3
