@@ -72,3 +72,21 @@ make bitfile
 ```
 
 The bitfile can then be found in `top/top.runs/impl_1/`. To produce a package containing the address tables run `make package`.
+
+## Instructions for running the testbenches
+
+The complete test suite can be run by using the `setupAndRunAll.sh` script in `uGMT_algos/firmware/testbench`. This script takes as its argument the test pattern type to be used. Currently there are four such test pattern types available:
+- `ttbar_small_sample` -- a sample of events from a ttbar generator
+- `many_events` -- the uGMT's muons inputs are saturated with muons (i.e. full 108 muons per bx)
+- `fwd_iso_scan` -- only forward muons and energy deposits with uniform energy for a given bunch crossing
+- `iso_test` -- muons with uniform pT; energy deposits with uniform energy for a given bunch crossing
+
+Individual testbenches can be setup and run with the following commands entered in the root testbench directory (i.e. `uGMT_algos/firmware/testbench`):
+
+```
+bash setupSim.sh [directoryOfTestbench, e.g. deserializer]
+cd [directoryOfTestbench, e.g. deserializer]
+runSim.sh
+```
+
+*Note:* Make sure the Modelsim executables (i.e. `vsim`, etc.) are in your path and usable to run the tests.
