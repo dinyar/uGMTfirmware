@@ -17,10 +17,10 @@ vcom -check_synthesis ../../hdl/serializer_stage.vhd
 vcom -check_synthesis ../tb_helpers.vhd
 vcom -check_synthesis serializer_tb.vhd
 vmake work > Makefile
-bash update_testfiles.sh
+bash ../update_testfiles.sh
 echo "WARNING: Using serializer_many_events.txt pattern file. Modify $PATTERNFILE link if other pattern file required."
 if [ -f $PATTERNFILE ];
 then
     rm -f $PATTERNFILE
 fi
-ln -s serializer_many_events.txt $PATTERNFILE
+ln -s ../patterns/serializer_many_events.txt $PATTERNFILE

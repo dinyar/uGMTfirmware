@@ -89,10 +89,10 @@ ln -s ../../hdl/ipbus_slaves/BONegMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FOPosMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FONegMatchQual.mif .
 vmake work > Makefile
-bash update_testfiles.sh
+bash ../update_testfiles.sh
 echo "WARNING: Using many_events.txt pattern file. Modify $PATTERNFILE link if other pattern file required."
 if [ -f $PATTERNFILE ];
 then
     rm -f $PATTERNFILE
 fi
-ln -s many_events.txt $PATTERNFILE
+ln -s ../patterns/many_events.txt $PATTERNFILE

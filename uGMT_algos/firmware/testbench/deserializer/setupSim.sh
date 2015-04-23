@@ -26,10 +26,10 @@ vcom -check_synthesis ../tb_helpers.vhd
 vcom -check_synthesis deserializer_tb.vhd
 ln -s ../../hdl/ipbus_slaves/SortRank.mif .
 vmake work > Makefile
-bash update_testfiles.sh
+bash ../update_testfiles.sh
 echo "WARNING: Using deserializer_many_events.txt pattern file. Modify $PATTERNFILE link if other pattern file required."
 if [ -f $PATTERNFILE ];
 then
     rm -f $PATTERNFILE
 fi
-ln -s deserializer_many_events.txt $PATTERNFILE
+ln -s ../patterns/deserializer_many_events.txt $PATTERNFILE
