@@ -18,7 +18,7 @@ git clone https://github.com/dinyar/uGMTfirmware.git
 
 If you're not planning to introduce changes and contribute back to the project. Otherwise fork this repository and then work on your copy.
 
-### Run project build script
+### Run project setup script
 From the root of the uGMTfirmware project:
 ```
 cd scripts
@@ -52,7 +52,7 @@ Visit the project folder, source the Xilinx environment (if you haven't already)
 
   ```
   cd [mp7framework_directory]/mp7xe_690
-  [source xilinx environment]
+  [source Xilinx environment]
   make project
   ```
 
