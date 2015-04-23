@@ -8,8 +8,6 @@ CACTUSREPOPATH=/afs/cern.ch/work/d/dinyar/ugmt_firmware/mp7fw_current
 
 PATTERNFILE=ugmt_testfile.dat
 
-PATTERNFILE=ugmt_testfile.dat
-
 vlib deserializer_tb
 vmap work deserializer_tb
 vcom -check_synthesis ../../hdl/common/ugmt_constants.vhd

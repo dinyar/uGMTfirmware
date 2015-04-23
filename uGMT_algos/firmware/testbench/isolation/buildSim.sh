@@ -8,10 +8,6 @@ CACTUSREPOPATH=/afs/cern.ch/work/d/dinyar/ugmt_firmware/mp7fw_current
 
 PATTERNFILE=ugmt_testfile.dat
 
-pushd ..
-bash update_testfiles.sh
-popd
-
 vlib isolation_tb
 vmap work isolation_tb
 vcom -check_synthesis ../../hdl/common/ugmt_constants.vhd
