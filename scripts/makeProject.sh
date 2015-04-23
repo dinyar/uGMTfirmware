@@ -1,39 +1,39 @@
 #!/bin/bash
 
 usage="
+# Directory for mp7fw can be chosen freely.
 # Call with the following options:
-# source $0 [tag] ['unstable'/'stable'] [username for svn]
-# e.g. source $0 mp7fw_v1_6_0 stable dinyar
-# or   source $0 mp7fw_v1_7_1 unstable dinyar
+# $0 [tag] ['unstable'/'stable'] [username for svn] [path for mp7fw]
+# e.g. $0 mp7fw_v1_6_0 stable dinyar /[...]/mp7fwdirectory
+# or   $0 mp7fw_v1_7_1 unstable dinyar /[...]/mp7fwdirectory
 "
 
-if [ ! $# -eq 3 ];
+if [ ! $# -eq 4 ];
 then
-	echo "ERROR: Expected 3 arguments."
+	echo "ERROR: Expected 4 arguments."
+	echo
 	echo "########### Usage: ###########"
 	echo "$usage"
 	exit
 fi
 
-export XILINXD_LICENSE_FILE='2112@lxlic01,2112@lxlic02,2112@lxlic03'
-source /home/scratch/Xilinx/Vivado/2014.4/settings64.sh
-
 tag=$1
 username=$3
+mp7fwPath=$4
 
 scriptsPath=$(pwd)
+uGMTalgosPath=$scriptsPath"/../"
 topPath=$scriptsPath"/../../"
 
 # If directory for mp7fw doesn't exist we'll create it.
-mp7fwPath=$topPath"/mp7fw/"
-mp7Path=$mp7fwPath"/"$tag
-if [ ! -d $mp7Path ];
+mp7path=$mp7fwPath"/"$tag
+if [ ! -d $mp7path ];
 then
-	mkdir $mp7Path
+	mkdir $mp7path
 fi
 
 # Check out mp7fw
-pushd $mp7Path
+pushd $mp7path
 wget --no-check-certificate https://svnweb.cern.ch/trac/cactus/browser/trunk/cactusupgrades/scripts/firmware/ProjectManager.py\?format\=txt -O ProjectManager.py
 if [ -f ProjectManager.py.1 ];
 then
@@ -62,19 +62,23 @@ cd ..
 
 echo "Setting this tag as current tag.. "
 mp7currDir=mp7fw_current
-mp7currPath=$mp7fwPath/$mp7currDir
 rm -f $mp7currDir
 ln -s $tag $mp7currDir
+mp7currPath=$mp7fwPath/$mp7currDir
 
 cd $mp7currPath
 
 echo "Adding dependency file for the uGMT to the null algo dep file."
 pushd cactusupgrades/components/mp7_null_algo/firmware/cfg/
-{ echo -n 'include -c components/uGMT_algos uGMT_algo.dep\n'; cat mp7_null_algo.dep; } > mp7_null_algo.dep.1
-mv mp7_null_algo.dep.1 mp7_null_algo.dep
+sed -i '1iinclude -c components/uGMT_algos uGMT_algo.dep\' mp7_null_algo.dep
 
 popd
-echo $(pwd)
+
+echo "Linking uGMT_algos into cactusupgrades/components"
+pushd cactusupgrades/components/
+ln -s $uGMTalgosPath/uGMT_algos .
+
+popd
 
 echo "Removing constraints for null algo."
 echo "" > cactusupgrades/components/mp7_null_algo/firmware/ucf/mp7_null_algo.tcl
@@ -83,13 +87,15 @@ pushd $scriptsPath
 echo "Retrieving LUT content files.."
 python get_luts.py binary --outpath ../uGMT_algos/firmware/hdl/ipbus_slaves/
 
-echo "#########################################################################"
-echo "To complete the setup process navigate to $mp7currPath and edit
+echo "#############################################################################"
+echo "To complete the setup process navigate to
+$mp7currPath and edit
 cactusupgrades/boards/mp7/base_fw/mp7xe_690/firmware/hdl/mp7xe_690.vhd
 as well as
 cactusupgrades/components/mp7_infra/addr_table/mp7xe_infra.xml
 as described in README.md."
-echo "To create the project execute 'make project' in $mp7currPath/mp7xe_690."
-echo "#########################################################################"
+echo "To then create the project execute 'make project' in
+$mp7currPath/mp7xe_690."
+echo "#############################################################################"
 
 exit
