@@ -83,6 +83,9 @@ popd
 echo "Removing constraints for null algo."
 echo "" > cactusupgrades/components/mp7_null_algo/firmware/ucf/mp7_null_algo.tcl
 
+cd mp7xe_690
+ln -s $uGMTalgosPath/runAll.sh .
+
 pushd $scriptsPath
 echo "Retrieving LUT content files.."
 python get_luts.py binary --outpath ../uGMT_algos/firmware/hdl/ipbus_slaves/
