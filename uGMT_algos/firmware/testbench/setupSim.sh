@@ -9,8 +9,6 @@ fi
 # Get test and LUT files
 bash update_testfiles.sh
 
-exit
-
 # Create the simulation
 cd $1
 bash buildSim.sh
