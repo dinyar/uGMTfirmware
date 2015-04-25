@@ -50,7 +50,7 @@ architecture Behavioral of deserialize_mu_quad is
 
   -- Stores sort ranks for each 32 bit word that arrives from TFs. Every second
   -- such rank is garbage and will be disregarded in second step.
-  type TSortRankBuffer is array (2*2*NUM_MUONS_LINK-1 downto 0) of TSortRank10_vector(NCHAN-1 downto 0);
+  type TSortRankBuffer is array (2*NUM_MUONS_LINK downto 0) of TSortRank10_vector(NCHAN-1 downto 0);
   signal sSortRank_buffer : TSortRankBuffer;
   signal sSortRank_link   : TSortRank_link(NCHAN-1 downto 0);
 
@@ -116,19 +116,19 @@ begin
       for iChan in NCHAN-1 downto 0 loop
         for iFrame in 2*NUM_MUONS_LINK-1 downto 0 loop
           -- Store valid bit.
-          sValid_link(iChan)(iFrame) <= in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).valid;
+          sValid_link(iChan)(iFrame) <= in_buf(iFrame)(iChan).valid;
           if (iFrame mod 2) = 0 then
             -- Get first half of muon.
-            if in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).valid = VALID_BIT then
+            if in_buf(iFrame)(iChan).valid = VALID_BIT then
               -- We're only using the lower 30 bits as the MSB is used for
               -- status codes.
-              sMuons_link(iChan)(iFrame/2)(30 downto 0) <= in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).data(30 downto 0);
+              sMuons_link(iChan)(iFrame/2)(30 downto 0) <= in_buf(iFrame)(iChan).data(30 downto 0);
             else
               sMuons_link(iChan)(iFrame/2)(30 downto 0) <= (others => '0');
             end if;
 
             -- Determine empty bit.
-            if in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).data(PT_IN_HIGH downto PT_IN_LOW) = (PT_IN_HIGH downto PT_IN_LOW => '0') then
+            if in_buf(iFrame)(iChan).data(PT_IN_HIGH downto PT_IN_LOW) = (PT_IN_HIGH downto PT_IN_LOW => '0') then
               sEmpty_link(iChan)(iFrame/2) <= '1';
             else
               sEmpty_link(iChan)(iFrame/2) <= '0';
@@ -136,10 +136,10 @@ begin
 
           else
             -- Get second half of muon.
-            if in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).valid = VALID_BIT then
+            if in_buf(iFrame)(iChan).valid = VALID_BIT then
               -- We're only using the lower 30 bits as the MSB is used for
               -- status codes.
-              sMuons_link(iChan)(iFrame/2)(61 downto 31) <= in_buf(iFrame+BUFFER_IN_MU_POS_LOW)(iChan).data(30 downto 0);
+              sMuons_link(iChan)(iFrame/2)(61 downto 31) <= in_buf(iFrame)(iChan).data(30 downto 0);
             else
               sMuons_link(iChan)(iFrame/2)(61 downto 31) <= (others => '0');
             end if;
@@ -149,7 +149,7 @@ begin
             -- Using this iFrame even though pT and quality are contained in
             -- earlier frame as the rank calculation requires an additional
             -- clk240, so the "correct" sort rank is late by one.
-            sSortRank_link(iChan)(iFrame/2) <= sSortRank_buffer(iFrame+BUFFER_IN_MU_POS_LOW)(iChan);
+            sSortRank_link(iChan)(iFrame/2) <= sSortRank_buffer(iFrame)(iChan);
           end if;
         end loop;  -- iFrame
       end loop;  -- iChan

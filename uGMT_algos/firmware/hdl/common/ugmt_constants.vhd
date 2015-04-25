@@ -3,11 +3,6 @@ use IEEE.STD_LOGIC_1164.all;
 
 package ugmt_constants is
 
-  constant BUFFER_IN_MU_POS_HIGH : natural := 5;  -- Start position in input
-                                                  -- buffer for valid muon.
-  constant BUFFER_IN_MU_POS_LOW  : natural := 0;  -- Start position in input
-                                                  -- buffer for valid muon.
-
   -- Start and end positions for buffers for outputs.
   constant BUFFER_OUT_MU_POS_HIGH        : natural := 5;
   constant BUFFER_OUT_MU_POS_LOW         : natural := 0;

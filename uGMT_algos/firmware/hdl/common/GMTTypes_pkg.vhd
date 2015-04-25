@@ -200,10 +200,7 @@ package GMTTypes is
   -----------------------------------------------------------------------------
   -- Types for Transceivers
   -----------------------------------------------------------------------------
-  -- Have to store input muons for two bx as they aren't aligned with 40 MHz
-  -- clk.
-  type TQuadTransceiverBufferIn is array (2*2*NUM_MUONS_IN-1 downto 0) of ldata(3 downto 0);
---  type TQuadTransceiverBufferIn is array (2*NUM_MUONS_IN-1 downto 0) of ldata(3 downto 0);
+ type TQuadTransceiverBufferIn is array (2*NUM_MUONS_IN downto 0) of ldata(3 downto 0);
 
   -- Contains only the data words received from the links
   type TDataBuffer is array (natural range <>) of std_logic_vector(31 downto 0);

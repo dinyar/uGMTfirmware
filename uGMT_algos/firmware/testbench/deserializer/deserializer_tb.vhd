@@ -81,7 +81,7 @@ begin
     file F                        : text open read_mode is "ugmt_testfile.dat";
     file FO                       : text open write_mode is "../results/deserializer_tb.results";
     variable L, LO                : line;
-    constant DESERIALIZER_LATENCY : integer := 4;
+    constant DESERIALIZER_LATENCY : integer := 3;
     variable event                : TGMTInEvent;
     variable event_buffer         : TGMTInEvent_vec(DESERIALIZER_LATENCY-1 downto 0);
     variable iEvent               : integer := 0;
@@ -111,7 +111,11 @@ begin
         end loop;  -- j
     end loop;  -- i
 
-    wait for 50 ns;  -- wait until global set/reset completes
+    -- TODO: Is this needed?
+    wait for half_period_40;  -- wait until global set/reset completes
+    wait for half_period_40;  -- wait until global set/reset completes
+    wait for half_period_40;  -- wait until global set/reset completes
+    wait for half_period_40;  -- wait until global set/reset completes
 
     while remainingEvents > 0 loop
       tmpError := 99999999;
@@ -120,9 +124,9 @@ begin
 
         -- Filling deserializers
         for cnt in 0 to 5 loop
-          wait for half_period_240;
-          wait for half_period_240;
           iD <= event.iD(cnt);
+          wait for half_period_240;
+          wait for half_period_240;
         end loop;  -- cnt
 
         event_buffer(0) := event;

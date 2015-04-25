@@ -30,18 +30,18 @@ architecture Behavioral of deserialize_energy_quad is
   signal sValid_link : TValid_link(NCHAN-1 downto 0);
 begin  -- Behavioral
 
-  in_buf(2*NUM_MUONS_IN-1) <= d(NCHAN-1 downto 0);
+  in_buf(in_buf'high) <= d(NCHAN-1 downto 0);
 
   fill_buffer : process (clk240)
   begin  -- process fill_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      in_buf(2*NUM_MUONS_IN-2 downto 0) <= in_buf(2*NUM_MUONS_IN-1 downto 1);
+      in_buf(in_buf'high-1 downto 0) <= in_buf(in_buf'high downto 1);
     end if;
   end process fill_buffer;
 
   unroll_links : for chan in NCHAN-1 downto 0 generate
-    unroll_bx : for bx in BUFFER_IN_MU_POS_HIGH downto BUFFER_IN_MU_POS_LOW generate
-      sLinkData(chan)(30*(bx-BUFFER_IN_MU_POS_LOW)+29 downto 30*(bx-BUFFER_IN_MU_POS_LOW)) <= in_buf(bx)(chan).data(29 downto 0);
+    unroll_bx : for bx in 5 downto 0 generate
+      sLinkData(chan)(30*(bx)+29 downto 30*(bx)) <= in_buf(bx)(chan).data(29 downto 0);
     end generate unroll_bx;
   end generate unroll_links;
 
@@ -49,7 +49,7 @@ begin  -- Behavioral
   begin  -- process gmt_in_reg
     if clk40'event and clk40 = '1' then  -- rising clock edge
       for chan in d'range loop
-        for bx in BUFFER_IN_MU_POS_HIGH downto BUFFER_IN_MU_POS_LOW loop
+        for bx in 5 downto 0 loop
           -- Store valid bit.
           sValid_link(chan)(bx) <= in_buf(bx)(chan).valid;
           if in_buf(bx)(chan).valid = VALID_BIT then
@@ -60,9 +60,9 @@ begin  -- Behavioral
 
         end loop;  -- bx
       end loop;  -- chan
-      oEnergies <= sEnergies;
-      oValid <= check_valid_bits(sValid_link(NCHAN-1 downto 0));
     end if;
   end process gmt_in_reg;
+  oEnergies <= sEnergies;
+  oValid    <= check_valid_bits(sValid_link(NCHAN-1 downto 0));
 
 end Behavioral;
