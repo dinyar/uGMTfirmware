@@ -133,13 +133,13 @@ begin
 
       else
           for cnt in 0 to 5 loop
-            wait for half_period_240;
-            wait for half_period_240;
             for i in iD'range loop
               iD(i).data   <= (others => '0');
               iD(i).valid  <= '1';
               iD(i).strobe <= '1';
             end loop;  -- i
+            wait for half_period_240;
+            wait for half_period_240;
           end loop;  -- cnt
 
           remainingEvents := remainingEvents-1;

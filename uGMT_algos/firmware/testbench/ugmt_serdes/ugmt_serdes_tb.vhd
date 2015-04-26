@@ -58,7 +58,7 @@ begin
     file F                   : text open read_mode  is "ugmt_testfile.dat";
     file FO                  : text open write_mode is "../results/ugmt_serdes_tb.results";
     variable L, LO           : line;
-    constant uGMT_LATENCY    : integer := 10;
+    constant uGMT_LATENCY    : integer := 9;
     variable event           : TGMTEvent;
     variable event_buffer    : TGMTEvent_vec(uGMT_LATENCY-1 downto 0);
     variable iEvent          : integer := 0;
@@ -88,9 +88,9 @@ begin
 
         -- Filling uGMT
         for cnt in 0 to 5 loop
-          wait for half_period_240;
-          wait for half_period_240;
           iD <= event.iD(cnt);
+          wait for half_period_240;
+          wait for half_period_240;
           vOutput(cnt) := oQ;
         end loop;  -- cnt
 
@@ -98,13 +98,13 @@ begin
 
       else
           for cnt in 0 to 5 loop
-            wait for half_period_240;
-            wait for half_period_240;
             for i in iD'range loop
               iD(i).data   <= (others => '0');
               iD(i).valid  <= '1';
               iD(i).strobe <= '1';
             end loop;  -- i
+            wait for half_period_240;
+            wait for half_period_240;
 
             vOutput(cnt) := oQ;
 
