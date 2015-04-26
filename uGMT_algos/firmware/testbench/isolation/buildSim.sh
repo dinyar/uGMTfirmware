@@ -49,8 +49,6 @@ vcom -check_synthesis ../../hdl/ipbus_decode_isolation_mem_absolute.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_isolation_mem_relative.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_isolation_assignment.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_isolation.vhd
-vcom -check_synthesis ../../cgn/eta_extrapolation_mem.vhd
-vcom -check_synthesis ../../cgn/phi_extrapolation_mem.vhd
 vcom -check_synthesis ../../hdl/Isolation/extrapolate_eta.vhd
 vcom -check_synthesis ../../hdl/Isolation/extrapolate_phi.vhd
 vcom -check_synthesis ../../hdl/Isolation/extrapolation_unit_regional.vhd
