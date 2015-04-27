@@ -22,45 +22,45 @@ bash update_testfiles.sh
 
 echo "Running deserializer testbench.. "
 cd deserializer
-./buildSim.sh &> /dev/null
+./buildSim.sh
 rm -f ugmt_testfile.dat
 ln -s ../patterns/deserializer_$testfile.txt ugmt_testfile.dat
-./runSim.sh &> /dev/null
+./runSim.sh
 
 echo "Running GMT testbench.. "
 cd ../GMT
-./buildSim.sh &> /dev/null
+./buildSim.sh
 rm -f ugmt_testfile.dat
 ln -s ../patterns/$testfile.txt ugmt_testfile.dat
-./runSim.sh &> /dev/null
+./runSim.sh
 
 echo "Running Isolation testbench.. "
 cd ../isolation
-./buildSim.sh &> /dev/null
+./buildSim.sh
 rm -f ugmt_testfile.dat
 ln -s ../patterns/$testfile.txt ugmt_testfile.dat
-./runSim.sh &> /dev/null
+./runSim.sh
 
 echo "Running Serializer testbench.. "
 cd ../serializer
-./buildSim.sh &> /dev/null
+./buildSim.sh
 rm -f ugmt_testfile.dat
 ln -s ../patterns/serializer_$testfile.txt ugmt_testfile.dat
-./runSim.sh &> /dev/null
+./runSim.sh
 
 echo "Running SortAndCancel testbench.. "
 cd ../sort_and_cancel
-./buildSim.sh &> /dev/null
+./buildSim.sh
 rm -f ugmt_testfile.dat
 ln -s ../patterns/$testfile.txt ugmt_testfile.dat
-./runSim.sh &> /dev/null
+./runSim.sh
 
 echo "Running uGMTserdes testbench.. "
 cd ../ugmt_serdes
-./buildSim.sh &> /dev/null
+./buildSim.sh
 rm -f ugmt_testfile.dat
 ln -s ../patterns/integration_$testfile.txt ugmt_testfile.dat
-./runSim.sh &> /dev/null
+./runSim.sh
 
 echo "Checking results.. "
 cd ..
