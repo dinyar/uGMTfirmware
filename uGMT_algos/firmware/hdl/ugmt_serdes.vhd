@@ -32,7 +32,7 @@ architecture rtl of ugmt_serdes is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
-  constant GMT_ALGO_LATENCY : natural := 7;
+  constant GMT_ALGO_LATENCY : natural := 8;
   signal   sValid_buffer    : std_logic_vector(GMT_ALGO_LATENCY-1 downto 0);
   signal   sValid_muons     : std_logic;
   signal   sValid_energies  : std_logic;
@@ -156,19 +156,19 @@ begin
     end if;
   end process delay_valid_bit;
 
-  sMuons_reg                                   <= sMuons;
-  sTracks_reg                                  <= sTracks;
-  sEmpty_reg                                   <= sEmpty;
-  sSortRanks_reg                               <= sSortRanks;
-  sEnergies_tmp(sEnergies_tmp'high-4 downto 0) <= sEnergies;
-  sEnergies_tmp(sEnergies_tmp'high-3)          <= (others => "00000");
-  sEnergies_tmp(sEnergies_tmp'high-2)          <= (others => "00000");
-  sEnergies_tmp(sEnergies_tmp'high-1)          <= (others => "00000");
-  sEnergies_tmp(sEnergies_tmp'high)            <= (others => "00000");
 
   gmt_index_comp : process (clk40)
   begin  -- process gmt_index_comp
     if clk40'event and clk40 = '1' then  -- rising clock edge
+      sMuons_reg                                   <= sMuons;
+      sTracks_reg                                  <= sTracks;
+      sEmpty_reg                                   <= sEmpty;
+      sSortRanks_reg                               <= sSortRanks;
+      sEnergies_tmp(sEnergies_tmp'high-4 downto 0) <= sEnergies;
+      sEnergies_tmp(sEnergies_tmp'high-3)          <= (others => "00000");
+      sEnergies_tmp(sEnergies_tmp'high-2)          <= (others => "00000");
+      sEnergies_tmp(sEnergies_tmp'high-1)          <= (others => "00000");
+      sEnergies_tmp(sEnergies_tmp'high)            <= (others => "00000");
 
       for index in sMuons'range loop
         sIndexBits(index) <= to_unsigned(index, sIndexBits(index)'length);
