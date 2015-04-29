@@ -21,7 +21,7 @@ architecture behavior of testbench is
   constant div240          : integer   := 12;
   constant div40           : integer   := 2;
   constant half_period_240 : time      := 25000 ps / div240;
-  constant half_period_40  : time      := 25000 ps / div40;
+  constant half_period_40  : time      := 6*half_period_240;
   signal   clk240          : std_logic := '1';
   signal   clk40           : std_logic := '1';
   signal   rst             : std_logic := '0';
@@ -70,6 +70,7 @@ begin
   begin  -- process tb
     -- Reset event buffer
     for i in event_buffer'range loop
+        -- event_buffer(i).iEvent := -1;
         for j in event_buffer(i).iD'range loop
             for k in event_buffer(i).iD(j)'range loop
                 event_buffer(i).iD(j)(k).data   := (others => '0');
@@ -79,7 +80,7 @@ begin
         end loop;  -- j
     end loop;  -- i
 
-    wait for 50 ns;  -- wait until global set/reset completes
+    wait for 20*half_period_40;  -- wait until global set/reset completes
     -- Add user defined stimulus here
     while remainingEvents > 0 loop
       tmpError := 99999999;
@@ -89,8 +90,7 @@ begin
         -- Filling uGMT
         for cnt in 0 to 5 loop
           iD <= event.iD(cnt);
-          wait for half_period_240;
-          wait for half_period_240;
+          wait for 2*half_period_240;
           vOutput(cnt) := oQ;
         end loop;  -- cnt
 
@@ -103,8 +103,7 @@ begin
               iD(i).valid  <= '1';
               iD(i).strobe <= '1';
             end loop;  -- i
-            wait for half_period_240;
-            wait for half_period_240;
+            wait for 2*half_period_240;
 
             vOutput(cnt) := oQ;
 

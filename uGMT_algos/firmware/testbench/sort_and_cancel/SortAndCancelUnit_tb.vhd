@@ -21,7 +21,7 @@ architecture behavior of testbench is
   constant div240          : integer   := 12;
   constant div40           : integer   := 2;
   constant half_period_240 : time      := 25000 ps / div240;
-  constant half_period_40  : time      := 25000 ps / div40;
+  constant half_period_40  : time      := 6*half_period_240;
   signal   clk240          : std_logic := '0';
   signal   clk40           : std_logic := '0';
   signal   rst             : std_logic := '0';
@@ -109,7 +109,7 @@ begin
     file FO                              : text open write_mode is "../results/SortAndCancel_tb.results";
     variable L, LO                       : line;
     variable event                       : TGMTMuEvent;
-    constant SORTER_LATENCY              : integer                        := 7;
+    constant SORTER_LATENCY              : integer                        := 6;
     variable event_buffer                : TGMTMuEvent_vec(SORTER_LATENCY-1 downto 0);
     -- Delay is one more than in sorter unit due to the delay in the serializer.
     constant INTERMEDIATE_DELAY          : integer                        := 3;
@@ -221,7 +221,7 @@ begin
       end loop;  -- iMu
     end loop;  -- iInt
 
-    wait for 250 ns;  -- wait until global set/reset completes
+    wait for 20*half_period_40;  -- wait until global set/reset completes
     -- Add user defined stimulus here
     while remainingEvents > 0 loop
       tmpError := 99999999;

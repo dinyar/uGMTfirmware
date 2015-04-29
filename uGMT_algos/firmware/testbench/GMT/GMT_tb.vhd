@@ -18,7 +18,7 @@ architecture behavior of testbench is
   constant div240          : integer   := 12;
   constant div40           : integer   := 2;
   constant half_period_240 : time      := 25000 ps / div240;
-  constant half_period_40  : time      := 25000 ps / div40;
+  constant half_period_40  : time      := 6*half_period_240;
   signal   clk240          : std_logic := '0';
   signal   clk40           : std_logic := '0';
   signal   rst             : std_logic := '0';
@@ -219,7 +219,7 @@ begin
         end loop;  -- j
       end loop;  -- i
     end loop;  -- event
-    wait for 250 ns;  -- wait until global set/reset completes
+    wait for 20*half_period_40;  -- wait until global set/reset completes
     while remainingEvents > 0 loop
       tmpErrorSorter := 99999999;
       tmpErrorIso    := 99999999;

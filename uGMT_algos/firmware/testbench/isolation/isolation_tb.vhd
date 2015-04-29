@@ -18,7 +18,7 @@ architecture behavior of testbench is
   constant div240          : integer   := 12;
   constant div40           : integer   := 2;
   constant half_period_240 : time      := 25000 ps / div240;
-  constant half_period_40  : time      := 25000 ps / div40;
+  constant half_period_40  : time      := 6*half_period_240;
   signal   clk240          : std_logic := '0';
   signal   clk40           : std_logic := '0';
   signal   rst             : std_logic := '0';
@@ -135,7 +135,7 @@ begin
     variable L, LO                : line;
     variable caloEvent            : TGMTCaloEvent;
     variable muEvent              : TGMTMuEvent;
-    constant ISO_LATENCY          : integer                        := 7;
+    constant ISO_LATENCY          : integer                        := 6;
     variable caloEvent_buffer     : TGMTCaloEvent_vec(ISO_LATENCY-1 downto 0);
     variable muEvent_buffer       : TGMTMuEvent_vec(ISO_LATENCY-1 downto 0);
     variable iEvent               : integer                        := 0;
@@ -230,7 +230,7 @@ begin
         end loop;  -- j
       end loop;  -- i
     end loop;  -- event
-    wait for 250 ns;  -- wait until global set/reset completes
+    wait for 20*half_period_40;  -- wait until global set/reset completes
     while remainingEvents > 0 loop
       tmpError := 99999999;
       if not endfile(F) then

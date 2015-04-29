@@ -21,7 +21,7 @@ architecture behavior of testbench is
   constant div240          : integer   := 12;
   constant div40           : integer   := 2;
   constant half_period_240 : time      := 25000 ps / div240;
-  constant half_period_40  : time      := 25000 ps / div40;
+  constant half_period_40  : time      := 6*half_period_240;
   signal   clk240          : std_logic := '1';
   signal   clk40           : std_logic := '1';
   signal   rst             : std_logic := '0';
@@ -112,10 +112,7 @@ begin
     end loop;  -- i
 
     -- TODO: Is this needed?
-    wait for half_period_40;  -- wait until global set/reset completes
-    wait for half_period_40;  -- wait until global set/reset completes
-    wait for half_period_40;  -- wait until global set/reset completes
-    wait for half_period_40;  -- wait until global set/reset completes
+    wait for 4*half_period_40;  -- wait until global set/reset completes
 
     while remainingEvents > 0 loop
       tmpError := 99999999;
@@ -125,8 +122,7 @@ begin
         -- Filling deserializers
         for cnt in 0 to 5 loop
           iD <= event.iD(cnt);
-          wait for half_period_240;
-          wait for half_period_240;
+          wait for 2*half_period_240;
         end loop;  -- cnt
 
         event_buffer(0) := event;
@@ -138,8 +134,7 @@ begin
               iD(i).valid  <= '1';
               iD(i).strobe <= '1';
             end loop;  -- i
-            wait for half_period_240;
-            wait for half_period_240;
+            wait for 2*half_period_240;
           end loop;  -- cnt
 
           remainingEvents := remainingEvents-1;
