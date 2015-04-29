@@ -31,10 +31,10 @@ architecture Behavioral of deserialize_energy_quad is
 begin  -- Behavioral
 
 
+  in_buf(in_buf'high) <= d(NCHAN-1 downto 0);
   fill_buffer : process (clk240)
   begin  -- process fill_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      in_buf(in_buf'high) <= d(NCHAN-1 downto 0);
       in_buf(in_buf'high-1 downto 0) <= in_buf(in_buf'high downto 1);
     end if;
   end process fill_buffer;

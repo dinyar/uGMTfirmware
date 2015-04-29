@@ -71,10 +71,10 @@ begin
         );
 
 
+  in_buf(in_buf'high) <= d(NCHAN-1 downto 0);
   fill_buffer : process (clk240)
   begin  -- process fill_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      in_buf(in_buf'high) <= d(NCHAN-1 downto 0);
       in_buf(in_buf'high-1 downto 0) <= in_buf(in_buf'high downto 1);
     end if;
   end process fill_buffer;
@@ -134,9 +134,6 @@ begin
               sEmpty_link(iChan)(iFrame/2) <= '0';
             end if;
 
-            -- Use every second result from SortRankLUT. (The other results
-            -- were calculated with the 'wrong part' of the TF muon.)
-            sSortRank_link(iChan)(iFrame/2) <= sSortRank_buffer(iFrame)(iChan);            
           else
             -- Get second half of muon.
             if in_buf(iFrame)(iChan).valid = VALID_BIT then
@@ -146,6 +143,12 @@ begin
             else
               sMuons_link(iChan)(iFrame/2)(61 downto 31) <= (others => '0');
             end if;
+            -- Use every second result from SortRankLUT. (The other results
+            -- were calculated with the 'wrong part' of the TF muon.)
+            -- Using this iFrame even though pT and quality are contained in
+            -- earlier frame as the rank calculation requires an additional
+            -- clk240, so the "correct" sort rank is late by one. 
+            sSortRank_link(iChan)(iFrame/2) <= sSortRank_buffer(iFrame)(iChan);
           end if;
         end loop;  -- iFrame
       end loop;  -- iChan
