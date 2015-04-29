@@ -31,12 +31,12 @@ architecture Behavioral of serializer_stage is
   -- Offsetting the beginning of sending to align with 40 MHz clock and make
   -- sending a bit faster.
   signal sSel    : integer range 0 to 5;
-  signal sSelRst : std_logic;
+  signal sSelRst : std_logic := '1';
 
-  signal clk40_pseudo  : std_logic;
-  signal clk40_pseudo1 : std_logic;
-  signal clk40_pseudo2 : std_logic;
-  signal clk40_delayed : std_logic;
+  signal clk40_pseudo  : std_logic := '1';
+  signal clk40_pseudo1 : std_logic := '1';
+  signal clk40_pseudo2 : std_logic := '0';
+  signal clk40_delayed : std_logic := '0';
 
   signal sIntermediateMuons : TGMTMu_vector(23 downto 0);
   signal sSortRanks         : TSortRank10_vector(23 downto 0);
@@ -46,9 +46,6 @@ architecture Behavioral of serializer_stage is
 begin
 
   sIntermediateMuons <= iIntermediateMuonsF(7 downto 4) & iIntermediateMuonsO(7 downto 4) & iIntermediateMuonsB & iIntermediateMuonsO(3 downto 0) & iIntermediateMuonsF(3 downto 0);
-  sSortRanks         <= iSortRanksF(7 downto 4) & iSortRanksO(7 downto 4) & iSortRanksB & iSortRanksO(3 downto 0) & iSortRanksF(3 downto 0);
-
-  sExtrapolatedCoords <= iExtrapolatedCoordsF(35 downto 18) & iExtrapolatedCoordsO(35 downto 18) & iExtrapolatedCoordsB & iExtrapolatedCoordsO(17 downto 0) & iExtrapolatedCoordsF(17 downto 0);
 
   serialize_muons : for i in NUM_MUONS_LINK-1 downto 0 generate
     split_muons : for j in NUM_OUT_CHANS-1 downto 0 generate
@@ -78,27 +75,6 @@ begin
     end generate split_muons;
   end generate serialize_intermediate_muons;
 
-  serialize_intermediate_sort_ranks : for i in NUM_FRAMES_LINK-1 downto 0 generate
-    split_srt_ranks : for j in NUM_INTERM_SRT_OUT_CHANS-1 downto 0 generate
-      sOutBuf(i)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS).data  <= sSortRanks(2*i+12*j) & sSortRanks(2*i+12*j+1) & (11 downto 0 => '0');
-      sOutBuf(i)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS).valid <= iValid;
-    end generate split_srt_ranks;
-  end generate serialize_intermediate_sort_ranks;
-
-  sOutBuf(0)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).data  <= std_logic_vector(iFinalEnergies(0)) & std_logic_vector(iFinalEnergies(1)) & std_logic_vector(iFinalEnergies(2)) & std_logic_vector(iFinalEnergies(3)) & (11 downto 0 => '0');
-  sOutBuf(0)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).valid <= iValid;
-  sOutBuf(1)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).data  <= std_logic_vector(iFinalEnergies(4)) & std_logic_vector(iFinalEnergies(5)) & std_logic_vector(iFinalEnergies(6)) & std_logic_vector(iFinalEnergies(7)) & (11 downto 0 => '0');
-  sOutBuf(1)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS).valid <= iValid;
-
-  serialize_extrapolated_coordinates : for i in NUM_MUONS_LINK-1 downto 0 generate
-    split_coords : for j in NUM_EXTRAP_COORDS_OUT_CHANS-1 downto 0 generate
-      sOutBuf(2*i)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS).data    <= std_logic_vector(sExtrapolatedCoords(3*i+9*j).phi) & std_logic_vector(sExtrapolatedCoords(3*i+9*j).eta) & std_logic_vector(sExtrapolatedCoords(3*i+9*j+1).phi) & (2 downto 0     => '0');
-      sOutBuf(2*i)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS).valid   <= iValid;
-      sOutBuf(2*i+1)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS).data  <= std_logic_vector(sExtrapolatedCoords(3*i+9*j+1).eta) & std_logic_vector(sExtrapolatedCoords(3*i+9*j+2).phi) & std_logic_vector(sExtrapolatedCoords(3*i+9*j+2).eta) & (3 downto 0 => '0');
-      sOutBuf(2*i+1)(j+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS).valid <= iValid;
-    end generate split_coords;
-  end generate serialize_extrapolated_coordinates;
-
   shift_intermediates_rising : process (clk40)
   begin  -- process shift_intermediates_rising
     if clk40'event and clk40 = '1' then  -- rising clock edge
@@ -127,7 +103,6 @@ begin
   sSelRst      <= clk40_pseudo and (not clk40_delayed);
 
   serialization : process (clk240)
-  --variable vOutBuf : TTransceiverBufferOut;
   begin  -- process serialization
     if clk240'event and clk240 = '1' then  -- rising clock edge
 
@@ -135,20 +110,33 @@ begin
 
       for i in 0 to NUM_OUT_CHANS-1 loop
         q(i).strobe <= '1';
-        q(i).valid <= sOutBuf(sSel)(i).valid;
+       -- Branch required because we otherwise pick the frame for the previous b
+        if sSel > 0 then
+          q(i).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).data;
+          q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
+        else
+          q(i).data <= sOutBuf(sSel)(i).data;
+          q(i).valid <= sOutBuf(sSel)(i).valid;
+        end if;
         q(i).data <= sOutBuf(sSel)(i).data;
       end loop;  -- i
       for i in NUM_OUT_CHANS to NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS - 1 loop
        q(i).strobe <= '1';
-       q(i).valid <= sOutBuf(sSel)(i).valid; -- Not using the offset to make the valid bit appear in time.
-       q(i).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).data;
+       -- Branch required because we otherwise pick the frame for the previous b
+       if sSel > 0 then
+         q(i).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).data;
+         q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
+       else
+         q(i).data <= sOutBuf(sSel)(i).data;
+         q(i).valid <= sOutBuf(sSel)(i).valid;
+       end if;
       end loop;  -- i
       for i in NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS to q'high loop
        q(i).strobe <= '1';
       end loop;  -- i
 
       if sSelRst = '1' then
-        sSel <= 1;
+        sSel <= 2;
       elsif sSel < 5 then
         sSel <= sSel+1;
       else

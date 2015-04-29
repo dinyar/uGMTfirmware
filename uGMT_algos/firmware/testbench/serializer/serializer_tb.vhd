@@ -21,11 +21,12 @@ architecture behavior of testbench is
   constant div240          : integer   := 12;
   constant div40           : integer   := 2;
   constant half_period_240 : time      := 25000 ps / div240;
-  constant half_period_40  : time      := 25000 ps / div40;
+  constant half_period_40  : time      := 6*half_period_240;
   signal   clk240          : std_logic := '1';
   signal   clk40           : std_logic := '1';
   signal   rst             : std_logic := '0';
 
+  signal iValid                  : std_logic := '0';
   signal iMuons                  : TGMTMu_vector(7 downto 0);
   signal iIso                    : TIsoBits_vector(7 downto 0);
   signal iIntermediateMuonsB     : TGMTMu_vector(7 downto 0);
@@ -46,7 +47,7 @@ begin
     port map (
       clk240               => clk240,
       clk40                => clk40,
-      iValid               => '1',
+      iValid               => iValid,
       sMuons               => iMuons,
       sIso                 => iIso,
       iIntermediateMuonsB  => iIntermediateMuonsB,
@@ -69,9 +70,9 @@ begin
     file F                      : text open read_mode is "ugmt_testfile.dat";
     file FO                     : text open write_mode is "../results/serializer_tb.results";
     variable L, LO              : line;
-    constant SERIALIZER_LATENCY : integer := 2;
+    constant SERIALIZER_LATENCY : integer := 3;
     variable event              : TGMTOutEvent;
-    variable event_buffer       : TGMTOutEvent_vec(SERIALIZER_LATENCY downto 0);
+    variable event_buffer       : TGMTOutEvent_vec(SERIALIZER_LATENCY-1 downto 0);
     variable iEvent             : integer := 0;
     variable tmpError           : integer;
     variable cntError           : integer := 0;
@@ -81,27 +82,31 @@ begin
   begin  -- process tb
 
     -- Reset event buffer
-    for iMu in event_buffer(1).muons'range loop
-      event_buffer(1).muons(iMu) := ("00", "000000000", "0000", "000000000", "0000000000");
-      event_buffer(1).iso(iMu)   := "00";
-    end loop;  -- iMu
+    for i in event_buffer'range loop
+      event_buffer(i).iEvent := -1;
+      for iMu in event_buffer(i).muons'range loop
+        event_buffer(i).muons(iMu) := ("00", "000000000", "0000", "000000000", "0000000000");
+        event_buffer(i).iso(iMu)   := "00";
+      end loop;  -- iMu
+    end loop;  -- i
 
 
-    wait for 250 ns;  -- wait until global set/reset completes
+    wait for 2*half_period_40;  -- wait until global set/reset completes
     while remainingEvents > 0 loop
       tmpError := 99999999;
       if not endfile(F) then
         ReadOutEvent(F, iEvent, event);
 
         -- Filling serializer
-        iMuons                  <= event_buffer(SERIALIZER_LATENCY).muons;
-        iIso                    <= event_buffer(SERIALIZER_LATENCY).iso;
-        iIntermediateMuonsB     <= event_buffer(SERIALIZER_LATENCY-1).intMuons_brl;
-        iIntermediateMuonsO     <= event_buffer(SERIALIZER_LATENCY-1).intMuons_ovl;
-        iIntermediateMuonsF     <= event_buffer(SERIALIZER_LATENCY-1).intMuons_fwd;
-        iIntermediateSortRanksB <= event_buffer(SERIALIZER_LATENCY-1).intSortRanks_brl;
-        iIntermediateSortRanksO <= event_buffer(SERIALIZER_LATENCY-1).intSortRanks_ovl;
-        iIntermediateSortRanksF <= event_buffer(SERIALIZER_LATENCY-1).intSortRanks_fwd;
+        iValid                  <= '1';
+        iMuons                  <= event_buffer(1).muons;
+        iIso                    <= event_buffer(1).iso;
+        iIntermediateMuonsB     <= event.intMuons_brl;
+        iIntermediateMuonsO     <= event.intMuons_ovl;
+        iIntermediateMuonsF     <= event.intMuons_fwd;
+        iIntermediateSortRanksB <= event.intSortRanks_brl;
+        iIntermediateSortRanksO <= event.intSortRanks_ovl;
+        iIntermediateSortRanksF <= event.intSortRanks_fwd;
         iFinalEnergies          <= (others => "00000");
         iExtrapolatedCoordsB    <= (others => ("000000000", "0000000000"));
         iExtrapolatedCoordsO    <= (others => ("000000000", "0000000000"));
@@ -110,20 +115,19 @@ begin
         event_buffer(0) := event;
 
       else
+        iMuons <= event_buffer(1).muons;
+        iIso   <= event_buffer(1).iso;
         remainingEvents := remainingEvents-1;
       end if;
 
       for cnt in 0 to 5 loop
-        wait for half_period_240;
-        wait for half_period_240;
-
+        wait for 2*half_period_240;
         vOutput(cnt)(N_SERIALIZER_CHAN-1 downto 0) := oQ;
-
       end loop;  -- cnt
 
-      event_buffer(SERIALIZER_LATENCY downto 1) := event_buffer(SERIALIZER_LATENCY-1 downto 0);
+      event_buffer(SERIALIZER_LATENCY-1 downto 1) := event_buffer(SERIALIZER_LATENCY-2 downto 0);
 
-      ValidateSerializerOutput(vOutput, event_buffer(SERIALIZER_LATENCY), FO, tmpError);
+      ValidateSerializerOutput(vOutput, event_buffer(SERIALIZER_LATENCY-1), FO, tmpError);
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
@@ -135,7 +139,7 @@ begin
         write(LO, event_buffer(SERIALIZER_LATENCY-1).iEvent);
         writeline (FO, LO);
 
-        DumpOutEvent(event_buffer(SERIALIZER_LATENCY), FO);
+        DumpOutEvent(event_buffer(SERIALIZER_LATENCY-1), FO);
         write(LO, string'(""));
         writeline (FO, LO);
         write(LO, string'("### Dumping sim output :"));
