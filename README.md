@@ -25,7 +25,7 @@ cd scripts
 bash makeProject.sh
 ```
 ### Edit project files
-1. Replace the existing payload entry in `cactusupgrades/components/mp7_infra/addr_table/mp7xe_infra.xml` with `<node id="payload" module="file://mp7_payload.xml" address="0x80000000" fwinfo="endpoint"/>`
+1. Replace the existing payload entry in `cactusupgrades/components/mp7_infra/addr_table/mp7xe_infra.xml` with `<node id="payload" module="file://ugmt_serdes.xml" address="0x80000000" fwinfo="endpoint"/>`
 2. Replace the payload definition with the `ugmt_serdes.vhd` block definition
 
   ```
