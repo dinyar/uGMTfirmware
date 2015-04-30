@@ -33,8 +33,8 @@ architecture Behavioral of serializer_stage is
   signal sSel    : integer range 0 to 5;
   signal sSelRst : std_logic := '1';
 
-  signal clk40_pseudo  : std_logic := '1';
-  signal clk40_pseudo1 : std_logic := '1';
+  signal clk40_pseudo  : std_logic := '0';
+  signal clk40_pseudo1 : std_logic := '0';
   signal clk40_pseudo2 : std_logic := '0';
   signal clk40_delayed : std_logic := '0';
 
@@ -110,7 +110,16 @@ begin
 
       for i in 0 to NUM_OUT_CHANS-1 loop
         q(i).strobe <= '1';
-       -- Branch required because we otherwise pick the frame for the previous b
+        q(i).data <= sOutBuf(sSel)(i).data;
+        if sSel > 0 then
+          q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
+        else
+          q(i).valid <= sOutBuf(sSel)(i).valid;
+        end if;
+      end loop;  -- i
+      for i in NUM_OUT_CHANS to NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS - 1 loop
+        q(i).strobe <= '1';
+        -- Branch required because we otherwise pick the frame for the previous b
         if sSel > 0 then
           q(i).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).data;
           q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
@@ -118,25 +127,13 @@ begin
           q(i).data <= sOutBuf(sSel)(i).data;
           q(i).valid <= sOutBuf(sSel)(i).valid;
         end if;
-        q(i).data <= sOutBuf(sSel)(i).data;
-      end loop;  -- i
-      for i in NUM_OUT_CHANS to NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS - 1 loop
-       q(i).strobe <= '1';
-       -- Branch required because we otherwise pick the frame for the previous b
-       if sSel > 0 then
-         q(i).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).data;
-         q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
-       else
-         q(i).data <= sOutBuf(sSel)(i).data;
-         q(i).valid <= sOutBuf(sSel)(i).valid;
-       end if;
       end loop;  -- i
       for i in NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS to q'high loop
-       q(i).strobe <= '1';
+        q(i).strobe <= '1';
       end loop;  -- i
 
       if sSelRst = '1' then
-        sSel <= 2;
+        sSel <= 5;
       elsif sSel < 5 then
         sSel <= sSel+1;
       else
