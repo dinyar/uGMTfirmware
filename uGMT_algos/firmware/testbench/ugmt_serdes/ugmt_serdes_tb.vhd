@@ -23,7 +23,7 @@ architecture behavior of testbench is
   constant half_period_240 : time      := 25000 ps / div240;
   constant half_period_40  : time      := 6*half_period_240;
   signal   clk240          : std_logic := '1';
-  signal   clk40           : std_logic := '1';
+  signal   clk40           : std_logic := '0';
   signal   rst             : std_logic := '0';
 
   signal iD              : ldata(71 downto 0);
@@ -58,7 +58,7 @@ begin
     file F                   : text open read_mode  is "ugmt_testfile.dat";
     file FO                  : text open write_mode is "../results/ugmt_serdes_tb.results";
     variable L, LO           : line;
-    constant uGMT_LATENCY    : integer := 10;
+    constant uGMT_LATENCY    : integer := 9;
     variable event           : TGMTEvent;
     variable event_buffer    : TGMTEvent_vec(uGMT_LATENCY-1 downto 0);
     variable iEvent          : integer := 0;
@@ -80,7 +80,7 @@ begin
         end loop;  -- j
     end loop;  -- i
 
-    wait for 20*half_period_40;  -- wait until global set/reset completes
+    wait for 21*half_period_40;  -- wait until global set/reset completes
     -- Add user defined stimulus here
     while remainingEvents > 0 loop
       tmpError := 99999999;

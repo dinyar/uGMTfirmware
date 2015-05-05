@@ -213,33 +213,22 @@ begin
       ipb_out                 => ipbr(N_SLV_SORTING)
       );
 
+  oIntermediateMuonsB     <= sIntermediateMuonsB;
+  oIntermediateMuonsO     <= sIntermediateMuonsO;
+  oIntermediateMuonsF     <= sIntermediateMuonsF;
+  oIntermediateSortRanksB <= sIntermediateSortRanksB;
+  oIntermediateSortRanksO <= sIntermediateSortRanksO;
+  oIntermediateSortRanksF <= sIntermediateSortRanksF;
 
+  oFinalCaloIdxBits    <= sSelectedCaloIdxBits;
+  oFinalEnergies       <= sFinalEnergies;
+  oExtrapolatedCoordsB <= sExtrapolatedCoordsB;
+  oExtrapolatedCoordsO <= sExtrapolatedCoordsO;
+  oExtrapolatedCoordsF <= sExtrapolatedCoordsF;
+  oMuIdxBits           <= sFinalMuIdxBits;
 
-  -- TODO: Do I need last flip-flop?
-  -----------------------------------------------------------------------------
-  -- final flip-flop
-  -----------------------------------------------------------------------------
-  p1 : process (clk)
-  begin  -- process p1
-    if clk'event and clk = '1' then     -- rising clock edge
-      oIntermediateMuonsB     <= sIntermediateMuonsB;
-      oIntermediateMuonsO     <= sIntermediateMuonsO;
-      oIntermediateMuonsF     <= sIntermediateMuonsF;
-      oIntermediateSortRanksB <= sIntermediateSortRanksB;
-      oIntermediateSortRanksO <= sIntermediateSortRanksO;
-      oIntermediateSortRanksF <= sIntermediateSortRanksF;
-
-      oFinalCaloIdxBits    <= sSelectedCaloIdxBits;
-      oFinalEnergies       <= sFinalEnergies;
-      oExtrapolatedCoordsB <= sExtrapolatedCoordsB;
-      oExtrapolatedCoordsO <= sExtrapolatedCoordsO;
-      oExtrapolatedCoordsF <= sExtrapolatedCoordsF;
-      oMuIdxBits           <= sFinalMuIdxBits;
-
-      oMuons <= sMuons_sorted;
-      oIso   <= sIsoBits;
-    end if;
-  end process p1;
+  oMuons <= sMuons_sorted;
+  oIso   <= sIsoBits;
 
 
 end Behavioral;

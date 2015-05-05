@@ -23,7 +23,7 @@ architecture behavior of testbench is
   constant half_period_240 : time      := 25000 ps / div240;
   constant half_period_40  : time      := 6*half_period_240;
   signal   clk240          : std_logic := '1';
-  signal   clk40           : std_logic := '1';
+  signal   clk40           : std_logic := '0';
   signal   rst             : std_logic := '0';
 
   signal iValid                  : std_logic := '0';
@@ -89,9 +89,10 @@ begin
         event_buffer(i).iso(iMu)   := "00";
       end loop;  -- iMu
     end loop;  -- i
+    iValid <= '0';
 
 
-    wait for 2*half_period_40;  -- wait until global set/reset completes
+    wait for 3*half_period_40;  -- wait until global set/reset completes
     while remainingEvents > 0 loop
       tmpError := 99999999;
       if not endfile(F) then

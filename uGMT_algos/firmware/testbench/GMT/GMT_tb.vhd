@@ -122,7 +122,7 @@ begin
     variable L, LO                : line;
     variable caloEvent            : TGMTCaloEvent;
     variable muEvent              : TGMTMuEvent;
-    constant GMT_LATENCY          : integer                        := 7;
+    constant GMT_LATENCY          : integer                        := 6;
     variable caloEvent_buffer     : TGMTCaloEvent_vec(GMT_LATENCY-1 downto 0);
     variable muEvent_buffer       : TGMTMuEvent_vec(GMT_LATENCY-1 downto 0);
     variable iEvent               : integer                        := 0;

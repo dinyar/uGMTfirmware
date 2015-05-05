@@ -32,10 +32,7 @@ architecture rtl of ugmt_serdes is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
-  -- Valid buffer is in sync with intermediate muons. (We need this to have the
-  -- valid bit correct already for the first frame.)
-  constant GMT_ALGO_LATENCY : natural := 8;
-
+  constant GMT_ALGO_LATENCY : natural := 7;
   signal   sValid_buffer    : std_logic_vector(GMT_ALGO_LATENCY-2 downto 0);
   signal   sValid_muons     : std_logic;
   signal   sValid_energies  : std_logic;
