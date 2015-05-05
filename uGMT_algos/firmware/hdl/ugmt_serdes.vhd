@@ -313,6 +313,7 @@ begin
     port map (
       clk240               => clk240,
       clk40                => clk40,
+      rst                  => rst,
       iValid               => sValid_buffer(sValid_buffer'high),
       sMuons               => oMuons_reg,
       sIso                 => sIso_reg,

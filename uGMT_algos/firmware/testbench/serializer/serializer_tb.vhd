@@ -47,6 +47,7 @@ begin
     port map (
       clk240               => clk240,
       clk40                => clk40,
+      rst                  => rst,
       iValid               => iValid,
       sMuons               => iMuons,
       sIso                 => iIso,
@@ -90,9 +91,11 @@ begin
       end loop;  -- iMu
     end loop;  -- i
     iValid <= '0';
+    rst    <= '1';
 
 
     wait for 3*half_period_40;  -- wait until global set/reset completes
+    rst <= '0';
     while remainingEvents > 0 loop
       tmpError := 99999999;
       if not endfile(F) then

@@ -80,7 +80,10 @@ begin
         end loop;  -- j
     end loop;  -- i
 
+    rst <= '1';
+
     wait for 21*half_period_40;  -- wait until global set/reset completes
+    rst <= '0';
     -- Add user defined stimulus here
     while remainingEvents > 0 loop
       tmpError := 99999999;

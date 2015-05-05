@@ -8,6 +8,7 @@ use work.ugmt_constants.all;
 entity serializer_stage is
   port (clk240               : in  std_logic;
         clk40                : in  std_logic;
+        rst                  : in  std_logic;
         iValid               : in  std_logic;
         sMuons               : in  TGMTMu_vector (NUM_OUT_CHANS*NUM_MUONS_OUT-1 downto 0);
         sIso                 : in  TIsoBits_vector(NUM_OUT_CHANS*NUM_MUONS_OUT-1 downto 0);
@@ -31,12 +32,6 @@ architecture Behavioral of serializer_stage is
   -- Offsetting the beginning of sending to align with 40 MHz clock and make
   -- sending a bit faster.
   signal sSel    : integer range 0 to 5;
-  signal sSelRst : std_logic := '1';
-
-  signal clk40_pseudo  : std_logic := '0';
-  signal clk40_pseudo1 : std_logic := '1';
-  signal clk40_pseudo2 : std_logic := '1';
-  signal clk40_delayed : std_logic := '0';
 
   signal sIntermediateMuons : TGMTMu_vector(23 downto 0);
   signal sSortRanks         : TSortRank10_vector(23 downto 0);
@@ -79,36 +74,12 @@ begin
   begin  -- process shift_intermediates_rising
     if clk40'event and clk40 = '1' then  -- rising clock edge
       sOutBuf(sOutBuf'high downto BUFFER_INTERMEDIATES_POS_LOW) <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW-1 downto 0);
-
-      if clk40_pseudo1 = '1' then
-        clk40_pseudo1 <= '0';
-      else
-        clk40_pseudo1 <= '1';
-      end if;
-
     end if;
   end process shift_intermediates_rising;
-
-  shift_intermediates_falling : process (clk40)
-  begin  -- process shift_intermediates_falling
-    if clk40'event and clk40 = '0' then -- falling clock edge
-      if clk40_pseudo2 = '1' then
-        clk40_pseudo2 <= '0';
-      else
-        clk40_pseudo2 <= '1';
-      end if;
-    end if;
-  end process shift_intermediates_falling;
-
-  clk40_pseudo <= clk40_pseudo1 xor clk40_pseudo2;
-  sSelRst      <= clk40_pseudo and (not clk40_delayed);
 
   serialization : process (clk240)
   begin  -- process serialization
     if clk240'event and clk240 = '1' then  -- rising clock edge
-
-      clk40_delayed <= clk40_pseudo;
-
       for i in 0 to NUM_OUT_CHANS-1 loop
         q(i).strobe <= '1';
         if sSel = 0 then
@@ -132,8 +103,8 @@ begin
        q(i).strobe <= '1';
       end loop;  -- i
 
-      if sSelRst = '1' then
-        sSel <= 2;
+      if rst = '1' then
+        sSel <= 1;
       elsif sSel < 5 then
         sSel <= sSel+1;
       else
