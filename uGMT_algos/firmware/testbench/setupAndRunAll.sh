@@ -15,6 +15,8 @@ fi
 if [ ! -d results ];
 then
 	mkdir results
+else
+	rm -f results/*
 fi
 
 echo "Updating test pattern and LUT content files.. "
