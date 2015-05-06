@@ -6,6 +6,9 @@ use work.ipbus.all;
 use work.ipbus_reg_types.all;
 use work.ipbus_decode_ugmt_serdes.all;
 
+use work.mp7_ttc_decl.all;
+use work.mp7_brd_decl.all;
+
 use work.ugmt_constants.all;
 use work.GMTTypes.all;
 
@@ -19,6 +22,7 @@ entity ugmt_serdes is
     rst     : in  std_logic;
     ipb_in  : in  ipb_wbus;
     ipb_out : out ipb_rbus;
+    ctrs    : in  ttc_stuff_array(N_REGION - 1 downto 0);
     clk240  : in  std_logic;
     clk40   : in  std_logic;
     d       : in  ldata(NCHAN - 1 downto 0);
@@ -114,8 +118,9 @@ begin
     port map (
       clk_ipb    => clk_ipb,
       rst        => rst,
-      ipb_in     => ipbw(N_SLV_DESERIALIZATION),
-      ipb_out    => ipbr(N_SLV_DESERIALIZATION),
+      ipb_in     => ipbw(N_SLV_MU_DESERIALIZATION),
+      ipb_out    => ipbr(N_SLV_MU_DESERIALIZATION),
+      ctrs       => ctrs,
       clk240     => clk240,
       clk40      => clk40,
       d          => d(NCHAN-1 downto 0),
@@ -132,6 +137,11 @@ begin
       VALID_BIT => VALID_BIT
       )
     port map (
+      clk_ipb   => clk_ipb,
+      rst       => rst,
+      ipb_in    => ipbw(N_SLV_ENERGY_DESERIALIZATION),
+      ipb_out   => ipbr(N_SLV_ENERGY_DESERIALIZATION),
+      ctrs      => ctrs,
       clk240    => clk240,
       clk40     => clk40,
       d         => d(NCHAN-1 downto 0),

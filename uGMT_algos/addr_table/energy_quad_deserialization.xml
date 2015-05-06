@@ -1,0 +1,11 @@
+<!-- TODO: Make the register its own address table. -->
+<node description="Energy deserializer reg" fwinfo="endpoint">
+    <node id="bc0_errors_0" address="0x0" description="BC0 errors on links." fwinfo="endpoint;width=0" />
+    <node id="bc0_errors_1" address="0x1" description="BC0 errors on links." fwinfo="endpoint;width=0" />
+    <node id="bc0_errors_2" address="0x2" description="BC0 errors on links." fwinfo="endpoint;width=0" />
+    <node id="bc0_errors_3" address="0x4" description="BC0 errors on links." fwinfo="endpoint;width=0" />
+    <node id="bnch_cnt_errors_0" address="0x8" description="Bunch counter errors on links." fwinfo="endpoint;width=0" />
+    <node id="bnch_cnt_errors_1" address="0x10" description="Bunch counter errors on links." fwinfo="endpoint;width=0" />
+    <node id="bnch_cnt_errors_2" address="0x20" description="Bunch counter errors on links." fwinfo="endpoint;width=0" />
+    <node id="bnch_cnt_errors_3" address="0x40" description="Bunch counter errors on links." fwinfo="endpoint;width=0" />
+</node>

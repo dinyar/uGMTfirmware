@@ -4,7 +4,11 @@ use IEEE.numeric_std.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_decode_sort_rank_mems.all;
+use work.ipbus_reg_types.all;
+use work.ipbus_decode_mu_quad_deserialization.all;
+
+use work.mp7_ttc_decl.all;
+use work.mp7_brd_decl.all;
 
 use work.GMTTypes.all;
 use work.ugmt_constants.all;
@@ -19,6 +23,7 @@ entity deserialize_mu_quad is
     rst        : in  std_logic;
     ipb_in     : in  ipb_wbus;
     ipb_out    : out ipb_rbus;
+    ctrs       : in  ttc_stuff_t;
     clk240     : in  std_logic;
     clk40      : in  std_logic;
     d          : in  ldata(NCHAN-1 downto 0);
@@ -48,6 +53,9 @@ architecture Behavioral of deserialize_mu_quad is
 
   signal sEmpty_link : TEmpty_link(NCHAN-1 downto 0);
 
+  signal sBCerror   : std_logic_vector(NCHAN-1 downto 0);
+  signal sBnchCntErr : std_logic_vector(NCHAN-1 downto 0);
+
   -- Stores sort ranks for each 32 bit word that arrives from TFs. Every second
   -- such rank is garbage and will be disregarded in second step.
   type TSortRankBuffer is array (2*NUM_MUONS_LINK-1 downto 0) of TSortRank10_vector(NCHAN-1 downto 0);
@@ -65,7 +73,7 @@ begin
       port map(
         ipb_in          => ipb_in,
         ipb_out         => ipb_out,
-        sel             => ipbus_sel_sort_rank_mems(ipb_in.ipb_addr),
+        sel             => ipbus_sel_mu_quad_deserialization(ipb_in.ipb_addr),
         ipb_to_slaves   => ipbw,
         ipb_from_slaves => ipbr
         );
@@ -147,13 +155,49 @@ begin
             -- were calculated with the 'wrong part' of the TF muon.)
             -- Using this iFrame even though pT and quality are contained in
             -- earlier frame as the rank calculation requires an additional
-            -- clk240, so the "correct" sort rank is late by one. 
+            -- clk240, so the "correct" sort rank is late by one.
             sSortRank_link(iChan)(iFrame/2) <= sSortRank_buffer(iFrame)(iChan);
           end if;
         end loop;  -- iFrame
+
+        -- Check for errors
+        if ctrs.bctr = (11 downto 0 => '0') then
+            if in_buf(0)(iChan).data(31) = '1' then
+                sBCerror(iChan) <= '0';
+            else
+                sBCerror(iChan) <= '1';
+            end if;
+        else
+            sBCerror(iChan) <= '0';
+        end if;
+        if in_buf(2)(iChan).data(31) = ctrs.bctr(0) and in_buf(3)(iChan).data(31) = ctrs.bctr(1) and in_buf(4)(iChan).data(31) = ctrs.bctr(2) then
+            sBnchCntErr(iChan) <= '0';
+        else
+            sBnchCntErr(iChan) <= '1';
+        end if;
+
       end loop;  -- iChan
     end if;
   end process gmt_in_reg;
+
+  gen_error_counter : for i in NCHAN-1 downto 0 generate
+    bc0_reg : entity work.ipbus_counter
+      port map(
+          clk          => clk240,
+          reset        => rst,
+          ipbus_in     => ipbw(N_SLV_BC0_ERRORS_0+i),
+          ipbus_out    => ipbr(N_SLV_BC0_ERRORS_0+i),
+          incr_counter => sBCerror(i)
+      );
+    sync_reg : entity work.ipbus_counter
+      port map(
+        clk          => clk240,
+        reset        => rst,
+        ipbus_in     => ipbw(N_SLV_BNCH_CNT_ERRORS_0+i),
+        ipbus_out    => ipbr(N_SLV_BNCH_CNT_ERRORS_0+i),
+        incr_counter => sBnchCntErr(i)
+      );
+  end generate gen_error_counter;
 
   sMuons_flat <= unroll_link_muons(sMuons_link(NCHAN-1 downto 0));
   unpack_muons : for i in sMuonsIn'range generate

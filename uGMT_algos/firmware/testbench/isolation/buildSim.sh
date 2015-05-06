@@ -36,7 +36,6 @@ vcom -check_synthesis ../../hdl/Sorting/Stage0/SortStage0_behavioral.vhd
 vcom -check_synthesis ../../hdl/Sorting/Stage0/HalfSortStage0.vhd
 vcom -check_synthesis ../../hdl/Sorting/Stage1/SortStage1_behavioral.vhd
 vcom -check_synthesis ../../hdl/Sorting/SortAndCancelUnit.vhd
-# Insert iso stuff here.
 vcom -check_synthesis ../../hdl/ipbus_decode_extrapolation_eta.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_extrapolation_phi.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_extrapolation_regional.vhd
@@ -61,7 +60,6 @@ vcom -check_synthesis ../../hdl/Isolation/eta_index_bits_memories.vhd
 vcom -check_synthesis ../../hdl/Isolation/phi_index_bits_memories.vhd
 vcom -check_synthesis ../../hdl/Isolation/index_bits_generator.vhd
 vcom -check_synthesis ../../hdl/Isolation/generate_index_bits.vhd
-vcom -check_synthesis ../../cgn/rel_iso_mem.vhd
 vcom -check_synthesis ../../hdl/Isolation/iso_check_abs.vhd
 vcom -check_synthesis ../../hdl/Isolation/iso_check_rel.vhd
 vcom -check_synthesis ../../hdl/Isolation/iso_check.vhd

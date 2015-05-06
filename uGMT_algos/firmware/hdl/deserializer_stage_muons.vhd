@@ -4,7 +4,10 @@ use IEEE.numeric_std.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_decode_deserialization.all;
+use work.ipbus_decode_mu_deserialization.all;
+
+use work.mp7_ttc_decl.all;
+use work.mp7_brd_decl.all;
 
 use work.GMTTypes.all;
 use work.ugmt_constants.all;
@@ -19,6 +22,7 @@ entity deserializer_stage_muons is
     rst        : in  std_logic;
     ipb_in     : in  ipb_wbus;
     ipb_out    : out ipb_rbus;
+    ctrs       : in  ttc_stuff_array(N_REGION - 1 downto 0);
     clk240     : in  std_logic;
     clk40      : in  std_logic;
     d          : in  ldata (NCHAN-1 downto 0);
@@ -31,8 +35,6 @@ entity deserializer_stage_muons is
 end deserializer_stage_muons;
 
 architecture Behavioral of deserializer_stage_muons is
-
-  signal sel_lut_group : std_logic_vector(3 downto 0);
 
   signal ipbw : ipb_wbus_array(N_SLAVES-1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES-1 downto 0);
@@ -49,7 +51,7 @@ begin
       port map(
         ipb_in          => ipb_in,
         ipb_out         => ipb_out,
-        sel             => ipbus_sel_deserialization(ipb_in.ipb_addr),
+        sel             => ipbus_sel_mu_deserialization(ipb_in.ipb_addr),
         ipb_to_slaves   => ipbw,
         ipb_from_slaves => ipbr
         );
@@ -63,6 +65,7 @@ begin
         rst        => rst,
         ipb_in     => ipbw(i),
         ipb_out    => ipbr(i),
+        ctrs       => ctrs(MU_QUAD_ASSIGNMENT(i)),
         clk240     => clk240,
         clk40      => clk40,
         d          => d(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),

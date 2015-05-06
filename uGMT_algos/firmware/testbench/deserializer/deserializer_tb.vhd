@@ -11,6 +11,9 @@ use ieee.std_logic_textio.all;
 use work.mp7_data_types.all;
 use work.ugmt_constants.all;
 
+use work.mp7_ttc_decl.all;
+use work.mp7_brd_decl.all;
+
 entity testbench is
 end testbench;
 
@@ -35,6 +38,8 @@ architecture behavior of testbench is
   signal sEnergies       : TCaloRegionEtaSlice_vector(NUM_CALO_CHANS-1 downto 0);
   signal sValid_energies : std_logic;
 
+  signal dummyCtrs : ttc_stuff_array(N_REGION - 1 downto 0);
+
 begin
 
     uut_muons : entity work.deserializer_stage_muons
@@ -50,6 +55,7 @@ begin
         ipb_in.ipb_strobe => '0',
         ipb_in.ipb_write  => '0',
         ipb_out           => open,
+        ctrs              => dummyCtrs,
         clk240            => clk240,
         clk40             => clk40,
         d                 => iD(NINCHAN-1 downto 0),
@@ -66,11 +72,19 @@ begin
         VALID_BIT => '1'
         )
       port map (
-        clk240    => clk240,
-        clk40     => clk40,
-        d         => iD(NINCHAN-1 downto 0),
-        oEnergies => sEnergies,
-        oValid    => sValid_energies
+        clk_ipb           => clk240,
+        rst               => rst,
+        ipb_in.ipb_addr   => (others => '0'),
+        ipb_in.ipb_wdata  => (others => '0'),
+        ipb_in.ipb_strobe => '0',
+        ipb_in.ipb_write  => '0',
+        ipb_out           => open,
+        ctrs              => dummyCtrs,
+        clk240            => clk240,
+        clk40             => clk40,
+        d                 => iD(NINCHAN-1 downto 0),
+        oEnergies         => sEnergies,
+        oValid            => sValid_energies
         );
 
   -- Clocks

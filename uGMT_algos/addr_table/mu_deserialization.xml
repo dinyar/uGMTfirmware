@@ -1,0 +1,11 @@
+<node description="Muon deserializer stage for uGMT" fwinfo="endpoint">
+    <node id="mu_quad0" address="0x0" module="file://mu_quad_deserialization.xml" description="Access to registers and LUTs in a muon quad." />
+    <node id="mu_quad1" address="0x10000" module="file://mu_quad_deserialization.xml" description="Access to registers and LUTs in a muon quad." />
+    <node id="mu_quad2" address="0x20000" module="file://mu_quad_deserialization.xml" description="Access to registers and LUTs in a muon quad." />
+    <node id="mu_quad3" address="0x30000" module="file://mu_quad_deserialization.xml" description="Access to registers and LUTs in a muon quad." />
+    <node id="mu_quad4" address="0x40000" module="file://mu_quad_deserialization.xml" description="Access to registers and LUTs in a muon quad." />
+    <node id="mu_quad5" address="0x50000" module="file://mu_quad_deserialization.xml" description="Access to registers and LUTs in a muon quad." />
+    <node id="mu_quad6" address="0x60000" module="file://mu_quad_deserialization.xml" description="Access to registers and LUTs in a muon quad." />
+    <node id="mu_quad7" address="0x70000" module="file://mu_quad_deserialization.xml" description="Access to registers and LUTs in a muon quad." />
+    <node id="mu_quad8" address="0x80000" module="file://mu_quad_deserialization.xml" description="Access to registers and LUTs in a muon quad." />
+</node>

@@ -11,6 +11,9 @@ use ieee.std_logic_textio.all;
 use work.mp7_data_types.all;
 use work.ugmt_constants.all;
 
+use work.mp7_ttc_decl.all;
+use work.mp7_brd_decl.all;
+
 entity testbench is
 end testbench;
 
@@ -29,6 +32,8 @@ architecture behavior of testbench is
   signal iD              : ldata(71 downto 0);
   signal oQ              : ldata(71 downto 0);
 
+  signal dummyCtrs : ttc_stuff_array(N_REGION - 1 downto 0);
+
 begin
 
     uut : entity work.ugmt_serdes
@@ -44,6 +49,7 @@ begin
         ipb_in.ipb_strobe => '0',
         ipb_in.ipb_write  => '0',
         ipb_out           => open,
+        ctrs              => dummyCtrs,
         clk240            => clk240,
         clk40             => clk40,
         d                 => iD,
