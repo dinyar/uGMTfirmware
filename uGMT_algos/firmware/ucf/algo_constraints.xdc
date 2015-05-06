@@ -33,6 +33,10 @@ create_pblock deser_x1y6
 add_cells_to_pblock [get_pblocks deser_x1y6] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[0].deserialize}]]
 resize_pblock [get_pblocks deser_x1y6] -add {SLICE_X172Y300:SLICE_X179Y349}
 
+create_pblock ser_x1y8
+add_cells_to_pblock [get_pblocks ser_x1y8] [get_cells -quiet [list algo/serialize]]
+resize_pblock [get_pblocks ser_x1y8] -add {SLICE_X152Y300:SLICE_X179Y449}
+
 # Algo area constraints
 add_cells_to_pblock [get_pblocks payload_0] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_f_plus]]
 add_cells_to_pblock [get_pblocks payload_1] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_fo_plus]]
