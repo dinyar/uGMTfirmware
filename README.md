@@ -36,11 +36,12 @@ bash makeProject.sh
     )
   port map (
     clk_ipb => clk_ipb,
-    rst     => rst_ipb,
+    ipb_rst => rst_ipb,
     ipb_in  => ipb_in_payload,
     ipb_out => ipb_out_payload,
     clk240  => clk_p,
     clk40   => clk40,
+    rst40   => rst_payload,
     d       => payload_d,
     q       => payload_q
     );
