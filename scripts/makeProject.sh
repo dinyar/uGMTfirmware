@@ -70,13 +70,21 @@ cd $mp7currPath
 
 echo "Adding dependency file for the uGMT to the null algo dep file."
 pushd cactusupgrades/components/mp7_null_algo/firmware/cfg/
-sed -i '1iinclude -c components/uGMT_algos uGMT_algo.dep\' mp7_null_algo.dep
+sed -i '1iinclude -c components/uGMT_algos uGMT_algo.dep' mp7_null_algo.dep
 
 popd
 
 echo "Linking uGMT_algos into cactusupgrades/components"
 pushd cactusupgrades/components/
 ln -s $uGMTalgosPath/uGMT_algos .
+
+popd
+
+echo "Replacing top_decl.vhd by link to custom version"
+pushd cactusupgrades/projects/examples/mp7xe_690/firmware/hdl
+rm -f top_decl.vhd
+
+ln -s $uGMTalgosPath/top_decl.vhd .
 
 popd
 
