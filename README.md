@@ -36,11 +36,13 @@ bash makeProject.sh
     )
   port map (
     clk_ipb => clk_ipb,
-    rst     => rst_ipb,
+    ipb_rst => rst_ipb,
     ipb_in  => ipb_in_payload,
     ipb_out => ipb_out_payload,
+    ctrs    => ctrs,
     clk240  => clk_p,
-    clk40   => clk40,
+    clk40   => clk_payload,
+    rst40   => rst_payload,
     d       => payload_d,
     q       => payload_q
     );
@@ -48,13 +50,15 @@ bash makeProject.sh
   in the top block. You can find it in `cactusupgrades/boards/mp7/base_fw/mp7xe_690/firmware/hdl/mp7xe_690.vhd`
   
 ### Generating the Vivado project
-Visit the project folder, source the Xilinx environment (if you haven't already) and execute `make project`:
+Visit the project folder, source the Xilinx environment (if you haven't already) and execute `make project` followed by `make bitfile`:
 
   ```
   cd [mp7framework_directory]/mp7xe_690
   [source Xilinx environment]
   make project
+  make bitfile
   ```
+*Note:* Calling `make bitfile` is only necessary the first time after a new checkout in order to generate some required cores. After this follow the instructions in the following section to (re-)build the firmware.
 
 ## Instructions for building the firmware
 
