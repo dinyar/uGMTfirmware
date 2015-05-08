@@ -92,9 +92,10 @@ begin
     end loop;  -- i
     iValid <= '0';
     rst    <= '1';
+    wait for 3*half_period_40;
+    rst    <= '0';
 
-
-    wait for 3*half_period_40;  -- wait until global set/reset completes
+    wait for 2*half_period_40;  -- wait until global set/reset completes
     rst <= '0';
     while remainingEvents > 0 loop
       tmpError := 99999999;

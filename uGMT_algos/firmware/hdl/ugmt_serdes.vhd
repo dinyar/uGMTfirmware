@@ -19,12 +19,13 @@ entity ugmt_serdes is
     );
   port(
     clk_ipb : in  std_logic;
-    rst     : in  std_logic;
+    ipb_rst : in  std_logic;
     ipb_in  : in  ipb_wbus;
     ipb_out : out ipb_rbus;
     ctrs    : in  ttc_stuff_array(N_REGION - 1 downto 0);
     clk240  : in  std_logic;
     clk40   : in  std_logic;
+    rst40   : in  std_logic;
     d       : in  ldata(NCHAN - 1 downto 0);
     q       : out ldata(NCHAN - 1 downto 0)
     );
@@ -117,7 +118,7 @@ begin
       )
     port map (
       clk_ipb    => clk_ipb,
-      rst        => rst,
+      rst        => rst40,
       ipb_in     => ipbw(N_SLV_MU_DESERIALIZATION),
       ipb_out    => ipbr(N_SLV_MU_DESERIALIZATION),
       ctrs       => ctrs,
@@ -138,7 +139,7 @@ begin
       )
     port map (
       clk_ipb   => clk_ipb,
-      rst       => rst,
+      rst       => rst40,
       ipb_in    => ipbw(N_SLV_ENERGY_DESERIALIZATION),
       ipb_out   => ipbr(N_SLV_ENERGY_DESERIALIZATION),
       ctrs      => ctrs,
@@ -193,7 +194,7 @@ begin
     )
     port map(
         clk => clk_ipb,
-        reset => rst,
+        reset => ipb_rst,
         ipbus_in => ipbw(N_SLV_INPUT_DISABLE_REG),
         ipbus_out => ipbr(N_SLV_INPUT_DISABLE_REG),
         q => sInputDisable
@@ -287,7 +288,7 @@ begin
 
       clk     => clk40,
       clk_ipb => clk_ipb,
-      sinit   => rst,
+      sinit   => rst40,
       ipb_in  => ipbw(N_SLV_UGMT),
       ipb_out => ipbr(N_SLV_UGMT)
       );
@@ -323,7 +324,7 @@ begin
     port map (
       clk240               => clk240,
       clk40                => clk40,
-      rst                  => rst,
+      rst                  => rst40,
       iValid               => sValid_buffer(sValid_buffer'high),
       sMuons               => oMuons_reg,
       sIso                 => sIso_reg,

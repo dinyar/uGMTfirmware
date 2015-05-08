@@ -43,7 +43,7 @@ begin
         )
       port map (
         clk_ipb           => clk240,
-        rst               => rst,
+        ipb_rst           => '0',
         ipb_in.ipb_addr   => (others => '0'),
         ipb_in.ipb_wdata  => (others => '0'),
         ipb_in.ipb_strobe => '0',
@@ -52,6 +52,7 @@ begin
         ctrs              => dummyCtrs,
         clk240            => clk240,
         clk40             => clk40,
+        rst40             => rst,
         d                 => iD,
         q                 => oQ
         );
@@ -87,8 +88,10 @@ begin
     end loop;  -- i
 
     rst <= '1';
+    wait for 3*half_period_40;
+    rst <= '0';
 
-    wait for 21*half_period_40;  -- wait until global set/reset completes
+    wait for 20*half_period_40;  -- wait until global set/reset completes
     rst <= '0';
     -- Add user defined stimulus here
     while remainingEvents > 0 loop
