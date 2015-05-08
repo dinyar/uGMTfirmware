@@ -38,12 +38,12 @@ add_cells_to_pblock [get_pblocks ser_x1y8] [get_cells -quiet [list algo/serializ
 resize_pblock [get_pblocks ser_x1y8] -add {SLICE_X152Y300:SLICE_X179Y449}
 
 # Algo area constraints
-add_cells_to_pblock [get_pblocks payload_0] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_f_plus]]
-add_cells_to_pblock [get_pblocks payload_1] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_fo_plus]]
-add_cells_to_pblock [get_pblocks payload_2] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_o_plus]]
-add_cells_to_pblock [get_pblocks payload_3] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_bo_plus]]
+add_cells_to_pblock [get_pblocks payload_8] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_f_plus]]
+add_cells_to_pblock [get_pblocks payload_7] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_fo_plus]]
+add_cells_to_pblock [get_pblocks payload_6] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_o_plus]]
+add_cells_to_pblock [get_pblocks payload_5] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_bo_plus]]
 add_cells_to_pblock [get_pblocks payload_4] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_b]]
-add_cells_to_pblock [get_pblocks payload_5] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_bo_minus]]
-add_cells_to_pblock [get_pblocks payload_6] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_o_minus]]
-add_cells_to_pblock [get_pblocks payload_7] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_fo_minus]]
-add_cells_to_pblock [get_pblocks payload_8] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_f_minus]]
+add_cells_to_pblock [get_pblocks payload_3] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_bo_minus]]
+add_cells_to_pblock [get_pblocks payload_2] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_o_minus]]
+add_cells_to_pblock [get_pblocks payload_1] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_fo_minus]]
+add_cells_to_pblock [get_pblocks payload_0] [get_cells -quiet [list algo/uGMT/sort_and_cancel/cou_f_minus]]
