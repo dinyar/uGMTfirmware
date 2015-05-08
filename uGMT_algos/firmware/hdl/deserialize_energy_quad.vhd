@@ -2,7 +2,6 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_reg_types.all;
 use work.ipbus_decode_energy_quad_deserialization.all;
 
 use work.mp7_ttc_decl.all;
@@ -21,7 +20,7 @@ entity deserialize_energy_quad is
     rst       : in  std_logic;
     ipb_in    : in  ipb_wbus;
     ipb_out   : out ipb_rbus;
-    ctrs      : in  ttc_stuff_t;
+    bctr      : in  bctr_t;
     clk240    : in  std_logic;
     clk40     : in  std_logic;
     d         : in  ldata(3 downto 0);
@@ -88,7 +87,7 @@ begin  -- Behavioral
         end loop;  -- bx
 
         -- Check for errors
-        if ctrs.bctr = (11 downto 0 => '0') then
+        if bctr = (11 downto 0 => '0') then
             if in_buf(0)(chan).data(31) = '1' then
                 sBCerror(chan) <= '0';
             else
@@ -97,7 +96,7 @@ begin  -- Behavioral
         else
             sBCerror(chan) <= '0';
         end if;
-        if in_buf(2)(chan).data(31) = ctrs.bctr(0) and in_buf(3)(chan).data(31) = ctrs.bctr(1) and in_buf(4)(chan).data(31) = ctrs.bctr(2) then
+        if in_buf(2)(chan).data(31) = bctr(0) and in_buf(3)(chan).data(31) = bctr(1) and in_buf(4)(chan).data(31) = bctr(2) then
             sBnchCntErr(chan) <= '0';
         else
             sBnchCntErr(chan) <= '1';

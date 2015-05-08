@@ -65,7 +65,7 @@ begin
         rst        => rst,
         ipb_in     => ipbw(i),
         ipb_out    => ipbr(i),
-        ctrs       => ctrs(MU_QUAD_ASSIGNMENT(i)),
+        bctr       => ctrs(MU_QUAD_ASSIGNMENT(i)).bctr,
         clk240     => clk240,
         clk40      => clk40,
         d          => d(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),

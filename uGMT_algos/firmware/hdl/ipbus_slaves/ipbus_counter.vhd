@@ -24,7 +24,6 @@ end ipbus_counter;
 architecture rtl of ipbus_counter is
 
 	signal ctr: unsigned(31 downto 0);
-	signal ack: std_logic;
 
 begin
 
@@ -38,12 +37,11 @@ begin
 					ctr <= ctr + 1;
 				end if;
 			end if;
-			ack <= ipbus_in.ipb_strobe and not ack;
 		end if;
 	end process;
 
-	ipbus_out.ipb_ack <= ack;
-	ipbus_out.ipb_err <= '0';
 	ipbus_out.ipb_rdata <= std_logic_vector(ctr);
+	ipbus_out.ipb_ack <= ipbus_in.ipb_strobe;
+	ipbus_out.ipb_err <= '0';
 
 end rtl;
