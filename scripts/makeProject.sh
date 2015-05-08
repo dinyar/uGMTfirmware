@@ -29,7 +29,7 @@ topPath=$scriptsPath"/../../"
 mp7path=$mp7fwPath"/"$tag
 if [ ! -d $mp7path ];
 then
-	mkdir $mp7path
+	mkdir -p $mp7path
 fi
 
 # Check out mp7fw
