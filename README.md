@@ -39,6 +39,7 @@ bash makeProject.sh
     ipb_rst => rst_ipb,
     ipb_in  => ipb_in_payload,
     ipb_out => ipb_out_payload,
+    ctrs    => ctrs,
     clk240  => clk_p,
     clk40   => clk_payload,
     rst40   => rst_payload,
