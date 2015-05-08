@@ -17,7 +17,7 @@ vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_core/firmw
 vcom -check_synthesis ../../hdl/ipbus_decode_deserialization.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_*_deserialization.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_core/firmware/hdl/ipbus_fabric_sel.vhd
-vom -check_synthesis $CACTUSREPOPATH/cactusupgrades/boards/mp7/base_fw/mp7xe_690/firmware/hdl/mp7_brd_decl.vhd
+vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/boards/mp7/base_fw/mp7xe_690/firmware/hdl/mp7_brd_decl.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/boards/mp7/base_fw/common/firmware/hdl/mp7_top_decl.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/projects/examples/mp7xe_690/firmware/hdl/top_decl.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/mp7_ttc/firmware/hdl/mp7_ttc_decl.vhd
