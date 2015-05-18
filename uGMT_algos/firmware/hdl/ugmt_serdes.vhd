@@ -59,6 +59,8 @@ architecture rtl of ugmt_serdes is
   signal sMuons_reg     : TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sTracks        : TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
   signal sTracks_reg    : TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
+  signal sTracksO       : TGMTMuTracks_vector(11 downto 0);
+  signal sTracksF       : TGMTMuTracks_vector(11 downto 0);
   signal sEmpty         : std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sEmpty_reg     : std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sSortRanks     : TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
@@ -172,6 +174,8 @@ begin
   begin  -- process gmt_index_comp
     if clk40'event and clk40 = '1' then  -- rising clock edge
       sMuons_reg                                   <= sMuons;
+      sTracksO                                     <= sTracks(OVL_NEG_HIGH downto OVL_NEG_LOW) & sTracks(OVL_POS_HIGH downto OVL_POS_LOW);
+      sTracksF                                     <= sTracks(FWD_NEG_HIGH downto FWD_NEG_LOW) & sTracks(FWD_POS_HIGH downto FWD_POS_LOW);
       sTracks_reg                                  <= sTracks;
       sEmpty_reg                                   <= sEmpty;
       sSortRanks_reg                               <= sSortRanks;
@@ -252,10 +256,8 @@ begin
       iMuonsF_plus      => sMuons_reg((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN),
       iMuonsF_minus     => sMuons_reg((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN),
       iTracksB          => sTracks_reg(BARREL_HIGH downto BARREL_LOW),
-      iTracksO          => sTracks_reg(OVL_NEG_HIGH downto OVL_NEG_LOW) & 
-				sTracks_reg(OVL_POS_HIGH downto OVL_POS_LOW),
-      iTracksF          => sTracks_reg(FWD_NEG_HIGH downto FWD_NEG_LOW) & 
-				sTracks_reg(FWD_POS_HIGH downto FWD_POS_LOW),
+      iTracksO          => sTracksO, 
+      iTracksF          => sTracksF,
       iSortRanksB       => sSortRanks_reg((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN),
       iSortRanksO_plus  => sSortRanks_reg((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN),
       iSortRanksO_minus => sSortRanks_reg((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN),
