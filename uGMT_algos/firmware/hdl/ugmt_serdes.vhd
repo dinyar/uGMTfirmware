@@ -251,9 +251,11 @@ begin
       iMuonsO_minus     => sMuons_reg((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN),
       iMuonsF_plus      => sMuons_reg((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN),
       iMuonsF_minus     => sMuons_reg((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN),
-      iTracksB          => sTracks_reg(23 downto 12),
-      iTracksO          => sTracks_reg(11 downto 0),
-      iTracksF          => sTracks_reg(35 downto 24),
+      iTracksB          => sTracks_reg(BARREL_HIGH downto BARREL_LOW),
+      iTracksO          => sTracks_reg(OVL_NEG_HIGH downto OVL_NEG_LOW) & 
+				sTracks_reg(OVL_POS_HIGH downto OVL_POS_LOW),
+      iTracksF          => sTracks_reg(FWD_NEG_HIGH downto FWD_NEG_LOW) & 
+				sTracks_reg(FWD_POS_HIGH downto FWD_POS_LOW),
       iSortRanksB       => sSortRanks_reg((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN),
       iSortRanksO_plus  => sSortRanks_reg((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN),
       iSortRanksO_minus => sSortRanks_reg((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN),
