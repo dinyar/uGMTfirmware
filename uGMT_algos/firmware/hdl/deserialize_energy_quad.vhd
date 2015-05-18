@@ -108,7 +108,7 @@ begin  -- Behavioral
   gen_error_counter : for i in NCHAN-1 downto 0 generate
     bc0_reg : entity work.ipbus_counter
       port map(
-          clk          => clk_ipb,
+          clk          => clk40,
           reset        => rst,
           ipbus_in     => ipbw(N_SLV_BC0_ERRORS_0+i),
           ipbus_out    => ipbr(N_SLV_BC0_ERRORS_0+i),
@@ -116,7 +116,7 @@ begin  -- Behavioral
       );
     sync_reg : entity work.ipbus_counter
       port map(
-        clk          => clk_ipb,
+        clk          => clk40,
         reset        => rst,
         ipbus_in     => ipbw(N_SLV_BNCH_CNT_ERRORS_0+i),
         ipbus_out    => ipbr(N_SLV_BNCH_CNT_ERRORS_0+i),
