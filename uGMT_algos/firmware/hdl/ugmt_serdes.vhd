@@ -181,20 +181,12 @@ begin
   gmt_index_comp : process (clk40)
   begin  -- process gmt_index_comp
     if clk40'event and clk40 = '1' then  -- rising clock edge
-      sMuons_reg <= sMuons;
-      sMuonsO    <= sMuons((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sMuons((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
-      sMuonsF    <= sMuons((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sMuons((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
-
-      sTracks_reg <= sTracks;
-      sTracksO    <= sTracks(OVL_NEG_HIGH downto OVL_NEG_LOW) & sTracks(OVL_POS_HIGH downto OVL_POS_LOW);
-      sTracksF    <= sTracks(FWD_NEG_HIGH downto FWD_NEG_LOW) & sTracks(FWD_POS_HIGH downto FWD_POS_LOW);
-
-      sEmpty_reg <= sEmpty;
-      
-      sSortRanks_reg <= sSortRanks;
-      sSortRanksO    <= sSortRanks((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sSortRanks((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
-      sSortRanksF    <= sSortRanks((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sSortRanks((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
-      
+      sMuons_reg                                   <= sMuons;
+      sTracks_reg                                  <= sTracks;
+      sTracksO                                     <= sTracks(OVL_NEG_HIGH downto OVL_NEG_LOW) & sTracks(OVL_POS_HIGH downto OVL_POS_LOW);
+      sTracksF                                     <= sTracks(FWD_NEG_HIGH downto FWD_NEG_LOW) & sTracks(FWD_POS_HIGH downto FWD_POS_LOW);
+      sEmpty_reg                                   <= sEmpty;
+      sSortRanks_reg                               <= sSortRanks;
       sEnergies_tmp(sEnergies_tmp'high-4 downto 0) <= sEnergies;
       sEnergies_tmp(sEnergies_tmp'high-3)          <= (others => "00000");
       sEnergies_tmp(sEnergies_tmp'high-2)          <= (others => "00000");
@@ -272,21 +264,29 @@ begin
 
   uGMT : entity work.GMT
     port map (
-      iMuonsB      => sMuons_reg((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN),
-      iMuonsO      => sMuonsO,
-      iMuonsF      => sMuonsF,
-      iTracksB     => sTracks_reg(BARREL_HIGH downto BARREL_LOW),
-      iTracksO     => sTracksO, 
-      iTracksF     => sTracksF,
-      iSortRanksB  => sSortRanks_reg((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN),
-      iSortRanksO  => sSortRanksO,
-      iSortRanksF  => sSortRanksF,
-      iIdxBitsB    => sIndexBits((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN),
-      iIdxBitsO    => sIndexBitsO,
-      iIdxBitsF    => sIndexBitsF,
-      iEmptyB      => sEmptyB,
-      iEmptyO      => sEmptyO,
-      iEmptyF      => sEmptyF,
+      iMuonsB           => sMuons_reg((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN),
+      iMuonsO_plus      => sMuons_reg((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN),
+      iMuonsO_minus     => sMuons_reg((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN),
+      iMuonsF_plus      => sMuons_reg((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN),
+      iMuonsF_minus     => sMuons_reg((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN),
+      iTracksB          => sTracks_reg(BARREL_HIGH downto BARREL_LOW),
+      iTracksO          => sTracksO, 
+      iTracksF          => sTracksF,
+      iSortRanksB       => sSortRanks_reg((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN),
+      iSortRanksO_plus  => sSortRanks_reg((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN),
+      iSortRanksO_minus => sSortRanks_reg((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN),
+      iSortRanksF_plus  => sSortRanks_reg((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN),
+      iSortRanksF_minus => sSortRanks_reg((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN),
+      iIdxBitsB         => sIndexBits((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN),
+      iIdxBitsO_plus    => sIndexBits((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN),
+      iIdxBitsO_minus   => sIndexBits((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN),
+      iIdxBitsF_plus    => sIndexBits((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN),
+      iIdxBitsF_minus   => sIndexBits((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN),
+      iEmptyB           => sEmptyB,
+      iEmptyO_plus      => sEmptyO_plus,
+      iEmptyO_minus     => sEmptyO_minus,
+      iEmptyF_plus      => sEmptyF_plus,
+      iEmptyF_minus     => sEmptyF_minus,
 
       iEnergies => sEnergies_reg,
 
