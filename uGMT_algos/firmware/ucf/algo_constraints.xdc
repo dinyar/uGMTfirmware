@@ -1,15 +1,15 @@
 # Serdes area constraints
 
 # Additional resources for quads
-add_cells_to_pblock [get_pblocks payload_9] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[0].deserialize}]]
-add_cells_to_pblock [get_pblocks payload_10] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[1].deserialize}]]
-add_cells_to_pblock [get_pblocks payload_11] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[2].deserialize}]]
-add_cells_to_pblock [get_pblocks payload_12] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[3].deserialize}]]
-add_cells_to_pblock [get_pblocks payload_13] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[4].deserialize}]]
-add_cells_to_pblock [get_pblocks payload_14] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[5].deserialize}]]
-add_cells_to_pblock [get_pblocks payload_15] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[6].deserialize}]]
-add_cells_to_pblock [get_pblocks payload_16] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[7].deserialize}]]
-add_cells_to_pblock [get_pblocks payload_17] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[8].deserialize}]]
+add_cells_to_pblock [get_pblocks payload] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[0].deserialize}]]
+add_cells_to_pblock [get_pblocks payload] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[1].deserialize}]]
+add_cells_to_pblock [get_pblocks payload] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[2].deserialize}]]
+add_cells_to_pblock [get_pblocks payload] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[3].deserialize}]]
+add_cells_to_pblock [get_pblocks payload] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[4].deserialize}]]
+add_cells_to_pblock [get_pblocks payload] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[5].deserialize}]]
+add_cells_to_pblock [get_pblocks payload] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[6].deserialize}]]
+add_cells_to_pblock [get_pblocks payload] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[7].deserialize}]]
+add_cells_to_pblock [get_pblocks payload] [get_cells -quiet [list {algo/deserialize_muons/deserialize_loop[8].deserialize}]]
 
 create_pblock deser_x1y0
 add_cells_to_pblock [get_pblocks deser_x1y0] [get_cells -quiet [list {algo/deserialize_energies/deserialize_loop[6].deserialize}]]
