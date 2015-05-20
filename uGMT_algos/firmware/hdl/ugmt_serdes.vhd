@@ -177,22 +177,21 @@ begin
     end if;
   end process delay_valid_bit;
 
+  sMuons_reg                                   <= sMuons;
+  sTracks_reg                                  <= sTracks;
+  sTracksO                                     <= sTracks(OVL_NEG_HIGH downto OVL_NEG_LOW) & sTracks(OVL_POS_HIGH downto OVL_POS_LOW);
+  sTracksF                                     <= sTracks(FWD_NEG_HIGH downto FWD_NEG_LOW) & sTracks(FWD_POS_HIGH downto FWD_POS_LOW);
+  sEmpty_reg                                   <= sEmpty;
+  sSortRanks_reg                               <= sSortRanks;
+  sEnergies_tmp(sEnergies_tmp'high-4 downto 0) <= sEnergies;
+  sEnergies_tmp(sEnergies_tmp'high-3)          <= (others => "00000");
+  sEnergies_tmp(sEnergies_tmp'high-2)          <= (others => "00000");
+  sEnergies_tmp(sEnergies_tmp'high-1)          <= (others => "00000");
+  sEnergies_tmp(sEnergies_tmp'high)            <= (others => "00000");
 
   gmt_index_comp : process (clk40)
   begin  -- process gmt_index_comp
     if clk40'event and clk40 = '1' then  -- rising clock edge
-      sMuons_reg                                   <= sMuons;
-      sTracks_reg                                  <= sTracks;
-      sTracksO                                     <= sTracks(OVL_NEG_HIGH downto OVL_NEG_LOW) & sTracks(OVL_POS_HIGH downto OVL_POS_LOW);
-      sTracksF                                     <= sTracks(FWD_NEG_HIGH downto FWD_NEG_LOW) & sTracks(FWD_POS_HIGH downto FWD_POS_LOW);
-      sEmpty_reg                                   <= sEmpty;
-      sSortRanks_reg                               <= sSortRanks;
-      sEnergies_tmp(sEnergies_tmp'high-4 downto 0) <= sEnergies;
-      sEnergies_tmp(sEnergies_tmp'high-3)          <= (others => "00000");
-      sEnergies_tmp(sEnergies_tmp'high-2)          <= (others => "00000");
-      sEnergies_tmp(sEnergies_tmp'high-1)          <= (others => "00000");
-      sEnergies_tmp(sEnergies_tmp'high)            <= (others => "00000");
-
       for index in sMuons'range loop
         sIndexBits(index) <= to_unsigned(index, sIndexBits(index)'length);
       end loop;  -- index
