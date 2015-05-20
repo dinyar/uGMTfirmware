@@ -57,23 +57,15 @@ architecture rtl of ugmt_serdes is
 
   signal sMuons         : TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sMuons_reg     : TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-  signal sMuonsO        : TGMTMu_vector(35 downto 0);
-  signal sMuonsF        : TGMTMu_vector(35 downto 0);
   signal sTracks        : TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
   signal sTracks_reg    : TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
   signal sTracksO       : TGMTMuTracks_vector(11 downto 0);
   signal sTracksF       : TGMTMuTracks_vector(11 downto 0);
   signal sEmpty         : std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sEmpty_reg     : std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-  signal sEmptyO        : std_logic_vector(35 downto 0);
-  signal sEmptyF        : std_logic_vector(35 downto 0);
   signal sSortRanks     : TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sSortRanks_reg : TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-  signal sSortRanksO    : TSortRank10_vector(35 downto 0);
-  signal sSortRanksF    : TSortRank10_vector(35 downto 0);
   signal sIndexBits     : TIndexBits_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-  signal sIndexBitsO    : TIndexBits_vector(35 downto 0);
-  signal sIndexBitsF    : TIndexBits_vector(35 downto 0);
 
   signal sIso       : TIsoBits_vector(7 downto 0);
   signal oMuons     : TGMTMu_vector(7 downto 0);
@@ -192,6 +184,18 @@ begin
   gmt_index_comp : process (clk40)
   begin  -- process gmt_index_comp
     if clk40'event and clk40 = '1' then  -- rising clock edge
+      sMuons_reg                                   <= sMuons;
+      sTracksO                                     <= sTracks(OVL_NEG_HIGH downto OVL_NEG_LOW) & sTracks(OVL_POS_HIGH downto OVL_POS_LOW);
+      sTracksF                                     <= sTracks(FWD_NEG_HIGH downto FWD_NEG_LOW) & sTracks(FWD_POS_HIGH downto FWD_POS_LOW);
+      sTracks_reg                                  <= sTracks;
+      sEmpty_reg                                   <= sEmpty;
+      sSortRanks_reg                               <= sSortRanks;
+      sEnergies_tmp(sEnergies_tmp'high-4 downto 0) <= sEnergies;
+      sEnergies_tmp(sEnergies_tmp'high-3)          <= (others => "00000");
+      sEnergies_tmp(sEnergies_tmp'high-2)          <= (others => "00000");
+      sEnergies_tmp(sEnergies_tmp'high-1)          <= (others => "00000");
+      sEnergies_tmp(sEnergies_tmp'high)            <= (others => "00000");
+
       for index in sMuons'range loop
         sIndexBits(index) <= to_unsigned(index, sIndexBits(index)'length);
       end loop;  -- index
@@ -254,12 +258,6 @@ begin
           sEmptyF_minus <= sEmpty_reg((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN);
       end if;
   end process disable_inputs;
-
-  sEmptyO <= sEmptyO_minus & sEmptyO_plus;
-  sEmptyF <= sEmptyF_minus & sEmptyF_plus;
-  
-  sIndexBitsO <= sIndexBits((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sIndexBits((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
-  sIndexBitsF <= sIndexBits((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sIndexBits((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
 
   uGMT : entity work.GMT
     port map (

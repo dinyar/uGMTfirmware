@@ -10,21 +10,29 @@ use work.GMTTypes.all;
 
 entity GMT is
   port (
-    iMuonsB     : in TGMTMu_vector(35 downto 0);
-    iMuonsO     : in TGMTMu_vector(35 downto 0);
-    iMuonsF     : in TGMTMu_vector(35 downto 0);
-    iTracksB    : in TGMTMuTracks_vector(11 downto 0);
-    iTracksO    : in TGMTMuTracks_vector(11 downto 0);
-    iTracksF    : in TGMTMuTracks_vector(11 downto 0);
-    iSortRanksB : in TSortRank10_vector(35 downto 0);
-    iSortRanksO : in TSortRank10_vector(35 downto 0);
-    iSortRanksF : in TSortRank10_vector(35 downto 0);
-    iIdxBitsB   : in TIndexBits_vector(35 downto 0);
-    iIdxBitsO   : in TIndexBits_vector(35 downto 0);
-    iIdxBitsF   : in TIndexBits_vector(35 downto 0);
-    iEmptyB     : in std_logic_vector(35 downto 0);
-    iEmptyO     : in std_logic_vector(35 downto 0);
-    iEmptyF     : in std_logic_vector(35 downto 0);
+    iMuonsB           : in TGMTMu_vector(35 downto 0);
+    iMuonsO_plus      : in TGMTMu_vector(17 downto 0);
+    iMuonsO_minus     : in TGMTMu_vector(17 downto 0);
+    iMuonsF_plus      : in TGMTMu_vector(17 downto 0);
+    iMuonsF_minus     : in TGMTMu_vector(17 downto 0);
+    iTracksB          : in TGMTMuTracks_vector(11 downto 0);
+    iTracksO          : in TGMTMuTracks_vector(11 downto 0);
+    iTracksF          : in TGMTMuTracks_vector(11 downto 0);
+    iSortRanksB       : in TSortRank10_vector(35 downto 0);
+    iSortRanksO_plus  : in TSortRank10_vector(17 downto 0);
+    iSortRanksO_minus : in TSortRank10_vector(17 downto 0);
+    iSortRanksF_plus  : in TSortRank10_vector(17 downto 0);
+    iSortRanksF_minus : in TSortRank10_vector(17 downto 0);
+    iIdxBitsB         : in TIndexBits_vector(35 downto 0);
+    iIdxBitsO_plus    : in TIndexBits_vector(17 downto 0);
+    iIdxBitsO_minus   : in TIndexBits_vector(17 downto 0);
+    iIdxBitsF_plus    : in TIndexBits_vector(17 downto 0);
+    iIdxBitsF_minus   : in TIndexBits_vector(17 downto 0);
+    iEmptyB           : in std_logic_vector(35 downto 0);
+    iEmptyO_plus      : in std_logic_vector(17 downto 0);
+    iEmptyO_minus     : in std_logic_vector(17 downto 0);
+    iEmptyF_plus      : in std_logic_vector(17 downto 0);
+    iEmptyF_minus     : in std_logic_vector(17 downto 0);
 
     iEnergies : in TCaloRegionEtaSlice_vector(31 downto 0);
     -- The outer two slices will be set to '0'. XST should optimize logic
@@ -65,6 +73,14 @@ architecture Behavioral of GMT is
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
   -- Core uGMT algos
+  signal sMuonsO       : TGMTMu_vector(35 downto 0);
+  signal sMuonsF       : TGMTMu_vector(35 downto 0);
+  signal sSortRanksO   : TSortRank10_vector(35 downto 0);
+  signal sSortRanksF   : TSortRank10_vector(35 downto 0);
+  signal sEmptyO       : std_logic_vector(35 downto 0);
+  signal sEmptyF       : std_logic_vector(35 downto 0);
+  signal sIdxBitsO     : TIndexBits_vector(35 downto 0);
+  signal sIdxBitsF     : TIndexBits_vector(35 downto 0);
   signal sIsoBits      : TIsoBits_vector(7 downto 0);
   signal sMuIdxBits    : TIndexBits_vector(7 downto 0);
   signal sFinalMuPt    : TMuonPT_vector(7 downto 0);
@@ -112,6 +128,15 @@ begin
       ipb_from_slaves => ipbr
       );
 
+  sMuonsO     <= iMuonsO_minus & iMuonsO_plus;
+  sMuonsF     <= iMuonsF_minus & iMuonsF_plus;
+  sSortRanksO <= iSortRanksO_minus & iSortRanksO_plus;
+  sSortRanksF <= iSortRanksF_minus & iSortRanksF_plus;
+  sEmptyO     <= iEmptyO_minus & iEmptyO_plus;
+  sEmptyF     <= iEmptyF_minus & iEmptyF_plus;
+  sIdxBitsO   <= iIdxBitsO_minus & iIdxBitsO_plus;
+  sIdxBitsF   <= iIdxBitsF_minus & iIdxBitsF_plus;
+
   -----------------------------------------------------------------------------
   -- calo stuff
   -----------------------------------------------------------------------------
@@ -119,8 +144,8 @@ begin
     port map (
       iEnergies            => iEnergies,
       iMuonsB              => iMuonsB,
-      iMuonsO              => iMuonsO,
-      iMuonsF              => iMuonsF,
+      iMuonsO              => sMuonsO,
+      iMuonsF              => sMuonsF,
       iMuIdxBits           => sMuIdxBits,
       iFinalMuPt           => sFinalMuPt,
       oIsoBits             => sIsoBits,
@@ -147,8 +172,8 @@ begin
       rpc_merging => false)
     port map (
       iMuonsB => iMuonsB,
-      iMuonsO => iMuonsO,
-      iMuonsF => iMuonsF,
+      iMuonsO => sMuonsO,
+      iMuonsF => sMuonsF,
 
       -- For RPC merging.
       iMuonsRPCb     => sMuonsRPCb,
@@ -164,14 +189,14 @@ begin
       iTracksO                => iTracksO,
       iTracksF                => iTracksF,
       iSortRanksB             => iSortRanksB,
-      iSortRanksO             => iSortRanksO,
-      iSortRanksF             => iSortRanksF,
+      iSortRanksO             => sSortRanksO,
+      iSortRanksF             => sSortRanksF,
       iEmptyB                 => iEmptyB,
-      iEmptyO                 => iEmptyO,
-      iEmptyF                 => iEmptyF,
+      iEmptyO                 => sEmptyO,
+      iEmptyF                 => sEmptyF,
       iIdxBitsB               => iIdxBitsB,
-      iIdxBitsO               => iIdxBitsO,
-      iIdxBitsF               => iIdxBitsF,
+      iIdxBitsO               => sIdxBitsO,
+      iIdxBitsF               => sIdxBitsF,
       oIntermediateMuonsB     => sIntermediateMuonsB,
       oIntermediateMuonsO     => sIntermediateMuonsO,
       oIntermediateMuonsF     => sIntermediateMuonsF,
