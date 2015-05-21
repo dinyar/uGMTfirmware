@@ -45,7 +45,6 @@ architecture rtl of ugmt_serdes is
   -- Register to disable/enable inputs
   signal sInputDisable : ipb_reg_v(0 downto 0);
 
-  signal sEmptyB : std_logic_vector(35 downto 0);
   signal sEmptyO_plus : std_logic_vector(17 downto 0);
   signal sEmptyO_minus : std_logic_vector(17 downto 0);
   signal sEmptyF_plus : std_logic_vector(17 downto 0);
@@ -53,19 +52,28 @@ architecture rtl of ugmt_serdes is
 
   signal sEnergies     : TCaloRegionEtaSlice_vector(27 downto 0);  -- All energies from Calo trigger.
   signal sEnergies_tmp : TCaloRegionEtaSlice_vector(31 downto 0);
-  signal sEnergies_reg : TCaloRegionEtaSlice_vector(31 downto 0);
+  signal sEnergies_fin : TCaloRegionEtaSlice_vector(31 downto 0);
 
   signal sMuons         : TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-  signal sMuons_reg     : TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+  signal sMuonsB        : TGMTMu_vector(35 downto 0);
+  signal sMuonsO        : TGMTMu_vector(35 downto 0);
+  signal sMuonsF        : TGMTMu_vector(35 downto 0);
   signal sTracks        : TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
-  signal sTracks_reg    : TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
+  signal sTracksB       : TGMTMuTracks_vector(11 downto 0);
   signal sTracksO       : TGMTMuTracks_vector(11 downto 0);
   signal sTracksF       : TGMTMuTracks_vector(11 downto 0);
   signal sEmpty         : std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-  signal sEmpty_reg     : std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+  signal sEmptyB        : std_logic_vector(35 downto 0);
+  signal sEmptyO        : std_logic_vector(35 downto 0);
+  signal sEmptyF        : std_logic_vector(35 downto 0);
   signal sSortRanks     : TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-  signal sSortRanks_reg : TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+  signal sSortRanksB    : TSortRank10_vector(35 downto 0);
+  signal sSortRanksO    : TSortRank10_vector(35 downto 0);
+  signal sSortRanksF    : TSortRank10_vector(35 downto 0);
   signal sIndexBits     : TIndexBits_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+  signal sIndexBitsB    : TIndexBits_vector(35 downto 0);
+  signal sIndexBitsO    : TIndexBits_vector(35 downto 0);
+  signal sIndexBitsF    : TIndexBits_vector(35 downto 0);
 
   signal sIso       : TIsoBits_vector(7 downto 0);
   signal oMuons     : TGMTMu_vector(7 downto 0);
@@ -169,26 +177,13 @@ begin
     end if;
   end process delay_valid_bit;
 
-  sMuons_reg                                   <= sMuons;
-  sTracks_reg                                  <= sTracks;
-  sTracksO                                     <= sTracks(OVL_NEG_HIGH downto OVL_NEG_LOW) & sTracks(OVL_POS_HIGH downto OVL_POS_LOW);
-  sTracksF                                     <= sTracks(FWD_NEG_HIGH downto FWD_NEG_LOW) & sTracks(FWD_POS_HIGH downto FWD_POS_LOW);
-  sEmpty_reg                                   <= sEmpty;
-  sSortRanks_reg                               <= sSortRanks;
-  sEnergies_tmp(sEnergies_tmp'high-4 downto 0) <= sEnergies;
-  sEnergies_tmp(sEnergies_tmp'high-3)          <= (others => "00000");
-  sEnergies_tmp(sEnergies_tmp'high-2)          <= (others => "00000");
-  sEnergies_tmp(sEnergies_tmp'high-1)          <= (others => "00000");
-  sEnergies_tmp(sEnergies_tmp'high)            <= (others => "00000");
 
   gmt_index_comp : process (clk40)
   begin  -- process gmt_index_comp
     if clk40'event and clk40 = '1' then  -- rising clock edge
-
       for index in sMuons'range loop
         sIndexBits(index) <= to_unsigned(index, sIndexBits(index)'length);
       end loop;  -- index
-
     end if;
   end process gmt_index_comp;
 
@@ -204,77 +199,94 @@ begin
         q => sInputDisable
     );
 
-  disable_inputs : process (sEmpty_reg, sEnergies_tmp, sInputDisable)
+  disable_inputs : process (sEmpty, sEnergies_tmp, sInputDisable)
   begin
       if sInputDisable(0)(0) = '1' then -- disable energies
-          for i in sEnergies_reg'range loop
-              sEnergies_reg(i) <= (others => "00000");
+          for i in sEnergies_fin'range loop
+              sEnergies_fin(i) <= (others => "00000");
           end loop;
       else
-          sEnergies_reg <= sEnergies_tmp;
+          sEnergies_fin <= sEnergies_tmp;
       end if;
 
       ---- Disabling barrel ----
       if sInputDisable(0)(1) = '1' then -- disable barrel
           sEmptyB <= (others => '1');
       else
-          sEmptyB <= sEmpty_reg((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
+          sEmptyB <= sEmpty((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
       end if;
 
       ---- Disable overlap ----
       if sInputDisable(0)(2) = '1' then -- disable ovl pos
           sEmptyO_plus <= (others => '1');
       else
-          sEmptyO_plus <= sEmpty_reg((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
+          sEmptyO_plus <= sEmpty((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
       end if;
 
       if sInputDisable(0)(3) = '1' then -- disable ovl neg
           sEmptyO_minus <= (others => '1');
       else
-          sEmptyO_minus <= sEmpty_reg((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN);
+          sEmptyO_minus <= sEmpty((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN);
       end if;
 
       ---- Disable forward ----
       if sInputDisable(0)(4) = '1' then -- disable fwd pos
           sEmptyF_plus <= (others => '1');
       else
-          sEmptyF_plus <= sEmpty_reg((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+          sEmptyF_plus <= sEmpty((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
       end if;
 
       if sInputDisable(0)(5) = '1' then -- disable fwd neg
           sEmptyF_minus <= (others => '1');
       else
-          sEmptyF_minus <= sEmpty_reg((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN);
+          sEmptyF_minus <= sEmpty((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN);
       end if;
   end process disable_inputs;
 
+  sMuonsB <= sMuons((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
+  sMuonsO <= sMuons((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sMuons((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
+  sMuonsF <= sMuons((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sMuons((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+
+  sTracksB <= sTracks(BARREL_HIGH downto BARREL_LOW);
+  sTracksO <= sTracks(OVL_NEG_HIGH downto OVL_NEG_LOW) & sTracks(OVL_POS_HIGH downto OVL_POS_LOW);
+  sTracksF <= sTracks(FWD_NEG_HIGH downto FWD_NEG_LOW) & sTracks(FWD_POS_HIGH downto FWD_POS_LOW);
+
+  sIndexBitsB <= sIndexBits((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
+  sIndexBitsO <= sIndexBits((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sIndexBits((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
+  sIndexBitsF <= sIndexBits((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sIndexBits((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+
+  sEmptyO <= sEmptyO_minus & sEmptyO_plus;
+  sEmptyF <= sEmptyF_minus & sEmptyF_plus;
+
+  sSortRanksB <= sSortRanks((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
+  sSortRanksO <= sSortRanks((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sSortRanks((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
+  sSortRanksF <= sSortRanks((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sSortRanks((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+
+  sEnergies_tmp(sEnergies_tmp'high-4 downto 0) <= sEnergies;
+  sEnergies_tmp(sEnergies_tmp'high-3)          <= (others => "00000");
+  sEnergies_tmp(sEnergies_tmp'high-2)          <= (others => "00000");
+  sEnergies_tmp(sEnergies_tmp'high-1)          <= (others => "00000");
+  sEnergies_tmp(sEnergies_tmp'high)            <= (others => "00000");
+  
   uGMT : entity work.GMT
     port map (
-      iMuonsB           => sMuons_reg((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN),
-      iMuonsO_plus      => sMuons_reg((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN),
-      iMuonsO_minus     => sMuons_reg((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN),
-      iMuonsF_plus      => sMuons_reg((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN),
-      iMuonsF_minus     => sMuons_reg((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN),
-      iTracksB          => sTracks_reg(BARREL_HIGH downto BARREL_LOW),
+      iMuonsB           => sMuonsB,
+      iMuonsO           => sMuonsO,
+      iMuonsF           => sMuonsF,
+      iTracksB          => sTracksB,
       iTracksO          => sTracksO, 
       iTracksF          => sTracksF,
-      iSortRanksB       => sSortRanks_reg((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN),
-      iSortRanksO_plus  => sSortRanks_reg((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN),
-      iSortRanksO_minus => sSortRanks_reg((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN),
-      iSortRanksF_plus  => sSortRanks_reg((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN),
-      iSortRanksF_minus => sSortRanks_reg((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN),
-      iIdxBitsB         => sIndexBits((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN),
-      iIdxBitsO_plus    => sIndexBits((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN),
-      iIdxBitsO_minus   => sIndexBits((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN),
-      iIdxBitsF_plus    => sIndexBits((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN),
-      iIdxBitsF_minus   => sIndexBits((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN),
+      iSortRanksB       => sSortRanksB,
+      iSortRanksO       => sSortRanksO,
+      iSortRanksF       => sSortRanksF,
+      iIdxBitsB         => sIndexBitsB,
+      iIdxBitsO         => sIndexBitsO,
+      iIdxBitsF         => sIndexBitsF,
       iEmptyB           => sEmptyB,
-      iEmptyO_plus      => sEmptyO_plus,
-      iEmptyO_minus     => sEmptyO_minus,
-      iEmptyF_plus      => sEmptyF_plus,
-      iEmptyF_minus     => sEmptyF_minus,
+      iEmptyO           => sEmptyO,
+      iEmptyF           => sEmptyF,
 
-      iEnergies => sEnergies_reg,
+      iEnergies => sEnergies_fin,
 
       oIntermediateMuonsB     => sIntermediateMuonsB,
       oIntermediateMuonsO     => sIntermediateMuonsO,
