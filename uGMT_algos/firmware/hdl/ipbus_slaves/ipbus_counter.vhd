@@ -18,7 +18,6 @@ entity ipbus_counter is
 		ipbus_out    : out ipb_rbus;
 		incr_counter : in  std_logic
 	);
-
 end ipbus_counter;
 
 architecture rtl of ipbus_counter is
@@ -30,7 +29,8 @@ begin
 	process(clk)
 	begin
 		if rising_edge(clk) then
-			if reset = '1' or (ipbus_in.ipb_strobe='1' and ipbus_in.ipb_write = '1') then
+			-- TODO: Check IPbus protocol to find out how to do this on-read.
+			if reset = '1' or ipbus_in.ipb_strobe='1' then
 				ctr <= (others => '0');
 			else
 				if incr_counter = '1' then
