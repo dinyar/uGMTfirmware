@@ -74,23 +74,23 @@ begin
     generic map (
       DATA_FILE  => DATA_FILE
       )
-      port map (
-        clk_ipb => clk_ipb,
-        rst     => rst,
-        ipb_in  => ipbw(i),
-        ipb_out => ipbr(i),
-        iWedge_Ovl  => iWedges_Ovl(i),
-        iWedge_B1  => iWedges_B((2*i-1) mod iWedges_B'length),
-        iWedge_B2  => iWedges_B(2*i),
-        iWedge_B3  => iWedges_B(2*i+1),
-        iWedge_B4  => iWedges_B((2*i+2) mod iWedges_B'length),
-        oCancel_Ovl  => sCancel1(i),
-        oCancel_B1 => sCancel2((2*i-1) mod iWedges_B'length)(0),
-        oCancel_B2 => sCancel2(2*i)(1),
-        oCancel_B3 => sCancel2(2*i+1)(1),
-        oCancel_B4 => sCancel2((2*i+2) mod iWedges_B'length)(0),
-        clk     => clk
-        );
+    port map (
+      clk_ipb => clk_ipb,
+      rst     => rst,
+      ipb_in  => ipbw(i),
+      ipb_out => ipbr(i),
+      iWedge_Ovl  => iWedges_Ovl(i),
+      iWedge_B1  => iWedges_B((2*i) mod iWedges_B'length),
+      iWedge_B2  => iWedges_B((2*i+1) mod iWedges_B'length),
+      iWedge_B3  => iWedges_B((2*i+2) mod iWedges_B'length),
+      iWedge_B4  => iWedges_B((2*i+3) mod iWedges_B'length),
+      oCancel_Ovl  => sCancel1(i),
+      oCancel_B1 => sCancel2((2*i) mod iWedges_B'length)(0),
+      oCancel_B2 => sCancel2((2*i+1) mod iWedges_B'length)(1),
+      oCancel_B3 => sCancel2((2*i+2) mod iWedges_B'length)(1),
+      oCancel_B4 => sCancel2((2*i+3) mod iWedges_B'length)(0),
+      clk     => clk
+      );
   end generate g1;
 
   -- Now OR all i'th cancels.
