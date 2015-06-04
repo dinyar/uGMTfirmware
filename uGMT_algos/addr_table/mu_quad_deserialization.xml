@@ -3,13 +3,16 @@
     <node id="sort_rank_mem_1" address="0x2000" size="0x2000" mode="block" description="SortRank LUT for second channel." fwinfo="endpoint;width=13" />
     <node id="sort_rank_mem_2" address="0x4000" size="0x2000" mode="block" description="SortRank LUT for third channel." fwinfo="endpoint;width=13" />
     <node id="sort_rank_mem_3" address="0x6000" size="0x2000" mode="block" description="SortRank LUT for fourth channel." fwinfo="endpoint;width=13" />
-    <node id="bc0_errors_0" address="0x8000" description="BC0 errors on links." fwinfo="endpoint;width=0" />
-    <node id="bc0_errors_1" address="0x8001" description="BC0 errors on links." fwinfo="endpoint;width=0" />
-    <node id="bc0_errors_2" address="0x8002" description="BC0 errors on links." fwinfo="endpoint;width=0" />
-    <node id="bc0_errors_3" address="0x8004" description="BC0 errors on links." fwinfo="endpoint;width=0" />
-    <node id="bnch_cnt_errors_0" address="0x8008" description="Bunch counter errors on links." fwinfo="endpoint;width=0" />
-    <node id="bnch_cnt_errors_1" address="0x8010" description="Bunch counter errors on links." fwinfo="endpoint;width=0" />
-    <node id="bnch_cnt_errors_2" address="0x8020" description="Bunch counter errors on links." fwinfo="endpoint;width=0" />
-    <node id="bnch_cnt_errors_3" address="0x8040" description="Bunch counter errors on links." fwinfo="endpoint;width=0" />
-
+    <node id="bc0_errors_0" address="0x8000" description="BC0 errors on channel 0." fwinfo="endpoint;width=0" />
+    <node id="bc0_errors_1" address="0x8001" description="BC0 errors on channel 1." fwinfo="endpoint;width=0" />
+    <node id="bc0_errors_2" address="0x8002" description="BC0 errors on channel 2." fwinfo="endpoint;width=0" />
+    <node id="bc0_errors_3" address="0x8004" description="BC0 errors on channel 3." fwinfo="endpoint;width=0" />
+    <node id="bnch_cnt_errors_0" address="0x8008" description="Bunch counter errors on channel 0." fwinfo="endpoint;width=0" />
+    <node id="bnch_cnt_errors_1" address="0x8010" description="Bunch counter errors on channel 1." fwinfo="endpoint;width=0" />
+    <node id="bnch_cnt_errors_2" address="0x8020" description="Bunch counter errors on channel 2." fwinfo="endpoint;width=0" />
+    <node id="bnch_cnt_errors_3" address="0x8040" description="Bunch counter errors on channel 3." fwinfo="endpoint;width=0" />
+    <node id="phi_offset_0" address="0x9000" description="Register containing the phi offset for channel 0." fwinfo="endpoint;width=0" />
+    <node id="phi_offset_1" address="0x9001" description="Register containing the phi offset for channel 1." fwinfo="endpoint;width=0" />
+    <node id="phi_offset_2" address="0x9002" description="Register containing the phi offset for channel 2." fwinfo="endpoint;width=0" />
+    <node id="phi_offset_3" address="0x9004" description="Register containing the phi offset for channel 3." fwinfo="endpoint;width=0" />
 </node>

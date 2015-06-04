@@ -227,7 +227,6 @@ package GMTTypes is
   type TValid_link is array (natural range <>) of std_logic_vector(2*NUM_MUONS_IN-1 downto 0);
 
   function unroll_link_muons (signal iMuons_link         : TFlatMuons) return TFlatMuon_vector;
-  function unpack_mu_from_flat (signal iMuon_flat        : TFlatMuon) return TGMTMuIn;
   function gmt_mu_from_in_mu (signal iMuonIn             : TGMTMuIn) return TGMTMu;
   function calo_etaslice_from_flat (constant flat        : std_logic_vector) return TCaloRegionEtaSlice;
   function track_addresses_from_in_mus(signal iGMTMu_vec : TGMTMuIn_vector) return TGMTMuTracks_vector;
@@ -236,6 +235,9 @@ package GMTTypes is
   function unpack_idx_bits(signal iIdxBits               : TIndexBits_link) return TIndexBits_vector;
   function unpack_sort_rank(signal iSortRanks            : TSortRank_link) return TSortRank10_vector;
   function unpack_empty_bits(signal iEmptyBits           : TEmpty_link) return std_logic_vector;
+
+  function unpack_mu_from_flat(signal iMuon_flat : TFlatMuon;
+                               signal iPhiOffset : signed(10 downto 0)) return TGMTMuIn;
 
   function pack_mu_to_flat(signal iMuon : TGMTMu;
                            signal iIso  : TIsoBits) return TFlatMuon;
@@ -323,15 +325,21 @@ package body GMTTypes is
   end;
 
   function unpack_mu_from_flat (
-    signal iMuon_flat : TFlatMuon)
+    signal iMuon_flat : TFlatMuon;
+    signal iPhiOffset : signed(10 downto 0))
     return TGMTMuIn is
     variable oMuon : TGMTMuIn;
+    variable sPhiAbsolute : signed(10 downto 0);
+    variable sPhiInteger  : integer;
   begin
     oMuon.sysign  := iMuon_flat(SYSIGN_IN_HIGH downto SYSIGN_IN_LOW);
     oMuon.eta     := iMuon_flat(ETA_IN_HIGH downto ETA_IN_LOW);
     oMuon.qual    := iMuon_flat(QUAL_IN_HIGH downto QUAL_IN_LOW);
     oMuon.pt      := iMuon_flat(PT_IN_HIGH downto PT_IN_LOW);
-    oMuon.phi     := iMuon_flat(PHI_IN_HIGH downto PHI_IN_LOW);
+    -- TODO: Replace 576 with constant
+    sPhiAbsolute  := iPhiOffset + signed(iMuon_flat(PHI_IN_HIGH downto PHI_IN_LOW));
+    sPhiInteger   := to_integer(sPhiAbsolute);
+    oMuon.phi     := std_logic_vector(to_unsigned(sPhiInteger mod 576, 9));
     oMuon.address := unpack_address_from_flat(iMuon_flat(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW));
     return oMuon;
   end;

@@ -4,6 +4,7 @@ use IEEE.numeric_std.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
+use work.ipbus_reg_types.all;
 use work.ipbus_decode_mu_quad_deserialization.all;
 
 use work.mp7_ttc_decl.all;
@@ -38,6 +39,10 @@ architecture Behavioral of deserialize_mu_quad is
 
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
+
+  signal sPhiOffsetRegOutput : ipb_reg_v(3 downto 0);
+  type TOffsetVec is array (natural range <>) of signed(10 downto 0);
+  signal sPhiOffset : TOffsetVec(3 downto 0);
 
   signal in_buf : TQuadTransceiverBufferIn;
 
@@ -76,7 +81,6 @@ begin
         ipb_to_slaves   => ipbw,
         ipb_from_slaves => ipbr
         );
-
 
   in_buf(in_buf'high) <= d(NCHAN-1 downto 0);
   fill_buffer : process (clk240)
@@ -179,7 +183,7 @@ begin
     end if;
   end process gmt_in_reg;
 
-  gen_error_counter : for i in NCHAN-1 downto 0 generate
+  gen_ipb_registers : for i in NCHAN-1 downto 0 generate
     bc0_reg : entity work.ipbus_counter
       port map(
           clk          => clk40,
@@ -196,11 +200,26 @@ begin
         ipbus_out    => ipbr(N_SLV_BNCH_CNT_ERRORS_0+i),
         incr_counter => sBnchCntErr(i)
       );
-  end generate gen_error_counter;
+    phi_offset_reg : entity work.ipbus_reg_v
+      generic map(
+          N_REG => 1
+      )
+      port map(
+          clk => clk_ipb,
+          reset => rst,
+          ipbus_in => ipbw(N_SLV_PHI_OFFSET_0+i),
+          ipbus_out => ipbr(N_SLV_PHI_OFFSET_0+i),
+          q => sPhiOffsetRegOutput(i downto i)
+      );
+  end generate gen_ipb_registers;
+
+  assign_offsets : for i in sPhiOffset'range generate
+      sPhiOffset(i)(9 downto 0) <= signed(sPhiOffsetRegOutput(i)(9 downto 0));
+  end generate assign_offsets;
 
   sMuons_flat <= unroll_link_muons(sMuons_link(NCHAN-1 downto 0));
   unpack_muons : for i in sMuonsIn'range generate
-    sMuonsIn(i) <= unpack_mu_from_flat(sMuons_flat(i));
+    sMuonsIn(i) <= unpack_mu_from_flat(sMuons_flat(i), sPhiOffset(i/3));
   end generate unpack_muons;
   convert_muons : for i in sMuonsIn'range generate
     oMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i));

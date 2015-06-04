@@ -17,7 +17,7 @@ package ipbus_decode_idx_bit_mems_phi is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_idx_bit_mems_phi(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Tue May  5 23:34:42 2015 
+-- START automatically  generated VHDL the Thu Jun  4 15:37:25 2015 
   constant N_SLV_PHI_IDX_BITS_MEM_0: integer := 0;
   constant N_SLV_PHI_IDX_BITS_MEM_1: integer := 1;
   constant N_SLV_PHI_IDX_BITS_MEM_2: integer := 2;
@@ -66,7 +66,7 @@ package body ipbus_decode_idx_bit_mems_phi is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Tue May  5 23:34:42 2015 
+-- START automatically  generated VHDL the Thu Jun  4 15:37:25 2015 
     if    std_match(addr, "----------------000000----------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_PHI_IDX_BITS_MEM_0, IPBUS_SEL_WIDTH)); -- phi_idx_bits_mem_0 / base 0x00000000 / mask 0x0000fc00
     elsif std_match(addr, "----------------000001----------") then

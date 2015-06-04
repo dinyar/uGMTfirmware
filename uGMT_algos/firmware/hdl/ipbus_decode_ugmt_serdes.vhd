@@ -17,7 +17,7 @@ package ipbus_decode_ugmt_serdes is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_ugmt_serdes(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Tue May  5 23:34:42 2015 
+-- START automatically  generated VHDL the Thu Jun  4 15:37:26 2015 
   constant N_SLV_MU_DESERIALIZATION: integer := 0;
   constant N_SLV_ENERGY_DESERIALIZATION: integer := 1;
   constant N_SLV_UGMT: integer := 2;
@@ -34,7 +34,7 @@ package body ipbus_decode_ugmt_serdes is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Tue May  5 23:34:42 2015 
+-- START automatically  generated VHDL the Thu Jun  4 15:37:26 2015 
     if    std_match(addr, "----00-----0--------------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_MU_DESERIALIZATION, IPBUS_SEL_WIDTH)); -- mu_deserialization / base 0x00000000 / mask 0x0c100000
     elsif std_match(addr, "----00-----1--------------------") then

@@ -84,16 +84,16 @@ package ugmt_constants is
   constant ETA_IN_LOW  : natural := 13;
   constant ETA_IN_HIGH : natural := 21;
 
-  constant SYSIGN_IN_LOW  : natural := 23;
-  constant SYSIGN_IN_HIGH : natural := 24;
+  constant PHI_IN_LOW  : natural := 23;
+  constant PHI_IN_HIGH : natural := 30;
 
   -- This crosses the word boundary in the incoming frames. As the MSB is a
   -- control bit we "lose" one bit here, so the bit numbering for the 31 MSBs
   -- is of by one. (i.e. out muon has 62 bits, not 64)
-  constant PHI_IN_LOW  : natural := 25;
-  constant PHI_IN_HIGH : natural := 34;
+  constant SYSIGN_IN_LOW  : natural := 31;
+  constant SYSIGN_IN_HIGH : natural := 32;
 
-  constant ADDRESS_IN_LOW  : natural := 35;
+  constant ADDRESS_IN_LOW  : natural := 33;
   constant ADDRESS_IN_HIGH : natural := 62;
 
   --
