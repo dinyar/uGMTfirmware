@@ -1,6 +1,6 @@
 -- Generic counter
 --
--- Counters are reset by any write
+-- Counters are reset by any read
 --
 -- Dinyar Rabady, May 2015
 -- modified code by Dave Newbold, May 2013
@@ -29,7 +29,6 @@ begin
 	process(clk)
 	begin
 		if rising_edge(clk) then
-			-- TODO: Check IPbus protocol to find out how to do this on-read.
 			if reset = '1' or ipbus_in.ipb_strobe='1' then
 				ctr <= (others => '0');
 			else

@@ -224,7 +224,7 @@ begin
   convert_muons : for i in sMuonsIn'range generate
     oMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i));
   end generate convert_muons;
-  oTracks    <= track_addresses_from_in_mus(sMuonsIn);
+  oTracks    <= track_addresses_from_in_mus(sMuons_flat);
   oEmpty     <= unpack_empty_bits(sEmpty_link(NCHAN-1 downto 0));
   oSortRanks <= unpack_sort_rank(sSortRank_link(NCHAN-1 downto 0));
 

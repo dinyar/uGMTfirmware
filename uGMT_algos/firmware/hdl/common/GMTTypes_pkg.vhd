@@ -67,7 +67,7 @@ package GMTTypes is
   -----------------------------------------------------------------------------
   type TGMTMuTrackInfo is record
     eta : signed(8 downto 0);
-    phi : unsigned(9 downto 0);
+    phi : signed(7 downto 0);
     --address : TMuonAddress;
 
     qual : unsigned(3 downto 0);
@@ -229,12 +229,13 @@ package GMTTypes is
   function unroll_link_muons (signal iMuons_link         : TFlatMuons) return TFlatMuon_vector;
   function gmt_mu_from_in_mu (signal iMuonIn             : TGMTMuIn) return TGMTMu;
   function calo_etaslice_from_flat (constant flat        : std_logic_vector) return TCaloRegionEtaSlice;
-  function track_addresses_from_in_mus(signal iGMTMu_vec : TGMTMuIn_vector) return TGMTMuTracks_vector;
+  function track_addresses_from_in_mus(signal iMuon_flat : TFlatMuon_vector) return TGMTMuTracks_vector;
   function combine_or (or_vec                            : std_logic_vector) return std_logic;
   function check_valid_bits (signal iValid_link          : TValid_link) return std_logic;
   function unpack_idx_bits(signal iIdxBits               : TIndexBits_link) return TIndexBits_vector;
   function unpack_sort_rank(signal iSortRanks            : TSortRank_link) return TSortRank10_vector;
   function unpack_empty_bits(signal iEmptyBits           : TEmpty_link) return std_logic_vector;
+
 
   function unpack_mu_from_flat(signal iMuon_flat : TFlatMuon;
                                signal iPhiOffset : signed(10 downto 0)) return TGMTMuIn;
@@ -269,18 +270,18 @@ package body GMTTypes is
   -- Cancel-out information for each wedge.
   -----------------------------------------------------------------------------
   function track_addresses_from_in_mus (
-    signal iGMTMu_vec : TGMTMuIn_vector)
+    signal iMuon_flat : TFlatMuon_vector)
     return TGMTMuTracks_vector is
-    variable oWedges : TGMTMuTracks_vector(0 to iGMTMu_vec'length/3-1);
+    variable oWedges : TGMTMuTracks_vector(iMuon_flat'length/3-1 downto 0);
   begin
     for i in oWedges'range loop
       -- put 3 muons into wedge vector.
       for j in oWedges(i)'range loop
-        oWedges(i)(j).eta := signed(iGMTMu_vec(3*i+j).eta);
-        oWedges(i)(j).phi := unsigned(iGMTMu_vec(3*i+j).phi);
-        --oWedges(i)(j).address := iGMTMu_vec(3*i+j).address;
+        oWedges(i)(j).eta := signed(iMuon_flat(3*i+j)(ETA_IN_HIGH downto ETA_IN_LOW));
+        oWedges(i)(j).phi := signed(iMuon_flat(3*i+j)(PHI_IN_HIGH downto PHI_IN_LOW));
+        --oWedges(i)(j).address := iMuon_flat(3*i+j)(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW);
 
-        oWedges(i)(j).qual := unsigned(iGMTMu_vec(3*i+j).qual);
+        oWedges(i)(j).qual := unsigned(iMuon_flat(3*i+j)(QUAL_IN_HIGH downto QUAL_IN_LOW));
       end loop;  -- j
     end loop;  -- oWedges'Range
     return oWedges;

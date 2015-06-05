@@ -19,10 +19,10 @@ entity GhostCheckerUnit_spatialCoords is
     ipb_in  : in  ipb_wbus;
     ipb_out : out ipb_rbus;
     eta1    : in  signed(8 downto 0);
-    phi1    : in  unsigned(9 downto 0);
+    phi1    : in  signed(7 downto 0);
     qual1   : in  unsigned(3 downto 0);
     eta2    : in  signed(8 downto 0);
-    phi2    : in  unsigned(9 downto 0);
+    phi2    : in  signed(7 downto 0);
     qual2   : in  unsigned(3 downto 0);
     ghost1  : out std_logic;
     ghost2  : out std_logic;
@@ -32,42 +32,19 @@ end GhostCheckerUnit_spatialCoords;
 
 architecture Behavioral of GhostCheckerUnit_spatialCoords is
   signal ipbusWe     : std_logic;
-  signal sEtaH       : signed(8 downto 0);
-  signal sEtaL       : signed(8 downto 0);
   signal deltaEta    : signed(9 downto 0);
-  signal sPhiH       : unsigned(9 downto 0);
-  signal sPhiL       : unsigned(9 downto 0);
-  signal deltaPhi    : unsigned(9 downto 0);
-  signal deltaEtaRed : unsigned(0 to 3);
-  signal deltaPhiRed : unsigned(0 to 2);
+  signal deltaPhi    : signed(8 downto 0);
+  signal deltaEtaRed : unsigned(3 downto 0);
+  signal deltaPhiRed : unsigned(2 downto 0);
   signal lutInput    : std_logic_vector(6 downto 0);
   signal match       : std_logic_vector(0 downto 0);
 begin
   ipbusWe <= ipb_in.ipb_write and ipb_in.ipb_strobe;
 
-  eta_assignment : process (eta1, eta2)
-  begin  -- process eta_assignment
-    if eta1 >= eta2 then
-      sEtaH <= eta1;
-      sEtaL <= eta2;
-    else
-      sEtaH <= eta2;
-      sEtaL <= eta1;
-    end if;
-  end process eta_assignment;
-  deltaEta <= resize(sEtaH, 10) - resize(sEtaL, 10);
-  phi_assignment : process (phi1, phi2)
-  begin  -- process phi_assignment
-    if phi1 >= phi2 then
-      sPhiH <= phi1;
-      sPhiL <= phi2;
-    else
-      sPhiH <= phi2;
-      sPhiL <= phi1;
-    end if;
-  end process phi_assignment;
-  deltaPhi    <= sPhiH - sPhiL;
-  deltaEtaRed <= resize(unsigned(abs(deltaEta)), 4);
+  deltaEta    <= abs(resize(eta1, 10) - resize(eta2, 10));
+  deltaPhi    <= abs(resize(phi1, 9) - resize(phi2, 9));
+
+  deltaEtaRed <= resize(unsigned(deltaEta), 4);
   deltaPhiRed <= resize(unsigned(deltaPhi), 3);
   lutInput    <= std_logic_vector(deltaEtaRed) & std_logic_vector(deltaPhiRed);
 
@@ -89,7 +66,8 @@ begin
 
   check_ghosts : process (match, qual1, qual2, deltaPhi, deltaEta)
   begin  -- process check_ghosts
-    if deltaPhi(9 downto 3) /= (6 downto 0 => '0') or deltaEta(8 downto 4) /= (4 downto 0 => '0') then
+    -- If the muons are 'far enough' apart we don't check the LUT output.
+    if deltaPhi(7 downto 3) /= (4 downto 0 => '0') or deltaEta(8 downto 4) /= (4 downto 0 => '0') then
       ghost1 <= '0';
       ghost2 <= '0';
     elsif match = "1" then
