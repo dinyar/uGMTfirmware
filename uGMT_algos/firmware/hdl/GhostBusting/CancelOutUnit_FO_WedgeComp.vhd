@@ -10,7 +10,8 @@ use work.GMTTypes.all;
 
 entity CancelOutUnit_FO_WedgeComp is
   generic (
-    DATA_FILE: string
+    DATA_FILE        : string;
+    LOCAL_PHI_OFFSET : signed(8 downto 0)
     );
   port (
     clk_ipb     : in  std_logic;
@@ -52,7 +53,8 @@ begin
   -- Compare muons from this wedge with muons from each neighbour
   x0 : entity work.WedgeCheckerUnit
   generic map (
-    DATA_FILE  => DATA_FILE
+      DATA_FILE        => DATA_FILE,
+      LOCAL_PHI_OFFSET => -LOCAL_PHI_OFFSET
     )
      port map (
         clk_ipb => clk_ipb,
@@ -66,7 +68,8 @@ begin
         clk     => clk);
     x1 : entity work.WedgeCheckerUnit
     generic map (
-      DATA_FILE  => DATA_FILE
+        DATA_FILE        => DATA_FILE,
+        LOCAL_PHI_OFFSET => to_signed(0, 9)
       )
       port map (
         clk_ipb => clk_ipb,
@@ -80,7 +83,8 @@ begin
         clk     => clk);
     x2 : entity work.WedgeCheckerUnit
     generic map (
-      DATA_FILE  => DATA_FILE
+        DATA_FILE        => DATA_FILE,
+        LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
       )
       port map (
         clk_ipb => clk_ipb,

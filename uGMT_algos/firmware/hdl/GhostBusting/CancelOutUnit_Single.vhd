@@ -17,9 +17,10 @@ use work.GMTTypes.all;
 
 entity CancelOutUnit_Single is
   generic (
-    DATA_FILE: string;
-    num_wedges : natural := 12;         -- number of wedges to be checked
-    num_tracks : natural := 3           -- number of tracks per wedge
+    DATA_FILE        : string;
+    num_wedges       : natural := 12;         -- number of wedges to be checked
+    num_tracks       : natural := 3;          -- number of tracks per wedge
+    LOCAL_PHI_OFFSET : signed(8 downto 0)     -- distance of one wedge/sector from another
     );
   port (
     clk_ipb : in  std_logic;
@@ -75,7 +76,8 @@ begin
   g1 : for i in iWedges'range generate
     x1 : entity work.WedgeCheckerUnit
     generic map (
-      DATA_FILE  => DATA_FILE
+      DATA_FILE        => DATA_FILE,
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
       )
       port map (
         clk_ipb => clk_ipb,

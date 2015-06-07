@@ -339,7 +339,8 @@ begin
   -- If match found then cancel out (non-)ovl mu (configurable?)
   cou_bo_plus : entity work.CancelOutUnit_BO
     generic map (
-        DATA_FILE  => "BOPosMatchQual.mif"
+        DATA_FILE        => "BOPosMatchQual.mif",
+        LOCAL_PHI_OFFSET => to_signed(48, 9)
         )
     port map (
       clk_ipb     => clk_ipb,
@@ -354,7 +355,8 @@ begin
       );
   cou_bo_minus : entity work.CancelOutUnit_BO
     generic map (
-      DATA_FILE  => "BONegMatchQual.mif"
+      DATA_FILE        => "BONegMatchQual.mif",
+      LOCAL_PHI_OFFSET => to_signed(48, 9)
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -370,7 +372,8 @@ begin
 
   cou_fo_plus : entity work.CancelOutUnit_FO
     generic map (
-      DATA_FILE  => "FOPosMatchQual.mif"
+      DATA_FILE        => "FOPosMatchQual.mif",
+      LOCAL_PHI_OFFSET => to_signed(96, 9)
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -385,7 +388,8 @@ begin
       );
   cou_fo_minus : entity work.CancelOutUnit_FO
     generic map (
-      DATA_FILE  => "FONegMatchQual.mif"
+      DATA_FILE        => "FONegMatchQual.mif",
+      LOCAL_PHI_OFFSET => to_signed(96, 9)
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -401,9 +405,10 @@ begin
 
   cou_b : entity work.CancelOutUnit_Single
     generic map (
-      DATA_FILE  => "BrlSingleMatchQual.mif",
-      num_wedges => 12,
-      num_tracks => 3
+      DATA_FILE        => "BrlSingleMatchQual.mif",
+      num_wedges       => 12,
+      num_tracks       => 3,
+      LOCAL_PHI_OFFSET => to_signed(48, 9)
       )
     port map (
       clk_ipb => clk_ipb,
@@ -416,9 +421,10 @@ begin
       );
   cou_o_plus : entity work.CancelOutUnit_Single
     generic map (
-      DATA_FILE  => "OvlPosSingleMatchQual.mif",
-      num_wedges => 6,
-      num_tracks => 3
+      DATA_FILE        => "OvlPosSingleMatchQual.mif",
+      num_wedges       => 6,
+      num_tracks       => 3,
+      LOCAL_PHI_OFFSET => to_signed(96, 9)
       )
     port map (
       clk_ipb => clk_ipb,
@@ -431,9 +437,10 @@ begin
       );
   cou_o_minus : entity work.CancelOutUnit_Single
     generic map (
-      DATA_FILE  => "OvlNegSingleMatchQual.mif",
-      num_wedges => 6,
-      num_tracks => 3
+      DATA_FILE        => "OvlNegSingleMatchQual.mif",
+      num_wedges       => 6,
+      num_tracks       => 3,
+      LOCAL_PHI_OFFSET => to_signed(96, 9)
       )
     port map (
       clk_ipb => clk_ipb,
@@ -446,9 +453,10 @@ begin
       );
   cou_f_plus : entity work.CancelOutUnit_Single
     generic map (
-      DATA_FILE  => "FwdPosSingleMatchQual.mif",
-      num_wedges => 6,
-      num_tracks => 3
+      DATA_FILE        => "FwdPosSingleMatchQual.mif",
+      num_wedges       => 6,
+      num_tracks       => 3,
+      LOCAL_PHI_OFFSET => to_signed(96, 9)
       )
     port map (
       clk_ipb => clk_ipb,
@@ -461,9 +469,10 @@ begin
       );
   cou_f_minus : entity work.CancelOutUnit_Single
     generic map (
-      DATA_FILE  => "FwdNegSingleMatchQual.mif",
-      num_wedges => 6,
-      num_tracks => 3
+      DATA_FILE        => "FwdNegSingleMatchQual.mif",
+      num_wedges       => 6,
+      num_tracks       => 3,
+      LOCAL_PHI_OFFSET => to_signed(96, 9)
       )
     port map (
       clk_ipb => clk_ipb,

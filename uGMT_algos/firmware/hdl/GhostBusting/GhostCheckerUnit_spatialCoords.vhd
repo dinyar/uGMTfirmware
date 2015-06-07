@@ -11,7 +11,8 @@ use work.ugmt_constants.all;
 
 entity GhostCheckerUnit_spatialCoords is
   generic (
-    DATA_FILE: string
+    DATA_FILE        : string;
+    LOCAL_PHI_OFFSET : signed(8 downto 0)
     );
   port (
     clk_ipb : in  std_logic;
@@ -42,7 +43,7 @@ begin
   ipbusWe <= ipb_in.ipb_write and ipb_in.ipb_strobe;
 
   deltaEta    <= abs(resize(eta1, 10) - resize(eta2, 10));
-  deltaPhi    <= abs(resize(phi1, 9) - resize(phi2, 9));
+  deltaPhi    <= abs(resize(phi1, 9) - (LOCAL_PHI_OFFSET + resize(phi2, 9)));
 
   deltaEtaRed <= resize(unsigned(deltaEta), 4);
   deltaPhiRed <= resize(unsigned(deltaPhi), 3);

@@ -10,7 +10,8 @@ use work.GMTTypes.all;
 
 entity WedgeCheckerUnit is
   generic (
-    DATA_FILE: string
+    DATA_FILE        : string;
+    LOCAL_PHI_OFFSET : signed(8 downto 0)
     );
   port (
     clk_ipb : in  std_logic;
@@ -68,7 +69,8 @@ begin
       --    );
       x : entity work.GhostCheckerUnit_spatialCoords
       generic map (
-        DATA_FILE  => DATA_FILE
+        DATA_FILE        => DATA_FILE,
+        LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
         )
         port map (
           clk_ipb => clk_ipb,
@@ -83,7 +85,8 @@ begin
           qual2   => wedge2(i).qual,
           ghost1  => sCancel1(j)(i),
           ghost2  => sCancel2(j)(i),
-          clk     => clk);
+          clk     => clk
+          );
     end generate g2;
   end generate g1;
 

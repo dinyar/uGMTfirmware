@@ -10,7 +10,8 @@ use work.GMTTypes.all;
 
 entity CancelOutUnit_BO is
   generic (
-    DATA_FILE: string
+    DATA_FILE        : string;
+    LOCAL_PHI_OFFSET : signed(8 downto 0)
     );
   port (
     clk_ipb     : in  std_logic;
@@ -72,7 +73,8 @@ begin
   g1 : for i in 0 to 5 generate
     x0 : entity work.CancelOutUnit_BO_WedgeComp
     generic map (
-      DATA_FILE  => DATA_FILE
+      DATA_FILE        => DATA_FILE,
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
       )
     port map (
       clk_ipb => clk_ipb,
