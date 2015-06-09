@@ -340,7 +340,7 @@ package body GMTTypes is
     -- TODO: Replace 576 with constant
     sPhiAbsolute  := iPhiOffset + signed(iMuon_flat(PHI_IN_HIGH downto PHI_IN_LOW));
     sPhiInteger   := to_integer(sPhiAbsolute);
-    oMuon.phi     := std_logic_vector(to_unsigned(sPhiInteger mod 576, 9));
+    oMuon.phi     := std_logic_vector(to_unsigned(sPhiInteger mod 576, 10));
     oMuon.address := unpack_address_from_flat(iMuon_flat(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW));
     return oMuon;
   end;
