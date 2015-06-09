@@ -94,7 +94,7 @@ package ugmt_constants is
   constant SYSIGN_IN_HIGH : natural := 32;
 
   constant ADDRESS_IN_LOW  : natural := 33;
-  constant ADDRESS_IN_HIGH : natural := 62;
+  constant ADDRESS_IN_HIGH : natural := 60;
 
   --
   -- out
