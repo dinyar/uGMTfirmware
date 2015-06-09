@@ -186,13 +186,13 @@ begin
       for i in iTracksB'range loop
         for j in iTracksB(0)'range loop
           event_buffer(iEvent).tracks_brl(i)(j).eta  := "000000000";
-          event_buffer(iEvent).tracks_brl(i)(j).phi  := "0000000000";
+          event_buffer(iEvent).tracks_brl(i)(j).phi  := "00000000";
           event_buffer(iEvent).tracks_brl(i)(j).qual := "0000";
           event_buffer(iEvent).tracks_ovl(i)(j).eta  := "000000000";
-          event_buffer(iEvent).tracks_ovl(i)(j).phi  := "0000000000";
+          event_buffer(iEvent).tracks_ovl(i)(j).phi  := "00000000";
           event_buffer(iEvent).tracks_ovl(i)(j).qual := "0000";
           event_buffer(iEvent).tracks_fwd(i)(j).eta  := "000000000";
-          event_buffer(iEvent).tracks_fwd(i)(j).phi  := "0000000000";
+          event_buffer(iEvent).tracks_fwd(i)(j).phi  := "00000000";
           event_buffer(iEvent).tracks_fwd(i)(j).qual := "0000";
         end loop;  -- j
       end loop;  -- i
