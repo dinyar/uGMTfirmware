@@ -106,9 +106,6 @@ package tb_helpers is
     variable iEvent : in integer;
     variable event : out TGMTCaloEvent);
 
-  procedure ReadIdxBits (
-    file F : text);
-
  procedure ReadEvent (
    file F          :     text;
    variable iEvent : in  integer;
@@ -606,33 +603,6 @@ package body tb_helpers is
       end if;
     end loop;
   end ReadMuEvent;
-
-  procedure ReadIdxBits (
-    file F : text) is
-    variable L : line;
-    variable idxNo : integer := 0;
-    variable index : integer;
-    variable phi : integer;
-    variable eta : integer;
-  begin
-      while idxNo < 8 loop
-          readline(F, L);
-          if L.all'length = 0 then
-            next;
-          elsif(L.all(1 to 1) = "#") then
-            next;
-          elsif L.all(1 to 3) = "EVT" then
-            -- TODO: Parse this maybe?
-            next;
-        elsif L.all(1 to 6) = "TWRIDX" then
-            -- read(L, index);
-            -- read(L, phi);
-            -- read(L, eta);
-            -- TODO: Store this somewhere.
-            idxNo := idxNo+1;
-          end if;
-      end loop;
-  end ReadIdxBits;
 
   procedure DumpEnergyValues (
     variable iEnergies : in TCaloRegionEtaSlice_vector(27 downto 0);
@@ -1386,10 +1356,10 @@ package body tb_helpers is
       CheckEnergies(iEnergies, event.expectedEnergies, FO, tmpError);
       vErrors   := vErrors + tmpError;
 
-      if vErrors > 0 then
-        errors := 1;
-      else
+      if vErrors = 0 then
         errors := 0;
+      else
+        errors := 1;
       end if;
     else
       errors := 0;
