@@ -126,6 +126,9 @@ begin
     end loop;  -- i
 
     -- TODO: Is this needed?
+    rst    <= '1';
+    wait for 2*half_period_40;
+    rst <= '0';
     wait for 4*half_period_40;  -- wait until global set/reset completes
 
     while remainingEvents > 0 loop
