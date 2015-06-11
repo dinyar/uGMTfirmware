@@ -218,7 +218,6 @@ begin
       if not endfile(F) then
         ReadCaloEvent(F, iEvent, caloEvent);
         ReadMuEvent(F, iEvent, muEvent);
-        ReadIdxBits(F); -- Dummy procedure.
         -- Filling uGMT
         iMuonsB     <= muEvent.muons_brl;
         iMuonsO     <= muEvent.muons_ovl;

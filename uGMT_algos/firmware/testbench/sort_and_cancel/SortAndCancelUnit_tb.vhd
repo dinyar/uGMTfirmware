@@ -227,7 +227,6 @@ begin
       tmpError := 99999999;
       if not endfile(F) then
         ReadMuEvent(F, iEvent, event);
-        ReadIdxBits(F);
 
         -- Filling uGMT
         iMuonsB     <= event.muons_brl;
