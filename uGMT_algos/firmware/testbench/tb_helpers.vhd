@@ -1226,12 +1226,16 @@ package body tb_helpers is
     variable FO              : in  text;
     variable errors          : out integer) is
     variable L1              : line;
+    variable vErrors         : integer := 0;
   begin
     if iValid_mu /= iValid_energies then
+      vErrors := vErrors+1;
       write(L1, string'("!!!!!! Valid bits inconsistent:"));
       writeline(FO, L1);
       DumpValidBits(iValid_mu, iValid_energies, FO);
     end if;
+
+    errors := vErrors;
   end CheckValidBits;
 
   procedure ValidateIsolationOutput (
