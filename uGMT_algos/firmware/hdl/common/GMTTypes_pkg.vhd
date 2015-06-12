@@ -238,7 +238,7 @@ package GMTTypes is
 
 
   function unpack_mu_from_flat(signal iMuon_flat : TFlatMuon;
-                               signal iPhiOffset : signed(10 downto 0)) return TGMTMuIn;
+                               signal iPhiOffset : unsigned(9 downto 0)) return TGMTMuIn;
 
   function pack_mu_to_flat(signal iMuon : TGMTMu;
                            signal iIso  : TIsoBits) return TFlatMuon;
@@ -327,19 +327,20 @@ package body GMTTypes is
 
   function unpack_mu_from_flat (
     signal iMuon_flat : TFlatMuon;
-    signal iPhiOffset : signed(10 downto 0))
+    signal iPhiOffset : unsigned(9 downto 0))
     return TGMTMuIn is
     variable oMuon : TGMTMuIn;
-    variable sPhiAbsolute : signed(10 downto 0);
+    variable sPhiOffsetSigned : signed(10 downto 0);
     variable sPhiInteger  : integer;
   begin
     oMuon.sysign  := iMuon_flat(SYSIGN_IN_HIGH downto SYSIGN_IN_LOW);
     oMuon.eta     := iMuon_flat(ETA_IN_HIGH downto ETA_IN_LOW);
     oMuon.qual    := iMuon_flat(QUAL_IN_HIGH downto QUAL_IN_LOW);
     oMuon.pt      := iMuon_flat(PT_IN_HIGH downto PT_IN_LOW);
+
+    sPhiOffsetSigned := signed(resize(iPhiOffset, 11));
+    sPhiInteger      := to_integer(sPhiOffsetSigned + signed(iMuon_flat(PHI_IN_HIGH downto PHI_IN_LOW)));
     -- TODO: Replace 576 with constant
-    sPhiAbsolute  := iPhiOffset + signed(iMuon_flat(PHI_IN_HIGH downto PHI_IN_LOW));
-    sPhiInteger   := to_integer(sPhiAbsolute);
     oMuon.phi     := std_logic_vector(to_unsigned(sPhiInteger mod 576, 10));
     oMuon.address := unpack_address_from_flat(iMuon_flat(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW));
     return oMuon;

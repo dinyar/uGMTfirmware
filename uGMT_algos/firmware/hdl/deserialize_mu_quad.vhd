@@ -41,7 +41,7 @@ architecture Behavioral of deserialize_mu_quad is
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
   signal sPhiOffsetRegOutput : ipb_reg_v(3 downto 0);
-  type TOffsetVec is array (natural range <>) of signed(10 downto 0);
+  type TOffsetVec is array (natural range <>) of unsigned(9 downto 0);
   signal sPhiOffset : TOffsetVec(3 downto 0);
 
   signal in_buf : TQuadTransceiverBufferIn;
@@ -214,7 +214,7 @@ begin
   end generate gen_ipb_registers;
 
   assign_offsets : for i in sPhiOffset'range generate
-      sPhiOffset(i)(9 downto 0) <= signed(sPhiOffsetRegOutput(i)(9 downto 0));
+      sPhiOffset(i) <= unsigned(sPhiOffsetRegOutput(i)(9 downto 0));
   end generate assign_offsets;
 
   sMuons_flat <= unroll_link_muons(sMuons_link(NCHAN-1 downto 0));
