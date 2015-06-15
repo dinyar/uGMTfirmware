@@ -39,6 +39,8 @@ architecture Behavioral of deserializer_stage_muons is
   signal ipbw : ipb_wbus_array(N_SLAVES-1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES-1 downto 0);
 
+  signal q : ldata (NCHAN-1 downto 0);
+
   signal sValid : std_logic_vector(MU_QUAD_ASSIGNMENT'range);
 begin
 
@@ -73,12 +75,25 @@ begin
         oTracks    => oTracks(i*4+3 downto i*4),
         oEmpty     => oEmpty(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oSortRanks => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
-        oValid     => sValid(i)
-       -- TODO: Need output for calo idx bits (and optionally for coords at
-       -- vertex) here.
+        oValid     => sValid(i),
+        q          => q(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4)
+        );
+
+    extrapolate : entity work.extrapolate_120MHz
+      port map (
+        clk_ipb       => clk_ipb,
+        rst           => rst,
+        ipb_in        => ipbw(i),
+        ipb_out       => ipbr(i),
+        clk240        => clk240,
+        clk40         => clk40,
+        d             => d(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
+        oExtrapCoords => oExtrapCoords(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN)
         );
   end generate deserialize_loop;
 
+       -- TODO: Need output for calo idx bits (and optionally for coords at
+       -- vertex) here.
 
   oValid <=  combine_or(sValid);
 

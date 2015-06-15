@@ -5,7 +5,7 @@ use IEEE.numeric_std.all;
 use work.mp7_data_types.all;
 use work.ipbus.all;
 use work.ipbus_reg_types.all;
-use work.ipbus_decode_mu_quad_deserialization.all;
+use work.ipbus_decode_extrapolate_120MHz.all;
 
 use work.mp7_ttc_decl.all;
 use work.mp7_brd_decl.all;
@@ -13,59 +13,43 @@ use work.mp7_brd_decl.all;
 use work.GMTTypes.all;
 use work.ugmt_constants.all;
 
-entity deserialize_mu_quad is
+entity extrapolate_120MHz is
   generic (
     NCHAN     : positive := 4;
-    VALID_BIT : std_logic
     );
   port (
-    clk_ipb    : in  std_logic;
-    rst        : in  std_logic;
-    ipb_in     : in  ipb_wbus;
-    ipb_out    : out ipb_rbus;
-    bctr       : in  bctr_t;
-    clk240     : in  std_logic;
-    clk40      : in  std_logic;
-    d          : in  ldata(NCHAN-1 downto 0);
-    oMuons     : out TGMTMu_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
-    oTracks    : out TGMTMuTracks_vector(NCHAN-1 downto 0);
-    oEmpty     : out std_logic_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
-    oSortRanks : out TSortRank10_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
-    oValid     : out std_logic;
-    q          : out ldata(NCHAN-1 downto 0)
+    clk_ipb       : in  std_logic;
+    rst           : in  std_logic;
+    ipb_in        : in  ipb_wbus;
+    ipb_out       : out ipb_rbus;
+    clk240        : in  std_logic;
+    clk40         : in  std_logic;
+    d             : in  ldata(NCHAN-1 downto 0);
+	oExtrapCoords : out ????
     );
-end deserialize_mu_quad;
+end extrapolate_120MHz;
 
-architecture Behavioral of deserialize_mu_quad is
+architecture Behavioral of extrapolate_120MHz is
 
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
-  signal sPhiOffsetRegOutput : ipb_reg_v(3 downto 0);
-  type TOffsetVec is array (natural range <>) of unsigned(9 downto 0);
-  signal sPhiOffset : TOffsetVec(3 downto 0);
-
   signal in_buf : TQuadTransceiverBufferIn;
 
-  type TSortRankInput is array (natural range <>) of std_logic_vector(12 downto 0);
-  signal sSrtRnkIn : TSortRankInput(NCHAN-1 downto 0);
+  type   TEtaAbs is array (integer range <>) of unsigned(8 downto 0);
+  signal sEtaAbs : TEtaAbs(NCHAN-1 downto 0);
+  signal sExtrapolationAddress : TExtrapolationAddress(NCHAN-1 downto 0);
 
-  signal sMuons_link : TFlatMuons(NCHAN-1 downto 0);  -- All input muons.
-  signal sMuons_flat : TFlatMuon_vector(NCHAN*NUM_MUONS_IN-1 downto 0);  -- All input muons unrolled.
-  signal sMuonsIn    : TGMTMuIn_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
+  signal sEtaLutOutput : TLutBuf(sExtrapolatedCoords_buffer(0)'range);
+  signal sPhiLutOutput : TLutBuf(sExtrapolatedCoords_buffer(0)'range);
 
-  signal sValid_link : TValid_link(NCHAN-1 downto 0);
+  -- Stores extrapolated coordinates for each 32 bit word that arrives from TFs.
+  -- Every second such extrapolation is garbage and will be disregarded in a
+  -- second step.
+  type TCoordinateBuffer is array (2*NUM_MUONS_LINK-1 downto 0) of TSpatialCoordinate_vector(NCHAN-1 downto 0);
+  signal sExtrapolatedCoords_buffer : TCoordinateBuffer;
+  signal sExtrapolatedCoords_link   : TExtrapolatedCoords_link(NCHAN-1 downto 0);
 
-  signal sEmpty_link : TEmpty_link(NCHAN-1 downto 0);
-
-  signal sBCerror   : std_logic_vector(NCHAN-1 downto 0);
-  signal sBnchCntErr : std_logic_vector(NCHAN-1 downto 0);
-
-  -- Stores sort ranks for each 32 bit word that arrives from TFs. Every second
-  -- such rank is garbage and will be disregarded in second step.
-  type TSortRankBuffer is array (2*NUM_MUONS_LINK-1 downto 0) of TSortRank10_vector(NCHAN-1 downto 0);
-  signal sSortRank_buffer : TSortRankBuffer;
-  signal sSortRank_link   : TSortRank_link(NCHAN-1 downto 0);
 
 begin
 
@@ -78,7 +62,7 @@ begin
       port map(
         ipb_in          => ipb_in,
         ipb_out         => ipb_out,
-        sel             => ipbus_sel_mu_quad_deserialization(ipb_in.ipb_addr),
+        sel             => ipbus_sel_extrapolate_120MHz(ipb_in.ipb_addr),
         ipb_to_slaves   => ipbw,
         ipb_from_slaves => ipbr
         );
@@ -91,36 +75,83 @@ begin
     end if;
   end process fill_buffer;
 
-  assign_ranks : for i in sSortRank_buffer(0)'range generate
+  coordinate_extrapolation : for i in sExtrapolatedCoords_buffer(0)'range generate
 
-    sSrtRnkIn(i) <= d(i).data(QUAL_IN_HIGH downto QUAL_IN_LOW) &
-                    d(i).data(PT_IN_HIGH downto PT_IN_LOW);
+	sEtaAbs(i) <= unsigned(abs(signed(d(i).data(ETA_IN_HIGH downto ETA_IN_LOW))));
+	sExtrapolationAddress(i) <= std_logic_vector(sEtaAbs(i)(7 downto 2)) &
+    							d(i).data(PT_IN_LOW+5 downto PT_IN_LOW);
 
-    sort_rank_assignment : entity work.ipbus_dpram
+	phi_extrapolation : entity work.ipbus_dpram
+		generic map (
+			DATA_FILE  => DATA_FILE,
+			ADDR_WIDTH => PHI_EXTRAPOLATION_ADDR_WIDTH,
+			WORD_WIDTH => PHI_EXTRAPOLATION_WORD_SIZE
+			)
+		port map (
+			clk => clk_ipb,
+			rst => rst,
+			ipb_in => ipbw(???+i),  -- TODO
+			ipb_out => ipbr(???+i), -- TODO
+			rclk => clk,
+			q => sPhiLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0),
+			addr => std_logic_vector(iExtrapolationAddress(i))
+		);
+	-- TODO: Do I need this intermediate signal?
+	sDeltaPhi(i) <= unsigned(sPhiLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0));
+
+    eta_extrapolation : entity work.ipbus_dpram
         generic map (
-          DATA_FILE  => "SortRank.mif",
-          ADDR_WIDTH => SORT_RANK_MEM_ADDR_WIDTH,
-          WORD_WIDTH => SORT_RANK_MEM_WORD_SIZE
+          DATA_FILE  => DATA_FILE,
+          ADDR_WIDTH => ETA_EXTRAPOLATION_ADDR_WIDTH,
+          WORD_WIDTH => ETA_EXTRAPOLATION_WORD_SIZE
           )
         port map (
             clk => clk_ipb,
             rst => rst,
-            ipb_in => ipbw(i),
-            ipb_out => ipbr(i),
+            ipb_in => ipbw(???+i), -- TODO
+            ipb_out => ipbr(???+i), -- TODO
             rclk => clk240,
-            q => sSortRank_buffer(sSortRank_buffer'high)(i),
-            addr => sSrtRnkIn(i)
+            q => sEtaLutOutput(i)(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0),
+            addr => iExtrapolationAddress(i)
         );
+    sDeltaEta(i) <= signed(sEtaLutOutput(i)(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0));
 
-  end generate assign_ranks;
+  end generate coordinate_extrapolation;
 
-  fill_sort_rank_buf : process (clk240)
-  begin  -- process fill_sort_rank_buf
+  assign_coords : process (d, in_buf, sDeltaEta, sDeltaPhi)
+    variable tmpPhi : unsigned(9 downto 0);
+  begin  -- process assign_coords
+    for i in NCHAN-1 downto 0 loop
+      if unsigned(d(i).data(PT_IN_HIGH downto PT_IN_LOW)) > 63 then
+        -- If muon is high-pT we won't extrapolate.
+        sExtrapolatedCoords_buffer(sExtrapolatedCoords_buffer'high)(i).eta <= signed(d(i).data(ETA_IN_HIGH downto ETA_IN_LOW));
+        sExtrapolatedCoords_buffer(sExtrapolatedCoords_buffer'high)(i).phi <= unsigned(d(i).data(PHI_IN_HIGH downto PHI_IN_LOW));
+      else
+        -- If muon is low-pT we etrapolate.
+        sExtrapolatedCoords_buffer(sExtrapolatedCoords_buffer'high)(i).eta <= signed(d(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + SHIFT_LEFT("000" & sDeltaEta(i), 3);
+
+        if d(i).data(SYSIGN_IN_LOW) = '1' then
+            tmpPhi := unsigned(d(i).data(PHI_IN_HIGH downto PHI_IN_LOW)) + SHIFT_LEFT("000" & sDeltaPhi(i), 3);
+        else
+            tmpPhi := unsigned(d(i).data(PHI_IN_HIGH downto PHI_IN_LOW)) - SHIFT_LEFT("000" & sDeltaPhi(i), 3);
+        end if;
+        sExtrapolatedCoords_buffer(sExtrapolatedCoords_buffer'high)(i).phi <= tmpPhi mod 576;
+      end if;
+    end loop;  -- i
+  end process assign_coords;
+
+  -- TODO: This buffer can probably be only 2 deep (actually it may be ok to replace the buffer with the one for idx bits altogether.)
+  -- TODO: Buffer for idx bits will have to be more than 6 frames deep (to sync with 40 MHz clock again)
+  shift_coord_buffer : process (clk240)
+  begin  -- process shift_coord_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      sSortRank_buffer(sSortRank_buffer'high-1 downto 0) <= sSortRank_buffer(sSortRank_buffer'high downto 1);
+	sExtrapolatedCoords_buffer(sExtrapolatedCoords_buffer'high-1 downto 0) <= sExtrapolatedCoords_buffer(sExtrapolatedCoords_buffer'high downto 1);
     end if;
-  end process fill_sort_rank_buf;
+  end process shift_coord_buffer;
 
+  -- TODO: Generate idx bits.
+  -- TODO: Everything below this!!!!
+  -- TODO: Lots of signals not declared!
 
   gmt_in_reg : process (clk40)
   begin  -- process gmt_in_reg

@@ -223,6 +223,8 @@ package GMTTypes is
 
   type TSortRank_link is array (natural range <>) of TSortRank10_vector(NUM_MUONS_IN-1 downto 0);
 
+  type TExtrapolatedCoords_link is array (natural range <>) of TSpatialCoordinate_vector(NUM_MUONS_IN-1 downto 0);
+
   -- Valid bits for words from one link for one BX.
   type TValid_link is array (natural range <>) of std_logic_vector(2*NUM_MUONS_IN-1 downto 0);
 
