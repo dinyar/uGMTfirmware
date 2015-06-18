@@ -80,14 +80,14 @@ begin
         oSortRanks => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oValid     => sValid(i),
         q          => q(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
-        oAbsPhi    => sAbsPhi
+        oAbsPhi    => sAbsPhi(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4)
         );
 
-    extrapolate : entity work.extrapolate_120MHz
+    extrapolate : entity work.gen_idx_bits
       generic map (
         -- TODO: Use saner defaults (i.e. store file names in vector in constants file.. )
-        ETA_EXTRAPOLATION_DATA_FILE  => string'"BEtaExtrapolation.mif",
-        PHI_EXTRAPOLATION_DATA_FILE  => string'"BPhiExtrapolation.mif"
+        ETA_EXTRAPOLATION_DATA_FILE  => string'("BEtaExtrapolation.mif"),
+        PHI_EXTRAPOLATION_DATA_FILE  => string'("BPhiExtrapolation.mif")
       )
       port map (
         clk_ipb       => clk_ipb,
@@ -97,7 +97,7 @@ begin
         clk240        => clk240,
         clk40         => clk40,
         d             => d(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
-        iAbsPhi       => sAbsPhi,
+        iAbsPhi       => sAbsPhi(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
         oCaloIdxBits  => oCaloIdxBits(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN)
         );
   end generate deserialize_loop;

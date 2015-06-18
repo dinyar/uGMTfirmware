@@ -44,8 +44,10 @@ architecture Behavioral of gen_idx_bits is
   signal sEtaAbs : TEtaAbs(NCHAN-1 downto 0);
   signal sExtrapolationAddress : TExtrapolationAddress(NCHAN-1 downto 0);
 
-  signal sEtaLutOutput : TLutBuf(sExtrapolationAddress'range);
-  signal sPhiLutOutput : TLutBuf(sExtrapolationAddress'range);
+  signal sEtaExtrapolationLutOutput : TLutBuf(sExtrapolationAddress'range);
+  signal sPhiExtrapolationLutOutput : TLutBuf(sExtrapolationAddress'range);
+  signal sEtaIdxBitsLutOutput : TLutBuf(sExtrapolationAddress'range);
+  signal sPhiIdxBitsLutOutput : TLutBuf(sExtrapolationAddress'range);
 
   signal sDeltaEta : TDeltaEta_vector(sExtrapolationAddress'range);
   signal sDeltaPhi : TDeltaPhi_vector(sExtrapolationAddress'range);
@@ -101,11 +103,11 @@ begin
 			ipb_in => ipbw(N_SLV_PHI_EXTRAPOLATION_MEM_0+i),
 			ipb_out => ipbr(N_SLV_PHI_EXTRAPOLATION_MEM_0+i),
 			rclk => clk240,
-			q => sPhiLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0),
+			q => sPhiExtrapolationLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0),
 			addr => std_logic_vector(sExtrapolationAddress(i))
 		);
 	-- TODO: Do I need this intermediate signal?
-	sDeltaPhi(i) <= unsigned(sPhiLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0));
+	sDeltaPhi(i) <= unsigned(sPhiExtrapolationLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0));
     eta_extrapolation : entity work.ipbus_dpram
         generic map (
           DATA_FILE  => ETA_EXTRAPOLATION_DATA_FILE,
@@ -118,10 +120,10 @@ begin
             ipb_in => ipbw(N_SLV_ETA_EXTRAPOLATION_MEM_0+i),
             ipb_out => ipbr(N_SLV_ETA_EXTRAPOLATION_MEM_0+i),
             rclk => clk240,
-            q => sEtaLutOutput(i)(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0),
+            q => sEtaExtrapolationLutOutput(i)(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0),
             addr => sExtrapolationAddress(i)
         );
-    sDeltaEta(i) <= signed(sEtaLutOutput(i)(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0));
+    sDeltaEta(i) <= signed(sEtaExtrapolationLutOutput(i)(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0));
   end generate coordinate_extrapolation;
 
   -- We use the output of the (clocked) deltaEta/deltaPhi LUTs here.
@@ -161,10 +163,11 @@ begin
 	      clk     => clk_ipb,
 	      ipb_in  => ipbw(N_SLV_ETA_IDX_BITS_MEM_0+i),
 	      ipb_out => ipbr(N_SLV_ETA_IDX_BITS_MEM_0+i),
-	      rclk    => clk,
-	      q       => sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).eta,
+	      rclk    => clk240,
+	      q       => sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0),
 	      addr    => std_logic_vector(sExtrapolatedCoords(i).eta)
 	      );
+    sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).eta)) <= unsigned(sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0));
 	phi_idx_bits_mem : entity work.ipbus_dpram_dist
 	    generic map (
 	      DATA_FILE  => "IdxSelMemPhi.mif",
@@ -175,10 +178,11 @@ begin
 	      clk     => clk_ipb,
 	      ipb_in  => ipbw(N_SLV_PHI_IDX_BITS_MEM_0+i),
 	      ipb_out => ipbr(N_SLV_PHI_IDX_BITS_MEM_0+i),
-	      rclk    => clk,
-	      q       => sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).phi,
+	      rclk    => clk240,
+	      q       => sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0)),
 	      addr    => std_logic_vector(sExtrapolatedCoords(i).phi)
 	      );
+    sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).phi)) <= unsigned(sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0)));
   end generate lookup_calo_idx_bits;
 
   shift_idx_bits_buffer : process (clk240)
@@ -205,6 +209,6 @@ begin
     end if;
   end process gmt_in_reg;
 
-  oCaloIdxBits <= unpack_calo_idx_bits(sCaloIdxBits_link(NCHAN-1 downto 0));
+  oCaloIdxBits <= unpack_calo_idx_bits(sCaloIndexBits_link(NCHAN-1 downto 0));
 
 end Behavioral;

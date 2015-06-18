@@ -217,8 +217,10 @@ package GMTTypes is
 
   -- Absolute phi values from one frame for all links in a quad
   type TAbsolutePhi_frame is array (natural range <>) of unsigned(9 downto 0);
-  -- Contains absolute phi values from a full event (6 frames)
-  type TAbsolutePhi_event is array (NUM_MUONS_IN-1 downto 0) of TAbsolutePhi_frame;
+  -- Contains phi values from one link.
+  type TAbsolutePhi_link is array (NUM_MUONS_IN-1 downto 0) of unsigned(9 downto 0);
+  -- Contains absolute phi values from a full event (4 links, 6 frames)
+  type TAbsolutePhi_event is array (3 downto 0) of TAbsolutePhi_link;
   -- Contains the absolute phi values in a simple vector
   type TAbsolutePhi_vector is array (natural range <>) of unsigned(9 downto 0);
 
@@ -244,7 +246,7 @@ package GMTTypes is
   function unpack_idx_bits(signal iIdxBits               : TIndexBits_link) return TIndexBits_vector;
   function unpack_sort_rank(signal iSortRanks            : TSortRank_link) return TSortRank10_vector;
   function unpack_empty_bits(signal iEmptyBits           : TEmpty_link) return std_logic_vector;
-
+  function unpack_calo_idx_bits(signal iCaloIdxBits      : TCaloIndexBits_link) return TCaloIndexBit_vector;
 
   function convert_phi_to_abs(signal iRelPhi : std_logic_vector(7 downto 0);
                               signal iOffset : unsigned(9 downto 0)) return unsigned(9 downto 0);
