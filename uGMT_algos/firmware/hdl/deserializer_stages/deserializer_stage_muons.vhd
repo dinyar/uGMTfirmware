@@ -18,19 +18,20 @@ entity deserializer_stage_muons is
     VALID_BIT : std_logic
     );
   port (
-    clk_ipb    : in  std_logic;
-    rst        : in  std_logic;
-    ipb_in     : in  ipb_wbus;
-    ipb_out    : out ipb_rbus;
-    ctrs       : in  ttc_stuff_array(N_REGION - 1 downto 0);
-    clk240     : in  std_logic;
-    clk40      : in  std_logic;
-    d          : in  ldata (NCHAN-1 downto 0);
-    oMuons     : out TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-    oTracks    : out TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
-    oEmpty     : out std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-    oSortRanks : out TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-    oValid     : out std_logic
+    clk_ipb      : in  std_logic;
+    rst          : in  std_logic;
+    ipb_in       : in  ipb_wbus;
+    ipb_out      : out ipb_rbus;
+    ctrs         : in  ttc_stuff_array(N_REGION - 1 downto 0);
+    clk240       : in  std_logic;
+    clk40        : in  std_logic;
+    d            : in  ldata (NCHAN-1 downto 0);
+    oMuons       : out TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+    oTracks      : out TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
+    oEmpty       : out std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+    oSortRanks   : out TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+    oValid       : out std_logic;
+    oCaloIdxBits : out TCaloIndexBit_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0) -- Out one bx after muons
     );
 end deserializer_stage_muons;
 
@@ -38,6 +39,8 @@ architecture Behavioral of deserializer_stage_muons is
 
   signal ipbw : ipb_wbus_array(N_SLAVES-1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES-1 downto 0);
+
+  signal sAbsPhi : TAbsolutePhi_frame(NCHAN-1 downto 0);
 
   signal q : ldata (NCHAN-1 downto 0);
 
@@ -76,7 +79,8 @@ begin
         oEmpty     => oEmpty(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oSortRanks => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oValid     => sValid(i),
-        q          => q(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4)
+        q          => q(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
+        oAbsPhi    => sAbsPhi
         );
 
     extrapolate : entity work.extrapolate_120MHz
@@ -88,12 +92,10 @@ begin
         clk240        => clk240,
         clk40         => clk40,
         d             => d(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
-        oExtrapCoords => oExtrapCoords(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN)
+        iAbsPhi       => sAbsPhi,
+        oCaloIdxBits  => oCaloIdxBits(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN)
         );
   end generate deserialize_loop;
-
-       -- TODO: Need output for calo idx bits (and optionally for coords at
-       -- vertex) here.
 
   oValid <=  combine_or(sValid);
 

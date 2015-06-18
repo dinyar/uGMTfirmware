@@ -32,7 +32,8 @@ entity deserialize_mu_quad is
     oEmpty     : out std_logic_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
     oSortRanks : out TSortRank10_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
     oValid     : out std_logic;
-    q          : out ldata(NCHAN-1 downto 0)
+    q          : out ldata(NCHAN-1 downto 0);
+    oAbsPhi    : out TAbsolutePhi_frame(NCHAN-1 downto 0)
     );
 end deserialize_mu_quad;
 
@@ -50,9 +51,15 @@ architecture Behavioral of deserialize_mu_quad is
   type TSortRankInput is array (natural range <>) of std_logic_vector(12 downto 0);
   signal sSrtRnkIn : TSortRankInput(NCHAN-1 downto 0);
 
-  signal sMuons_link : TFlatMuons(NCHAN-1 downto 0);  -- All input muons.
-  signal sMuons_flat : TFlatMuon_vector(NCHAN*NUM_MUONS_IN-1 downto 0);  -- All input muons unrolled.
-  signal sMuonsIn    : TGMTMuIn_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
+  signal sMuons_event : TFlatMuons(NCHAN-1 downto 0);  -- All input muons.
+  signal sMuons_flat  : TFlatMuon_vector(NCHAN*NUM_MUONS_IN-1 downto 0);  -- All input muons unrolled.
+  signal sMuonsIn     : TGMTMuIn_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
+
+  type TAbsolutePhiBuffer is array (2*NUM_MUONS_LINK-1 downto 0) of TAbsolutePhi_frame(NCHAN-1 downto 0);
+  signal sAbsPhi_buffer : TAbsolutePhiBuffer;
+  signal sAbsPhi_frame  : TAbsolutePhi_frame(NCHAN-1 downto 0)(NCHAN-1 downto 0);
+  signal sAbsPhi_event  : TAbsolutePhi_event(NCHAN-1 downto 0);  -- All input phi values.
+  signal sAbsPhi_flat   : TAbsolutePhi_vector(NCHAN*NUM_MUONS_IN-1 downto 0);  -- All input phi values unrolled.
 
   signal sValid_link : TValid_link(NCHAN-1 downto 0);
 
@@ -92,10 +99,8 @@ begin
   end process fill_buffer;
 
   assign_ranks : for i in sSortRank_buffer(0)'range generate
-
     sSrtRnkIn(i) <= d(i).data(QUAL_IN_HIGH downto QUAL_IN_LOW) &
                     d(i).data(PT_IN_HIGH downto PT_IN_LOW);
-
     sort_rank_assignment : entity work.ipbus_dpram
         generic map (
           DATA_FILE  => "SortRank.mif",
@@ -111,16 +116,24 @@ begin
             q => sSortRank_buffer(sSortRank_buffer'high)(i),
             addr => sSrtRnkIn(i)
         );
-
   end generate assign_ranks;
 
-  fill_sort_rank_buf : process (clk240)
-  begin  -- process fill_sort_rank_buf
+  calculate_abs_phi : for i in sAbsPhi_frame'range generate
+    sAbsPhi_frame(i) <= convert_phi_to_abs(
+                                        d(i).data(PHI_IN_HIGH downto PHI_IN_LOW),
+                                        sPhiOffset(i)
+                                        );
+  end generate calculate_abs_phi;
+
+  sAbsPhi_buffer(sAbsPhi_buffer'high) <= sAbsPhi_frame;
+
+  shift_buffers : process (clk240)
+  begin  -- process shift_buffers
     if clk240'event and clk240 = '1' then  -- rising clock edge
       sSortRank_buffer(sSortRank_buffer'high-1 downto 0) <= sSortRank_buffer(sSortRank_buffer'high downto 1);
+      sAbsPhi_buffer(sAbsPhi_buffer'high-1 downto 0) <= sAbsPhi_buffer(sAbsPhi_buffer'high downto 1);
     end if;
-  end process fill_sort_rank_buf;
-
+  end process shift_buffers;
 
   gmt_in_reg : process (clk40)
   begin  -- process gmt_in_reg
@@ -134,10 +147,13 @@ begin
             if in_buf(iFrame)(iChan).valid = VALID_BIT then
               -- We're only using the lower 30 bits as the MSB is used for
               -- status codes.
-              sMuons_link(iChan)(iFrame/2)(30 downto 0) <= in_buf(iFrame)(iChan).data(30 downto 0);
+              sMuons_event(iChan)(iFrame/2)(30 downto 0) <= in_buf(iFrame)(iChan).data(30 downto 0);
             else
-              sMuons_link(iChan)(iFrame/2)(30 downto 0) <= (others => '0');
+              sMuons_event(iChan)(iFrame/2)(30 downto 0) <= (others => '0');
             end if;
+
+            -- Store absolute phi value
+            sAbsPhi_event(iChan)(iFrame/2) <= sAbsPhi_buffer(iFrame)(iChan);
 
             -- Determine empty bit.
             if in_buf(iFrame)(iChan).data(PT_IN_HIGH downto PT_IN_LOW) = (PT_IN_HIGH downto PT_IN_LOW => '0') then
@@ -151,9 +167,9 @@ begin
             if in_buf(iFrame)(iChan).valid = VALID_BIT then
               -- We're only using the lower 30 bits as the MSB is used for
               -- status codes.
-              sMuons_link(iChan)(iFrame/2)(61 downto 31) <= in_buf(iFrame)(iChan).data(30 downto 0);
+              sMuons_event(iChan)(iFrame/2)(61 downto 31) <= in_buf(iFrame)(iChan).data(30 downto 0);
             else
-              sMuons_link(iChan)(iFrame/2)(61 downto 31) <= (others => '0');
+              sMuons_event(iChan)(iFrame/2)(61 downto 31) <= (others => '0');
             end if;
             -- Use every second result from SortRankLUT. (The other results
             -- were calculated with the 'wrong part' of the TF muon.)
@@ -218,9 +234,10 @@ begin
       sPhiOffset(i) <= unsigned(sPhiOffsetRegOutput(i)(9 downto 0));
   end generate assign_offsets;
 
-  sMuons_flat <= unroll_link_muons(sMuons_link(NCHAN-1 downto 0));
+  sMuons_flat <= unroll_link_muons(sMuons_event(NCHAN-1 downto 0));
+  sAbsPhi_flat <= unroll_abs_phi(sAbsPhi_event(NCHAN-1 downto 0));
   unpack_muons : for i in sMuonsIn'range generate
-    sMuonsIn(i) <= unpack_mu_from_flat(sMuons_flat(i), sPhiOffset(i/3));
+    sMuonsIn(i) <= unpack_mu_from_flat(sMuons_flat(i), sAbsPhi_flat(i));
   end generate unpack_muons;
   convert_muons : for i in sMuonsIn'range generate
     oMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i));
@@ -231,6 +248,7 @@ begin
 
   oValid      <= check_valid_bits(sValid_link(NCHAN-1 downto 0));
 
-  q(NCHAN-1 downto 0) <= in_buf(0);
+  q       <= in_buf(0);
+  oAbsPhi <= sAbsPhi_buffer(0);
 
 end Behavioral;

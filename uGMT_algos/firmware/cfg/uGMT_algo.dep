@@ -7,19 +7,12 @@ addrtab -t cancel_out_fo_wedge.xml
 addrtab -t cancel_out_fo.xml
 addrtab -t cancel_out_half_sorters.xml
 addrtab -t cancel_out_mems.xml
-addrtab -t extrapolation_eta.xml
-addrtab -t extrapolation_phi.xml
-addrtab -t extrapolation_regional.xml
-addrtab -t extrapolation.xml
-addrtab -t idx_bit_mems_eta.xml
-addrtab -t idx_bit_mems_phi.xml
-addrtab -t idx_bits_regional.xml
-addrtab -t index_bits.xml
 addrtab -t isolation_assignment.xml
 addrtab -t isolation_mem_absolute.xml
 addrtab -t isolation_mem_relative.xml
 addrtab -t isolation.xml
 addrtab -t sorting.xml
+addrtab -t gen_calo_idx_bits.xml
 addrtab -t mu_quad_deserialization.xml
 addrtab -t energy_quad_deserialization.xml
 addrtab -t mu_deserialization.xml
@@ -27,25 +20,16 @@ addrtab -t energy_deserialization.xml
 addrtab -t uGMT.xml
 addrtab -t ugmt_serdes.xml
 src ugmt_serdes.vhd
-src deserializer_stage_energies.vhd
-src deserialize_energy_quad.vhd
-src deserializer_stage_muons.vhd
-src deserialize_mu_quad.vhd
+src deserializer_stages/deserializer_stage_energies.vhd
+src deserializer_stages/deserialize_energy_quad.vhd
+src deserializer_stages/deserializer_stage_muons.vhd
+src deserializer_stages/deserialize_mu_quad.vhd
+src deserializer_stages/gen_idx_bits.vhd
 src GMT.vhd
 src serializer_stage.vhd
 src Isolation/IsoAssignmentUnit.vhd
 src Isolation/compute_complete_sums.vhd
 src Isolation/compute_energy_strip_sums.vhd
-src Isolation/extrapolation_unit.vhd
-src Isolation/extrapolation_unit_regional.vhd
-src Isolation/extrapolate_eta.vhd
-src Isolation/extrapolate_phi.vhd
-src Isolation/generate_index_bits.vhd
-src Isolation/index_bits_generator.vhd
-src Isolation/eta_index_bits_memories.vhd
-src Isolation/eta_index_bits_mem.vhd
-src Isolation/phi_index_bits_memories.vhd
-src Isolation/phi_index_bits_mem.vhd
 src Isolation/iso_check.vhd
 src Isolation/iso_check_abs.vhd
 src Isolation/iso_check_rel.vhd

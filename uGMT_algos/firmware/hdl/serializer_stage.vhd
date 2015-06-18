@@ -19,9 +19,6 @@ entity serializer_stage is
         iSortRanksO          : in  TSortRank10_vector(7 downto 0);
         iSortRanksF          : in  TSortRank10_vector(7 downto 0);
         iFinalEnergies       : in  TCaloArea_vector(7 downto 0);
-        iExtrapolatedCoordsB : in  TSpatialCoordinate_vector(35 downto 0);
-        iExtrapolatedCoordsO : in  TSpatialCoordinate_vector(35 downto 0);
-        iExtrapolatedCoordsF : in  TSpatialCoordinate_vector(35 downto 0);
         q                    : out ldata ((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0));
 end serializer_stage;
 
@@ -36,8 +33,6 @@ architecture Behavioral of serializer_stage is
   signal sIntermediateMuons : TGMTMu_vector(23 downto 0);
   signal sSortRanks         : TSortRank10_vector(23 downto 0);
   signal sFakeIso           : TIsoBits := "00";
-
-  signal sExtrapolatedCoords : TSpatialCoordinate_vector(107 downto 0);
 begin
 
   sIntermediateMuons <= iIntermediateMuonsF(7 downto 4) & iIntermediateMuonsO(7 downto 4) & iIntermediateMuonsB & iIntermediateMuonsO(3 downto 0) & iIntermediateMuonsF(3 downto 0);

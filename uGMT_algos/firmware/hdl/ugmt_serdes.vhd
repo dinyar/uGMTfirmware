@@ -54,26 +54,31 @@ architecture rtl of ugmt_serdes is
   signal sEnergies_tmp : TCaloRegionEtaSlice_vector(31 downto 0);
   signal sEnergies_fin : TCaloRegionEtaSlice_vector(31 downto 0);
 
-  signal sMuons         : TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-  signal sMuonsB        : TGMTMu_vector(35 downto 0);
-  signal sMuonsO        : TGMTMu_vector(35 downto 0);
-  signal sMuonsF        : TGMTMu_vector(35 downto 0);
-  signal sTracks        : TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
-  signal sTracksB       : TGMTMuTracks_vector(11 downto 0);
-  signal sTracksO       : TGMTMuTracks_vector(11 downto 0);
-  signal sTracksF       : TGMTMuTracks_vector(11 downto 0);
-  signal sEmpty         : std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-  signal sEmptyB        : std_logic_vector(35 downto 0);
-  signal sEmptyO        : std_logic_vector(35 downto 0);
-  signal sEmptyF        : std_logic_vector(35 downto 0);
-  signal sSortRanks     : TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-  signal sSortRanksB    : TSortRank10_vector(35 downto 0);
-  signal sSortRanksO    : TSortRank10_vector(35 downto 0);
-  signal sSortRanksF    : TSortRank10_vector(35 downto 0);
-  signal sIndexBits     : TIndexBits_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-  signal sIndexBitsB    : TIndexBits_vector(35 downto 0);
-  signal sIndexBitsO    : TIndexBits_vector(35 downto 0);
-  signal sIndexBitsF    : TIndexBits_vector(35 downto 0);
+  signal sCaloIndexBits : TCaloIndexBit_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+  signal sCaloIndexBitsB : TCaloIndexBit_vector(35 downto 0);
+  signal sCaloIndexBitsO : TCaloIndexBit_vector(35 downto 0);
+  signal sCaloIndexBitsF : TCaloIndexBit_vector(35 downto 0);
+
+  signal sMuons      : TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+  signal sMuonsB     : TGMTMu_vector(35 downto 0);
+  signal sMuonsO     : TGMTMu_vector(35 downto 0);
+  signal sMuonsF     : TGMTMu_vector(35 downto 0);
+  signal sTracks     : TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
+  signal sTracksB    : TGMTMuTracks_vector(11 downto 0);
+  signal sTracksO    : TGMTMuTracks_vector(11 downto 0);
+  signal sTracksF    : TGMTMuTracks_vector(11 downto 0);
+  signal sEmpty      : std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+  signal sEmptyB     : std_logic_vector(35 downto 0);
+  signal sEmptyO     : std_logic_vector(35 downto 0);
+  signal sEmptyF     : std_logic_vector(35 downto 0);
+  signal sSortRanks  : TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+  signal sSortRanksB : TSortRank10_vector(35 downto 0);
+  signal sSortRanksO : TSortRank10_vector(35 downto 0);
+  signal sSortRanksF : TSortRank10_vector(35 downto 0);
+  signal sIndexBits  : TIndexBits_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+  signal sIndexBitsB : TIndexBits_vector(35 downto 0);
+  signal sIndexBitsO : TIndexBits_vector(35 downto 0);
+  signal sIndexBitsF : TIndexBits_vector(35 downto 0);
 
   signal sIso       : TIsoBits_vector(7 downto 0);
   signal oMuons     : TGMTMu_vector(7 downto 0);
@@ -83,23 +88,17 @@ architecture rtl of ugmt_serdes is
   signal sIntermediateMuonsB         : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsO         : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsF         : TGMTMu_vector(7 downto 0);
-  signal sIntermediateSortRanksB     : TSortRank10_vector(7 downto 0);
-  signal sIntermediateSortRanksO     : TSortRank10_vector(7 downto 0);
-  signal sIntermediateSortRanksF     : TSortRank10_vector(7 downto 0);
-  signal sFinalEnergies              : TCaloArea_vector(7 downto 0);
-  signal sExtrapolatedCoordsB        : TSpatialCoordinate_vector(35 downto 0);
-  signal sExtrapolatedCoordsO        : TSpatialCoordinate_vector(35 downto 0);
-  signal sExtrapolatedCoordsF        : TSpatialCoordinate_vector(35 downto 0);
   signal sIntermediateMuonsB_reg     : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsO_reg     : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsF_reg     : TGMTMu_vector(7 downto 0);
+  signal sIntermediateSortRanksB     : TSortRank10_vector(7 downto 0);
+  signal sIntermediateSortRanksO     : TSortRank10_vector(7 downto 0);
+  signal sIntermediateSortRanksF     : TSortRank10_vector(7 downto 0);
   signal sIntermediateSortRanksB_reg : TSortRank10_vector(7 downto 0);
   signal sIntermediateSortRanksO_reg : TSortRank10_vector(7 downto 0);
   signal sIntermediateSortRanksF_reg : TSortRank10_vector(7 downto 0);
+  signal sFinalEnergies              : TCaloArea_vector(7 downto 0);
   signal sFinalEnergies_reg          : TCaloArea_vector(7 downto 0);
-  signal sExtrapolatedCoordsB_reg    : TSpatialCoordinate_vector(35 downto 0);
-  signal sExtrapolatedCoordsO_reg    : TSpatialCoordinate_vector(35 downto 0);
-  signal sExtrapolatedCoordsF_reg    : TSpatialCoordinate_vector(35 downto 0);
 
 begin
 
@@ -127,19 +126,20 @@ begin
       VALID_BIT => VALID_BIT
       )
     port map (
-      clk_ipb    => clk_ipb,
-      rst        => rst40,
-      ipb_in     => ipbw(N_SLV_MU_DESERIALIZATION),
-      ipb_out    => ipbr(N_SLV_MU_DESERIALIZATION),
-      ctrs       => ctrs,
-      clk240     => clk240,
-      clk40      => clk40,
-      d          => d(NCHAN-1 downto 0),
-      oMuons     => sMuons,
-      oTracks    => sTracks,
-      oEmpty     => sEmpty,
-      oSortRanks => sSortRanks,
-      oValid     => sValid_muons
+      clk_ipb      => clk_ipb,
+      rst          => rst40,
+      ipb_in       => ipbw(N_SLV_MU_DESERIALIZATION),
+      ipb_out      => ipbr(N_SLV_MU_DESERIALIZATION),
+      ctrs         => ctrs,
+      clk240       => clk240,
+      clk40        => clk40,
+      d            => d(NCHAN-1 downto 0),
+      oMuons       => sMuons,
+      oTracks      => sTracks,
+      oEmpty       => sEmpty,
+      oSortRanks   => sSortRanks,
+      oValid       => sValid_muons,
+      oCaloIdxBits => sCaloIndexBits
       );
 
   deserialize_energies : entity work.deserializer_stage_energies
@@ -255,6 +255,10 @@ begin
   sIndexBitsO <= sIndexBits((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sIndexBits((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
   sIndexBitsF <= sIndexBits((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sIndexBits((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
 
+  sCaloIndexBitsB <= sCaloIndexBits((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
+  sCaloIndexBitsO <= sCaloIndexBits((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sIndexBits((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
+  sCaloIndexBitsF <= sCaloIndexBits((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sIndexBits((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+
   sEmptyO <= sEmptyO_minus & sEmptyO_plus;
   sEmptyF <= sEmptyF_minus & sEmptyF_plus;
 
@@ -267,14 +271,14 @@ begin
   sEnergies_tmp(sEnergies_tmp'high-2)          <= (others => "00000");
   sEnergies_tmp(sEnergies_tmp'high-1)          <= (others => "00000");
   sEnergies_tmp(sEnergies_tmp'high)            <= (others => "00000");
-  
+
   uGMT : entity work.GMT
     port map (
       iMuonsB           => sMuonsB,
       iMuonsO           => sMuonsO,
       iMuonsF           => sMuonsF,
       iTracksB          => sTracksB,
-      iTracksO          => sTracksO, 
+      iTracksO          => sTracksO,
       iTracksF          => sTracksF,
       iSortRanksB       => sSortRanksB,
       iSortRanksO       => sSortRanksO,
@@ -282,6 +286,9 @@ begin
       iIdxBitsB         => sIndexBitsB,
       iIdxBitsO         => sIndexBitsO,
       iIdxBitsF         => sIndexBitsF,
+      iCaloIndexBitsB   => sCaloIndexBitsB,
+      iCaloIndexBitsO   => sCaloIndexBitsO,
+      iCaloIndexBitsF   => sCaloIndexBitsF,
       iEmptyB           => sEmptyB,
       iEmptyO           => sEmptyO,
       iEmptyF           => sEmptyF,
@@ -295,9 +302,6 @@ begin
       oIntermediateSortRanksO => sIntermediateSortRanksO,
       oIntermediateSortRanksF => sIntermediateSortRanksF,
       oFinalEnergies          => sFinalEnergies,
-      oExtrapolatedCoordsB    => sExtrapolatedCoordsB,
-      oExtrapolatedCoordsO    => sExtrapolatedCoordsO,
-      oExtrapolatedCoordsF    => sExtrapolatedCoordsF,
 
       oMuons => oMuons,
       oIso   => sIso,
@@ -322,9 +326,6 @@ begin
       sIntermediateSortRanksO_reg <= sIntermediateSortRanksO;
       sIntermediateSortRanksF_reg <= sIntermediateSortRanksF;
       sFinalEnergies_reg          <= sFinalEnergies;
-      sExtrapolatedCoordsB_reg    <= sExtrapolatedCoordsB;
-      sExtrapolatedCoordsO_reg    <= sExtrapolatedCoordsO;
-      sExtrapolatedCoordsF_reg    <= sExtrapolatedCoordsF;
     end if;
   end process gmt_out_reg;
 
@@ -351,9 +352,6 @@ begin
       iSortRanksO          => sIntermediateSortRanksO_reg,
       iSortRanksF          => sIntermediateSortRanksF_reg,
       iFinalEnergies       => sFinalEnergies_reg,
-      iExtrapolatedCoordsB => sExtrapolatedCoordsB_reg,
-      iExtrapolatedCoordsO => sExtrapolatedCoordsO_reg,
-      iExtrapolatedCoordsF => sExtrapolatedCoordsF_reg,
       q                    => q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0));
 
   strobe_high : for i in q'high downto (NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS) generate
