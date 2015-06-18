@@ -8,13 +8,13 @@
     <node id="mu_quad_6" address="0x60000" module="file://mu_quad_deserialization.xml" description="Access to registers and LUTs in a muon quad." />
     <node id="mu_quad_7" address="0x70000" module="file://mu_quad_deserialization.xml" description="Access to registers and LUTs in a muon quad." />
     <node id="mu_quad_8" address="0x80000" module="file://mu_quad_deserialization.xml" description="Access to registers and LUTs in a muon quad." />
-    <node id="gen_calo_idx_bits_quad_0" address="0x90000" module="files://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 0-3." />
-    <node id="gen_calo_idx_bits_quad_1" address="0xB0000" module="files://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 4-7." />
-    <node id="gen_calo_idx_bits_quad_2" address="0xD0000" module="files://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 8-11." />
-    <node id="gen_calo_idx_bits_quad_3" address="0xF0000" module="files://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 12-15." />
-    <node id="gen_calo_idx_bits_quad_4" address="0x110000" module="files://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 16-19." />
-    <node id="gen_calo_idx_bits_quad_5" address="0x130000" module="files://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 20-23." />
-    <node id="gen_calo_idx_bits_quad_6" address="0x150000" module="files://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 24-27." />
-    <node id="gen_calo_idx_bits_quad_7" address="0x170000" module="files://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 28-31." />
-    <node id="gen_calo_idx_bits_quad_8" address="0x190000" module="files://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 32-35." />
+    <node id="gen_calo_idx_bits_quad_0" address="0x100000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 0-3." />
+    <node id="gen_calo_idx_bits_quad_1" address="0x120000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 4-7." />
+    <node id="gen_calo_idx_bits_quad_2" address="0x140000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 8-11." />
+    <node id="gen_calo_idx_bits_quad_3" address="0x160000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 12-15." />
+    <node id="gen_calo_idx_bits_quad_4" address="0x180000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 16-19." />
+    <node id="gen_calo_idx_bits_quad_5" address="0xA00000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 20-23." />
+    <node id="gen_calo_idx_bits_quad_6" address="0xC00000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 24-27." />
+    <node id="gen_calo_idx_bits_quad_7" address="0xE00000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 28-31." />
+    <node id="gen_calo_idx_bits_quad_8" address="0x1000000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for links 32-35." />
 </node>

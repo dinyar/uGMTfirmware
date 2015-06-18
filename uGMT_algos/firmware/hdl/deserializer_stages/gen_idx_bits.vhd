@@ -93,8 +93,8 @@ begin
 		port map (
 			clk => clk_ipb,
 			rst => rst,
-			ipb_in => ipbw(???+i),  -- TODO
-			ipb_out => ipbr(???+i), -- TODO
+			ipb_in => ipbw(N_SLV_PHI_EXTRAPOLATION_MEM_0+i), 
+			ipb_out => ipbr(N_SLV_PHI_EXTRAPOLATION_MEM_0+i),
 			rclk => clk,
 			q => sPhiLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0),
 			addr => std_logic_vector(iExtrapolationAddress(i))
@@ -110,8 +110,8 @@ begin
         port map (
             clk => clk_ipb,
             rst => rst,
-            ipb_in => ipbw(???+i), -- TODO
-            ipb_out => ipbr(???+i), -- TODO
+            ipb_in => ipbw(N_SLV_ETA_EXTRAPOLATION_MEM_0+i),
+            ipb_out => ipbr(N_SLV_ETA_EXTRAPOLATION_MEM_0+i),
             rclk => clk240,
             q => sEtaLutOutput(i)(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0),
             addr => iExtrapolationAddress(i)
@@ -156,8 +156,8 @@ begin
 	      )
 	    port map (
 	      clk     => clk_ipb,
-	      ipb_in  => ipbw(???+i),  -- TODO
-	      ipb_out => ipbr(???+i),  -- TODO
+	      ipb_in  => ipbw(N_SLV_ETA_IDX_BITS_MEM_0+i),
+	      ipb_out => ipbr(N_SLV_ETA_IDX_BITS_MEM_0+i),
 	      rclk    => clk,
 	      q       => sCaloIndexBits_buffer(sCaloIndexBits_buffer'high).eta,
 	      addr    => std_logic_vector(sExtrapolatedCoords(i).eta)
@@ -170,8 +170,8 @@ begin
 	      )
 	    port map (
 	      clk     => clk_ipb,
-	      ipb_in  => ipbw(???+i),  -- TODO
-	      ipb_out => ipbr(???+i),  -- TODO
+	      ipb_in  => ipbw(N_SLV_PHI_IDX_BITS_MEM_0+i),
+	      ipb_out => ipbr(N_SLV_PHI_IDX_BITS_MEM_0+i),
 	      rclk    => clk,
 	      q       => sCaloIndexBits_buffer(sCaloIndexBits_buffer'high).phi,
 	      addr    => std_logic_vector(sExtrapolatedCoords(i).phi)

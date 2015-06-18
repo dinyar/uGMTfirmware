@@ -72,14 +72,6 @@ src ipbus_slaves/ipbus_dpram_dist.vhd
 ?toolset=="ISE"?    src cores/rel_isolation_mem.vhd
 ?toolset=="ISE"?    src -n rel_isolation_mem.xco
 src -c components/ipbus_slaves ipbus_reg_v.vhd
-src ipbus_decode_extrapolation_eta.vhd
-src ipbus_decode_extrapolation_phi.vhd
-src ipbus_decode_extrapolation_regional.vhd
-src ipbus_decode_extrapolation.vhd
-src ipbus_decode_idx_bit_mems_eta.vhd
-src ipbus_decode_idx_bit_mems_phi.vhd
-src ipbus_decode_idx_bits_regional.vhd
-src ipbus_decode_index_bits.vhd
 src ipbus_decode_isolation_assignment.vhd
 src ipbus_decode_isolation_mem_absolute.vhd
 src ipbus_decode_isolation_mem_relative.vhd
@@ -94,6 +86,7 @@ src ipbus_decode_cancel_out_mems.vhd
 src ipbus_decode_sorting.vhd
 src ipbus_decode_uGMT.vhd
 src ipbus_decode_energy_quad_deserialization.vhd
+src ipbus_decode_gen_calo_idx_bits.vhd
 src ipbus_decode_mu_quad_deserialization.vhd
 src ipbus_decode_energy_deserialization.vhd
 src ipbus_decode_mu_deserialization.vhd
