@@ -57,7 +57,7 @@ architecture Behavioral of deserialize_mu_quad is
 
   type TAbsolutePhiBuffer is array (2*NUM_MUONS_LINK-1 downto 0) of TAbsolutePhi_frame(NCHAN-1 downto 0);
   signal sAbsPhi_buffer : TAbsolutePhiBuffer;
-  signal sAbsPhi_frame  : TAbsolutePhi_frame(NCHAN-1 downto 0)(NCHAN-1 downto 0);
+  signal sAbsPhi_frame  : TAbsolutePhi_frame(NCHAN-1 downto 0);
   signal sAbsPhi_event  : TAbsolutePhi_event(NCHAN-1 downto 0);  -- All input phi values.
   signal sAbsPhi_flat   : TAbsolutePhi_vector(NCHAN*NUM_MUONS_IN-1 downto 0);  -- All input phi values unrolled.
 

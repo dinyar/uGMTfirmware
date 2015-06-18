@@ -125,9 +125,8 @@ package ugmt_constants is
   constant PHI_IDX_MEM_ADDR_WIDTH : natural := 10;
   constant PHI_IDX_MEM_WORD_SIZE : natural := 6;
 
-  constant ETA_EXTRAPOLATION_ADDR_WIDTH : natural := 12;
+  constant EXTRAPOLATION_ADDR_WIDTH : natural := 12;
   constant ETA_EXTRAPOLATION_WORD_SIZE : natural := 4;
-  constant PHI_EXTRAPOLATION_ADDR_WIDTH : natural := 12;
   constant PHI_EXTRAPOLATION_WORD_SIZE : natural := 3;
 
   constant REL_ISO_ADDR_WIDTH : natural := 14;

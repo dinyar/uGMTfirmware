@@ -15,7 +15,9 @@ use work.ugmt_constants.all;
 
 entity gen_idx_bits is
   generic (
-    NCHAN     : positive := 4;
+    NCHAN                        : positive := 4;
+    PHI_EXTRAPOLATION_DATA_FILE  : string;
+    ETA_EXTRAPOLATION_DATA_FILE  : string
     );
   port (
     clk_ipb      : in  std_logic;
@@ -42,8 +44,11 @@ architecture Behavioral of gen_idx_bits is
   signal sEtaAbs : TEtaAbs(NCHAN-1 downto 0);
   signal sExtrapolationAddress : TExtrapolationAddress(NCHAN-1 downto 0);
 
-  signal sEtaLutOutput : TLutBuf(sExtrapolatedCoords_buffer(0)'range);
-  signal sPhiLutOutput : TLutBuf(sExtrapolatedCoords_buffer(0)'range);
+  signal sEtaLutOutput : TLutBuf(sExtrapolationAddress'range);
+  signal sPhiLutOutput : TLutBuf(sExtrapolationAddress'range);
+
+  signal sDeltaEta : TDeltaEta_vector(sExtrapolationAddress'range);
+  signal sDeltaPhi : TDeltaPhi_vector(sExtrapolationAddress'range);
 
   -- Stores calo index bits for each 32 bit word that arrives from TFs.
   -- Every second such value is garbage and will be disregarded in a
@@ -86,25 +91,25 @@ begin
     							d(i).data(PT_IN_LOW+5 downto PT_IN_LOW);
 	phi_extrapolation : entity work.ipbus_dpram
 		generic map (
-			DATA_FILE  => DATA_FILE,
-			ADDR_WIDTH => PHI_EXTRAPOLATION_ADDR_WIDTH,
+			DATA_FILE  => PHI_EXTRAPOLATION_DATA_FILE,
+			ADDR_WIDTH => EXTRAPOLATION_ADDR_WIDTH,
 			WORD_WIDTH => PHI_EXTRAPOLATION_WORD_SIZE
 			)
 		port map (
 			clk => clk_ipb,
 			rst => rst,
-			ipb_in => ipbw(N_SLV_PHI_EXTRAPOLATION_MEM_0+i), 
+			ipb_in => ipbw(N_SLV_PHI_EXTRAPOLATION_MEM_0+i),
 			ipb_out => ipbr(N_SLV_PHI_EXTRAPOLATION_MEM_0+i),
-			rclk => clk,
+			rclk => clk240,
 			q => sPhiLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0),
-			addr => std_logic_vector(iExtrapolationAddress(i))
+			addr => std_logic_vector(sExtrapolationAddress(i))
 		);
 	-- TODO: Do I need this intermediate signal?
 	sDeltaPhi(i) <= unsigned(sPhiLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0));
     eta_extrapolation : entity work.ipbus_dpram
         generic map (
-          DATA_FILE  => DATA_FILE,
-          ADDR_WIDTH => ETA_EXTRAPOLATION_ADDR_WIDTH,
+          DATA_FILE  => ETA_EXTRAPOLATION_DATA_FILE,
+          ADDR_WIDTH => EXTRAPOLATION_ADDR_WIDTH,
           WORD_WIDTH => ETA_EXTRAPOLATION_WORD_SIZE
           )
         port map (
@@ -114,7 +119,7 @@ begin
             ipb_out => ipbr(N_SLV_ETA_EXTRAPOLATION_MEM_0+i),
             rclk => clk240,
             q => sEtaLutOutput(i)(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0),
-            addr => iExtrapolationAddress(i)
+            addr => sExtrapolationAddress(i)
         );
     sDeltaEta(i) <= signed(sEtaLutOutput(i)(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0));
   end generate coordinate_extrapolation;
@@ -123,7 +128,7 @@ begin
   -- As they are clocked we have to take care to extract the muon quantities
   -- from the buffered value (i.e. d_reg). The exception is the
   -- sign bit as this is transmitted one frame later.
-  assign_coords : process (d, in_buf, sDeltaEta, sDeltaPhi)
+  assign_coords : process (d, d_reg, sDeltaEta, sDeltaPhi)
     variable tmpPhi : unsigned(9 downto 0);
   begin  -- process assign_coords
     for i in NCHAN-1 downto 0 loop
@@ -145,9 +150,7 @@ begin
     end loop;  -- i
   end process assign_coords;
 
-
-  -- TODO: Generate idx bits.
-  coordinate_extrapolation : for i in sExtrapolatedCoords'range generate
+  lookup_calo_idx_bits : for i in sExtrapolatedCoords'range generate
 	eta_idx_bits_mem : entity work.ipbus_dpram_dist
 	    generic map (
 	      DATA_FILE  => "IdxSelMemEta.mif",
@@ -159,7 +162,7 @@ begin
 	      ipb_in  => ipbw(N_SLV_ETA_IDX_BITS_MEM_0+i),
 	      ipb_out => ipbr(N_SLV_ETA_IDX_BITS_MEM_0+i),
 	      rclk    => clk,
-	      q       => sCaloIndexBits_buffer(sCaloIndexBits_buffer'high).eta,
+	      q       => sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).eta,
 	      addr    => std_logic_vector(sExtrapolatedCoords(i).eta)
 	      );
 	phi_idx_bits_mem : entity work.ipbus_dpram_dist
@@ -173,10 +176,10 @@ begin
 	      ipb_in  => ipbw(N_SLV_PHI_IDX_BITS_MEM_0+i),
 	      ipb_out => ipbr(N_SLV_PHI_IDX_BITS_MEM_0+i),
 	      rclk    => clk,
-	      q       => sCaloIndexBits_buffer(sCaloIndexBits_buffer'high).phi,
+	      q       => sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).phi,
 	      addr    => std_logic_vector(sExtrapolatedCoords(i).phi)
 	      );
-  end generate coordinate_extrapolation;
+  end generate lookup_calo_idx_bits;
 
   shift_idx_bits_buffer : process (clk240)
   begin  -- process shift_idx_bits_buffer
@@ -184,8 +187,6 @@ begin
 	sCaloIndexBits_buffer(sCaloIndexBits_buffer'high-1 downto 0) <= sCaloIndexBits_buffer(sCaloIndexBits_buffer'high downto 1);
     end if;
   end process shift_idx_bits_buffer;
-
-  -- TODO: Lots of signals not declared!
 
   gmt_in_reg : process (clk40)
   begin  -- process gmt_in_reg

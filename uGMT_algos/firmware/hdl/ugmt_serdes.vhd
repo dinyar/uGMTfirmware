@@ -256,8 +256,8 @@ begin
   sIndexBitsF <= sIndexBits((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sIndexBits((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
 
   sCaloIndexBitsB <= sCaloIndexBits((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
-  sCaloIndexBitsO <= sCaloIndexBits((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sIndexBits((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
-  sCaloIndexBitsF <= sCaloIndexBits((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sIndexBits((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+  sCaloIndexBitsO <= sCaloIndexBits((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sCaloIndexBits((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
+  sCaloIndexBitsF <= sCaloIndexBits((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sCaloIndexBits((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
 
   sEmptyO <= sEmptyO_minus & sEmptyO_plus;
   sEmptyF <= sEmptyF_minus & sEmptyF_plus;
@@ -286,9 +286,9 @@ begin
       iIdxBitsB         => sIndexBitsB,
       iIdxBitsO         => sIndexBitsO,
       iIdxBitsF         => sIndexBitsF,
-      iCaloIndexBitsB   => sCaloIndexBitsB,
-      iCaloIndexBitsO   => sCaloIndexBitsO,
-      iCaloIndexBitsF   => sCaloIndexBitsF,
+      iCaloIdxBitsB     => sCaloIndexBitsB,
+      iCaloIdxBitsO     => sCaloIndexBitsO,
+      iCaloIdxBitsF     => sCaloIndexBitsF,
       iEmptyB           => sEmptyB,
       iEmptyO           => sEmptyO,
       iEmptyF           => sEmptyF,

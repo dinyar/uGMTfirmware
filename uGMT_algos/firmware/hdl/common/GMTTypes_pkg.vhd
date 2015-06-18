@@ -171,8 +171,7 @@ package GMTTypes is
   -----------------------------------------------------------------------------
   -- Addresses used for extrapolation memories
   -----------------------------------------------------------------------------
-  type TEtaExtrapolationAddress is array (integer range <>) of std_logic_vector(ETA_EXTRAPOLATION_ADDR_WIDTH -1 downto 0);
-  type TPhiExtrapolationAddress is array (integer range <>) of std_logic_vector(PHI_EXTRAPOLATION_ADDR_WIDTH -1 downto 0);
+  type TExtrapolationAddress is array (integer range <>) of std_logic_vector(EXTRAPOLATION_ADDR_WIDTH -1 downto 0);
 
   -----------------------------------------------------------------------------
   -- Type containing difference between spatial coordinates
@@ -411,9 +410,10 @@ package body GMTTypes is
     variable oPhi : unsigned(9 downto 0);
   begin  -- convert_phi_to_abs
     vPhiOffsetSigned := signed(resize(iOffset, 11));
-    vPhiInteger      := to_integer(sPhiOffsetSigned + signed(iRelPhi));
+    vPhiInteger      := to_integer(vPhiOffsetSigned + signed(iRelPhi));
     -- TODO: Replace 576 with constant
-    oPhi             := to_unsigned(sPhiInteger mod 576, 10));
+    oPhi             := to_unsigned(vPhiInteger mod 576, 10);
+    return oPhi;
   end convert_phi_to_abs;
 
   -----------------------------------------------------------------------------
