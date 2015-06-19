@@ -120,7 +120,7 @@ begin
 
   calculate_abs_phi : for i in sAbsPhi_frame'range generate
     sAbsPhi_frame(i) <= convert_phi_to_abs(
-                                        d(i).data(PHI_IN_HIGH downto PHI_IN_LOW),
+                                        in_buf(in_buf'high-1)(i).data(PHI_IN_HIGH downto PHI_IN_LOW),
                                         sPhiOffset(i)
                                         );
   end generate calculate_abs_phi;
@@ -152,9 +152,6 @@ begin
               sMuons_event(iChan)(iFrame/2)(30 downto 0) <= (others => '0');
             end if;
 
-            -- Store absolute phi value
-            sAbsPhi_event(iChan)(iFrame/2) <= sAbsPhi_buffer(iFrame)(iChan);
-
             -- Determine empty bit.
             if in_buf(iFrame)(iChan).data(PT_IN_HIGH downto PT_IN_LOW) = (PT_IN_HIGH downto PT_IN_LOW => '0') then
               sEmpty_link(iChan)(iFrame/2) <= '1';
@@ -171,12 +168,18 @@ begin
             else
               sMuons_event(iChan)(iFrame/2)(61 downto 31) <= (others => '0');
             end if;
+
             -- Use every second result from SortRankLUT. (The other results
             -- were calculated with the 'wrong part' of the TF muon.)
             -- Using this iFrame even though pT and quality are contained in
             -- earlier frame as the rank calculation requires an additional
             -- clk240, so the "correct" sort rank is late by one.
             sSortRank_link(iChan)(iFrame/2) <= sSortRank_buffer(iFrame)(iChan);
+
+            -- Store absolute phi value. As the calculation of abs phi is
+            -- delayed by one 240 MHz tick we're using the second result using
+            -- the same argument as for the sort rank above.
+            sAbsPhi_event(iChan)(iFrame/2) <= sAbsPhi_buffer(iFrame)(iChan);
           end if;
         end loop;  -- iFrame
 
