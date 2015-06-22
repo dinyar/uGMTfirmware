@@ -40,7 +40,7 @@ architecture Behavioral of deserializer_stage_muons is
   signal ipbw : ipb_wbus_array(N_SLAVES-1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES-1 downto 0);
 
-  signal sAbsPhi : TAbsolutePhi_frame(NCHAN-1 downto 0);
+  signal sGlobalPhi : TGlobalPhi_frame(NCHAN-1 downto 0);
 
   signal q : ldata (NCHAN-1 downto 0);
 
@@ -80,7 +80,7 @@ begin
         oSortRanks => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oValid     => sValid(i),
         q          => q(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
-        oAbsPhi    => sAbsPhi(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4)
+        oGlobalPhi => sGlobalPhi(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4)
         );
 
     extrapolate : entity work.gen_idx_bits
@@ -97,7 +97,7 @@ begin
         clk240        => clk240,
         clk40         => clk40,
         d             => d(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
-        iAbsPhi       => sAbsPhi(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
+        iGlobalPhi    => sGlobalPhi(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
         oCaloIdxBits  => oCaloIdxBits(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN)
         );
   end generate deserialize_loop;

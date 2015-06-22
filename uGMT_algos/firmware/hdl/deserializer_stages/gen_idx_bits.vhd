@@ -27,8 +27,8 @@ entity gen_idx_bits is
     clk240       : in  std_logic;
     clk40        : in  std_logic;
     d            : in  ldata(NCHAN-1 downto 0);
-	iAbsPhi      : in  TAbsolutePhi_frame(NCHAN-1 downto 0);
-	oCaloIdxBits : out TCaloIndexBit_vector(NCHAN*NUM_MUONS_IN-1 downto 0)
+    iGlobalPhi   : in  TGlobalPhi_frame(NCHAN-1 downto 0);
+    oCaloIdxBits : out TCaloIndexBit_vector(NCHAN*NUM_MUONS_IN-1 downto 0)
     );
 end gen_idx_bits;
 
@@ -37,8 +37,8 @@ architecture Behavioral of gen_idx_bits is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
-  signal d_reg       : ldata(NCHAN-1 downto 0);
-  signal sAbsPhi_reg : TAbsolutePhi_frame(NCHAN-1 downto 0);
+  signal d_reg          : ldata(NCHAN-1 downto 0);
+  signal sGlobalPhi_reg : TGlobalPhi_frame(NCHAN-1 downto 0);
 
   type   TEtaAbs is array (integer range <>) of unsigned(8 downto 0);
   signal sEtaAbs : TEtaAbs(NCHAN-1 downto 0);
@@ -83,7 +83,7 @@ begin
   begin  -- process fill_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
       d_reg       <= d;
-      sAbsPhi_reg <= iAbsPhi;
+      sGlobalPhi_reg <= iGlobalPhi;
     end if;
   end process fill_buffer;
 
@@ -130,22 +130,22 @@ begin
   -- As they are clocked we have to take care to extract the muon quantities
   -- from the buffered value (i.e. d_reg). The exception is the
   -- sign bit as this is transmitted one frame later.
-  assign_coords : process (d, d_reg, sDeltaEta, sDeltaPhi)
+  assign_coords : process (d, d_reg, sDeltaEta, sDeltaPhi, sGlobalPhi_reg)
     variable tmpPhi : unsigned(9 downto 0);
   begin  -- process assign_coords
     for i in NCHAN-1 downto 0 loop
       if unsigned(d_reg(i).data(PT_IN_HIGH downto PT_IN_LOW)) > 63 then
         -- If muon is high-pT we won't extrapolate.
         sExtrapolatedCoords(i).eta <= signed(d_reg(i).data(ETA_IN_HIGH downto ETA_IN_LOW));
-        sExtrapolatedCoords(i).phi <= sAbsPhi_reg(i);
+        sExtrapolatedCoords(i).phi <= sGlobalPhi_reg(i);
       else
         -- If muon is low-pT we etrapolate.
         sExtrapolatedCoords(i).eta <= signed(d_reg(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + SHIFT_LEFT("000" & sDeltaEta(i), 3);
 
         if d(i).data(SYSIGN_IN_LOW) = '1' then
-            tmpPhi := sAbsPhi_reg(i) + SHIFT_LEFT("000" & sDeltaPhi(i), 3);
+            tmpPhi := sGlobalPhi_reg(i) + SHIFT_LEFT("000" & sDeltaPhi(i), 3);
         else
-            tmpPhi := sAbsPhi_reg(i) - SHIFT_LEFT("000" & sDeltaPhi(i), 3);
+            tmpPhi := sGlobalPhi_reg(i) - SHIFT_LEFT("000" & sDeltaPhi(i), 3);
         end if;
         sExtrapolatedCoords(i).phi <= tmpPhi mod 576;
       end if;
@@ -167,7 +167,7 @@ begin
 	      q       => sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0),
 	      addr    => std_logic_vector(sExtrapolatedCoords(i).eta)
 	      );
-    sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).eta)) <= unsigned(sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0));
+    sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).eta <= unsigned(sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0));
 	phi_idx_bits_mem : entity work.ipbus_dpram_dist
 	    generic map (
 	      DATA_FILE  => "IdxSelMemPhi.mif",
@@ -179,10 +179,10 @@ begin
 	      ipb_in  => ipbw(N_SLV_PHI_IDX_BITS_MEM_0+i),
 	      ipb_out => ipbr(N_SLV_PHI_IDX_BITS_MEM_0+i),
 	      rclk    => clk240,
-	      q       => sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0)),
+	      q       => sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0),
 	      addr    => std_logic_vector(sExtrapolatedCoords(i).phi)
 	      );
-    sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).phi)) <= unsigned(sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0)));
+    sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).phi <= unsigned(sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0));
   end generate lookup_calo_idx_bits;
 
   shift_idx_bits_buffer : process (clk240)

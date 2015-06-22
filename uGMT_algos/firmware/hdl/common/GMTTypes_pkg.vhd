@@ -247,9 +247,11 @@ package GMTTypes is
   function unpack_sort_rank(signal iSortRanks            : TSortRank_link) return TSortRank10_vector;
   function unpack_empty_bits(signal iEmptyBits           : TEmpty_link) return std_logic_vector;
   function unpack_calo_idx_bits(signal iCaloIdxBits      : TCaloIndexBits_link) return TCaloIndexBit_vector;
+  function apply_global_phi_wraparound(signal iPhi       : signed(10 downto 0)) return unsigned;
 
-  function convert_phi_to_global(signal iLocalPhi : std_logic_vector(7 downto 0);
-                              signal iOffset : unsigned(9 downto 0)) return unsigned(9 downto 0);
+  function add_offset_to_local_phi(signal iLocalPhi : std_logic_vector(7 downto 0);
+    				   signal iOffset   : unsigned(9 downto 0)) return signed;
+
   function unpack_mu_from_flat(signal iMuon_flat : TFlatMuon;
                                signal iPhi       : unsigned(9 downto 0)) return TGMTMuIn;
 
@@ -403,20 +405,30 @@ package body GMTTypes is
     return oMuon;
   end gmt_mu_from_in_mu;
 
-  function convert_phi_to_global (
+  function add_offset_to_local_phi (
     signal iLocalPhi : std_logic_vector(7 downto 0);
-    signal iOffset : unsigned(9 downto 0))
-    return unsigned(9 downto 0) is
+    signal iOffset   : unsigned(9 downto 0))
+    return signed is
     variable vPhiOffsetSigned : signed(10 downto 0);
-    variable vPhiInteger : integer;
-    variable oPhi : unsigned(9 downto 0);
-  begin  -- convert_phi_to_global
+    variable oPhi             : signed(10 downto 0);
+  begin  -- add_offset_to_local_phi  
     vPhiOffsetSigned := signed(resize(iOffset, 11));
-    vPhiInteger      := to_integer(vPhiOffsetSigned + signed(iLocalPhi));
+    oPhi             := vPhiOffsetSigned + signed(iLocalPhi);
+
+    return oPhi;
+  end add_offset_to_local_phi;
+
+  function apply_global_phi_wraparound (
+    signal iPhi : signed(10 downto 0))
+    return unsigned is
+    variable vPhiInteger      : integer;
+    variable oPhi             : unsigned(9 downto 0);
+  begin  -- apply_global_phi_wraparound 
+    vPhiInteger      := to_integer(iPhi);
     -- TODO: Replace 576 with constant
     oPhi             := to_unsigned(vPhiInteger mod 576, 10);
     return oPhi;
-  end convert_phi_to_global;
+  end apply_global_phi_wraparound;
 
   -----------------------------------------------------------------------------
   -- Unpack valid bits

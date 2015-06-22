@@ -46,6 +46,10 @@ architecture Behavioral of deserialize_mu_quad is
   type TOffsetVec is array (natural range <>) of unsigned(9 downto 0);
   signal sPhiOffset : TOffsetVec(3 downto 0);
 
+  type TIntermediatePhi_vector is array (natural range <>) of signed(10 downto 0);
+  signal sIntermediatePhi     : TIntermediatePhi_vector(NCHAN-1 downto 0);
+  signal sIntermediatePhi_reg : TIntermediatePhi_vector(NCHAN-1 downto 0);
+
   signal in_buf : TQuadTransceiverBufferIn;
 
   type TSortRankInput is array (natural range <>) of std_logic_vector(12 downto 0);
@@ -119,10 +123,11 @@ begin
   end generate assign_ranks;
 
   calculate_global_phi : for i in sGlobalPhi_frame'range generate
-    sGlobalPhi_frame(i) <= convert_phi_to_global(
-                                        in_buf(in_buf'high-1)(i).data(PHI_IN_HIGH downto PHI_IN_LOW),
+    sIntermediatePhi(i) <= add_offset_to_local_phi(
+					d(i).data(PHI_IN_HIGH downto PHI_IN_LOW),
                                         sPhiOffset(i)
                                         );
+    sGlobalPhi_frame(i) <= apply_global_phi_wraparound(sIntermediatePhi_reg(i));
   end generate calculate_global_phi;
 
   sGlobalPhi_buffer(sGlobalPhi_buffer'high) <= sGlobalPhi_frame;
@@ -131,6 +136,7 @@ begin
   begin  -- process shift_buffers
     if clk240'event and clk240 = '1' then  -- rising clock edge
       sSortRank_buffer(sSortRank_buffer'high-1 downto 0) <= sSortRank_buffer(sSortRank_buffer'high downto 1);
+      sIntermediatePhi_reg <= sIntermediatePhi;
       sGlobalPhi_buffer(sGlobalPhi_buffer'high-1 downto 0) <= sGlobalPhi_buffer(sGlobalPhi_buffer'high downto 1);
     end if;
   end process shift_buffers;

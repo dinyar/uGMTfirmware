@@ -44,7 +44,7 @@ bash update_testfiles.sh
 # ./runSim.sh
 
 echo "Running Serializer testbench.. "
-cd ../serializer
+cd serializer
 ./buildSim.sh
 rm -f ugmt_testfile.dat
 ln -s ../patterns/serializer_$testfile.txt ugmt_testfile.dat
