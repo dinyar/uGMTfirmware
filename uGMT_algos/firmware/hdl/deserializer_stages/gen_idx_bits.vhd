@@ -167,7 +167,7 @@ begin
 	      q       => sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0),
 	      addr    => std_logic_vector(sExtrapolatedCoords(i).eta)
 	      );
-    sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).eta <= unsigned(sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0));
+    sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).eta)) <= unsigned(sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0));
 	phi_idx_bits_mem : entity work.ipbus_dpram_dist
 	    generic map (
 	      DATA_FILE  => "IdxSelMemPhi.mif",
@@ -179,10 +179,10 @@ begin
 	      ipb_in  => ipbw(N_SLV_PHI_IDX_BITS_MEM_0+i),
 	      ipb_out => ipbr(N_SLV_PHI_IDX_BITS_MEM_0+i),
 	      rclk    => clk240,
-	      q       => sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0),
+	      q       => sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0)),
 	      addr    => std_logic_vector(sExtrapolatedCoords(i).phi)
 	      );
-    sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).phi <= unsigned(sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0));
+    sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).phi)) <= unsigned(sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0)));
   end generate lookup_calo_idx_bits;
 
   shift_idx_bits_buffer : process (clk240)

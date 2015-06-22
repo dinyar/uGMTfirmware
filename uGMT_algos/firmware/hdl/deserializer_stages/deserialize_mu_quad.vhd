@@ -33,7 +33,7 @@ entity deserialize_mu_quad is
     oSortRanks : out TSortRank10_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
     oValid     : out std_logic;
     q          : out ldata(NCHAN-1 downto 0);
-    oAbsPhi    : out TAbsolutePhi_frame(NCHAN-1 downto 0)
+    oGlobalPhi : out TGlobalPhi_frame(NCHAN-1 downto 0)
     );
 end deserialize_mu_quad;
 
@@ -55,11 +55,11 @@ architecture Behavioral of deserialize_mu_quad is
   signal sMuons_flat  : TFlatMuon_vector(NCHAN*NUM_MUONS_IN-1 downto 0);  -- All input muons unrolled.
   signal sMuonsIn     : TGMTMuIn_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
 
-  type TAbsolutePhiBuffer is array (2*NUM_MUONS_LINK-1 downto 0) of TAbsolutePhi_frame(NCHAN-1 downto 0);
-  signal sAbsPhi_buffer : TAbsolutePhiBuffer;
-  signal sAbsPhi_frame  : TAbsolutePhi_frame(NCHAN-1 downto 0);
-  signal sAbsPhi_event  : TAbsolutePhi_event;  -- All input phi values.
-  signal sAbsPhi_flat   : TAbsolutePhi_vector(NCHAN*NUM_MUONS_IN-1 downto 0);  -- All input phi values unrolled.
+  type TGlobalPhiBuffer is array (2*NUM_MUONS_LINK-1 downto 0) of TGlobalPhi_frame(NCHAN-1 downto 0);
+  signal sGlobalPhi_buffer : TGlobalPhiBuffer;
+  signal sGlobalPhi_frame  : TGlobalPhi_frame(NCHAN-1 downto 0);
+  signal sGlobalPhi_event  : TGlobalPhi_event;  -- All input phi values.
+  signal sGlobalPhi_flat   : TGlobalPhi_vector(NCHAN*NUM_MUONS_IN-1 downto 0);  -- All input phi values unrolled.
 
   signal sValid_link : TValid_link(NCHAN-1 downto 0);
 
@@ -118,20 +118,20 @@ begin
         );
   end generate assign_ranks;
 
-  calculate_abs_phi : for i in sAbsPhi_frame'range generate
-    sAbsPhi_frame(i) <= convert_phi_to_abs(
+  calculate_global_phi : for i in sGlobalPhi_frame'range generate
+    sGlobalPhi_frame(i) <= convert_phi_to_global(
                                         in_buf(in_buf'high-1)(i).data(PHI_IN_HIGH downto PHI_IN_LOW),
                                         sPhiOffset(i)
                                         );
-  end generate calculate_abs_phi;
+  end generate calculate_global_phi;
 
-  sAbsPhi_buffer(sAbsPhi_buffer'high) <= sAbsPhi_frame;
+  sGlobalPhi_buffer(sGlobalPhi_buffer'high) <= sGlobalPhi_frame;
 
   shift_buffers : process (clk240)
   begin  -- process shift_buffers
     if clk240'event and clk240 = '1' then  -- rising clock edge
       sSortRank_buffer(sSortRank_buffer'high-1 downto 0) <= sSortRank_buffer(sSortRank_buffer'high downto 1);
-      sAbsPhi_buffer(sAbsPhi_buffer'high-1 downto 0) <= sAbsPhi_buffer(sAbsPhi_buffer'high downto 1);
+      sGlobalPhi_buffer(sGlobalPhi_buffer'high-1 downto 0) <= sGlobalPhi_buffer(sGlobalPhi_buffer'high downto 1);
     end if;
   end process shift_buffers;
 
@@ -176,10 +176,10 @@ begin
             -- clk240, so the "correct" sort rank is late by one.
             sSortRank_link(iChan)(iFrame/2) <= sSortRank_buffer(iFrame)(iChan);
 
-            -- Store absolute phi value. As the calculation of abs phi is
+            -- Store global phi value. As the calculation of global phi is
             -- delayed by one 240 MHz tick we're using the second result using
             -- the same argument as for the sort rank above.
-            sAbsPhi_event(iChan)(iFrame/2) <= sAbsPhi_buffer(iFrame)(iChan);
+            sGlobalPhi_event(iChan)(iFrame/2) <= sGlobalPhi_buffer(iFrame)(iChan);
           end if;
         end loop;  -- iFrame
 
@@ -238,9 +238,9 @@ begin
   end generate assign_offsets;
 
   sMuons_flat <= unroll_link_muons(sMuons_event(NCHAN-1 downto 0));
-  sAbsPhi_flat <= unroll_abs_phi(sAbsPhi_event(NCHAN-1 downto 0));
+  sGlobalPhi_flat <= unroll_global_phi(sGlobalPhi_event(NCHAN-1 downto 0));
   unpack_muons : for i in sMuonsIn'range generate
-    sMuonsIn(i) <= unpack_mu_from_flat(sMuons_flat(i), sAbsPhi_flat(i));
+    sMuonsIn(i) <= unpack_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
   end generate unpack_muons;
   convert_muons : for i in sMuonsIn'range generate
     oMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i));
@@ -252,6 +252,6 @@ begin
   oValid      <= check_valid_bits(sValid_link(NCHAN-1 downto 0));
 
   q       <= in_buf(0);
-  oAbsPhi <= sAbsPhi_buffer(0);
+  oGlobalPhi <= sGlobalPhi_buffer(0);
 
 end Behavioral;

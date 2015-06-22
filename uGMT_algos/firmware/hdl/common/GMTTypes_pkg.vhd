@@ -215,14 +215,14 @@ package GMTTypes is
   -- Contains flat muons inside a simple vector
   type    TFlatMuon_vector is array (natural range <>) of TFlatMuon;
 
-  -- Absolute phi values from one frame for all links in a quad
-  type TAbsolutePhi_frame is array (natural range <>) of unsigned(9 downto 0);
+  -- global phi values from one frame for all links in a quad
+  type TGlobalPhi_frame is array (natural range <>) of unsigned(9 downto 0);
   -- Contains phi values from one link.
-  type TAbsolutePhi_link is array (NUM_MUONS_IN-1 downto 0) of unsigned(9 downto 0);
-  -- Contains absolute phi values from a full event (4 links, 6 frames)
-  type TAbsolutePhi_event is array (3 downto 0) of TAbsolutePhi_link;
-  -- Contains the absolute phi values in a simple vector
-  type TAbsolutePhi_vector is array (natural range <>) of unsigned(9 downto 0);
+  type TGlobalPhi_link is array (NUM_MUONS_IN-1 downto 0) of unsigned(9 downto 0);
+  -- Contains global phi values from a full event (4 links, 6 frames)
+  type TGlobalPhi_event is array (3 downto 0) of TGlobalPhi_link;
+  -- Contains the global phi values in a simple vector
+  type TGlobalPhi_vector is array (natural range <>) of unsigned(9 downto 0);
 
   -- Empty bits for muons from one link for one BX.
   type TEmpty_link is array (natural range <>) of std_logic_vector(NUM_MUONS_IN-1 downto 0);
@@ -237,7 +237,7 @@ package GMTTypes is
   type TValid_link is array (natural range <>) of std_logic_vector(2*NUM_MUONS_IN-1 downto 0);
 
   function unroll_link_muons (signal iMuons_link         : TFlatMuons) return TFlatMuon_vector;
-  function unroll_abs_phi (signal iAbsPhi_event           : TAbsolutePhi_event) return TAbsolutePhi_vector;
+  function unroll_global_phi (signal iGlobalPhi_event    : TGlobalPhi_event) return TGlobalPhi_vector;
   function gmt_mu_from_in_mu (signal iMuonIn             : TGMTMuIn) return TGMTMu;
   function calo_etaslice_from_flat (constant flat        : std_logic_vector) return TCaloRegionEtaSlice;
   function track_addresses_from_in_mus(signal iMuon_flat : TFlatMuon_vector) return TGMTMuTracks_vector;
@@ -248,7 +248,7 @@ package GMTTypes is
   function unpack_empty_bits(signal iEmptyBits           : TEmpty_link) return std_logic_vector;
   function unpack_calo_idx_bits(signal iCaloIdxBits      : TCaloIndexBits_link) return TCaloIndexBit_vector;
 
-  function convert_phi_to_abs(signal iRelPhi : std_logic_vector(7 downto 0);
+  function convert_phi_to_global(signal iLocalPhi : std_logic_vector(7 downto 0);
                               signal iOffset : unsigned(9 downto 0)) return unsigned(9 downto 0);
   function unpack_mu_from_flat(signal iMuon_flat : TFlatMuon;
                                signal iPhi       : unsigned(9 downto 0)) return TGMTMuIn;
@@ -338,18 +338,18 @@ package body GMTTypes is
     return oMuons_flat;
   end;
 
-  function unroll_abs_phi (
-    signal iAbsPhi_event : TAbsolutePhi_event)
-    return TAbsolutePhi_vector is
-    variable oAbsPhi_flat : TAbsolutePhi_vector(iAbsPhi_event'length*iAbsPhi_event(0)'length-1 downto 0);
+  function unroll_global_phi (
+    signal iGlobalPhi_event : TGlobalPhi_event)
+    return TGlobalPhi_vector is
+    variable oGlobalPhi_flat : TGlobalPhi_vector(iGlobalPhi_event'length*iGlobalPhi_event(0)'length-1 downto 0);
   begin
-    for i in iAbsPhi_event'range loop
-      for j in iAbsPhi_event(i)'range loop
-        oAbsPhi_flat(i*iAbsPhi_event(i)'length+j) := iAbsPhi_event(i+iAbsPhi_event'low)(j+iAbsPhi_event(i)'low);
+    for i in iGlobalPhi_event'range loop
+      for j in iGlobalPhi_event(i)'range loop
+        oGlobalPhi_flat(i*iGlobalPhi_event(i)'length+j) := iGlobalPhi_event(i+iGlobalPhi_event'low)(j+iGlobalPhi_event(i)'low);
       end loop;  -- j
     end loop;  -- j
 
-    return oAbsPhi_flat;
+    return oGlobalPhi_flat;
   end;
 
   function unpack_mu_from_flat (
@@ -403,20 +403,20 @@ package body GMTTypes is
     return oMuon;
   end gmt_mu_from_in_mu;
 
-  function convert_phi_to_abs (
-    signal iRelPhi : std_logic_vector(7 downto 0);
+  function convert_phi_to_global (
+    signal iLocalPhi : std_logic_vector(7 downto 0);
     signal iOffset : unsigned(9 downto 0))
     return unsigned(9 downto 0) is
     variable vPhiOffsetSigned : signed(10 downto 0);
     variable vPhiInteger : integer;
     variable oPhi : unsigned(9 downto 0);
-  begin  -- convert_phi_to_abs
+  begin  -- convert_phi_to_global
     vPhiOffsetSigned := signed(resize(iOffset, 11));
-    vPhiInteger      := to_integer(vPhiOffsetSigned + signed(iRelPhi));
+    vPhiInteger      := to_integer(vPhiOffsetSigned + signed(iLocalPhi));
     -- TODO: Replace 576 with constant
     oPhi             := to_unsigned(vPhiInteger mod 576, 10);
     return oPhi;
-  end convert_phi_to_abs;
+  end convert_phi_to_global;
 
   -----------------------------------------------------------------------------
   -- Unpack valid bits
