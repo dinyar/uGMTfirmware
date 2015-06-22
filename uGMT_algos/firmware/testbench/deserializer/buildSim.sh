@@ -25,10 +25,11 @@ vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/projects/examples/mp7xe_690
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/mp7_ttc/firmware/hdl/mp7_ttc_decl.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_counter.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_dpram.vhd
-vcom -check_synthesis ../../hdl/deserialize_energy_quad.vhd
-vcom -check_synthesis ../../hdl/deserialize_mu_quad.vhd
-vcom -check_synthesis ../../hdl/deserializer_stage_energies.vhd
-vcom -check_synthesis ../../hdl/deserializer_stage_muons.vhd
+vcom -check_synthesis ../../hdl/deserializer_stages/deserialize_energy_quad.vhd
+vcom -check_synthesis ../../hdl/deserializer_stages/deserialize_mu_quad.vhd
+vcom -check_synthesis ../../hdl/deserializer_stages/deserializer_stage_energies.vhd
+vcom -check_synthesis ../../hdl/deserializer_stages/deserializer_stage_muons.vhd
+vcom -check_synthesis ../../hdl/deserializer_stages/gen_idx_bits.vhd
 vcom -check_synthesis ../tb_helpers.vhd
 vcom -check_synthesis deserializer_tb.vhd
 
