@@ -15,9 +15,9 @@ use work.ugmt_constants.all;
 
 entity gen_idx_bits is
   generic (
-    NCHAN                        : positive := 4;
-    PHI_EXTRAPOLATION_DATA_FILE  : string;
-    ETA_EXTRAPOLATION_DATA_FILE  : string
+    NCHAN                       : positive := 4;
+    PHI_EXTRAPOLATION_DATA_FILE : string;
+    ETA_EXTRAPOLATION_DATA_FILE : string
     );
   port (
     clk_ipb      : in  std_logic;
@@ -41,87 +41,91 @@ architecture Behavioral of gen_idx_bits is
   signal sGlobalPhi_reg : TGlobalPhi_frame(NCHAN-1 downto 0);
 
   type   TEtaAbs is array (integer range <>) of unsigned(8 downto 0);
-  signal sEtaAbs : TEtaAbs(NCHAN-1 downto 0);
+  signal sEtaAbs               : TEtaAbs(NCHAN-1 downto 0);
   signal sExtrapolationAddress : TExtrapolationAddress(NCHAN-1 downto 0);
 
   signal sEtaExtrapolationLutOutput : TLutBuf(sExtrapolationAddress'range);
   signal sPhiExtrapolationLutOutput : TLutBuf(sExtrapolationAddress'range);
-  signal sEtaIdxBitsLutOutput : TLutBuf(sExtrapolationAddress'range);
-  signal sPhiIdxBitsLutOutput : TLutBuf(sExtrapolationAddress'range);
+  signal sEtaIdxBitsLutOutput       : TLutBuf(sExtrapolationAddress'range);
+  signal sPhiIdxBitsLutOutput       : TLutBuf(sExtrapolationAddress'range);
 
-  signal sDeltaEta : TDeltaEta_vector(sExtrapolationAddress'range);
-  signal sDeltaPhi : TDeltaPhi_vector(sExtrapolationAddress'range);
+  signal sDeltaEta            : TDeltaEta_vector(sExtrapolationAddress'range);
+  signal sDeltaPhi            : TDeltaPhi_vector(sExtrapolationAddress'range);
+  signal sIntermediatePhi     : TIntermediatePhi_vector(NCHAN-1 downto 0);
+  signal sIntermediatePhi_tmp : TIntermediatePhi_vector(NCHAN-1 downto 0);
 
   -- Stores calo index bits for each 32 bit word that arrives from TFs.
   -- Every second such value is garbage and will be disregarded in a
   -- second step.
-  signal sExtrapolatedCoords : TSpatialCoordinate_vector(NCHAN-1 downto 0);
+  signal sExtrapolatedCoords     : TSpatialCoordinate_vector(NCHAN-1 downto 0);
+  signal sExtrapolatedCoords_reg : TSpatialCoordinate_vector(NCHAN-1 downto 0);
+  signal sExtrapolatedCoords_tmp : TSpatialCoordinate_vector(NCHAN-1 downto 0);
 --   type TCaloIndexBitsBuffer is array (2*NUM_MUONS_LINK-1 downto 0) of TCaloIndexBit_vector(NCHAN-1 downto 0);
   -- TODO: Would be significantly clearer with two buffers in series.
-  -- Buffer is 10 frames deep as it needs to compensate that idx bits are computed in 2 240 MHz ticks.
-  type TCaloIndexBitsBuffer is array (9 downto 0) of TCaloIndexBit_vector(NCHAN-1 downto 0);
-  signal sCaloIndexBits_buffer : TCaloIndexBitsBuffer;
-  signal sCaloIndexBits_link   : TCaloIndexBits_link(NCHAN-1 downto 0);
+  -- Buffer is 7 frames deep as it needs to compensate that idx bits are computed in 5 240 MHz ticks.
+  type   TCaloIndexBitsBuffer is array (6 downto 0) of TCaloIndexBit_vector(NCHAN-1 downto 0);
+  signal sCaloIndexBits_buffer   : TCaloIndexBitsBuffer;
+  signal sCaloIndexBits_link     : TCaloIndexBits_link(NCHAN-1 downto 0);
 
 begin
 
-    -- IPbus address decode
-    fabric : entity work.ipbus_fabric_sel
-      generic map(
-        NSLV      => N_SLAVES,
-        SEL_WIDTH => IPBUS_SEL_WIDTH
-        )
-      port map(
-        ipb_in          => ipb_in,
-        ipb_out         => ipb_out,
-        sel             => ipbus_sel_gen_calo_idx_bits(ipb_in.ipb_addr),
-        ipb_to_slaves   => ipbw,
-        ipb_from_slaves => ipbr
-        );
+  -- IPbus address decode
+  fabric : entity work.ipbus_fabric_sel
+    generic map(
+      NSLV      => N_SLAVES,
+      SEL_WIDTH => IPBUS_SEL_WIDTH
+      )
+    port map(
+      ipb_in          => ipb_in,
+      ipb_out         => ipb_out,
+      sel             => ipbus_sel_gen_calo_idx_bits(ipb_in.ipb_addr),
+      ipb_to_slaves   => ipbw,
+      ipb_from_slaves => ipbr
+      );
 
   fill_buffer : process (clk240)
   begin  -- process fill_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      d_reg       <= d;
+      d_reg          <= d;
       sGlobalPhi_reg <= iGlobalPhi;
     end if;
   end process fill_buffer;
 
   coordinate_extrapolation : for i in sExtrapolatedCoords'range generate
-	sEtaAbs(i) <= unsigned(abs(signed(d(i).data(ETA_IN_HIGH downto ETA_IN_LOW))));
-	sExtrapolationAddress(i) <= std_logic_vector(sEtaAbs(i)(7 downto 2)) &
-    							d(i).data(PT_IN_LOW+5 downto PT_IN_LOW);
-	phi_extrapolation : entity work.ipbus_dpram
-		generic map (
-			DATA_FILE  => PHI_EXTRAPOLATION_DATA_FILE,
-			ADDR_WIDTH => EXTRAPOLATION_ADDR_WIDTH,
-			WORD_WIDTH => PHI_EXTRAPOLATION_WORD_SIZE
-			)
-		port map (
-			clk => clk_ipb,
-			rst => rst,
-			ipb_in => ipbw(N_SLV_PHI_EXTRAPOLATION_MEM_0+i),
-			ipb_out => ipbr(N_SLV_PHI_EXTRAPOLATION_MEM_0+i),
-			rclk => clk240,
-			q => sPhiExtrapolationLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0),
-			addr => std_logic_vector(sExtrapolationAddress(i))
-		);
-	-- TODO: Do I need this intermediate signal?
-	sDeltaPhi(i) <= unsigned(sPhiExtrapolationLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0));
+    sEtaAbs(i)               <= unsigned(abs(signed(d(i).data(ETA_IN_HIGH downto ETA_IN_LOW))));
+    sExtrapolationAddress(i) <= std_logic_vector(sEtaAbs(i)(7 downto 2)) &
+                                d(i).data(PT_IN_LOW+5 downto PT_IN_LOW);
+    phi_extrapolation : entity work.ipbus_dpram
+      generic map (
+        DATA_FILE  => PHI_EXTRAPOLATION_DATA_FILE,
+        ADDR_WIDTH => EXTRAPOLATION_ADDR_WIDTH,
+        WORD_WIDTH => PHI_EXTRAPOLATION_WORD_SIZE
+        )
+      port map (
+        clk     => clk_ipb,
+        rst     => rst,
+        ipb_in  => ipbw(N_SLV_PHI_EXTRAPOLATION_MEM_0+i),
+        ipb_out => ipbr(N_SLV_PHI_EXTRAPOLATION_MEM_0+i),
+        rclk    => clk240,
+        q       => sPhiExtrapolationLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0),
+        addr    => std_logic_vector(sExtrapolationAddress(i))
+        );
+    -- TODO: Do I need this intermediate signal?
+    sDeltaPhi(i) <= unsigned(sPhiExtrapolationLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0));
     eta_extrapolation : entity work.ipbus_dpram
-        generic map (
-          DATA_FILE  => ETA_EXTRAPOLATION_DATA_FILE,
-          ADDR_WIDTH => EXTRAPOLATION_ADDR_WIDTH,
-          WORD_WIDTH => ETA_EXTRAPOLATION_WORD_SIZE
-          )
-        port map (
-            clk => clk_ipb,
-            rst => rst,
-            ipb_in => ipbw(N_SLV_ETA_EXTRAPOLATION_MEM_0+i),
-            ipb_out => ipbr(N_SLV_ETA_EXTRAPOLATION_MEM_0+i),
-            rclk => clk240,
-            q => sEtaExtrapolationLutOutput(i)(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0),
-            addr => sExtrapolationAddress(i)
+      generic map (
+        DATA_FILE  => ETA_EXTRAPOLATION_DATA_FILE,
+        ADDR_WIDTH => EXTRAPOLATION_ADDR_WIDTH,
+        WORD_WIDTH => ETA_EXTRAPOLATION_WORD_SIZE
+        )
+      port map (
+        clk     => clk_ipb,
+        rst     => rst,
+        ipb_in  => ipbw(N_SLV_ETA_EXTRAPOLATION_MEM_0+i),
+        ipb_out => ipbr(N_SLV_ETA_EXTRAPOLATION_MEM_0+i),
+        rclk    => clk240,
+        q       => sEtaExtrapolationLutOutput(i)(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0),
+        addr    => sExtrapolationAddress(i)
         );
     sDeltaEta(i) <= signed(sEtaExtrapolationLutOutput(i)(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0));
   end generate coordinate_extrapolation;
@@ -131,64 +135,89 @@ begin
   -- from the buffered value (i.e. d_reg). The exception is the
   -- sign bit as this is transmitted one frame later.
   assign_coords : process (d, d_reg, sDeltaEta, sDeltaPhi, sGlobalPhi_reg)
-    variable tmpPhi : unsigned(9 downto 0);
   begin  -- process assign_coords
     for i in NCHAN-1 downto 0 loop
       if unsigned(d_reg(i).data(PT_IN_HIGH downto PT_IN_LOW)) > 63 then
         -- If muon is high-pT we won't extrapolate.
         sExtrapolatedCoords(i).eta <= signed(d_reg(i).data(ETA_IN_HIGH downto ETA_IN_LOW));
-        sExtrapolatedCoords(i).phi <= sGlobalPhi_reg(i);
+        sIntermediatePhi(i)        <= signed(resize(sGlobalPhi_reg(i), 11));
       else
         -- If muon is low-pT we etrapolate.
-        sExtrapolatedCoords(i).eta <= signed(d_reg(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + SHIFT_LEFT("000" & sDeltaEta(i), 3);
+        sExtrapolatedCoords(i).eta <= signed(d_reg(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(SHIFT_LEFT("000" & sDeltaEta(i), 3), 8));  -- TODO: Need to resize to +1 at conversion.
 
         if d(i).data(SYSIGN_IN_LOW) = '1' then
-            tmpPhi := sGlobalPhi_reg(i) + SHIFT_LEFT("000" & sDeltaPhi(i), 3);
+          sIntermediatePhi(i) <= signed(resize(sGlobalPhi_reg(i), 11)) + signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
         else
-            tmpPhi := sGlobalPhi_reg(i) - SHIFT_LEFT("000" & sDeltaPhi(i), 3);
+          sIntermediatePhi(i) <= signed(resize(sGlobalPhi_reg(i), 11)) - signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
         end if;
-        sExtrapolatedCoords(i).phi <= tmpPhi mod 576;
       end if;
     end loop;  -- i
   end process assign_coords;
 
+  register_tmp_vals : process (clk240)
+  begin  -- process register_tmp_vals
+    if clk240'event and clk240 = '1' then  -- rising clock edge
+      sIntermediatePhi_tmp    <= sIntermediatePhi;
+      sExtrapolatedCoords_tmp <= sExtrapolatedCoords_tmp;
+    end if;
+  end process register_tmp_vals;
+
+  reg_extrap_coords : process (clk240)
+  begin  -- process reg_extrap_coords
+    if clk240'event and clk240 = '1' then  -- rising clock edge
+      for i in NCHAN-1 downto 0 loop
+        sExtrapolatedCoords_reg(i).eta <= sExtrapolatedCoords_tmp(i).eta;
+        -- TODO: replace 576 with constant
+        if (sIntermediatePhi_tmp(i) >= 0) and (sIntermediatePhi_tmp(i) < 576) then
+          sExtrapolatedCoords_reg(i).phi <= resize(unsigned(sIntermediatePhi_tmp(i)), 10);
+        elsif (sIntermediatePhi_tmp(i) < 0) then
+          sExtrapolatedCoords_reg(i).phi <= resize(unsigned(576+sIntermediatePhi_tmp(i)), 10);
+        elsif (sIntermediatePhi_tmp(i) >= 576) then
+          sExtrapolatedCoords_reg(i).phi <= resize(unsigned(sIntermediatePhi_tmp(i)-576), 10);
+        else
+          sExtrapolatedCoords_reg(i).phi <= to_unsigned(1023, 10);
+        end if;
+      end loop;  -- i
+    end if;
+  end process reg_extrap_coords;
+
   lookup_calo_idx_bits : for i in sExtrapolatedCoords'range generate
-	eta_idx_bits_mem : entity work.ipbus_dpram_dist
-	    generic map (
-	      DATA_FILE  => "IdxSelMemEta.mif",
-	      ADDR_WIDTH => ETA_IDX_MEM_ADDR_WIDTH,
-	      WORD_WIDTH => ETA_IDX_MEM_WORD_SIZE
-	      )
-	    port map (
-	      clk     => clk_ipb,
-	      ipb_in  => ipbw(N_SLV_ETA_IDX_BITS_MEM_0+i),
-	      ipb_out => ipbr(N_SLV_ETA_IDX_BITS_MEM_0+i),
-	      rclk    => clk240,
-	      q       => sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0),
-	      addr    => std_logic_vector(sExtrapolatedCoords(i).eta)
-	      );
+    eta_idx_bits_mem : entity work.ipbus_dpram_dist
+      generic map (
+        DATA_FILE  => "IdxSelMemEta.mif",
+        ADDR_WIDTH => ETA_IDX_MEM_ADDR_WIDTH,
+        WORD_WIDTH => ETA_IDX_MEM_WORD_SIZE
+        )
+      port map (
+        clk     => clk_ipb,
+        ipb_in  => ipbw(N_SLV_ETA_IDX_BITS_MEM_0+i),
+        ipb_out => ipbr(N_SLV_ETA_IDX_BITS_MEM_0+i),
+        rclk    => clk240,
+        q       => sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0),
+        addr    => std_logic_vector(sExtrapolatedCoords_reg(i).eta)
+        );
     sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).eta <= unsigned(sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0));
-	phi_idx_bits_mem : entity work.ipbus_dpram_dist
-	    generic map (
-	      DATA_FILE  => "IdxSelMemPhi.mif",
-	      ADDR_WIDTH => PHI_IDX_MEM_ADDR_WIDTH,
-	      WORD_WIDTH => PHI_IDX_MEM_WORD_SIZE
-	      )
-	    port map (
-	      clk     => clk_ipb,
-	      ipb_in  => ipbw(N_SLV_PHI_IDX_BITS_MEM_0+i),
-	      ipb_out => ipbr(N_SLV_PHI_IDX_BITS_MEM_0+i),
-	      rclk    => clk240,
-	      q       => sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0),
-	      addr    => std_logic_vector(sExtrapolatedCoords(i).phi)
-	      );
+    phi_idx_bits_mem : entity work.ipbus_dpram_dist
+      generic map (
+        DATA_FILE  => "IdxSelMemPhi.mif",
+        ADDR_WIDTH => PHI_IDX_MEM_ADDR_WIDTH,
+        WORD_WIDTH => PHI_IDX_MEM_WORD_SIZE
+        )
+      port map (
+        clk     => clk_ipb,
+        ipb_in  => ipbw(N_SLV_PHI_IDX_BITS_MEM_0+i),
+        ipb_out => ipbr(N_SLV_PHI_IDX_BITS_MEM_0+i),
+        rclk    => clk240,
+        q       => sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0),
+        addr    => std_logic_vector(sExtrapolatedCoords_reg(i).phi)
+        );
     sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).phi <= unsigned(sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0));
   end generate lookup_calo_idx_bits;
 
   shift_idx_bits_buffer : process (clk240)
   begin  -- process shift_idx_bits_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
-	sCaloIndexBits_buffer(sCaloIndexBits_buffer'high-1 downto 0) <= sCaloIndexBits_buffer(sCaloIndexBits_buffer'high downto 1);
+      sCaloIndexBits_buffer(sCaloIndexBits_buffer'high-1 downto 0) <= sCaloIndexBits_buffer(sCaloIndexBits_buffer'high downto 1);
     end if;
   end process shift_idx_bits_buffer;
 

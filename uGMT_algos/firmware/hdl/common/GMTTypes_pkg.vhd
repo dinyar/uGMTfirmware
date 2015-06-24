@@ -179,6 +179,8 @@ package GMTTypes is
   type TDeltaEta_vector is array (integer range <>) of signed(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0);
   type TDeltaPhi_vector is array (integer range <>) of unsigned(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0);
 
+  type TIntermediatePhi_vector is array (natural range <>) of signed(10 downto 0);
+
   -----------------------------------------------------------------------------
   -- Extrapolated coordinates at vertex
   -----------------------------------------------------------------------------
@@ -421,12 +423,10 @@ package body GMTTypes is
   function apply_global_phi_wraparound (
     signal iPhi : signed(10 downto 0))
     return unsigned is
-    variable vPhiInteger      : integer;
     variable oPhi             : unsigned(9 downto 0);
   begin  -- apply_global_phi_wraparound 
-    vPhiInteger      := to_integer(iPhi);
     -- TODO: Replace 576 with constant
-    oPhi             := to_unsigned(vPhiInteger mod 576, 10);
+    oPhi := resize(unsigned(iPhi mod 576), 10);
     return oPhi;
   end apply_global_phi_wraparound;
 
