@@ -60,11 +60,10 @@ architecture Behavioral of gen_idx_bits is
   signal sExtrapolatedCoords     : TSpatialCoordinate_vector(NCHAN-1 downto 0);
   signal sExtrapolatedCoords_reg : TSpatialCoordinate_vector(NCHAN-1 downto 0);
   signal sExtrapolatedCoords_tmp : TSpatialCoordinate_vector(NCHAN-1 downto 0);
---   type TCaloIndexBitsBuffer is array (2*NUM_MUONS_LINK-1 downto 0) of TCaloIndexBit_vector(NCHAN-1 downto 0);
-  -- TODO: Would be significantly clearer with two buffers in series.
-  -- Buffer is 7 frames deep as it needs to compensate that idx bits are computed in 5 240 MHz ticks.
-  type   TCaloIndexBitsBuffer is array (6 downto 0) of TCaloIndexBit_vector(NCHAN-1 downto 0);
-  signal sCaloIndexBits_buffer   : TCaloIndexBitsBuffer;
+
+  type   TCaloIndexBitsBuffer is array (2*NUM_MUONS_LINK-1 downto 0) of TCaloIndexBit_vector(NCHAN-1 downto 0);
+  signal sCaloIndexBits          : TCaloIndexBit_vector(NCHAN-1 downto 0);
+  signal sCaloIndexBits_buffer   : TCaloIndexBitsBuffer(2*NUM_MUONS_LINK-1 downto 0);
   signal sCaloIndexBits_link     : TCaloIndexBits_link(NCHAN-1 downto 0);
 
 begin
@@ -143,7 +142,8 @@ begin
         sIntermediatePhi(i)        <= signed(resize(sGlobalPhi_reg(i), 11));
       else
         -- If muon is low-pT we etrapolate.
-        sExtrapolatedCoords(i).eta <= signed(d_reg(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(SHIFT_LEFT("000" & sDeltaEta(i), 3), 8));  -- TODO: Need to resize to +1 at conversion.
+        -- TODO: Need to resize to +1 at conversion.
+        sExtrapolatedCoords(i).eta <= signed(d_reg(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(SHIFT_LEFT("000" & sDeltaEta(i), 3), 8));
 
         if d(i).data(SYSIGN_IN_LOW) = '1' then
           sIntermediatePhi(i) <= signed(resize(sGlobalPhi_reg(i), 11)) + signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
@@ -167,16 +167,7 @@ begin
     if clk240'event and clk240 = '1' then  -- rising clock edge
       for i in NCHAN-1 downto 0 loop
         sExtrapolatedCoords_reg(i).eta <= sExtrapolatedCoords_tmp(i).eta;
-        -- TODO: replace 576 with constant
-        if (sIntermediatePhi_tmp(i) >= 0) and (sIntermediatePhi_tmp(i) < 576) then
-          sExtrapolatedCoords_reg(i).phi <= resize(unsigned(sIntermediatePhi_tmp(i)), 10);
-        elsif (sIntermediatePhi_tmp(i) < 0) then
-          sExtrapolatedCoords_reg(i).phi <= resize(unsigned(576+sIntermediatePhi_tmp(i)), 10);
-        elsif (sIntermediatePhi_tmp(i) >= 576) then
-          sExtrapolatedCoords_reg(i).phi <= resize(unsigned(sIntermediatePhi_tmp(i)-576), 10);
-        else
-          sExtrapolatedCoords_reg(i).phi <= to_unsigned(1023, 10);
-        end if;
+        sExtrapolatedCoords_reg(i).phi <= apply_global_phi_wraparound(sIntermediatePhi_tmp(i));
       end loop;  -- i
     end if;
   end process reg_extrap_coords;
@@ -196,7 +187,7 @@ begin
         q       => sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0),
         addr    => std_logic_vector(sExtrapolatedCoords_reg(i).eta)
         );
-    sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).eta <= unsigned(sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0));
+    sCaloIndexBits(i).eta <= unsigned(sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0));
     phi_idx_bits_mem : entity work.ipbus_dpram_dist
       generic map (
         DATA_FILE  => "IdxSelMemPhi.mif",
@@ -211,12 +202,13 @@ begin
         q       => sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0),
         addr    => std_logic_vector(sExtrapolatedCoords_reg(i).phi)
         );
-    sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)(i).phi <= unsigned(sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0));
+    sCaloIndexBits(i).phi <= unsigned(sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0));
   end generate lookup_calo_idx_bits;
 
   shift_idx_bits_buffer : process (clk240)
   begin  -- process shift_idx_bits_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
+      sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)            <= sCaloIndexBits;
       sCaloIndexBits_buffer(sCaloIndexBits_buffer'high-1 downto 0) <= sCaloIndexBits_buffer(sCaloIndexBits_buffer'high downto 1);
     end if;
   end process shift_idx_bits_buffer;

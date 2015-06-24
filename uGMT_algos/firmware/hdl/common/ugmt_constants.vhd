@@ -140,6 +140,10 @@ package ugmt_constants is
   constant SORT_RANK_MEM_ADDR_WIDTH : natural := 13;
   constant SORT_RANK_MEM_WORD_SIZE : natural := 10;
 
+  -----------------------------------------------------------------------------
+  -- Misc. constants
+  -----------------------------------------------------------------------------
+  constant MAX_PHI_VAL : natural := 576;
 
 end ugmt_constants;
 

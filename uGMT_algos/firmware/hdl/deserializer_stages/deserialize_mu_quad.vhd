@@ -42,6 +42,8 @@ architecture Behavioral of deserialize_mu_quad is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
+  constant PHI_COMP_LATENCY : natural := 1;
+
   signal sPhiOffsetRegOutput : ipb_reg_v(3 downto 0);
   type   TOffsetVec is array (natural range <>) of unsigned(9 downto 0);
   signal sPhiOffset          : TOffsetVec(3 downto 0);
@@ -125,29 +127,18 @@ begin
     sIntermediatePhi(i) <= add_offset_to_local_phi(
       d(i).data(PHI_IN_HIGH downto PHI_IN_LOW),
       sPhiOffset(i)
-      );    
+      );
   end generate calculate_global_phi;
 
-  -- TODO: Move this to function.
   apply_global_phi_wraparound : process (sIntermediatePhi_reg)
   begin  -- process apply_global_phi_wraparound
     for i in sIntermediatePhi_reg'range loop
-      -- TODO: replace 576 with constant
-      if (sIntermediatePhi_reg(i) >= 0) and (sIntermediatePhi_reg(i) < 576) then
-        sGlobalPhi_frame(i) <= resize(unsigned(sIntermediatePhi_reg(i)), 10);
-      elsif (sIntermediatePhi_reg(i) < 0) then
-        sGlobalPhi_frame(i) <= resize(unsigned(576+sIntermediatePhi_reg(i)), 10);
-      elsif (sIntermediatePhi_reg(i) >= 576) then
-        sGlobalPhi_frame(i) <= resize(unsigned(sIntermediatePhi_reg(i)-576), 10);
-      else
-        sGlobalPhi_frame(i) <= to_unsigned(1023, 10);
-      end if;
+      sGlobalPhi_frame(i).phi <= apply_global_phi_wraparound(sIntermediatePhi_reg(i));
     end loop;
   end process apply_global_phi_wraparound;
 
-  -- TODO: Make this offset configurable
-  -- We're filling at '4' as we registered the data once before (sIntermediatePhi_reg).
-  sGlobalPhi_buffer(4) <= sGlobalPhi_frame;
+  -- We're filling with an offset as we registered the data once before (sIntermediatePhi_reg).
+  sGlobalPhi_buffer(sGlobalPhi_buffer'high-PHI_COMP_LATENCY) <= sGlobalPhi_frame;
 
   shift_buffers : process (clk240)
   begin  -- process shift_buffers

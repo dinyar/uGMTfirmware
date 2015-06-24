@@ -413,7 +413,7 @@ package body GMTTypes is
     return signed is
     variable vPhiOffsetSigned : signed(10 downto 0);
     variable oPhi             : signed(10 downto 0);
-  begin  -- add_offset_to_local_phi  
+  begin  -- add_offset_to_local_phi
     vPhiOffsetSigned := signed(resize(iOffset, 11));
     oPhi             := vPhiOffsetSigned + signed(iLocalPhi);
 
@@ -423,10 +423,18 @@ package body GMTTypes is
   function apply_global_phi_wraparound (
     signal iPhi : signed(10 downto 0))
     return unsigned is
-    variable oPhi             : unsigned(9 downto 0);
-  begin  -- apply_global_phi_wraparound 
-    -- TODO: Replace 576 with constant
-    oPhi := resize(unsigned(iPhi mod 576), 10);
+    variable oPhi : unsigned(9 downto 0);
+  begin  -- apply_global_phi_wraparound
+    if (iPhi >= 0) and (iPhi < MAX_PHI_VAL) then
+      oPhi <= resize(unsigned(iPhi), 10);
+    elsif (iPhi < 0) then
+      oPhi <= resize(unsigned(MAX_PHI_VAL+iPhi), 10);
+    elsif (iPhi >= MAX_PHI_VAL) then
+      oPhi <= resize(unsigned(iPhi-MAX_PHI_VAL), 10);
+    else
+      oPhi <= to_unsigned(1023, 10);
+    end if;
+
     return oPhi;
   end apply_global_phi_wraparound;
 
