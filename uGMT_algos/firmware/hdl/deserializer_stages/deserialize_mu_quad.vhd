@@ -130,12 +130,12 @@ begin
       );
   end generate calculate_global_phi;
 
-  apply_global_phi_wraparound : process (sIntermediatePhi_reg)
-  begin  -- process apply_global_phi_wraparound
+  global_phi_wraparound : process (sIntermediatePhi_reg)
+  begin  -- process global_phi_wraparound
     for i in sIntermediatePhi_reg'range loop
-      sGlobalPhi_frame(i).phi <= apply_global_phi_wraparound(sIntermediatePhi_reg(i));
+      sGlobalPhi_frame(i) <= apply_global_phi_wraparound(sIntermediatePhi_reg(i));
     end loop;
-  end process apply_global_phi_wraparound;
+  end process global_phi_wraparound;
 
   -- We're filling with an offset as we registered the data once before (sIntermediatePhi_reg).
   sGlobalPhi_buffer(sGlobalPhi_buffer'high-PHI_COMP_LATENCY) <= sGlobalPhi_frame;

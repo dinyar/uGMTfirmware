@@ -63,7 +63,7 @@ architecture Behavioral of gen_idx_bits is
 
   type   TCaloIndexBitsBuffer is array (2*NUM_MUONS_LINK-1 downto 0) of TCaloIndexBit_vector(NCHAN-1 downto 0);
   signal sCaloIndexBits          : TCaloIndexBit_vector(NCHAN-1 downto 0);
-  signal sCaloIndexBits_buffer   : TCaloIndexBitsBuffer(2*NUM_MUONS_LINK-1 downto 0);
+  signal sCaloIndexBits_buffer   : TCaloIndexBitsBuffer;
   signal sCaloIndexBits_link     : TCaloIndexBits_link(NCHAN-1 downto 0);
 
 begin
@@ -133,25 +133,27 @@ begin
   -- As they are clocked we have to take care to extract the muon quantities
   -- from the buffered value (i.e. d_reg). The exception is the
   -- sign bit as this is transmitted one frame later.
-  assign_coords : process (d, d_reg, sDeltaEta, sDeltaPhi, sGlobalPhi_reg)
+  assign_coords : process (clk240)
   begin  -- process assign_coords
-    for i in NCHAN-1 downto 0 loop
-      if unsigned(d_reg(i).data(PT_IN_HIGH downto PT_IN_LOW)) > 63 then
-        -- If muon is high-pT we won't extrapolate.
-        sExtrapolatedCoords(i).eta <= signed(d_reg(i).data(ETA_IN_HIGH downto ETA_IN_LOW));
-        sIntermediatePhi(i)        <= signed(resize(sGlobalPhi_reg(i), 11));
-      else
-        -- If muon is low-pT we etrapolate.
-        -- TODO: Need to resize to +1 at conversion.
-        sExtrapolatedCoords(i).eta <= signed(d_reg(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(SHIFT_LEFT("000" & sDeltaEta(i), 3), 8));
-
-        if d(i).data(SYSIGN_IN_LOW) = '1' then
-          sIntermediatePhi(i) <= signed(resize(sGlobalPhi_reg(i), 11)) + signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
+    if clk240'event and clk240 = '1' then  -- rising clock edge
+      for i in NCHAN-1 downto 0 loop
+        if unsigned(d_reg(i).data(PT_IN_HIGH downto PT_IN_LOW)) > 63 then
+          -- If muon is high-pT we won't extrapolate.
+          sExtrapolatedCoords(i).eta <= signed(d_reg(i).data(ETA_IN_HIGH downto ETA_IN_LOW));
+          sIntermediatePhi(i)        <= signed(resize(sGlobalPhi_reg(i), 11));
         else
-          sIntermediatePhi(i) <= signed(resize(sGlobalPhi_reg(i), 11)) - signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
+          -- If muon is low-pT we etrapolate.
+          -- TODO: Need to resize to +1 at conversion.
+          sExtrapolatedCoords(i).eta <= signed(d_reg(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(SHIFT_LEFT("000" & sDeltaEta(i), 3), 8));
+
+          if d(i).data(SYSIGN_IN_LOW) = '1' then
+            sIntermediatePhi(i) <= signed(resize(sGlobalPhi_reg(i), 11)) + signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
+          else
+            sIntermediatePhi(i) <= signed(resize(sGlobalPhi_reg(i), 11)) - signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
+          end if;
         end if;
-      end if;
-    end loop;  -- i
+      end loop;  -- i
+    end if;
   end process assign_coords;
 
   register_tmp_vals : process (clk240)
@@ -204,11 +206,12 @@ begin
         );
     sCaloIndexBits(i).phi <= unsigned(sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0));
   end generate lookup_calo_idx_bits;
+      
+  sCaloIndexBits_buffer(sCaloIndexBits_buffer'high) <= sCaloIndexBits;
 
   shift_idx_bits_buffer : process (clk240)
   begin  -- process shift_idx_bits_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)            <= sCaloIndexBits;
       sCaloIndexBits_buffer(sCaloIndexBits_buffer'high-1 downto 0) <= sCaloIndexBits_buffer(sCaloIndexBits_buffer'high downto 1);
     end if;
   end process shift_idx_bits_buffer;

@@ -426,13 +426,13 @@ package body GMTTypes is
     variable oPhi : unsigned(9 downto 0);
   begin  -- apply_global_phi_wraparound
     if (iPhi >= 0) and (iPhi < MAX_PHI_VAL) then
-      oPhi <= resize(unsigned(iPhi), 10);
+      oPhi := resize(unsigned(iPhi), 10);
     elsif (iPhi < 0) then
-      oPhi <= resize(unsigned(MAX_PHI_VAL+iPhi), 10);
+      oPhi := resize(unsigned(MAX_PHI_VAL+iPhi), 10);
     elsif (iPhi >= MAX_PHI_VAL) then
-      oPhi <= resize(unsigned(iPhi-MAX_PHI_VAL), 10);
+      oPhi := resize(unsigned(iPhi-MAX_PHI_VAL), 10);
     else
-      oPhi <= to_unsigned(1023, 10);
+      oPhi := to_unsigned(1023, 10);
     end if;
 
     return oPhi;
