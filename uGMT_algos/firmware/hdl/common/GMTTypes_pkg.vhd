@@ -179,6 +179,7 @@ package GMTTypes is
   type TDeltaEta_vector is array (integer range <>) of signed(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0);
   type TDeltaPhi_vector is array (integer range <>) of unsigned(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0);
 
+  type TIntermediateEta_vector is array (natural range <>) of signed(8 downto 0);
   type TIntermediatePhi_vector is array (natural range <>) of signed(10 downto 0);
 
   -----------------------------------------------------------------------------
@@ -219,6 +220,7 @@ package GMTTypes is
 
   -- global phi values from one frame for all links in a quad
   type TGlobalPhi_frame is array (natural range <>) of unsigned(9 downto 0);
+  type TGlobalPhiFrameBuffer is array (2*NUM_MUONS_IN-1 downto 0) of TGlobalPhi_frame(3 downto 0);
   -- Contains phi values from one link.
   type TGlobalPhi_link is array (NUM_MUONS_IN-1 downto 0) of unsigned(9 downto 0);
   -- Contains global phi values from a full event (4 links, 6 frames)
