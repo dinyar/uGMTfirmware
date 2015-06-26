@@ -41,9 +41,6 @@ architecture Behavioral of gen_idx_bits is
   signal in_buf         : TQuadTransceiverBufferIn;
   signal sGlobalPhi_buf : TGlobalPhiFrameBuffer;
 
-  signal d_reg          : ldata(NCHAN-1 downto 0);
-  signal sGlobalPhi_reg : TGlobalPhi_frame(NCHAN-1 downto 0);
-
   type   TEtaAbs is array (integer range <>) of unsigned(8 downto 0);
   signal sEtaAbs               : TEtaAbs(NCHAN-1 downto 0);
   signal sExtrapolationAddress : TExtrapolationAddress(NCHAN-1 downto 0);
@@ -86,13 +83,13 @@ begin
       ipb_from_slaves => ipbr
       );
 
-  in_buf(EXTRAPOLATION_LATENCY)         <= d;
+  in_buf(EXTRAPOLATION_LATENCY)         <= d(NCHAN-1 downto 0);
   sGlobalPhi_buf(EXTRAPOLATION_LATENCY) <= iGlobalPhi;
 
   fill_buffer : process (clk240)
   begin  -- process fill_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      in_buf(in_buf'high-1 downto 0)                 <= in_buf(in_buf'high downto 1);
+      in_buf(EXTRAPOLATION_LATENCY-1 downto 0)       <= in_buf(EXTRAPOLATION_LATENCY downto 1);
       sGlobalPhi_buf(sGlobalPhi_buf'high-1 downto 0) <= sGlobalPhi_buf(sGlobalPhi_buf'high downto 1);
     end if;
   end process fill_buffer;
@@ -161,7 +158,7 @@ begin
           -- If muon is low-pT we etrapolate.
           -- TODO: Need to resize to +1 at conversion.
           sExtrapolatedCoords(i).eta <= sPreCalcEta(i);
-          sIntermediatePhi; <= sPreCalcPhi(i);
+          sIntermediatePhi(i)        <= sPreCalcPhi(i);
         end if;
       end loop;  -- i
     end if;
