@@ -58,9 +58,6 @@ begin
       iSortRanksO          => iIntermediateSortRanksO,
       iSortRanksF          => iIntermediateSortRanksF,
       iFinalEnergies       => iFinalEnergies,
-      iExtrapolatedCoordsB => iExtrapolatedCoordsB,
-      iExtrapolatedCoordsO => iExtrapolatedCoordsO,
-      iExtrapolatedCoordsF => iExtrapolatedCoordsF,
       q                    => oQ);
 
   -- Clocks

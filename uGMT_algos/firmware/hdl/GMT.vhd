@@ -22,6 +22,9 @@ entity GMT is
     iIdxBitsB         : in TIndexBits_vector(35 downto 0);
     iIdxBitsO         : in TIndexBits_vector(35 downto 0);
     iIdxBitsF         : in TIndexBits_vector(35 downto 0);
+    iCaloIdxBitsB     : in TCaloIndexBit_vector(35 downto 0);
+    iCaloIdxBitsO     : in TCaloIndexBit_vector(35 downto 0);
+    iCaloIdxBitsF     : in TCaloIndexBit_vector(35 downto 0);
     iEmptyB           : in std_logic_vector(35 downto 0);
     iEmptyO           : in std_logic_vector(35 downto 0);
     iEmptyF           : in std_logic_vector(35 downto 0);
@@ -38,9 +41,6 @@ entity GMT is
     oIntermediateSortRanksF : out TSortRank10_vector(7 downto 0);
     oFinalCaloIdxBits       : out TCaloIndexBit_vector(7 downto 0);
     oFinalEnergies          : out TCaloArea_vector(7 downto 0);
-    oExtrapolatedCoordsB    : out TSpatialCoordinate_vector(35 downto 0);
-    oExtrapolatedCoordsO    : out TSpatialCoordinate_vector(35 downto 0);
-    oExtrapolatedCoordsF    : out TSpatialCoordinate_vector(35 downto 0);
     oMuIdxBits              : out TIndexBits_vector (7 downto 0);
 
     oMuons : out TGMTMu_vector(7 downto 0);
@@ -81,11 +81,7 @@ architecture Behavioral of GMT is
   signal sIdxBitsRPCf   : TIndexBits_vector(3 downto 0);
 
   -- For intermediates
-
-  signal sFinalEnergies       : TCaloArea_vector(7 downto 0);
-  signal sExtrapolatedCoordsB : TSpatialCoordinate_vector(35 downto 0);
-  signal sExtrapolatedCoordsO : TSpatialCoordinate_vector(35 downto 0);
-  signal sExtrapolatedCoordsF : TSpatialCoordinate_vector(35 downto 0);
+  signal sFinalEnergies : TCaloArea_vector(7 downto 0);
 
   signal sIntermediateMuonsB     : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsO     : TGMTMu_vector(7 downto 0);
@@ -121,14 +117,14 @@ begin
       iMuonsB              => iMuonsB,
       iMuonsO              => iMuonsO,
       iMuonsF              => iMuonsF,
+      iCaloIdxBitsB        => iCaloIdxBitsB,
+      iCaloIdxBitsO        => iCaloIdxBitsO,
+      iCaloIdxBitsF        => iCaloIdxBitsF,
       iMuIdxBits           => sMuIdxBits,
       iFinalMuPt           => sFinalMuPt,
       oIsoBits             => sIsoBits,
       oFinalEnergies       => sFinalEnergies,
       oFinalCaloIdxBits    => sSelectedCaloIdxBits,
-      oExtrapolatedCoordsB => sExtrapolatedCoordsB,
-      oExtrapolatedCoordsO => sExtrapolatedCoordsO,
-      oExtrapolatedCoordsF => sExtrapolatedCoordsF,
       oMuIdxBits           => sFinalMuIdxBits,
       oFinalMuPt           => open,
       clk                  => clk,
@@ -197,9 +193,6 @@ begin
 
   oFinalCaloIdxBits    <= sSelectedCaloIdxBits;
   oFinalEnergies       <= sFinalEnergies;
-  oExtrapolatedCoordsB <= sExtrapolatedCoordsB;
-  oExtrapolatedCoordsO <= sExtrapolatedCoordsO;
-  oExtrapolatedCoordsF <= sExtrapolatedCoordsF;
   oMuIdxBits           <= sFinalMuIdxBits;
 
   oMuons <= sMuons_sorted;

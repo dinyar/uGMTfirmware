@@ -34,14 +34,14 @@ architecture Behavioral of deserialize_energy_quad is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
-  signal in_buf    : TQuadTransceiverBufferIn;
+  signal in_buf     : TQuadTransceiverBufferIn;
   type TQuadDataBuffer is array (natural range <>) of std_logic_vector(179 downto 0);
-  signal sLinkData : TQuadDataBuffer(NCHAN-1 downto 0);
+  signal sLinkData  : TQuadDataBuffer(NCHAN-1 downto 0);
+  signal sValid_buf : std_logic_vector(NCHAN-1 downto 0);
 
-  signal sBCerror   : std_logic_vector(NCHAN-1 downto 0);
+  signal sBCerror    : std_logic_vector(NCHAN-1 downto 0);
   signal sBnchCntErr : std_logic_vector(NCHAN-1 downto 0);
 
-  signal sValid_link : TValid_link(NCHAN-1 downto 0);
 begin  -- Behavioral
 
   -- IPbus address decode
@@ -58,13 +58,30 @@ begin  -- Behavioral
       ipb_from_slaves => ipbr
     );
 
-  in_buf(in_buf'high) <= d(NCHAN-1 downto 0);
-  fill_buffer : process (clk240)
-  begin  -- process fill_buffer
+  check_valid : process (d)
+    variable vValid_frame : std_logic_vector(NCHAN-1 downto 0);
+  begin  -- process check_valid
+    for i in d'range loop
+      if d(i).valid = '1' then
+        in_buf(in_buf'high)(i) <= d(i);
+      else
+        in_buf(in_buf'high)(i).data  <= (31 downto 0 => '0');
+        in_buf(in_buf'high)(i).valid <= '0';
+      end if;
+
+      vValid_frame(i) := d(i).valid;
+    end loop;  -- i
+
+    sValid_buf(sValid_buf'high) <= combine_or(vValid_frame);
+  end process check_valid;
+
+  shift_buffers : process (clk240)
+  begin  -- process shift_buffers
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      in_buf(in_buf'high-1 downto 0) <= in_buf(in_buf'high downto 1);
+      sValid_buf(sValid_buf'high-1 downto 0) <= sValid_buf(sValid_buf'high downto 1);
+      in_buf(in_buf'high-1 downto 0)         <= in_buf(in_buf'high downto 1);
     end if;
-  end process fill_buffer;
+end process shift_buffers;
 
   unroll_links : for chan in NCHAN-1 downto 0 generate
     unroll_bx : for bx in 5 downto 0 generate
@@ -75,16 +92,12 @@ begin  -- Behavioral
   gmt_in_reg : process (clk40)
   begin  -- process gmt_in_reg
     if clk40'event and clk40 = '1' then  -- rising clock edge
+      -- Store valid bit.
+      oValid <= combine_or(sValid_buf);
       for chan in d'range loop
-        for bx in 5 downto 0 loop
-          -- Store valid bit.
-          sValid_link(chan)(bx) <= in_buf(bx)(chan).valid;
-          if in_buf(bx)(chan).valid = VALID_BIT then
-            oEnergies(chan) <= calo_etaslice_from_flat(sLinkData(chan));
-          else
-            oEnergies(chan) <= (others => (others => '0'));
-          end if;
-        end loop;  -- bx
+        for frame in 5 downto 0 loop
+          oEnergies(chan) <= calo_etaslice_from_flat(sLinkData(chan));
+        end loop;  -- frame
 
         -- Check for errors
         if bctr = (11 downto 0 => '0') then
@@ -123,7 +136,5 @@ begin  -- Behavioral
         incr_counter => sBnchCntErr(i)
       );
   end generate gen_error_counter;
-
-  oValid    <= check_valid_bits(sValid_link(NCHAN-1 downto 0));
 
 end Behavioral;

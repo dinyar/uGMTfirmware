@@ -13,14 +13,14 @@ entity IsoAssignmentUnit is
     iMuonsB              : in  TGMTMu_vector (35 downto 0);
     iMuonsO              : in  TGMTMu_vector (35 downto 0);
     iMuonsF              : in  TGMTMu_vector (35 downto 0);
+    iCaloIdxBitsB        : in TCaloIndexBit_vector(35 downto 0);
+    iCaloIdxBitsO        : in TCaloIndexBit_vector(35 downto 0);
+    iCaloIdxBitsF        : in TCaloIndexBit_vector(35 downto 0);
     iMuIdxBits           : in  TIndexBits_vector (7 downto 0);
     iFinalMuPt           : in  TMuonPT_vector(7 downto 0);
     oIsoBits             : out TIsoBits_vector (7 downto 0);
     oFinalEnergies       : out TCaloArea_vector(7 downto 0);
     oFinalCaloIdxBits    : out TCaloIndexBit_vector(7 downto 0); -- Debugging output
-    oExtrapolatedCoordsB : out TSpatialCoordinate_vector(35 downto 0);
-    oExtrapolatedCoordsO : out TSpatialCoordinate_vector(35 downto 0);
-    oExtrapolatedCoordsF : out TSpatialCoordinate_vector(35 downto 0);
     oMuIdxBits           : out TIndexBits_vector (7 downto 0);
     oFinalMuPt           : out TMuonPT_vector(7 downto 0);
     clk                  : in  std_logic;
@@ -40,28 +40,6 @@ architecture Behavioral of IsoAssignmentUnit is
   type TEnergiesBuf is array (integer range <> ) of TCaloRegionEtaSlice_vector(iEnergies'range);
   signal sEnergies_buf : TEnergiesBuf(2 downto 0); -- TODO: Move delay to constants file.
 
-  signal sVertexCoordsB       : TSpatialCoordinate_vector(0 to 35);
-  signal sVertexCoordsO       : TSpatialCoordinate_vector(0 to 35);
-  signal sVertexCoordsF       : TSpatialCoordinate_vector(0 to 35);
-  signal sVertexCoordsB_store : TSpatialCoordinate_vector(0 to 35);
-  signal sVertexCoordsO_store : TSpatialCoordinate_vector(0 to 35);
-  signal sVertexCoordsF_store : TSpatialCoordinate_vector(0 to 35);
-  signal sVertexCoordsB_reg   : TSpatialCoordinate_vector(0 to 35);
-  signal sVertexCoordsO_reg   : TSpatialCoordinate_vector(0 to 35);
-  signal sVertexCoordsF_reg   : TSpatialCoordinate_vector(0 to 35);
-
-  signal sCaloIdxBitsB     : TCaloIndexBit_vector(35 downto 0);
-  signal sCaloIdxBitsO     : TCaloIndexBit_vector(35 downto 0);
-  signal sCaloIdxBitsF     : TCaloIndexBit_vector(35 downto 0);
-  signal sCaloIdxBitsB_reg : TCaloIndexBit_vector(35 downto 0);
-  signal sCaloIdxBitsO_reg : TCaloIndexBit_vector(35 downto 0);
-  signal sCaloIdxBitsF_reg : TCaloIndexBit_vector(35 downto 0);
-
-  signal sPileUp        : unsigned(6 downto 0);
-  signal sPileUp_reg    : unsigned(6 downto 0);
-  signal sPileUp_store  : unsigned(6 downto 0);
-  signal sPileUp_store2 : unsigned(6 downto 0);
-
   signal sStripEnergies : TCaloStripEtaSlice_vector;
 
   signal sAreaSums         : TCaloArea_vector(7 downto 0);
@@ -77,17 +55,6 @@ architecture Behavioral of IsoAssignmentUnit is
                                                       -- energies  with
                                                       -- final muons.
   signal sFinalEnergies_buffer       : TEnergyBuffer(ENERGY_INTERMEDIATE_DELAY-1 downto 0);
-
-  type TCoordsBuffer is array (integer range <>) of TSpatialCoordinate_vector(35 downto 0);
-  constant COORD_INTERMEDIATE_DELAY  : natural := 2;  -- Delay to sync extrapolated
-                                                      -- coordinates with final muons.
-  signal sExtrapolatedCoordsB_buffer : TCoordsBuffer(COORD_INTERMEDIATE_DELAY-1 downto 0);
-  signal sExtrapolatedCoordsO_buffer : TCoordsBuffer(COORD_INTERMEDIATE_DELAY-1 downto 0);
-  signal sExtrapolatedCoordsF_buffer : TCoordsBuffer(COORD_INTERMEDIATE_DELAY-1 downto 0);
-
-  signal sVertexCoordsB_buffer : TCoordsBuffer(1 downto 0);
-  signal sVertexCoordsO_buffer : TCoordsBuffer(1 downto 0);
-  signal sVertexCoordsF_buffer : TCoordsBuffer(1 downto 0);
 
   signal sSelectedCaloIdxBits : TCaloIndexBit_vector(7 downto 0);
   signal sMuIdxBits_reg       : TIndexBits_vector(7 downto 0);
@@ -113,74 +80,24 @@ begin
       );
 
   -----------------------------------------------------------------------------
-  -- Extrapolation, delay energies and extrapolated coordinates
+  -- Delay energies
   -----------------------------------------------------------------------------
-
-  extrapolation : entity work.extrapolation_unit
-    port map (
-      iMuonsB              => iMuonsB,
-      iMuonsO              => iMuonsO,
-      iMuonsF              => iMuonsF,
-      oExtrapolatedCoordsB => sVertexCoordsB_buffer(0),
-      oExtrapolatedCoordsO => sVertexCoordsO_buffer(0),
-      oExtrapolatedCoordsF => sVertexCoordsF_buffer(0),
-      clk                  => clk,
-      clk_ipb              => clk_ipb,
-      rst                  => sinit,
-      ipb_in               => ipbw(N_SLV_EXTRAPOLATION),
-      ipb_out              => ipbr(N_SLV_EXTRAPOLATION)
-      );
 
   energies_store : process (clk)
   begin  -- process energies_store
     if clk'event and clk = '1' then     -- rising clock edge
       sEnergies_buf(0) <= iEnergies;
       sEnergies_buf(sEnergies_buf'high downto 1) <= sEnergies_buf(sEnergies_buf'high-1 downto 0);
-      sVertexCoordsB_buffer(sVertexCoordsB_buffer'high downto 1) <= sVertexCoordsB_buffer(sVertexCoordsB_buffer'high-1 downto 0);
-      sVertexCoordsO_buffer(sVertexCoordsO_buffer'high downto 1) <= sVertexCoordsO_buffer(sVertexCoordsO_buffer'high-1 downto 0);
-      sVertexCoordsF_buffer(sVertexCoordsF_buffer'high downto 1) <= sVertexCoordsF_buffer(sVertexCoordsF_buffer'high-1 downto 0);
     end if;
   end process energies_store;
-
-  -----------------------------------------------------------------------------
-  -- Second BX
-  -----------------------------------------------------------------------------
-
-  -- Uses one clk.
-  -- TODO: Change to "NOT clk" => use falling edge.
-  gen_idx_bits : entity work.generate_index_bits
-    port map (
-      iCoordsB      => sVertexCoordsB_buffer(sVertexCoordsB_buffer'high),
-      iCoordsO      => sVertexCoordsO_buffer(sVertexCoordsO_buffer'high),
-      iCoordsF      => sVertexCoordsF_buffer(sVertexCoordsF_buffer'high),
-      oCaloIdxBitsB => sCaloIdxBitsB,
-      oCaloIdxBitsO => sCaloIdxBitsO,
-      oCaloIdxBitsF => sCaloIdxBitsF,
-      clk           => clk,
-      clk_ipb       => clk_ipb,
-      rst           => sinit,
-      ipb_in        => ipbw(N_SLV_IDX_GEN),
-      ipb_out       => ipbr(N_SLV_IDX_GEN)
-      );
-
-  -----------------------------------------------------------------------------
-  -- 3.5 BX
-  -----------------------------------------------------------------------------
-
-  --calc_energy_strip_sums : compute_energy_strip_sums
-  --  port map (
-  --    iEnergies      => sEnergies_reg,
-  --    oStripEnergies => sStripEnergies,
-  --    clk            => clk,
-  --    sinit          => sinit);
 
   -- Has one register (receives sStripEnergies for second clk).
   calc_complete_sums : entity work.compute_complete_sums
     port map (
       iEnergies     => sEnergies_buf(sEnergies_buf'high),
-      iCaloIdxBitsB => sCaloIdxBitsB,
-      iCaloIdxBitsO => sCaloIdxBitsO,
-      iCaloIdxBitsF => sCaloIdxBitsF,
+      iCaloIdxBitsB => iCaloIdxBitsB,
+      iCaloIdxBitsO => iCaloIdxBitsO,
+      iCaloIdxBitsF => iCaloIdxBitsF,
       iMuIdxBits    => iMuIdxBits,
       oEnergies     => sSelectedEnergies,
       oCaloIdxBits  => sSelectedCaloIdxBits,
@@ -208,12 +125,6 @@ begin
     if clk'event and clk = '1' then     -- rising clock edge
       sFinalEnergies_buffer(0)                                         <= sSelectedEnergies;
       sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-1 downto 1)      <= sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-2 downto 0);
-      sExtrapolatedCoordsB_buffer(0)                                   <= sVertexCoordsB_buffer(sVertexCoordsB_buffer'high);
-      sExtrapolatedCoordsO_buffer(0)                                   <= sVertexCoordsO_buffer(sVertexCoordsO_buffer'high);
-      sExtrapolatedCoordsF_buffer(0)                                   <= sVertexCoordsF_buffer(sVertexCoordsF_buffer'high);
-      sExtrapolatedCoordsB_buffer(COORD_INTERMEDIATE_DELAY-1 downto 1) <= sExtrapolatedCoordsB_buffer(COORD_INTERMEDIATE_DELAY-2 downto 0);
-      sExtrapolatedCoordsO_buffer(COORD_INTERMEDIATE_DELAY-1 downto 1) <= sExtrapolatedCoordsO_buffer(COORD_INTERMEDIATE_DELAY-2 downto 0);
-      sExtrapolatedCoordsF_buffer(COORD_INTERMEDIATE_DELAY-1 downto 1) <= sExtrapolatedCoordsF_buffer(COORD_INTERMEDIATE_DELAY-2 downto 0);
     end if;
   end process p1;
 
@@ -223,9 +134,6 @@ begin
     -- Sync selected energies with iso bits.
     oFinalEnergies       <= sSelectedEnergies;
     oFinalCaloIdxBits    <= sSelectedCaloIdxBits;
-    oExtrapolatedCoordsB <= sExtrapolatedCoordsB_buffer(COORD_INTERMEDIATE_DELAY-1);
-    oExtrapolatedCoordsO <= sExtrapolatedCoordsO_buffer(COORD_INTERMEDIATE_DELAY-1);
-    oExtrapolatedCoordsF <= sExtrapolatedCoordsF_buffer(COORD_INTERMEDIATE_DELAY-1);
     sMuIdxBits_reg       <= iMuIdxBits;
     oMuIdxBits           <= sMuIdxBits_reg;
     oFinalMuPt           <= iFinalMuPt;

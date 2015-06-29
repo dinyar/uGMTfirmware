@@ -171,14 +171,16 @@ package GMTTypes is
   -----------------------------------------------------------------------------
   -- Addresses used for extrapolation memories
   -----------------------------------------------------------------------------
-  type TEtaExtrapolationAddress is array (integer range <>) of std_logic_vector(ETA_EXTRAPOLATION_ADDR_WIDTH -1 downto 0);
-  type TPhiExtrapolationAddress is array (integer range <>) of std_logic_vector(PHI_EXTRAPOLATION_ADDR_WIDTH -1 downto 0);
+  type TExtrapolationAddress is array (integer range <>) of std_logic_vector(EXTRAPOLATION_ADDR_WIDTH -1 downto 0);
 
   -----------------------------------------------------------------------------
   -- Type containing difference between spatial coordinates
   -----------------------------------------------------------------------------
   type TDeltaEta_vector is array (integer range <>) of signed(ETA_EXTRAPOLATION_WORD_SIZE-1 downto 0);
   type TDeltaPhi_vector is array (integer range <>) of unsigned(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0);
+
+  type TIntermediateEta_vector is array (natural range <>) of signed(8 downto 0);
+  type TIntermediatePhi_vector is array (natural range <>) of signed(10 downto 0);
 
   -----------------------------------------------------------------------------
   -- Extrapolated coordinates at vertex
@@ -216,6 +218,16 @@ package GMTTypes is
   -- Contains flat muons inside a simple vector
   type    TFlatMuon_vector is array (natural range <>) of TFlatMuon;
 
+  -- global phi values from one frame for all links in a quad
+  type TGlobalPhi_frame is array (natural range <>) of unsigned(9 downto 0);
+  type TGlobalPhiFrameBuffer is array (2*NUM_MUONS_IN-1 downto 0) of TGlobalPhi_frame(3 downto 0);
+  -- Contains phi values from one link.
+  type TGlobalPhi_link is array (NUM_MUONS_IN-1 downto 0) of unsigned(9 downto 0);
+  -- Contains global phi values from a full event (4 links, 6 frames)
+  type TGlobalPhi_event is array (3 downto 0) of TGlobalPhi_link;
+  -- Contains the global phi values in a simple vector
+  type TGlobalPhi_vector is array (natural range <>) of unsigned(9 downto 0);
+
   -- Empty bits for muons from one link for one BX.
   type TEmpty_link is array (natural range <>) of std_logic_vector(NUM_MUONS_IN-1 downto 0);
 
@@ -223,10 +235,13 @@ package GMTTypes is
 
   type TSortRank_link is array (natural range <>) of TSortRank10_vector(NUM_MUONS_IN-1 downto 0);
 
+  type TCaloIndexBits_link is array (natural range <>) of TCaloIndexBit_vector(NUM_MUONS_IN-1 downto 0);
+
   -- Valid bits for words from one link for one BX.
   type TValid_link is array (natural range <>) of std_logic_vector(2*NUM_MUONS_IN-1 downto 0);
 
   function unroll_link_muons (signal iMuons_link         : TFlatMuons) return TFlatMuon_vector;
+  function unroll_global_phi (signal iGlobalPhi_event    : TGlobalPhi_event) return TGlobalPhi_vector;
   function gmt_mu_from_in_mu (signal iMuonIn             : TGMTMuIn) return TGMTMu;
   function calo_etaslice_from_flat (constant flat        : std_logic_vector) return TCaloRegionEtaSlice;
   function track_addresses_from_in_mus(signal iMuon_flat : TFlatMuon_vector) return TGMTMuTracks_vector;
@@ -235,10 +250,14 @@ package GMTTypes is
   function unpack_idx_bits(signal iIdxBits               : TIndexBits_link) return TIndexBits_vector;
   function unpack_sort_rank(signal iSortRanks            : TSortRank_link) return TSortRank10_vector;
   function unpack_empty_bits(signal iEmptyBits           : TEmpty_link) return std_logic_vector;
+  function unpack_calo_idx_bits(signal iCaloIdxBits      : TCaloIndexBits_link) return TCaloIndexBit_vector;
+  function apply_global_phi_wraparound(iPhi       : signed(10 downto 0)) return unsigned;
 
+  function add_offset_to_local_phi(signal iLocalPhi : std_logic_vector(7 downto 0);
+    				   signal iOffset   : unsigned(9 downto 0)) return signed;
 
   function unpack_mu_from_flat(signal iMuon_flat : TFlatMuon;
-                               signal iPhiOffset : unsigned(9 downto 0)) return TGMTMuIn;
+                               signal iPhi       : unsigned(9 downto 0)) return TGMTMuIn;
 
   function pack_mu_to_flat(signal iMuon : TGMTMu;
                            signal iIso  : TIsoBits) return TFlatMuon;
@@ -325,23 +344,31 @@ package body GMTTypes is
     return oMuons_flat;
   end;
 
+  function unroll_global_phi (
+    signal iGlobalPhi_event : TGlobalPhi_event)
+    return TGlobalPhi_vector is
+    variable oGlobalPhi_flat : TGlobalPhi_vector(iGlobalPhi_event'length*iGlobalPhi_event(0)'length-1 downto 0);
+  begin
+    for i in iGlobalPhi_event'range loop
+      for j in iGlobalPhi_event(i)'range loop
+        oGlobalPhi_flat(i*iGlobalPhi_event(i)'length+j) := iGlobalPhi_event(i+iGlobalPhi_event'low)(j+iGlobalPhi_event(i)'low);
+      end loop;  -- j
+    end loop;  -- j
+
+    return oGlobalPhi_flat;
+  end;
+
   function unpack_mu_from_flat (
     signal iMuon_flat : TFlatMuon;
-    signal iPhiOffset : unsigned(9 downto 0))
+    signal iPhi       : unsigned(9 downto 0))
     return TGMTMuIn is
     variable oMuon : TGMTMuIn;
-    variable sPhiOffsetSigned : signed(10 downto 0);
-    variable sPhiInteger  : integer;
   begin
     oMuon.sysign  := iMuon_flat(SYSIGN_IN_HIGH downto SYSIGN_IN_LOW);
     oMuon.eta     := iMuon_flat(ETA_IN_HIGH downto ETA_IN_LOW);
     oMuon.qual    := iMuon_flat(QUAL_IN_HIGH downto QUAL_IN_LOW);
     oMuon.pt      := iMuon_flat(PT_IN_HIGH downto PT_IN_LOW);
-
-    sPhiOffsetSigned := signed(resize(iPhiOffset, 11));
-    sPhiInteger      := to_integer(sPhiOffsetSigned + signed(iMuon_flat(PHI_IN_HIGH downto PHI_IN_LOW)));
-    -- TODO: Replace 576 with constant
-    oMuon.phi     := std_logic_vector(to_unsigned(sPhiInteger mod 576, 10));
+    oMuon.phi     := std_logic_vector(iPhi);
     oMuon.address := unpack_address_from_flat(iMuon_flat(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW));
     return oMuon;
   end;
@@ -382,6 +409,36 @@ package body GMTTypes is
     return oMuon;
   end gmt_mu_from_in_mu;
 
+  function add_offset_to_local_phi (
+    signal iLocalPhi : std_logic_vector(7 downto 0);
+    signal iOffset   : unsigned(9 downto 0))
+    return signed is
+    variable vPhiOffsetSigned : signed(10 downto 0);
+    variable oPhi             : signed(10 downto 0);
+  begin  -- add_offset_to_local_phi
+    vPhiOffsetSigned := signed(resize(iOffset, 11));
+    oPhi             := vPhiOffsetSigned + signed(iLocalPhi);
+
+    return oPhi;
+  end add_offset_to_local_phi;
+
+  function apply_global_phi_wraparound (
+    iPhi : signed(10 downto 0))
+    return unsigned is
+    variable oPhi : unsigned(9 downto 0);
+  begin  -- apply_global_phi_wraparound
+    if (iPhi >= 0) and (iPhi < MAX_PHI_VAL) then
+      oPhi := resize(unsigned(iPhi), 10);
+    elsif (iPhi < 0) then
+      oPhi := resize(unsigned(MAX_PHI_VAL+iPhi), 10);
+    elsif (iPhi >= MAX_PHI_VAL) then
+      oPhi := resize(unsigned(iPhi-MAX_PHI_VAL), 10);
+    else
+      oPhi := to_unsigned(1023, 10);
+    end if;
+
+    return oPhi;
+  end apply_global_phi_wraparound;
 
   -----------------------------------------------------------------------------
   -- Unpack valid bits
@@ -460,8 +517,20 @@ package body GMTTypes is
         oSortRanks(i*iSortRanks(i)'length+j) := iSortRanks(i)(j);
       end loop;  -- j
     end loop;  -- i
-
     return oSortRanks;
   end unpack_sort_rank;
+
+  function unpack_calo_idx_bits (
+    signal iCaloIdxBits : TCaloIndexBits_link)
+    return TCaloIndexBit_vector is
+    variable oCaloIdxBits : TCaloIndexBit_vector(iCaloIdxBits'length*NUM_MUONS_LINK-1 downto 0);
+  begin  -- unpack_empty_bits
+    for i in iCaloIdxBits'range loop
+      for j in iCaloIdxBits(i)'range loop
+        oCaloIdxBits(i*iCaloIdxBits(i)'length+j) := iCaloIdxBits(i)(j);
+      end loop;  -- j
+    end loop;  -- i
+    return oCaloIdxBits;
+  end unpack_calo_idx_bits;
 
 end GMTTypes;
