@@ -60,18 +60,18 @@ begin  -- Behavioral
     );
 
   check_valid : process (d)
-    variable sValid_frame : std_logic_vector(NCHAN-1 downto 0);
+    variable vValid_frame : std_logic_vector(NCHAN-1 downto 0);
   begin  -- process check_valid
     for i in d'range loop
       if d(i).valid = '1' then
         in_buf(in_buf'high)(i) <= d(i);
       else
-        in_buf(in_buf'high)(i).data <= (31 downto 0 => '0');
+        in_buf(in_buf'high)(i).data  <= (31 downto 0 => '0');
         in_buf(in_buf'high)(i).valid <= '0';
       end if;
 
-      sValid_frame(i) <= d(i).valid;
-      sValid_buf(i) <= combine_or(sValid_frame);
+      vValid_frame(i) := d(i).valid;
+      sValid_buf(i)   <= combine_or(vValid_frame);
     end loop;  -- i
   end process check_valid;
   fill_buffer : process (clk240)

@@ -143,9 +143,9 @@ begin
   shift_buffers : process (clk240)
   begin  -- process shift_buffers
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      sSortRank_buffer(sSortRank_buffer'high-1 downto 0)   <= sSortRank_buffer(sSortRank_buffer'high downto 1);
-      sIntermediatePhi_reg                                 <= sIntermediatePhi;
-      sGlobalPhi_buffer(sGlobalPhi_buffer'high-1 downto 0) <= sGlobalPhi_buffer(sGlobalPhi_buffer'high downto 1);
+      sSortRank_buffer(sSortRank_buffer'high-1 downto 0)                      <= sSortRank_buffer(sSortRank_buffer'high downto 1);
+      sIntermediatePhi_reg                                                    <= sIntermediatePhi;
+      sGlobalPhi_buffer((sGlobalPhi_buffer'high-PHI_COMP_LATENCY)-1 downto 0) <= sGlobalPhi_buffer(sGlobalPhi_buffer'high-PHI_COMP_LATENCY downto 1);
     end if;
   end process shift_buffers;
 

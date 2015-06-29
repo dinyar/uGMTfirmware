@@ -90,7 +90,7 @@ begin
   begin  -- process fill_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
       in_buf(EXTRAPOLATION_LATENCY-1 downto 0)       <= in_buf(EXTRAPOLATION_LATENCY downto 1);
-      sGlobalPhi_buf(sGlobalPhi_buf'high-1 downto 0) <= sGlobalPhi_buf(sGlobalPhi_buf'high downto 1);
+      sGlobalPhi_buf(EXTRAPOLATION_LATENCY-1 downto 0) <= sGlobalPhi_buf(EXTRAPOLATION_LATENCY downto 1);
     end if;
   end process fill_buffer;
 
