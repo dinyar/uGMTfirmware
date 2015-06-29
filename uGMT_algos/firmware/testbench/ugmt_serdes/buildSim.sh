@@ -30,13 +30,14 @@ vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_dpram.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_gen_calo_idx_bits.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_cancel_out_*.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_*_deserialization.vhd
+vcom -check_synthesis ../../hdl/ipbus_decode_isolation*.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_uGMT.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_ugmt_serdes.vhd
 vcom -check_synthesis ../../hdl/deserializer_stages/deserialize_energy_quad.vhd
 vcom -check_synthesis ../../hdl/deserializer_stages/deserialize_mu_quad.vhd
+vcom -check_synthesis ../../hdl/deserializer_stages/gen_idx_bits.vhd
 vcom -check_synthesis ../../hdl/deserializer_stages/deserializer_stage_energies.vhd
 vcom -check_synthesis ../../hdl/deserializer_stages/deserializer_stage_muons.vhd
-vcom -check_synthesis ../../hdl/deserializer_stages/gen_idx_bits.vhd
 vcom -check_synthesis ../../hdl/Sorting/SorterUnit.vhd
 vcom -check_synthesis ../../hdl/MatchAndMerge/*
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit.vhd
