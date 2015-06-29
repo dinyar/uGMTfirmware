@@ -50,13 +50,14 @@ package ugmt_constants is
   -- Use the script ucf_serdes_constraints_generator.py for this. (Available in
   -- github repo for now.)
   -----------------------------------------------------------------------------
-  type Assignment_vector is array (integer range <>) of natural;
+  type QuadAssignment_vector is array (integer range <>) of natural;
 
   -- Muons
-  constant MU_QUAD_ASSIGNMENT : Assignment_vector(8 downto 0) := (17, 16, 15, 14, 13, 12, 11, 10, 9);
+  constant MU_QUAD_ASSIGNMENT : QuadAssignment_vector(8 downto 0) := (17, 16, 15, 14, 13, 12, 11, 10, 9);
 
   -- Calo
-  constant ENERGY_QUAD_ASSIGNMENT : Assignment_vector(6 downto 0) := (8, 7, 6, 5, 4, 3, 2);
+  constant ENERGY_QUAD_ASSIGNMENT : QuadAssignment_vector(6 downto 0) := (8, 7, 6, 5, 4, 3, 2);
+
 
   -----------------------------------------------------------------------------
   -- Output word assignment
@@ -64,7 +65,7 @@ package ugmt_constants is
   -- Vector to map final muons to positions in output buffer. (Position
   -- indicates the muon (2->empty, 1->second muon, 0->first muon); the entry at the position
   -- indicates the position in the buffer.)
-  constant MU_ASSIGNMENT : Assignment_vector(2 downto 0) := (0, 2, 1);
+  constant MU_ASSIGNMENT : QuadAssignment_vector(2 downto 0) := (0, 2, 1);
 
   -----------------------------------------------------------------------------
   -- Bit boundaries for input and output muons.
@@ -120,6 +121,27 @@ package ugmt_constants is
   -----------------------------------------------------------------------------
   -- Constants for LUTs
   -----------------------------------------------------------------------------
+
+  type ContentFileAssignment_vector is array (0 to 3) of string(1 to 21);
+  -- Barrel
+  constant ETA_BRL_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"));
+  constant PHI_BRL_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("BPhiExtrapolation.mif"), string'("BPhiExtrapolation.mif"), string'("BPhiExtrapolation.mif"), string'("BPhiExtrapolation.mif"));
+  -- Overlap
+  constant ETA_OVL_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"));
+  constant PHI_OVL_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"));
+  -- Overlap/Endcap shared
+  constant ETA_OVL_FWD_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"));
+  constant PHI_OVL_FWD_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"));
+  constant ETA_FWD_OVL_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"));
+  constant PHI_FWD_OVL_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"));
+  -- Endcap
+  constant ETA_FWD_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"));
+  constant PHI_FWD_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"));
+
+  type ContentFileQuadAssignment_vector is array (natural range <>) of ContentFileAssignment_vector;
+  constant ETA_EXTRAP_CONT_ASSIGN : ContentFileQuadAssignment_vector(0 to 8) := (ETA_FWD_EXTRAP_CONT_ASSIGN, ETA_FWD_OVL_EXTRAP_CONT_ASSIGN, ETA_OVL_EXTRAP_CONT_ASSIGN, ETA_BRL_EXTRAP_CONT_ASSIGN, ETA_BRL_EXTRAP_CONT_ASSIGN, ETA_BRL_EXTRAP_CONT_ASSIGN, ETA_OVL_EXTRAP_CONT_ASSIGN, ETA_OVL_FWD_EXTRAP_CONT_ASSIGN, ETA_FWD_EXTRAP_CONT_ASSIGN);
+  constant PHI_EXTRAP_CONT_ASSIGN : ContentFileQuadAssignment_vector(0 to 8) := (PHI_FWD_EXTRAP_CONT_ASSIGN, PHI_FWD_OVL_EXTRAP_CONT_ASSIGN, PHI_OVL_EXTRAP_CONT_ASSIGN, PHI_BRL_EXTRAP_CONT_ASSIGN, PHI_BRL_EXTRAP_CONT_ASSIGN, PHI_BRL_EXTRAP_CONT_ASSIGN, ETA_OVL_EXTRAP_CONT_ASSIGN, PHI_OVL_FWD_EXTRAP_CONT_ASSIGN, PHI_FWD_EXTRAP_CONT_ASSIGN);
+
   constant ETA_IDX_MEM_ADDR_WIDTH : natural := 9;
   constant ETA_IDX_MEM_WORD_SIZE : natural := 5;
   constant PHI_IDX_MEM_ADDR_WIDTH : natural := 10;

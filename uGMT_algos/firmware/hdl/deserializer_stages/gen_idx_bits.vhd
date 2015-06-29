@@ -16,8 +16,8 @@ use work.ugmt_constants.all;
 entity gen_idx_bits is
   generic (
     NCHAN                       : positive := 4;
-    PHI_EXTRAPOLATION_DATA_FILE : string;
-    ETA_EXTRAPOLATION_DATA_FILE : string
+    PHI_EXTRAPOLATION_DATA_FILE : ContentFileAssignment_vector;
+    ETA_EXTRAPOLATION_DATA_FILE : ContentFileAssignment_vector
     );
   port (
     clk_ipb      : in  std_logic;
@@ -100,7 +100,7 @@ begin
                                 d(i).data(PT_IN_LOW+5 downto PT_IN_LOW);
     phi_extrapolation : entity work.ipbus_dpram
       generic map (
-        DATA_FILE  => PHI_EXTRAPOLATION_DATA_FILE,
+        DATA_FILE  => PHI_EXTRAPOLATION_DATA_FILE(i),
         ADDR_WIDTH => EXTRAPOLATION_ADDR_WIDTH,
         WORD_WIDTH => PHI_EXTRAPOLATION_WORD_SIZE
         )
@@ -117,7 +117,7 @@ begin
     sDeltaPhi(i) <= unsigned(sPhiExtrapolationLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0));
     eta_extrapolation : entity work.ipbus_dpram
       generic map (
-        DATA_FILE  => ETA_EXTRAPOLATION_DATA_FILE,
+        DATA_FILE  => ETA_EXTRAPOLATION_DATA_FILE(i),
         ADDR_WIDTH => EXTRAPOLATION_ADDR_WIDTH,
         WORD_WIDTH => ETA_EXTRAPOLATION_WORD_SIZE
         )

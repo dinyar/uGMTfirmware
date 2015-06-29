@@ -85,9 +85,8 @@ begin
 
     extrapolate : entity work.gen_idx_bits
       generic map (
-        -- TODO: Use saner defaults (i.e. store file names in vector in constants file.. )
-        ETA_EXTRAPOLATION_DATA_FILE  => string'("BEtaExtrapolation.mif"),
-        PHI_EXTRAPOLATION_DATA_FILE  => string'("BPhiExtrapolation.mif")
+        ETA_EXTRAPOLATION_DATA_FILE  => ETA_EXTRAP_CONT_ASSIGN(i),
+        PHI_EXTRAPOLATION_DATA_FILE  => PHI_EXTRAP_CONT_ASSIGN(i)
       )
       port map (
         clk_ipb       => clk_ipb,
