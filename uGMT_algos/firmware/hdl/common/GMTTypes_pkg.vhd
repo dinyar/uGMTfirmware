@@ -251,7 +251,7 @@ package GMTTypes is
   function unpack_sort_rank(signal iSortRanks            : TSortRank_link) return TSortRank10_vector;
   function unpack_empty_bits(signal iEmptyBits           : TEmpty_link) return std_logic_vector;
   function unpack_calo_idx_bits(signal iCaloIdxBits      : TCaloIndexBits_link) return TCaloIndexBit_vector;
-  function apply_global_phi_wraparound(signal iPhi       : signed(10 downto 0)) return unsigned;
+  function apply_global_phi_wraparound(iPhi       : signed(10 downto 0)) return unsigned;
 
   function add_offset_to_local_phi(signal iLocalPhi : std_logic_vector(7 downto 0);
     				   signal iOffset   : unsigned(9 downto 0)) return signed;
@@ -423,7 +423,7 @@ package body GMTTypes is
   end add_offset_to_local_phi;
 
   function apply_global_phi_wraparound (
-    signal iPhi : signed(10 downto 0))
+    iPhi : signed(10 downto 0))
     return unsigned is
     variable oPhi : unsigned(9 downto 0);
   begin  -- apply_global_phi_wraparound
