@@ -34,15 +34,14 @@ architecture Behavioral of deserialize_energy_quad is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
-  signal in_buf    : TQuadTransceiverBufferIn;
+  signal in_buf     : TQuadTransceiverBufferIn;
   type TQuadDataBuffer is array (natural range <>) of std_logic_vector(179 downto 0);
-  signal sLinkData : TQuadDataBuffer(NCHAN-1 downto 0);
+  signal sLinkData  : TQuadDataBuffer(NCHAN-1 downto 0);
   signal sValid_buf : std_logic_vector(NCHAN-1 downto 0);
 
-  signal sBCerror   : std_logic_vector(NCHAN-1 downto 0);
+  signal sBCerror    : std_logic_vector(NCHAN-1 downto 0);
   signal sBnchCntErr : std_logic_vector(NCHAN-1 downto 0);
 
-  signal sValid_link : TValid_link(NCHAN-1 downto 0);
 begin  -- Behavioral
 
   -- IPbus address decode
@@ -71,15 +70,18 @@ begin  -- Behavioral
       end if;
 
       vValid_frame(i) := d(i).valid;
-      sValid_buf(i)   <= combine_or(vValid_frame);
     end loop;  -- i
+
+    sValid_buf(sValid_buf'high) <= combine_or(vValid_frame);
   end process check_valid;
-  fill_buffer : process (clk240)
-  begin  -- process fill_buffer
+
+  shift_buffers : process (clk240)
+  begin  -- process shift_buffers
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      in_buf(in_buf'high-1 downto 0) <= in_buf(in_buf'high downto 1);
+      sValid_buf(sValid_buf'high-1 downto 0) <= sValid_buf(sValid_buf'high downto 1);
+      in_buf(in_buf'high-1 downto 0)         <= in_buf(in_buf'high downto 1);
     end if;
-  end process fill_buffer;
+end process shift_buffers;
 
   unroll_links : for chan in NCHAN-1 downto 0 generate
     unroll_bx : for bx in 5 downto 0 generate
@@ -90,10 +92,10 @@ begin  -- Behavioral
   gmt_in_reg : process (clk40)
   begin  -- process gmt_in_reg
     if clk40'event and clk40 = '1' then  -- rising clock edge
+      -- Store valid bit.
+      oValid <= combine_or(sValid_buf);
       for chan in d'range loop
         for frame in 5 downto 0 loop
-          -- Store valid bit.
-          sValid_link(chan)(frame) <= in_buf(frame)(chan).valid;
           oEnergies(chan) <= calo_etaslice_from_flat(sLinkData(chan));
         end loop;  -- frame
 
@@ -134,8 +136,5 @@ begin  -- Behavioral
         incr_counter => sBnchCntErr(i)
       );
   end generate gen_error_counter;
-
-  -- oValid    <= check_valid_bits(sValid_link(NCHAN-1 downto 0));
-  oValid <= combine_or(sValid_buf);
 
 end Behavioral;
