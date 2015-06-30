@@ -52,6 +52,7 @@ architecture Behavioral of deserialize_mu_quad is
   signal sIntermediatePhi_reg : TIntermediatePhi_vector(NCHAN-1 downto 0);
 
   signal in_buf : TQuadTransceiverBufferIn;
+  signal sValid_buf : std_logic_vector(NCHAN-1 downto 0);
 
   type   TSortRankInput is array (natural range <>) of std_logic_vector(12 downto 0);
   signal sSrtRnkIn : TSortRankInput(NCHAN-1 downto 0);
@@ -65,8 +66,6 @@ architecture Behavioral of deserialize_mu_quad is
   signal sGlobalPhi_frame  : TGlobalPhi_frame(NCHAN-1 downto 0);
   signal sGlobalPhi_event  : TGlobalPhi_event;  -- All input phi values.
   signal sGlobalPhi_flat   : TGlobalPhi_vector(NCHAN*NUM_MUONS_IN-1 downto 0);  -- All input phi values unrolled.
-
-  signal sValid_link : TValid_link(NCHAN-1 downto 0);
 
   signal sEmpty_link : TEmpty_link(NCHAN-1 downto 0);
 
@@ -95,13 +94,22 @@ begin
       ipb_from_slaves => ipbr
       );
 
-  in_buf(in_buf'high) <= d(NCHAN-1 downto 0);
-  fill_buffer : process (clk240)
-  begin  -- process fill_buffer
-    if clk240'event and clk240 = '1' then  -- rising clock edge
-      in_buf(in_buf'high-1 downto 0) <= in_buf(in_buf'high downto 1);
-    end if;
-  end process fill_buffer;
+  check_valid : process (d)
+    variable vValid_frame : std_logic_vector(NCHAN-1 downto 0);
+  begin  -- process check_valid
+    for i in d'range loop
+      if d(i).valid = '1' then
+        in_buf(in_buf'high)(i) <= d(i);
+      else
+        in_buf(in_buf'high)(i).data  <= (31 downto 0 => '0');
+        in_buf(in_buf'high)(i).valid <= '0';
+      end if;
+
+      vValid_frame(i) := d(i).valid;
+    end loop;  -- i
+
+    sValid_buf(sValid_buf'high) <= combine_or(vValid_frame);
+  end process check_valid;
 
   assign_ranks : for i in sSortRank_buffer(0)'range generate
     sSrtRnkIn(i) <= d(i).data(QUAL_IN_HIGH downto QUAL_IN_LOW) &
@@ -143,6 +151,9 @@ begin
   shift_buffers : process (clk240)
   begin  -- process shift_buffers
     if clk240'event and clk240 = '1' then  -- rising clock edge
+      sValid_buf(sValid_buf'high-1 downto 0) <= sValid_buf(sValid_buf'high downto 1);
+      in_buf(in_buf'high-1 downto 0)         <= in_buf(in_buf'high downto 1);
+
       sSortRank_buffer(sSortRank_buffer'high-1 downto 0)                      <= sSortRank_buffer(sSortRank_buffer'high downto 1);
       sIntermediatePhi_reg                                                    <= sIntermediatePhi;
       sGlobalPhi_buffer((sGlobalPhi_buffer'high-PHI_COMP_LATENCY)-1 downto 0) <= sGlobalPhi_buffer(sGlobalPhi_buffer'high-PHI_COMP_LATENCY downto 1);
@@ -152,19 +163,15 @@ begin
   gmt_in_reg : process (clk40)
   begin  -- process gmt_in_reg
     if clk40'event and clk40 = '1' then  -- rising clock edge
+      -- Store valid bit.
+      oValid <= combine_or(sValid_buf);
       for iChan in NCHAN-1 downto 0 loop
         for iFrame in 2*NUM_MUONS_LINK-1 downto 0 loop
-          -- Store valid bit.
-          sValid_link(iChan)(iFrame) <= in_buf(iFrame)(iChan).valid;
           if (iFrame mod 2) = 0 then
             -- Get first half of muon.
-            if in_buf(iFrame)(iChan).valid = VALID_BIT then
-              -- We're only using the lower 30 bits as the MSB is used for
-              -- status codes.
-              sMuons_event(iChan)(iFrame/2)(30 downto 0) <= in_buf(iFrame)(iChan).data(30 downto 0);
-            else
-              sMuons_event(iChan)(iFrame/2)(30 downto 0) <= (others => '0');
-            end if;
+            -- We're only using the lower 30 bits as the MSB is used for
+            -- status codes.
+            sMuons_event(iChan)(iFrame/2)(30 downto 0) <= in_buf(iFrame)(iChan).data(30 downto 0);
 
             -- Determine empty bit.
             if in_buf(iFrame)(iChan).data(PT_IN_HIGH downto PT_IN_LOW) = (PT_IN_HIGH downto PT_IN_LOW => '0') then
@@ -173,15 +180,13 @@ begin
               sEmpty_link(iChan)(iFrame/2) <= '0';
             end if;
 
+            -- Store global phi value.
+            sGlobalPhi_event(iChan)(iFrame/2) <= sGlobalPhi_buffer(iFrame)(iChan);
           else
             -- Get second half of muon.
-            if in_buf(iFrame)(iChan).valid = VALID_BIT then
-              -- We're only using the lower 30 bits as the MSB is used for
-              -- status codes.
-              sMuons_event(iChan)(iFrame/2)(61 downto 31) <= in_buf(iFrame)(iChan).data(30 downto 0);
-            else
-              sMuons_event(iChan)(iFrame/2)(61 downto 31) <= (others => '0');
-            end if;
+            -- We're only using the lower 30 bits as the MSB is used for
+            -- status codes.
+            sMuons_event(iChan)(iFrame/2)(61 downto 31) <= in_buf(iFrame)(iChan).data(30 downto 0);
 
             -- Use every second result from SortRankLUT. (The other results
             -- were calculated with the 'wrong part' of the TF muon.)
@@ -190,10 +195,6 @@ begin
             -- clk240, so the "correct" sort rank is late by one.
             sSortRank_link(iChan)(iFrame/2) <= sSortRank_buffer(iFrame)(iChan);
 
-            -- Store global phi value. As the calculation of global phi is
-            -- delayed by one 240 MHz tick we're using the second result using
-            -- the same argument as for the sort rank above.
-            sGlobalPhi_event(iChan)(iFrame/2) <= sGlobalPhi_buffer(iFrame)(iChan);
           end if;
         end loop;  -- iFrame
 
@@ -262,8 +263,6 @@ begin
   oTracks    <= track_addresses_from_in_mus(sMuons_flat);
   oEmpty     <= unpack_empty_bits(sEmpty_link(NCHAN-1 downto 0));
   oSortRanks <= unpack_sort_rank(sSortRank_link(NCHAN-1 downto 0));
-
-  oValid <= check_valid_bits(sValid_link(NCHAN-1 downto 0));
 
   q          <= in_buf(0);
   oGlobalPhi <= sGlobalPhi_buffer(0);
