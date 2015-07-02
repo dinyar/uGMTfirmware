@@ -144,9 +144,9 @@ begin
           -- First tick
           sPreCalcEta(i) <= signed(in_buf(1)(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(SHIFT_LEFT("000" & sDeltaEta(i), 3), 8));
           if d(i).data(SYSIGN_IN_LOW) = '1' then
-            sPreCalcPhi(i) <= signed(resize(sGlobalPhi_buf(1)(i), 11)) + signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
+            sPreCalcPhi(i) <= resize(signed(sGlobalPhi_buf(1)(i)), 11) + signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
           else
-            sPreCalcPhi(i) <= signed(resize(sGlobalPhi_buf(1)(i), 11)) - signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
+            sPreCalcPhi(i) <= resize(signed(sGlobalPhi_buf(1)(i)), 11) - signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
           end if;
 
         -- Second tick
@@ -207,11 +207,10 @@ begin
     sCaloIndexBits(i).phi <= unsigned(sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0));
   end generate lookup_calo_idx_bits;
 
-  sCaloIndexBits_buffer(sCaloIndexBits_buffer'high) <= sCaloIndexBits;
-
   shift_idx_bits_buffer : process (clk240)
   begin  -- process shift_idx_bits_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
+      sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)            <= sCaloIndexBits;
       sCaloIndexBits_buffer(sCaloIndexBits_buffer'high-1 downto 0) <= sCaloIndexBits_buffer(sCaloIndexBits_buffer'high downto 1);
     end if;
   end process shift_idx_bits_buffer;

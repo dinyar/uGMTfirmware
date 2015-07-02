@@ -264,7 +264,10 @@ begin
   oEmpty     <= unpack_empty_bits(sEmpty_link(NCHAN-1 downto 0));
   oSortRanks <= unpack_sort_rank(sSortRank_link(NCHAN-1 downto 0));
 
-  q          <= in_buf(0);
-  oGlobalPhi <= sGlobalPhi_buffer(0);
+  out_for_idx_bits : process (clk240)
+  begin  -- process out_for_idx_bits
+    q          <= in_buf(0);
+    oGlobalPhi <= sGlobalPhi_buffer(0);
+  end process out_for_idx_bits;
 
 end Behavioral;

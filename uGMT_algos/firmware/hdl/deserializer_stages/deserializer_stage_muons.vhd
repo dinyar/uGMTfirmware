@@ -95,7 +95,7 @@ begin
         ipb_out       => ipbr(N_SLV_GEN_CALO_IDX_BITS_QUAD_0+i),
         clk240        => clk240,
         clk40         => clk40,
-        d             => d(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
+        d             => q(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
         iGlobalPhi    => sGlobalPhi(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
         oCaloIdxBits  => oCaloIdxBits(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN)
         );
