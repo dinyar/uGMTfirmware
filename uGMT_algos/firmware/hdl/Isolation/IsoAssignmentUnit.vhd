@@ -37,6 +37,10 @@ architecture Behavioral of IsoAssignmentUnit is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
+  signal sCaloIdxBitsB_reg : TCaloIndexBit_vector(35 downto 0);
+  signal sCaloIdxBitsO_reg : TCaloIndexBit_vector(35 downto 0);
+  signal sCaloIdxBitsF_reg : TCaloIndexBit_vector(35 downto 0);
+
   type TEnergiesBuf is array (integer range <> ) of TCaloRegionEtaSlice_vector(iEnergies'range);
   signal sEnergies_buf : TEnergiesBuf(2 downto 0); -- TODO: Move delay to constants file.
 
@@ -80,8 +84,17 @@ begin
       );
 
   -----------------------------------------------------------------------------
-  -- Delay energies
+  -- Delay energies and calo idx bits
   -----------------------------------------------------------------------------
+
+  idx_bits_delay : process (clk)
+  begin  -- process idx_bits_delay
+    if clk'event and clk = '1' then     -- rising clock edge
+      sCaloIdxBitsB_reg <= iCaloIdxBitsB;
+      sCaloIdxBitsO_reg <= iCaloIdxBitsO;
+      sCaloIdxBitsF_reg <= iCaloIdxBitsF;
+    end if;
+  end process idx_bits_delay;
 
   energies_store : process (clk)
   begin  -- process energies_store
@@ -95,9 +108,9 @@ begin
   calc_complete_sums : entity work.compute_complete_sums
     port map (
       iEnergies     => sEnergies_buf(sEnergies_buf'high),
-      iCaloIdxBitsB => iCaloIdxBitsB,
-      iCaloIdxBitsO => iCaloIdxBitsO,
-      iCaloIdxBitsF => iCaloIdxBitsF,
+      iCaloIdxBitsB => sCaloIdxBitsB_reg,
+      iCaloIdxBitsO => sCaloIdxBitsO_reg,
+      iCaloIdxBitsF => sCaloIdxBitsF_reg,
       iMuIdxBits    => iMuIdxBits,
       oEnergies     => sSelectedEnergies,
       oCaloIdxBits  => sSelectedCaloIdxBits,
@@ -107,6 +120,8 @@ begin
   -----------------------------------------------------------------------------
   -- 3.5th BX
   -----------------------------------------------------------------------------
+  -- TODO: (TIMING) If making register in compute_complete_sums 'rising edge'
+  -- we will have to change notClk to clk again here. 
   iso_lut : entity work.iso_check
     port map (
       iAreaSums => sSelectedEnergies,

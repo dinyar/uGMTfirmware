@@ -34,6 +34,8 @@ begin
 
   reg_calo_bits : process (clk, sinit)
   begin  -- process reg_calo_bits
+    -- TODO: (TIMING) May be able to save latency by making this a rising flank
+    -- To do this we need to reduce delay of calo idx bits and energy sums by 1/2 bx.
     if clk'event and clk = '0' then     -- falling clock edge
       sMergedCaloIdxBits <= iCaloIdxBitsF(35 downto 18) & iCaloIdxBitsO(35 downto 18) &
         iCaloIdxBitsB & iCaloIdxBitsO(17 downto 0) & iCaloIdxBitsF(17 downto 0);

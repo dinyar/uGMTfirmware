@@ -266,8 +266,10 @@ begin
 
   out_for_idx_bits : process (clk240)
   begin  -- process out_for_idx_bits
-    q          <= in_buf(0);
-    oGlobalPhi <= sGlobalPhi_buffer(0);
+    if clk240'event and clk240 = '1' then  -- rising clock edge
+      q          <= in_buf(0);
+      oGlobalPhi <= sGlobalPhi_buffer(0);
+    end if;
   end process out_for_idx_bits;
 
 end Behavioral;
