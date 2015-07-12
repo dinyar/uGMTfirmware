@@ -64,7 +64,9 @@ begin
   deserialize_loop : for i in MU_QUAD_ASSIGNMENT'range generate
     deserialize : entity work.deserialize_mu_quad
       generic map (
-        VALID_BIT => VALID_BIT)
+        VALID_BIT       => VALID_BIT,
+	INIT_PHI_OFFSET => INIT_PHI_OFFSET_ASSIGN(i)
+        )
       port map (
         clk_ipb    => clk_ipb,
         rst        => rst,

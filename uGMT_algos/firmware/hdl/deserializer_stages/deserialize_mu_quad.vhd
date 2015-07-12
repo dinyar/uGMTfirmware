@@ -15,8 +15,8 @@ use work.ugmt_constants.all;
 
 entity deserialize_mu_quad is
   generic (
-    NCHAN     : positive := 4;
-    VALID_BIT : std_logic
+    VALID_BIT       : std_logic;
+    INIT_PHI_OFFSET : ipb_reg_v(0 to 3)
     );
   port (
     clk_ipb    : in  std_logic;
@@ -26,27 +26,29 @@ entity deserialize_mu_quad is
     bctr       : in  bctr_t;
     clk240     : in  std_logic;
     clk40      : in  std_logic;
-    d          : in  ldata(NCHAN-1 downto 0);
-    oMuons     : out TGMTMu_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
-    oTracks    : out TGMTMuTracks_vector(NCHAN-1 downto 0);
-    oEmpty     : out std_logic_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
-    oSortRanks : out TSortRank10_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
+    d          : in  ldata(3 downto 0);
+    oMuons     : out TGMTMu_vector(4*NUM_MUONS_IN-1 downto 0);
+    oTracks    : out TGMTMuTracks_vector(3 downto 0);
+    oEmpty     : out std_logic_vector(4*NUM_MUONS_IN-1 downto 0);
+    oSortRanks : out TSortRank10_vector(4*NUM_MUONS_IN-1 downto 0);
     oValid     : out std_logic;
-    q          : out ldata(NCHAN-1 downto 0);
-    oGlobalPhi : out TGlobalPhi_frame(NCHAN-1 downto 0)
+    q          : out ldata(3 downto 0);
+    oGlobalPhi : out TGlobalPhi_frame(3 downto 0)
     );
 end deserialize_mu_quad;
 
 architecture Behavioral of deserialize_mu_quad is
 
-  signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
-  signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
+  constant NCHAN : positive := 4;
+
+  signal ipbw : ipb_wbus_array(N_SLAVES-1 downto 0);
+  signal ipbr : ipb_rbus_array(N_SLAVES-1 downto 0);
 
   constant PHI_COMP_LATENCY : natural := 1;
 
-  signal sPhiOffsetRegOutput : ipb_reg_v(3 downto 0);
+  signal sPhiOffsetRegOutput : ipb_reg_v(NCHAN-1 downto 0);
   type   TOffsetVec is array (natural range <>) of unsigned(9 downto 0);
-  signal sPhiOffset          : TOffsetVec(3 downto 0);
+  signal sPhiOffset          : TOffsetVec(NCHAN-1 downto 0);
 
   signal sIntermediatePhi     : TIntermediatePhi_vector(NCHAN-1 downto 0);
   signal sIntermediatePhi_reg : TIntermediatePhi_vector(NCHAN-1 downto 0);
@@ -235,9 +237,10 @@ begin
         ipbus_out    => ipbr(N_SLV_BNCH_CNT_ERRORS_0+i),
         incr_counter => sBnchCntErr(i)
         );
-    phi_offset_reg : entity work.ipbus_reg_v
+    phi_offset_reg : entity work.ipbus_reg_setable
       generic map(
-        N_REG => 1
+        N_REG => 1,
+	INIT  => INIT_PHI_OFFSET(i)
         )
       port map(
         clk       => clk_ipb,

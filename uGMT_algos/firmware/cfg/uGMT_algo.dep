@@ -58,6 +58,7 @@ src Sorting/Stage0/SortStage0_Mux.vhd
 src Sorting/Stage1/SortStage1_behavioral.vhd
 src common/comp10_ge_behavioral.vhd
 src Sorting/SorterUnit.vhd
+src ipbus_slaves/ipbus_reg_setable.vhd
 src ipbus_slaves/ipbus_counter.vhd
 src ipbus_slaves/ipbus_dpram.vhd
 src ipbus_slaves/ipbus_dpram_dist.vhd
