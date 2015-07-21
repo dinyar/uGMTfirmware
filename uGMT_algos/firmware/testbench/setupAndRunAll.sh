@@ -22,27 +22,6 @@ fi
 echo "Updating test pattern and LUT content files.. "
 bash update_testfiles.sh
 
-# echo "Running deserializer testbench.. "
-# cd deserializer
-# ./buildSim.sh
-# rm -f ugmt_testfile.dat
-# ln -s ../patterns/deserializer_$testfile.txt ugmt_testfile.dat
-# ./runSim.sh
-#
-# echo "Running GMT testbench.. "
-# cd ../GMT
-# ./buildSim.sh
-# rm -f ugmt_testfile.dat
-# ln -s ../patterns/$testfile.txt ugmt_testfile.dat
-# ./runSim.sh
-#
-# echo "Running Isolation testbench.. "
-# cd ../isolation
-# ./buildSim.sh
-# rm -f ugmt_testfile.dat
-# ln -s ../patterns/$testfile.txt ugmt_testfile.dat
-# ./runSim.sh
-
 echo "Running Serializer testbench.. "
 cd serializer
 ./buildSim.sh
