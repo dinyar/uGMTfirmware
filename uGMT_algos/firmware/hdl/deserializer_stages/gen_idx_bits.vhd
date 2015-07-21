@@ -142,18 +142,18 @@ begin
     if clk240'event and clk240 = '1' then  -- rising clock edge
       for i in NCHAN-1 downto 0 loop
           -- First tick
-          sPreCalcEta(i) <= signed(in_buf(1)(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(SHIFT_LEFT("000" & sDeltaEta(i), 3), 8));
+          sPreCalcEta(i) <= signed(in_buf(EXTRAPOLATION_LATENCY-1)(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(SHIFT_LEFT("000" & sDeltaEta(i), 3), 8));
           if d(i).data(31-SYSIGN_IN_LOW) = '1' then -- SYSIGN_IN_LOW assumes 62 bit vector. Need to remove offset of 31.
-            sPreCalcPhi(i) <= resize(signed(sGlobalPhi_buf(1)(i)), 11) + signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
+            sPreCalcPhi(i) <= resize(signed(sGlobalPhi_buf(EXTRAPOLATION_LATENCY-1)(i)), 11) + signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
           else
-            sPreCalcPhi(i) <= resize(signed(sGlobalPhi_buf(1)(i)), 11) - signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
+            sPreCalcPhi(i) <= resize(signed(sGlobalPhi_buf(EXTRAPOLATION_LATENCY-1)(i)), 11) - signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
           end if;
 
         -- Second tick
-        if unsigned(in_buf(0)(i).data(PT_IN_HIGH downto PT_IN_LOW)) > 63 then
+        if unsigned(in_buf(EXTRAPOLATION_LATENCY-2)(i).data(PT_IN_HIGH downto PT_IN_LOW)) > 63 then
           -- If muon is high-pT we won't extrapolate.
-          sExtrapolatedCoords(i).eta <= signed(in_buf(0)(i).data(ETA_IN_HIGH downto ETA_IN_LOW));
-          sIntermediatePhi(i)    <= signed(resize(sGlobalPhi_buf(0)(i), 11));
+          sExtrapolatedCoords(i).eta <= signed(in_buf(EXTRAPOLATION_LATENCY-2)(i).data(ETA_IN_HIGH downto ETA_IN_LOW));
+          sIntermediatePhi(i)    <= signed(resize(sGlobalPhi_buf(EXTRAPOLATION_LATENCY-2)(i), 11));
         else
           -- If muon is low-pT we etrapolate.
           -- TODO: Need to resize to +1 at conversion.
