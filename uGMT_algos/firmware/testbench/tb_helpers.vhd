@@ -267,20 +267,21 @@ package body tb_helpers is
 
     read(L, cable_no);
     read(L, pt);
-    muon.pt     := to_unsigned(pt, 9);
+    muon.pt         := to_unsigned(pt, 9);
     read(L, phi);
-    muon.phi    := to_unsigned(phi, 10);
+    muon.phi        := to_unsigned(phi, 10);
     read(L, eta);
-    muon.eta    := to_signed(eta, 9);
+    muon.eta        := to_signed(eta, 9);
     read(L, sign);
+    muon.sign       := to_stdulogic(sign);
     read(L, vsign);
-    muon.sysign := to_stdulogic(vsign) & to_stdulogic(sign);
+    muon.sign_valid := to_stdulogic(vsign);
     read(L, qual);
-    muon.qual   := to_unsigned(qual, 4);
+    muon.qual       := to_unsigned(qual, 4);
     read(L, rank);
-    sortRank    := std_logic_vector(to_unsigned(rank, 10));
+    sortRank        := std_logic_vector(to_unsigned(rank, 10));
     read(L, empty);
-    emptyBit    := to_stdulogic(empty);
+    emptyBit        := to_stdulogic(empty);
 
     if id = string'("OUT") then
       read(L, iso);
@@ -939,7 +940,7 @@ package body tb_helpers is
     variable id        : in string(1 to 3)) is
     variable L1 : line;
   begin  -- DumpMuon
-    if iMu.pt = (8 downto 0 => '0') and iMu.phi = (9 downto 0 => '0') and iMu.eta = (8 downto 0 => '0') and iMu.sysign = "00" and iMu.qual = (3 downto 0 => '0') then
+    if iMu.pt = (8 downto 0 => '0') and iMu.phi = (9 downto 0 => '0') and iMu.eta = (8 downto 0 => '0') and iMu.sign = '0' and iMu.sign_valid = '0' and iMu.qual = (3 downto 0 => '0') then
       return;
     end if;
     write(L1, id);
@@ -952,9 +953,9 @@ package body tb_helpers is
     write(L1, string'(" "));
     write(L1, to_integer(iMu.eta));
     write(L1, string'(" "));
-    write(L1, to_bit(iMu.sysign(0)));
+    write(L1, to_bit(iMu.sign));
     write(L1, string'(" "));
-    write(L1, to_bit(iMu.sysign(1)));
+    write(L1, to_bit(iMu.sign_valid));
     write(L1, string'(" "));
     write(L1, to_integer(iMu.qual));
     -- If we're looking at an input muon the empty bit is of interest.
@@ -1039,7 +1040,7 @@ package body tb_helpers is
     variable idEmu : string(1 to 3) := "EMU";
   begin  -- CheckMuon
     error := 0;
-    if iMu.phi /= iEmuMu.phi or iMu.eta /= iEmuMu.eta or iMu.pt /= iEmuMu.pt or iMu.sysign /= iEmuMu.sysign or iMu.qual /= iEmuMu.qual then
+    if iMu.phi /= iEmuMu.phi or iMu.eta /= iEmuMu.eta or iMu.pt /= iEmuMu.pt or iMu.sign /= iEmuMu.sign or iMu.sign_valid /= iEmuMu.sign_valid or iMu.qual /= iEmuMu.qual then
       error := 1;
 
       write(LO, string'("!!!!!! Error in "));

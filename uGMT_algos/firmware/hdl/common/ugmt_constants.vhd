@@ -92,8 +92,8 @@ package ugmt_constants is
   -- This crosses the word boundary in the incoming frames. As the MSB is a
   -- control bit we "lose" one bit here, so the bit numbering for the 31 MSBs
   -- is of by one. (i.e. out muon has 62 bits, not 64)
-  constant SYSIGN_IN_LOW  : natural := 31;
-  constant SYSIGN_IN_HIGH : natural := 32;
+  constant SIGN_IN      : natural := 31;
+  constant VALIDSIGN_IN : natural := 32;
 
   constant ADDRESS_IN_LOW  : natural := 33;
   constant ADDRESS_IN_HIGH : natural := 60;
@@ -101,8 +101,8 @@ package ugmt_constants is
   --
   -- out
   --
-  constant SYSIGN_OUT_HIGH : natural := 35;
-  constant SYSIGN_OUT_LOW  : natural := 34;
+  constant VALIDSIGN_OUT : natural := 35;
+  constant SIGN_OUT      : natural := 34;
 
   constant ISO_OUT_HIGH : natural := 33;
   constant ISO_OUT_LOW  : natural := 32;

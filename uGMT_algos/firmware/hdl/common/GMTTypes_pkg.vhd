@@ -17,12 +17,14 @@ package GMTTypes is
   type TMuonAddress is array (0 to 3) of std_logic_vector(6 downto 0);
 
   type TGMTMuIn is record
-    sysign  : std_logic_vector(1 downto 0);  -- charge bit (1= plus)
-    address : TMuonAddress;                  -- 4x10 bit for track addresses
-    eta     : std_logic_vector(8 downto 0);  -- 9 bit eta
-    qual    : std_logic_vector(3 downto 0);  -- 4 bit quality
-    pt      : std_logic_vector(8 downto 0);  -- 9 bit pt
-    phi     : std_logic_vector(9 downto 0);  -- 10 bit phi
+    sign       : std_logic;                     -- charge bit (1= plus)
+    sign_valid : std_logic;                     -- charge bit valid indicator
+    sysign     : std_logic_vector(1 downto 0);  -- charge bit (1= plus)
+    address    : TMuonAddress;                  -- 4x10 bit for track addresses
+    eta        : std_logic_vector(8 downto 0);  -- 9 bit eta
+    qual       : std_logic_vector(3 downto 0);  -- 4 bit quality
+    pt         : std_logic_vector(8 downto 0);  -- 9 bit pt
+    phi        : std_logic_vector(9 downto 0);  -- 10 bit phi
   end record;
 
   type    TGMTMuIn_vector is array (integer range <>) of TGMTMuIn;
@@ -33,11 +35,12 @@ package GMTTypes is
   -- GMT muon at the output of the GMT and inside the logic components
   -----------------------------------------------------------------------------
   type TGMTMu is record
-    sysign : std_logic_vector(1 downto 0);  -- charge bit (1= plus)
-    eta    : signed(8 downto 0);            -- 9 bit eta
-    qual   : unsigned(3 downto 0);          -- 4 bit quality
-    pt     : unsigned(8 downto 0);          -- 9 bit pt
-    phi    : unsigned(9 downto 0);          -- 10 bit phi
+    sign       : std_logic;                     -- charge bit (1= plus)
+    sign_valid : std_logic;                     -- charge bit valid indicator
+    eta        : signed(8 downto 0);            -- 9 bit eta
+    qual       : unsigned(3 downto 0);          -- 4 bit quality
+    pt         : unsigned(8 downto 0);          -- 9 bit pt
+    phi        : unsigned(9 downto 0);          -- 10 bit phi
   end record;
 
   type TGMTMu_vector is array (integer range <>) of TGMTMu;
@@ -364,12 +367,13 @@ package body GMTTypes is
     return TGMTMuIn is
     variable oMuon : TGMTMuIn;
   begin
-    oMuon.sysign  := iMuon_flat(SYSIGN_IN_HIGH downto SYSIGN_IN_LOW);
-    oMuon.eta     := iMuon_flat(ETA_IN_HIGH downto ETA_IN_LOW);
-    oMuon.qual    := iMuon_flat(QUAL_IN_HIGH downto QUAL_IN_LOW);
-    oMuon.pt      := iMuon_flat(PT_IN_HIGH downto PT_IN_LOW);
-    oMuon.phi     := std_logic_vector(iPhi);
-    oMuon.address := unpack_address_from_flat(iMuon_flat(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW));
+    oMuon.sign        := iMuon_flat(SIGN_IN);
+    oMuon.sign_valid  := iMuon_flat(VALIDSIGN_IN);
+    oMuon.eta         := iMuon_flat(ETA_IN_HIGH downto ETA_IN_LOW);
+    oMuon.qual        := iMuon_flat(QUAL_IN_HIGH downto QUAL_IN_LOW);
+    oMuon.pt          := iMuon_flat(PT_IN_HIGH downto PT_IN_LOW);
+    oMuon.phi         := std_logic_vector(iPhi);
+    oMuon.address     := unpack_address_from_flat(iMuon_flat(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW));
     return oMuon;
   end;
 
@@ -383,8 +387,9 @@ package body GMTTypes is
     return TFlatMuon is
     variable oMuon_flat : TFlatMuon;
   begin  -- pack_mu_to_flat
-    oMuon_flat(oMuon_flat'high downto SYSIGN_OUT_HIGH+1) := (others => '0');
-    oMuon_flat(SYSIGN_OUT_HIGH downto SYSIGN_OUT_LOW)    := iMuon.sysign;
+    oMuon_flat(oMuon_flat'high downto VALIDSIGN_OUT+1) := (others => '0');
+    oMuon_flat(SIGN_OUT)                                 := iMuon.sign;
+    oMuon_flat(VALIDSIGN_OUT)                            := iMuon.sign_valid;
     oMuon_flat(ISO_OUT_HIGH downto ISO_OUT_LOW)          := iIso;
     oMuon_flat(ETA_OUT_HIGH downto ETA_OUT_LOW)          := std_logic_vector(iMuon.eta);
     oMuon_flat(QUAL_OUT_HIGH downto QUAL_OUT_LOW)        := std_logic_vector(iMuon.qual);
@@ -401,11 +406,12 @@ package body GMTTypes is
     return TGMTMu is
     variable oMuon : TGMTMu;
   begin  -- gmt_mu_from_in_mu
-    oMuon.sysign := iMuonIn.sysign;
-    oMuon.eta    := signed(iMuonIn.eta);
-    oMuon.qual   := unsigned(iMuonIn.qual);
-    oMuon.pt     := unsigned(iMuonIn.pt);
-    oMuon.phi    := unsigned(iMuonIn.phi);
+    oMuon.sign       := iMuonIn.sign;
+    oMuon.sign_valid := iMuonIn.sign_valid;
+    oMuon.eta        := signed(iMuonIn.eta);
+    oMuon.qual       := unsigned(iMuonIn.qual);
+    oMuon.pt         := unsigned(iMuonIn.pt);
+    oMuon.phi        := unsigned(iMuonIn.phi);
     return oMuon;
   end gmt_mu_from_in_mu;
 
