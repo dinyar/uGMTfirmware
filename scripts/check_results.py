@@ -24,7 +24,7 @@ def main():
                         tbname = fname.split("_tb")[0]
                         error += encode_error(tbname, testbench_names)
     if file_counter != len(testbench_names):
-        return -1
+        return 999999
     return error
 
 
