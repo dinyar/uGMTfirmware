@@ -10,7 +10,7 @@ use work.GMTTypes.all;
 
 entity WedgeCheckerUnit is
   generic (
-    COORDINATE_BASED : boolean := true -- whether coordinate-based cancel-out should be done.
+    COORDINATE_BASED : boolean := true; -- whether coordinate-based cancel-out should be done.
     DATA_FILE        : string;
     LOCAL_PHI_OFFSET : signed(8 downto 0)
     );
@@ -58,10 +58,6 @@ begin
       gen_addr_based : if COORDINATE_BASED = false generate
         x : entity work.GhostCheckerUnit
          port map (
-           clk_ipb => clk_ipb,
-           rst     => rst,
-           ipb_in  => ipbw(i),
-           ipb_out => ipbr(i),
            mu1     => wedge1(i).address,
            qual1   => wedge1(i).qual,
            mu2     => wedge2(j).address,

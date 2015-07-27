@@ -14,7 +14,7 @@ package GMTTypes is
   -----------------------------------------------------------------------------
 
   -- Cancel-out information at station level
-  type TMuonAddress is array (0 to 3) of std_logic_vector(6 downto 0);
+  subtype TMuonAddress is std_logic_vector(28 downto 0);
 
   type TGMTMuIn is record
     sign       : std_logic;                     -- charge bit (1= plus)
@@ -316,13 +316,10 @@ package body GMTTypes is
   -- TODO: This is completely wrong, but is a placeholder until we know how
   -- we will encode Muon track addresses.
   function unpack_address_from_flat (
-    signal flat : std_logic_vector(27 downto 0))
+    signal flat : std_logic_vector(28 downto 0))
     return TMuonAddress is
     variable vec : TMuonAddress;
   begin  -- unpack_address_from_flat
-    for i in TMuonAddress'range loop
-      vec(i) := flat(7*i+6 downto 7*i);
-    end loop;  -- i
     return vec;
   end unpack_address_from_flat;
 

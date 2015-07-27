@@ -17,7 +17,7 @@ use work.GMTTypes.all;
 
 entity CancelOutUnit_Single is
   generic (
-    COORDINATE_BASED : boolean := true -- whether coordinate-based cancel-out should be done.
+    COORDINATE_BASED : boolean := true; -- whether coordinate-based cancel-out should be done.
     DATA_FILE        : string;
     num_wedges       : natural := 12;         -- number of wedges to be checked
     num_tracks       : natural := 3;          -- number of tracks per wedge

@@ -10,7 +10,7 @@ use work.GMTTypes.all;
 
 entity CancelOutUnit_FO is
   generic (
-    COORDINATE_BASED : boolean := true -- whether coordinate-based cancel-out should be done.
+    COORDINATE_BASED : boolean := true; -- whether coordinate-based cancel-out should be done.
     DATA_FILE        : string;
     LOCAL_PHI_OFFSET : signed(8 downto 0)
     );

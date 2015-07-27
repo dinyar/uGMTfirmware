@@ -9,6 +9,7 @@ use work.ipbus.all;
 use work.ipbus_decode_sorting.all;
 
 use work.GMTTypes.all;
+use work.ugmt_constants.all;
 
 entity SortAndCancelUnit is
   generic (
