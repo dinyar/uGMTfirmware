@@ -5,18 +5,20 @@ export MGLS_LICENSE_FILE='1717@lxlic01:1717@lxlic02:1717@lxlic03'
 PATH=$PATH:/opt/mentor/modeltech/linux_x86_64
 export PATH
 
-if [ ! -d results ];
-then
-	mkdir results
-else
-	rm -f results/*
-fi
+
+bash update_testfiles.sh
+
+echo "Building serializer testbench.. "
 cd serializer
-./runSim.sh &> /dev/null
+./buildSim.sh
+
+echo "Building SortAndCancel testbench.. "
 cd ../sort_and_cancel
-./runSim.sh &> /dev/null
+./buildSim.sh
+
+echo "Building uGMTserdes testbench.. "
 cd ../ugmt_serdes
-./runSim.sh &> /dev/null
+./buildSim.sh
+
 cd ..
 
-python ../../../scripts/check_results.py

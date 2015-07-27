@@ -21,28 +21,11 @@ fi
 
 echo "Updating test pattern and LUT content files.. "
 bash update_testfiles.sh
+bash setTestfile.sh $testfile
 
-echo "Running Serializer testbench.. "
-cd serializer
-./buildSim.sh
-rm -f ugmt_testfile.dat
-ln -s ../patterns/serializer_$testfile.txt ugmt_testfile.dat
-./runSim.sh
+echo "Running setup.."
+bash setupAll.sh
 
-echo "Running SortAndCancel testbench.. "
-cd ../sort_and_cancel
-./buildSim.sh
-rm -f ugmt_testfile.dat
-ln -s ../patterns/$testfile.txt ugmt_testfile.dat
-./runSim.sh
+echo "Running testbenches.."
+bash runAll.sh
 
-echo "Running uGMTserdes testbench.. "
-cd ../ugmt_serdes
-./buildSim.sh
-rm -f ugmt_testfile.dat
-ln -s ../patterns/integration_$testfile.txt ugmt_testfile.dat
-./runSim.sh
-
-echo "Checking results.. "
-cd ..
-python ../../../scripts/check_results.py
