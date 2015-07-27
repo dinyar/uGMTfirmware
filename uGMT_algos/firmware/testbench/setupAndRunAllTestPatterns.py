@@ -1,7 +1,10 @@
+#!/usr/bin/python
+
 import os
+import sys
 import subprocess
 
-testpatterns = [many_events, fwd_iso_scan, iso_test, ttbar_small_sample]
+testpatterns = ["many_events", "fwd_iso_scan", "iso_test", "ttbar_small_sample"]
 
 error = 0
 
@@ -11,4 +14,6 @@ for pattern in testpatterns:
   error += subprocess.call(os.getcwd() + "/setupAndRunAll.sh " + pattern, shell=True)
   print "#################################################################################"
 
-return error
+print error
+sys.exit(error)
+
