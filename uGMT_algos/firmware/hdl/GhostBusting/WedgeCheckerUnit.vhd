@@ -10,6 +10,7 @@ use work.GMTTypes.all;
 
 entity WedgeCheckerUnit is
   generic (
+    COORDINATE_BASED : boolean := true -- whether coordinate-based cancel-out should be done.
     DATA_FILE        : string;
     LOCAL_PHI_OFFSET : signed(8 downto 0)
     );
@@ -54,39 +55,44 @@ begin
   -- Compare the two wedges' muons with each other.
   g1 : for i in wedge1'range generate
     g2 : for j in wedge2'range generate
-      --x : entity work.GhostCheckerUnit
-      --  port map (
-      --    clk_ipb => clk_ipb,
-      --    rst     => rst,
-      --    ipb_in  => ipbw(i),
-      --    ipb_out => ipbr(i),
-      --    mu1     => wedge1(i).address,
-      --    qual1   => wedge1(i).qual,
-      --    mu2     => wedge2(j).address,
-      --    qual2   => wedge2(i).qual,
-      --    ghost1  => sCancel1(j)(i),    -- TODO: Is this correct?
-      --    ghost2  => sCancel2(j)(i)     -- TODO: Is this correct?
-      --    );
-      x : entity work.GhostCheckerUnit_spatialCoords
-      generic map (
-        DATA_FILE        => DATA_FILE,
-        LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
-        )
-        port map (
-          clk_ipb => clk_ipb,
-          rst     => rst,
-          ipb_in  => ipbw(3*i +j),
-          ipb_out => ipbr(3*i +j),
-          eta1    => wedge1(i).eta,
-          phi1    => wedge1(i).phi,
-          qual1   => wedge1(i).qual,
-          eta2    => wedge2(j).eta,
-          phi2    => wedge2(j).phi,
-          qual2   => wedge2(i).qual,
-          ghost1  => sCancel1(j)(i),
-          ghost2  => sCancel2(j)(i),
-          clk     => clk
-          );
+      gen_addr_based : if COORDINATE_BASED = false generate
+        x : entity work.GhostCheckerUnit
+         port map (
+           clk_ipb => clk_ipb,
+           rst     => rst,
+           ipb_in  => ipbw(i),
+           ipb_out => ipbr(i),
+           mu1     => wedge1(i).address,
+           qual1   => wedge1(i).qual,
+           mu2     => wedge2(j).address,
+           qual2   => wedge2(i).qual,
+           ghost1  => sCancel1(j)(i),    -- TODO: Is this correct?
+           ghost2  => sCancel2(j)(i)     -- TODO: Is this correct?
+           );
+      end generate gen_addr_based;
+
+      gen_coord_based : if COORDINATE_BASED = true generate
+        x : entity work.GhostCheckerUnit_spatialCoords
+        generic map (
+          DATA_FILE        => DATA_FILE,
+          LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
+          )
+          port map (
+            clk_ipb => clk_ipb,
+            rst     => rst,
+            ipb_in  => ipbw(3*i +j),
+            ipb_out => ipbr(3*i +j),
+            eta1    => wedge1(i).eta,
+            phi1    => wedge1(i).phi,
+            qual1   => wedge1(i).qual,
+            eta2    => wedge2(j).eta,
+            phi2    => wedge2(j).phi,
+            qual2   => wedge2(i).qual,
+            ghost1  => sCancel1(j)(i),
+            ghost2  => sCancel2(j)(i),
+            clk     => clk
+            );
+      end generate gen_coord_based;
     end generate g2;
   end generate g1;
 

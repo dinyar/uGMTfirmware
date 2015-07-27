@@ -10,6 +10,7 @@ use work.GMTTypes.all;
 
 entity CancelOutUnit_FO_WedgeComp is
   generic (
+    COORDINATE_BASED : boolean := true -- whether coordinate-based cancel-out should be done.
     DATA_FILE        : string;
     LOCAL_PHI_OFFSET : signed(8 downto 0)
     );
@@ -53,8 +54,9 @@ begin
   -- Compare muons from this wedge with muons from each neighbour
   x0 : entity work.WedgeCheckerUnit
   generic map (
-      DATA_FILE        => DATA_FILE,
-      LOCAL_PHI_OFFSET => -LOCAL_PHI_OFFSET
+    COORDINATE_BASED => COORDINATE_BASED,
+    DATA_FILE        => DATA_FILE,
+    LOCAL_PHI_OFFSET => -LOCAL_PHI_OFFSET
     )
      port map (
         clk_ipb => clk_ipb,

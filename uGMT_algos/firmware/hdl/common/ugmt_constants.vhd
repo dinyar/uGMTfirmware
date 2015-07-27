@@ -168,18 +168,26 @@ package ugmt_constants is
   -----------------------------------------------------------------------------
 
   type RegisterValueAssignment_vector is array (0 to 8) of ipb_reg_v(0 to 3);
-  constant INIT_PHI_OFFSET_ASSIGN : RegisterValueAssignment_vector := ((X"00000018", X"00000078", X"000000D8", X"00000138"), 
-								       (X"00000198", X"000001F8", X"00000018", X"00000078"),
-								       (X"000000D8", X"00000138", X"00000198", X"000001F8"),
-								       (X"00000228", X"00000018", X"00000048", X"00000078"),
-								       (X"000000A8", X"000000D8", X"00000108", X"00000138"),
-								       (X"00000168", X"00000198", X"000001C8", X"000001F8"),
-								       (X"00000018", X"00000078", X"000000D8", X"00000138"),
-								       (X"00000198", X"000001F8", X"00000018", X"00000078"),
-								       (X"000000D8", X"00000138", X"00000198", X"000001F8")
-								      );
---    constant ETA_BRL_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"));
+  constant INIT_PHI_OFFSET_ASSIGN : RegisterValueAssignment_vector := ((X"00000018", X"00000078", X"000000D8", X"00000138"),
+                       (X"00000198", X"000001F8", X"00000018", X"00000078"),
+                       (X"000000D8", X"00000138", X"00000198", X"000001F8"),
+                       (X"00000228", X"00000018", X"00000048", X"00000078"),
+                       (X"000000A8", X"000000D8", X"00000108", X"00000138"),
+                       (X"00000168", X"00000198", X"000001C8", X"000001F8"),
+                       (X"00000018", X"00000078", X"000000D8", X"00000138"),
+                       (X"00000198", X"000001F8", X"00000018", X"00000078"),
+                       (X"000000D8", X"00000138", X"00000198", X"000001F8")
+                      );
 
+  -----------------------------------------------------------------------------
+  -- Cancel-out selector
+  -----------------------------------------------------------------------------
+
+  constant COORDINATE_BASED_CANCEL_OUT_BRL : boolean := true;
+  constant COORDINATE_BASED_CANCEL_OUT_OVL : boolean := true;
+  constant COORDINATE_BASED_CANCEL_OUT_FWD : boolean := true;
+  constant COORDINATE_BASED_CANCEL_OUT_BO  : boolean := true;
+  constant COORDINATE_BASED_CANCEL_OUT_FO  : boolean := true;
 
   -----------------------------------------------------------------------------
   -- Misc. constants

@@ -10,6 +10,7 @@ use work.GMTTypes.all;
 
 entity CancelOutUnit_FO is
   generic (
+    COORDINATE_BASED : boolean := true -- whether coordinate-based cancel-out should be done.
     DATA_FILE        : string;
     LOCAL_PHI_OFFSET : signed(8 downto 0)
     );
@@ -59,6 +60,7 @@ begin
   g1 : for i in iWedges_Ovl'range generate
       x0 : entity work.CancelOutUnit_FO_WedgeComp
       generic map (
+        COORDINATE_BASED => COORDINATE_BASED,
         DATA_FILE        => DATA_FILE,
         LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
         )

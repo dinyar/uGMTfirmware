@@ -10,6 +10,7 @@ use work.GMTTypes.all;
 
 entity CancelOutUnit_BO_WedgeComp is
   generic (
+    COORDINATE_BASED : boolean := true -- whether coordinate-based cancel-out should be done.
     DATA_FILE        : string;
     LOCAL_PHI_OFFSET : signed(8 downto 0)
     );
@@ -53,8 +54,9 @@ begin
 
     x0 : entity work.WedgeCheckerUnit
     generic map (
-       DATA_FILE        => DATA_FILE,
-       LOCAL_PHI_OFFSET => -LOCAL_PHI_OFFSET
+      COORDINATE_BASED => COORDINATE_BASED,
+      DATA_FILE        => DATA_FILE,
+      LOCAL_PHI_OFFSET => -LOCAL_PHI_OFFSET
       )
       port map (
         clk_ipb => clk_ipb,
@@ -68,8 +70,9 @@ begin
         clk     => clk);
     x1 : entity work.WedgeCheckerUnit
     generic map (
-        DATA_FILE        => DATA_FILE,
-        LOCAL_PHI_OFFSET => to_signed(0, 9)
+      COORDINATE_BASED => COORDINATE_BASED,
+      DATA_FILE        => DATA_FILE,
+      LOCAL_PHI_OFFSET => to_signed(0, 9)
       )
       port map (
         clk_ipb => clk_ipb,
@@ -83,8 +86,9 @@ begin
         clk     => clk);
     x2 : entity work.WedgeCheckerUnit
     generic map (
-        DATA_FILE        => DATA_FILE,
-        LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
+      COORDINATE_BASED => COORDINATE_BASED,
+      DATA_FILE        => DATA_FILE,
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
       )
       port map (
         clk_ipb => clk_ipb,
@@ -98,8 +102,9 @@ begin
         clk     => clk);
     x3 : entity work.WedgeCheckerUnit
     generic map (
-        DATA_FILE        => DATA_FILE,
-        LOCAL_PHI_OFFSET => resize(2*LOCAL_PHI_OFFSET, 9)
+      COORDINATE_BASED => COORDINATE_BASED,
+      DATA_FILE        => DATA_FILE,
+      LOCAL_PHI_OFFSET => resize(2*LOCAL_PHI_OFFSET, 9)
       )
       port map (
         clk_ipb => clk_ipb,

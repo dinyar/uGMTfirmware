@@ -19,8 +19,6 @@ package GMTTypes is
   type TGMTMuIn is record
     sign       : std_logic;                     -- charge bit (1= plus)
     sign_valid : std_logic;                     -- charge bit valid indicator
-    sysign     : std_logic_vector(1 downto 0);  -- charge bit (1= plus)
-    address    : TMuonAddress;                  -- 4x10 bit for track addresses
     eta        : std_logic_vector(8 downto 0);  -- 9 bit eta
     qual       : std_logic_vector(3 downto 0);  -- 4 bit quality
     pt         : std_logic_vector(8 downto 0);  -- 9 bit pt
@@ -71,7 +69,7 @@ package GMTTypes is
   type TGMTMuTrackInfo is record
     eta : signed(8 downto 0);
     phi : signed(7 downto 0);
-    --address : TMuonAddress;
+    address : TMuonAddress;
 
     qual : unsigned(3 downto 0);
   end record;
@@ -257,7 +255,7 @@ package GMTTypes is
   function apply_global_phi_wraparound(iPhi       : signed(10 downto 0)) return unsigned;
 
   function add_offset_to_local_phi(signal iLocalPhi : std_logic_vector(7 downto 0);
-    				   signal iOffset   : unsigned(9 downto 0)) return signed;
+                       signal iOffset   : unsigned(9 downto 0)) return signed;
 
   function unpack_mu_from_flat(signal iMuon_flat : TFlatMuon;
                                signal iPhi       : unsigned(9 downto 0)) return TGMTMuIn;
@@ -299,9 +297,9 @@ package body GMTTypes is
     for i in oWedges'range loop
       -- put 3 muons into wedge vector.
       for j in oWedges(i)'range loop
-        oWedges(i)(j).eta := signed(iMuon_flat(3*i+j)(ETA_IN_HIGH downto ETA_IN_LOW));
-        oWedges(i)(j).phi := signed(iMuon_flat(3*i+j)(PHI_IN_HIGH downto PHI_IN_LOW));
-        --oWedges(i)(j).address := iMuon_flat(3*i+j)(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW);
+        oWedges(i)(j).eta     := signed(iMuon_flat(3*i+j)(ETA_IN_HIGH downto ETA_IN_LOW));
+        oWedges(i)(j).phi     := signed(iMuon_flat(3*i+j)(PHI_IN_HIGH downto PHI_IN_LOW));
+        oWedges(i)(j).address := iMuon_flat(3*i+j)(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW);
 
         oWedges(i)(j).qual := unsigned(iMuon_flat(3*i+j)(QUAL_IN_HIGH downto QUAL_IN_LOW));
       end loop;  -- j
@@ -373,7 +371,6 @@ package body GMTTypes is
     oMuon.qual        := iMuon_flat(QUAL_IN_HIGH downto QUAL_IN_LOW);
     oMuon.pt          := iMuon_flat(PT_IN_HIGH downto PT_IN_LOW);
     oMuon.phi         := std_logic_vector(iPhi);
-    oMuon.address     := unpack_address_from_flat(iMuon_flat(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW));
     return oMuon;
   end;
 
