@@ -6,8 +6,6 @@
 CACTUSREPOPATH=/afs/cern.ch/work/d/dinyar/ugmt_firmware/mp7fw_current
 #################################################
 
-PATTERNFILE=ugmt_testfile.dat
-
 vlib serializer_tb
 vmap work serializer_tb
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_types.vhd
@@ -19,9 +17,4 @@ vcom -check_synthesis ../tb_helpers.vhd
 vcom -check_synthesis serializer_tb.vhd
 
 vmake work > Makefile
-echo "WARNING: Using serializer_many_events.txt pattern file. Modify $PATTERNFILE link if other pattern file required."
-if [ -f $PATTERNFILE ];
-then
-    rm -f $PATTERNFILE
-fi
-ln -s ../patterns/serializer_many_events.txt $PATTERNFILE
+

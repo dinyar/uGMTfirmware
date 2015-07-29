@@ -6,8 +6,6 @@
 CACTUSREPOPATH=/afs/cern.ch/work/d/dinyar/ugmt_firmware/mp7fw_current
 #################################################
 
-PATTERNFILE=ugmt_testfile.dat
-
 vlib sortAndCancel_tb
 vmap work sortAndCancel_tb
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_types.vhd
@@ -49,9 +47,4 @@ ln -s ../../hdl/ipbus_slaves/BOPosMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/BONegMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FOPosMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FONegMatchQual.mif .
-echo "WARNING: Using many_events.txt pattern file. Modify $PATTERNFILE link if other pattern file required."
-if [ -f $PATTERNFILE ];
-then
-    rm -f $PATTERNFILE
-fi
-ln -s ../patterns/many_events.txt $PATTERNFILE
+

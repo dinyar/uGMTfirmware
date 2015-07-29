@@ -6,8 +6,6 @@
 CACTUSREPOPATH=/afs/cern.ch/work/d/dinyar/ugmt_firmware/mp7fw_current
 #################################################
 
-PATTERNFILE=ugmt_testfile.dat
-
 vlib ugmt_serdes
 vmap work ugmt_serdes
 vcom -check_synthesis ../../hdl/common/ugmt_constants.vhd
@@ -89,9 +87,4 @@ ln -s ../../hdl/ipbus_slaves/BONegMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FOPosMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FONegMatchQual.mif .
 vmake work > Makefile
-echo "WARNING: Using many_events.txt pattern file. Modify $PATTERNFILE link if other pattern file required."
-if [ -f $PATTERNFILE ];
-then
-    rm -f $PATTERNFILE
-fi
-ln -s ../patterns/integration_many_events.txt $PATTERNFILE
+
