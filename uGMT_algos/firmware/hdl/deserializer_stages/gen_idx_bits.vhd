@@ -144,9 +144,9 @@ begin
           -- First tick
           sPreCalcEta(i) <= signed(in_buf(EXTRAPOLATION_LATENCY-1)(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(SHIFT_LEFT("000" & sDeltaEta(i), 3), 8));
           if d(i).data(31-SIGN_IN) = '1' then -- SYSIGN_IN_LOW assumes 62 bit vector. Need to remove offset of 31.
-            sPreCalcPhi(i) <= resize(signed(sGlobalPhi_buf(EXTRAPOLATION_LATENCY-1)(i)), 11) + signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
+            sPreCalcPhi(i) <= signed(resize(sGlobalPhi_buf(EXTRAPOLATION_LATENCY-1)(i), 11)) + signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
           else
-            sPreCalcPhi(i) <= resize(signed(sGlobalPhi_buf(EXTRAPOLATION_LATENCY-1)(i)), 11) - signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
+            sPreCalcPhi(i) <= signed(resize(sGlobalPhi_buf(EXTRAPOLATION_LATENCY-1)(i), 11)) - signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
           end if;
 
         -- Second tick
