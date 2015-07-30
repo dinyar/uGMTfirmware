@@ -19,6 +19,9 @@ package top_decl is
 	constant CLOCK_RATIO: integer := 6;
 	constant CLOCK_RATIO_PAYLOAD: integer := 1;
 	constant PAYLOAD_LATENCY: integer := 2;
+	constant DAQ_N_BANKS: integer := 4;
+	constant DAQ_TRIGGER_MODES: integer := 2;
+	constant DAQ_N_CAP_CTRLS: integer := 4; -- Number of capture controls per trigger mode
 
 	constant REGION_CONF: region_conf_array_t := (
 		(gth_10g, none, 3, 10), -- 0 / 118
