@@ -54,7 +54,16 @@ fi
 checkoutString="checkout tags/mp7/"$unstableSelector"firmware/"$tag
 checkoutCommand="$checkoutString -u $username"
 ./ProjectManager.py $checkoutCommand
-echo "Done with mp7fw checkout. Fetching project.. "
+
+if [ "$?" == 0 ];
+then
+	echo "Done with mp7fw checkout. Fetching project.. "
+else
+	cd ..
+	rm -rf $tag
+	echo "Error, couldn't check out mp7fw."
+	exit
+fi
 ./ProjectManager.py fetch projects/examples/mp7xe_690
 ./ProjectManager.py vivado projects/examples/mp7xe_690
 
