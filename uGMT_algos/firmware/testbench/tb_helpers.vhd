@@ -341,7 +341,7 @@ package body tb_helpers is
     variable oOutput : out   ldata) is
     variable word  : std_logic_vector(31 downto 0);
     variable valid : bit;
-    variable dummy : string(1 to 7);
+    variable dummy : string(1 to 8);
   begin  -- ReadInputFrame
     read(L, dummy);
 
