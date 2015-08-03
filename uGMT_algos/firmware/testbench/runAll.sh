@@ -19,4 +19,4 @@ cd ../ugmt_serdes
 ./runSim.sh &> /dev/null
 cd ..
 
-python ../../../scripts/check_results.py
+python ../../scripts/check_results.py
