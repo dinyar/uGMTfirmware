@@ -15,6 +15,7 @@ vcom -check_synthesis ../../hdl/common/GMTTypes_pkg.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_core/firmware/hdl/ipbus_package.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_sorting.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_core/firmware/hdl/ipbus_fabric_sel.vhd
+vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/boards/mp7/base_fw/mp7xe_690/firmware/hdl/mp7_brd_decl.vhd
 vcom -check_synthesis ../../hdl/Sorting/SorterUnit.vhd
 vcom -check_synthesis ../../hdl/MatchAndMerge/*
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit.vhd

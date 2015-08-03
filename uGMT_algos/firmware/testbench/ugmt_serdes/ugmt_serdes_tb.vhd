@@ -28,6 +28,7 @@ architecture behavior of testbench is
   signal   clk240          : std_logic := '1';
   signal   clk40           : std_logic := '0';
   signal   rst             : std_logic := '0';
+  signal   rst_loc         : std_logic_vector(N_REGION - 1 downto 0) := (others => '0');
 
   signal iD              : ldata(71 downto 0);
   signal oQ              : ldata(71 downto 0);
@@ -36,24 +37,22 @@ architecture behavior of testbench is
 
 begin
 
-    uut : entity work.ugmt_serdes
-      generic map (
-        NCHAN     => 72,
-        VALID_BIT => '1'
-        )
+    uut : entity work.mp7_payload
       port map (
-        clk_ipb           => clk240,
-        ipb_rst           => rst,
+        clk               => clk240,
+        rst               => rst,
         ipb_in.ipb_addr   => (others => '0'),
         ipb_in.ipb_wdata  => (others => '0'),
         ipb_in.ipb_strobe => '0',
         ipb_in.ipb_write  => '0',
         ipb_out           => open,
         ctrs              => dummyCtrs,
-        clk240            => clk240,
-        clk40             => clk40,
-        rst40             => rst,
-        d                 => iD,
+        clk_p             => clk240,
+        clk_payload       => clk40,
+        rst_payload       => rst,
+        rst_loc           => rst_loc,
+        clken_loc         => (others => '0'),
+	d                 => iD,
         q                 => oQ
         );
 
@@ -87,9 +86,11 @@ begin
         end loop;  -- j
     end loop;  -- i
 
-    rst <= '1';
+    rst     <= '1';
+    rst_loc <= (others => '1');
     wait for 3*half_period_40;
-    rst <= '0';
+    rst     <= '0';
+    rst_loc <= (others => '0');
     wait for 20*half_period_40;  -- wait until global set/reset completes
 
     -- Add user defined stimulus here

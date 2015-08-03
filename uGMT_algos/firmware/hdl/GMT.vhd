@@ -7,6 +7,7 @@ use work.ipbus.all;
 use work.ipbus_decode_uGMT.all;
 
 use work.GMTTypes.all;
+use work.mp7_brd_decl.all;
 
 entity GMT is
   port (
@@ -49,6 +50,7 @@ entity GMT is
     clk     : in  std_logic;
     clk_ipb : in  std_logic;
     sinit   : in  std_logic;
+    rst_loc : in  std_logic_vector(N_REGION - 1 downto 0);
     ipb_in  : in  ipb_wbus;
     ipb_out : out ipb_rbus
     );
@@ -180,6 +182,7 @@ begin
       clk                     => clk,
       clk_ipb                 => clk_ipb,
       sinit                   => sinit,
+      rst_loc                 => rst_loc,
       ipb_in                  => ipbw(N_SLV_SORTING),
       ipb_out                 => ipbr(N_SLV_SORTING)
       );

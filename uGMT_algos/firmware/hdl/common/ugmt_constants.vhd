@@ -190,6 +190,20 @@ package ugmt_constants is
   constant COORDINATE_BASED_CANCEL_OUT_FO  : boolean := true;
 
   -----------------------------------------------------------------------------
+  -- Cancel-out unit mapping to chip regions
+  -----------------------------------------------------------------------------
+
+  constant COU_FWD_NEG : natural := 0;
+  constant COU_FO_NEG  : natural := 1;
+  constant COU_OVL_NEG : natural := 2;
+  constant COU_BO_NEG  : natural := 3;
+  constant COU_BRL     : natural := 4;
+  constant COU_BO_POS  : natural := 5;
+  constant COU_OVL_POS : natural := 6;
+  constant COU_FO_POS  : natural := 7;
+  constant COU_FWD_POS : natural := 8;
+
+  -----------------------------------------------------------------------------
   -- Misc. constants
   -----------------------------------------------------------------------------
   constant MAX_PHI_VAL : natural := 576;
