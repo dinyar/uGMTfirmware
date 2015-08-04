@@ -8,6 +8,7 @@ CACTUSREPOPATH=/afs/cern.ch/work/d/dinyar/ugmt_firmware/mp7fw_current
 
 vlib ugmt_serdes
 vmap work ugmt_serdes
+vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_types.vhd
 vcom -check_synthesis ../../hdl/common/ugmt_constants.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/mp7_datapath/firmware/hdl/mp7_data_types.vhd
 vcom -check_synthesis ../../hdl/common/GMTTypes_pkg.vhd
@@ -16,7 +17,6 @@ vcom -check_synthesis ../../hdl/ipbus_decode_sorting.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_sort_rank_mems.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_deserialization.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_core/firmware/hdl/ipbus_fabric_sel.vhd
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_types.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_v.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/boards/mp7/base_fw/mp7xe_690/firmware/hdl/mp7_brd_decl.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/boards/mp7/base_fw/common/firmware/hdl/mp7_top_decl.vhd
