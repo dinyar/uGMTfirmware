@@ -32,11 +32,11 @@ vcom -check_synthesis ../../hdl/ipbus_decode_*_deserialization.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_isolation*.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_uGMT.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_mp7_payload.vhd
-vcom -check_synthesis ../../hdl/deserializer_stages/deserialize_energy_quad.vhd
-vcom -check_synthesis ../../hdl/deserializer_stages/deserialize_mu_quad.vhd
-vcom -check_synthesis ../../hdl/deserializer_stages/gen_idx_bits.vhd
-vcom -check_synthesis ../../hdl/deserializer_stages/deserializer_stage_energies.vhd
-vcom -check_synthesis ../../hdl/deserializer_stages/deserializer_stage_muons.vhd
+vcom -check_synthesis ../../hdl/input_stages/deserialize_energy_quad.vhd
+vcom -check_synthesis ../../hdl/input_stages/deserialize_mu_quad.vhd
+vcom -check_synthesis ../../hdl/input_stages/gen_idx_bits.vhd
+vcom -check_synthesis ../../hdl/input_stages/energy_input.vhd
+vcom -check_synthesis ../../hdl/input_stages/muon_input.vhd
 vcom -check_synthesis ../../hdl/Sorting/SorterUnit.vhd
 vcom -check_synthesis ../../hdl/MatchAndMerge/*
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit.vhd
@@ -87,4 +87,3 @@ ln -s ../../hdl/ipbus_slaves/BONegMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FOPosMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FONegMatchQual.mif .
 vmake work > Makefile
-

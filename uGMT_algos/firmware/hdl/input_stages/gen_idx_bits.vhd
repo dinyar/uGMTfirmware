@@ -143,7 +143,7 @@ begin
       for i in NCHAN-1 downto 0 loop
           -- First tick
           sPreCalcEta(i) <= signed(in_buf(EXTRAPOLATION_LATENCY-1)(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(SHIFT_LEFT("000" & sDeltaEta(i), 3), 8));
-          if d(i).data(31-SIGN_IN) = '1' then -- SYSIGN_IN_LOW assumes 62 bit vector. Need to remove offset of 31.
+          if d(i).data(31-SIGN_IN) = '1' then -- SYSIGN_IN assumes 62 bit vector. Need to remove offset of 31.
             sPreCalcPhi(i) <= signed(resize(sGlobalPhi_buf(EXTRAPOLATION_LATENCY-1)(i), 11)) + signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
           else
             sPreCalcPhi(i) <= signed(resize(sGlobalPhi_buf(EXTRAPOLATION_LATENCY-1)(i), 11)) - signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
@@ -153,7 +153,7 @@ begin
         if unsigned(in_buf(EXTRAPOLATION_LATENCY-2)(i).data(PT_IN_HIGH downto PT_IN_LOW)) > 63 then
           -- If muon is high-pT we won't extrapolate.
           sExtrapolatedCoords(i).eta <= signed(in_buf(EXTRAPOLATION_LATENCY-2)(i).data(ETA_IN_HIGH downto ETA_IN_LOW));
-          sIntermediatePhi(i)    <= signed(resize(sGlobalPhi_buf(EXTRAPOLATION_LATENCY-2)(i), 11));
+          sIntermediatePhi(i)        <= signed(resize(sGlobalPhi_buf(EXTRAPOLATION_LATENCY-2)(i), 11));
         else
           -- If muon is low-pT we etrapolate.
           -- TODO: Need to resize to +1 at conversion.

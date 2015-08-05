@@ -126,7 +126,7 @@ begin
   -- Begin 240 MHz domain.
   -----------------------------------------------------------------------------
 
-  deserialize_muons : entity work.deserializer_stage_muons
+  muon_input_stage : entity work.muon_input
     generic map (
       NCHAN     => NCHAN
       )
@@ -147,7 +147,7 @@ begin
       oCaloIdxBits => sCaloIndexBits
       );
 
-  deserialize_energies : entity work.deserializer_stage_energies
+  energy_input_stage : entity work.energy_input
     generic map (
       NCHAN     => NCHAN
       )

@@ -14,16 +14,16 @@ addrtab -t sorting.xml
 addrtab -t gen_calo_idx_bits.xml
 addrtab -t mu_quad_deserialization.xml
 addrtab -t energy_quad_deserialization.xml
-addrtab -t mu_deserialization.xml
-addrtab -t energy_deserialization.xml
+addrtab -t muon_input.xml
+addrtab -t energy_input.xml
 addrtab -t uGMT.xml
 addrtab -t mp7_payload.xml
 src mp7_payload.vhd
-src deserializer_stages/deserializer_stage_energies.vhd
-src deserializer_stages/deserialize_energy_quad.vhd
-src deserializer_stages/deserializer_stage_muons.vhd
-src deserializer_stages/deserialize_mu_quad.vhd
-src deserializer_stages/gen_idx_bits.vhd
+src input_stages/energy_input.vhd
+src input_stages/deserialize_energy_quad.vhd
+src input_stages/muon_input.vhd
+src input_stages/deserialize_mu_quad.vhd
+src input_stages/gen_idx_bits.vhd
 src GMT.vhd
 src serializer_stage.vhd
 src Isolation/IsoAssignmentUnit.vhd
@@ -88,8 +88,8 @@ src ipbus_decode_uGMT.vhd
 src ipbus_decode_energy_quad_deserialization.vhd
 src ipbus_decode_gen_calo_idx_bits.vhd
 src ipbus_decode_mu_quad_deserialization.vhd
-src ipbus_decode_energy_deserialization.vhd
-src ipbus_decode_mu_deserialization.vhd
+src ipbus_decode_energy_input.vhd
+src ipbus_decode_muon_input.vhd
 src ipbus_decode_mp7_payload.vhd
 src common/GMTTypes_pkg.vhd
 src common/ugmt_constants.vhd

@@ -1,0 +1,20 @@
+<node description="LUTs and registers in input domain for uGMT" fwinfo="endpoint">
+    <node id="mu_quad_0" address="0x0" module="file://mu_quad_deserialization.xml" description="Contains sort rank LUT and phi offset register and well as error counters for positive EMTF inputs." />
+    <node id="mu_quad_1" address="0x10000" module="file://mu_quad_deserialization.xml" description="Contains sort rank LUT and phi offset register and well as error counters for positive EMTF and OMTF inputs." />
+    <node id="mu_quad_2" address="0x20000" module="file://mu_quad_deserialization.xml" description="Contains sort rank LUT and phi offset register and well as error counters for positive OMTF inputs." />
+    <node id="mu_quad_3" address="0x30000" module="file://mu_quad_deserialization.xml" description="Contains sort rank LUT and phi offset register and well as error counters for BMTF inputs." />
+    <node id="mu_quad_4" address="0x40000" module="file://mu_quad_deserialization.xml" description="Contains sort rank LUT and phi offset register and well as error counters for BMTF inputs." />
+    <node id="mu_quad_5" address="0x50000" module="file://mu_quad_deserialization.xml" description="Contains sort rank LUT and phi offset register and well as error counters for BMTF inputs." />
+    <node id="mu_quad_6" address="0x60000" module="file://mu_quad_deserialization.xml" description="Contains sort rank LUT and phi offset register and well as error counters for negative OMTF inputs." />
+    <node id="mu_quad_7" address="0x70000" module="file://mu_quad_deserialization.xml" description="Contains sort rank LUT and phi offset register and well as error counters for negative OMTF and EMTF inputs." />
+    <node id="mu_quad_8" address="0x80000" module="file://mu_quad_deserialization.xml" description="Contains sort rank LUT and phi offset register and well as error counters for negative EMTF inputs." />
+    <node id="gen_calo_idx_bits_quad_0" address="0x100000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for positive EMTF inputs." />
+    <node id="gen_calo_idx_bits_quad_1" address="0x120000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for positive EMTF and OMTF inputs." />
+    <node id="gen_calo_idx_bits_quad_2" address="0x140000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for positive OMTF inputs." />
+    <node id="gen_calo_idx_bits_quad_3" address="0x160000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for BMTF inputs." />
+    <node id="gen_calo_idx_bits_quad_4" address="0x180000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for BMTF inputs." />
+    <node id="gen_calo_idx_bits_quad_5" address="0xA00000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for BMTF inputs." />
+    <node id="gen_calo_idx_bits_quad_6" address="0xC00000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for negative OMTF inputs." />
+    <node id="gen_calo_idx_bits_quad_7" address="0xE00000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for negative OMTF and EMTF inputs." />
+    <node id="gen_calo_idx_bits_quad_8" address="0x1000000" module="file://gen_calo_idx_bits.xml" description="Contains extrapolation and calo idx bit LUTs for negative EMTF inputs." />
+</node>

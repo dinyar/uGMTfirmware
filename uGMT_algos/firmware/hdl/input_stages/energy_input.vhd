@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_decode_energy_deserialization.all;
+use work.ipbus_decode_energy_input.all;
 
 use work.mp7_ttc_decl.all;
 use work.mp7_brd_decl.all;
@@ -10,7 +10,7 @@ use work.mp7_brd_decl.all;
 use work.GMTTypes.all;
 use work.ugmt_constants.all;
 
-entity deserializer_stage_energies is
+entity energy_input is
   generic (
     NCHAN     : positive
     );
@@ -26,9 +26,9 @@ entity deserializer_stage_energies is
     oEnergies : out TCaloRegionEtaSlice_vector(NUM_CALO_CHANS-1 downto 0);
     oValid    : out std_logic
     );
-end deserializer_stage_energies;
+end energy_input;
 
-architecture Behavioral of deserializer_stage_energies is
+architecture Behavioral of energy_input is
 
   signal ipbw : ipb_wbus_array(N_SLAVES-1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES-1 downto 0);
@@ -45,7 +45,7 @@ begin  -- Behavioral
     port map(
       ipb_in          => ipb_in,
       ipb_out         => ipb_out,
-      sel             => ipbus_sel_energy_deserialization(ipb_in.ipb_addr),
+      sel             => ipbus_sel_energy_input(ipb_in.ipb_addr),
       ipb_to_slaves   => ipbw,
       ipb_from_slaves => ipbr
     );

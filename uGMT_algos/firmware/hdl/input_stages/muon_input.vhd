@@ -4,7 +4,7 @@ use IEEE.numeric_std.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_decode_mu_deserialization.all;
+use work.ipbus_decode_muon_input.all;
 
 use work.mp7_ttc_decl.all;
 use work.mp7_brd_decl.all;
@@ -12,7 +12,7 @@ use work.mp7_brd_decl.all;
 use work.GMTTypes.all;
 use work.ugmt_constants.all;
 
-entity deserializer_stage_muons is
+entity muon_input is
   generic (
     NCHAN     : positive
     );
@@ -32,9 +32,9 @@ entity deserializer_stage_muons is
     oValid       : out std_logic;
     oCaloIdxBits : out TCaloIndexBit_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0) -- Out one bx after muons
     );
-end deserializer_stage_muons;
+end muon_input;
 
-architecture Behavioral of deserializer_stage_muons is
+architecture Behavioral of muon_input is
 
   signal ipbw : ipb_wbus_array(N_SLAVES-1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES-1 downto 0);
@@ -55,7 +55,7 @@ begin
       port map(
         ipb_in          => ipb_in,
         ipb_out         => ipb_out,
-        sel             => ipbus_sel_mu_deserialization(ipb_in.ipb_addr),
+        sel             => ipbus_sel_muon_input(ipb_in.ipb_addr),
         ipb_to_slaves   => ipbw,
         ipb_from_slaves => ipbr
         );
