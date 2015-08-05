@@ -11,13 +11,13 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use ieee.numeric_std.all;
 
-package ipbus_decode_mu_deserialization is
+package ipbus_decode_muon_input is
 
   constant IPBUS_SEL_WIDTH: positive := 5; -- Should be enough for now?
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
-  function ipbus_sel_mu_deserialization(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
+  function ipbus_sel_muon_input(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Thu Jun 18 17:12:06 2015 
+-- START automatically  generated VHDL the Wed Aug  5 19:48:00 2015 
   constant N_SLV_MU_QUAD_0: integer := 0;
   constant N_SLV_MU_QUAD_1: integer := 1;
   constant N_SLV_MU_QUAD_2: integer := 2;
@@ -40,15 +40,15 @@ package ipbus_decode_mu_deserialization is
 -- END automatically generated VHDL
 
     
-end ipbus_decode_mu_deserialization;
+end ipbus_decode_muon_input;
 
-package body ipbus_decode_mu_deserialization is
+package body ipbus_decode_muon_input is
 
-  function ipbus_sel_mu_deserialization(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t is
+  function ipbus_sel_muon_input(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Thu Jun 18 17:12:06 2015 
+-- START automatically  generated VHDL the Wed Aug  5 19:48:00 2015 
     if    std_match(addr, "-------000000000----------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_MU_QUAD_0, IPBUS_SEL_WIDTH)); -- mu_quad_0 / base 0x00000000 / mask 0x01ff0000
     elsif std_match(addr, "-------000000001----------------") then
@@ -93,7 +93,7 @@ package body ipbus_decode_mu_deserialization is
 
     return sel;
 
-  end function ipbus_sel_mu_deserialization;
+  end function ipbus_sel_muon_input;
 
-end ipbus_decode_mu_deserialization;
+end ipbus_decode_muon_input;
 
