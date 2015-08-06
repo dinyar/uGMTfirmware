@@ -28,8 +28,8 @@ entity CancelOutUnit_Single is
     rst     : in  std_logic;
     ipb_in  : in  ipb_wbus;
     ipb_out : out ipb_rbus;
-    iWedges : in  TGMTMuTracks_vector (num_wedges-1 downto 0);
-    oCancel : out std_logic_vector (num_tracks*num_wedges-1 downto 0);
+    iWedges : in  TGMTMuTracks_vector(num_wedges-1 downto 0);
+    oCancel : out std_logic_vector(num_tracks*num_wedges-1 downto 0);
     clk     : in  std_logic
     );
 end CancelOutUnit_Single;

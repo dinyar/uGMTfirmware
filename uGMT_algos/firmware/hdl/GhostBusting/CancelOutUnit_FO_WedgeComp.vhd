@@ -15,19 +15,19 @@ entity CancelOutUnit_FO_WedgeComp is
     LOCAL_PHI_OFFSET : signed(8 downto 0)
     );
   port (
-    clk_ipb     : in  std_logic;
-    rst         : in  std_logic;
-    ipb_in      : in  ipb_wbus;
-    ipb_out     : out ipb_rbus;
-    iWedge_Ovl : in  TGMTMuTracks;
-    iWedge_Fwd1   : in  TGMTMuTracks;
-    iWedge_Fwd2   : in  TGMTMuTracks;
-    iWedge_Fwd3   : in  TGMTMuTracks;
-    oCancel_Ovl : out TCancelWedge(2 downto 0);
-    oCancel_Fwd1   : out std_logic_vector (2 downto 0);
-    oCancel_Fwd2   : out std_logic_vector (2 downto 0);
-    oCancel_Fwd3   : out std_logic_vector (2 downto 0);
-    clk         : in  std_logic
+    clk_ipb      : in  std_logic;
+    rst          : in  std_logic;
+    ipb_in       : in  ipb_wbus;
+    ipb_out      : out ipb_rbus;
+    iWedge_Ovl   : in  TGMTMuTracks;
+    iWedge_Fwd1  : in  TGMTMuTracks;
+    iWedge_Fwd2  : in  TGMTMuTracks;
+    iWedge_Fwd3  : in  TGMTMuTracks;
+    oCancel_Ovl  : out TCancelWedge(2 downto 0);
+    oCancel_Fwd1 : out std_logic_vector (2 downto 0);
+    oCancel_Fwd2 : out std_logic_vector (2 downto 0);
+    oCancel_Fwd3 : out std_logic_vector (2 downto 0);
+    clk          : in  std_logic
     );
 end CancelOutUnit_FO_WedgeComp;
 

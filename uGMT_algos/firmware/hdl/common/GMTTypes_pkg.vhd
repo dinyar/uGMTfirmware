@@ -71,7 +71,8 @@ package GMTTypes is
     phi : signed(7 downto 0);
     address : TMuonAddress;
 
-    qual : unsigned(3 downto 0);
+    qual  : unsigned(3 downto 0);
+    empty : std_logic;
   end record;
 
   -- Collection of muon tracks
@@ -245,7 +246,6 @@ package GMTTypes is
   function unroll_global_phi (signal iGlobalPhi_event    : TGlobalPhi_event) return TGlobalPhi_vector;
   function gmt_mu_from_in_mu (signal iMuonIn             : TGMTMuIn) return TGMTMu;
   function calo_etaslice_from_flat (constant flat        : std_logic_vector) return TCaloRegionEtaSlice;
-  function track_addresses_from_in_mus(signal iMuon_flat : TFlatMuon_vector) return TGMTMuTracks_vector;
   function combine_or (or_vec                            : std_logic_vector) return std_logic;
   function check_valid_bits (signal iValid_link          : TValid_link) return std_logic;
   function unpack_idx_bits(signal iIdxBits               : TIndexBits_link) return TIndexBits_vector;
@@ -253,6 +253,9 @@ package GMTTypes is
   function unpack_empty_bits(signal iEmptyBits           : TEmpty_link) return std_logic_vector;
   function unpack_calo_idx_bits(signal iCaloIdxBits      : TCaloIndexBits_link) return TCaloIndexBit_vector;
   function apply_global_phi_wraparound(iPhi       : signed(10 downto 0)) return unsigned;
+
+  function track_addresses_from_in_mus(signal iMuon_flat : TFlatMuon_vector;
+                                       signal iEmpty     : TEmpty_link) return TGMTMuTracks_vector;
 
   function add_offset_to_local_phi(signal iLocalPhi : std_logic_vector(7 downto 0);
                        signal iOffset   : unsigned(9 downto 0)) return signed;
@@ -290,7 +293,8 @@ package body GMTTypes is
   -- Cancel-out information for each wedge.
   -----------------------------------------------------------------------------
   function track_addresses_from_in_mus (
-    signal iMuon_flat : TFlatMuon_vector)
+    signal iMuon_flat : TFlatMuon_vector;
+    signal iEmpty : TEmpty_link)
     return TGMTMuTracks_vector is
     variable oWedges : TGMTMuTracks_vector(iMuon_flat'length/3-1 downto 0);
   begin
@@ -301,7 +305,8 @@ package body GMTTypes is
         oWedges(i)(j).phi     := signed(iMuon_flat(3*i+j)(PHI_IN_HIGH downto PHI_IN_LOW));
         oWedges(i)(j).address := iMuon_flat(3*i+j)(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW);
 
-        oWedges(i)(j).qual := unsigned(iMuon_flat(3*i+j)(QUAL_IN_HIGH downto QUAL_IN_LOW));
+        oWedges(i)(j).qual  := unsigned(iMuon_flat(3*i+j)(QUAL_IN_HIGH downto QUAL_IN_LOW));
+        oWedges(i)(j).empty := iEmpty(i)(j);
       end loop;  -- j
     end loop;  -- oWedges'Range
     return oWedges;
