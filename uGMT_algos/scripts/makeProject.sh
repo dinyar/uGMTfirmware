@@ -4,7 +4,7 @@ usage="
 # Directory for mp7fw can be chosen freely.
 # Call with the following options:
 # $0 [tag] ['unstable'/'stable'] [username for svn] [path for mp7fw]
-# e.g. $0 mp7fw_v1_6_0 stable dinyar /[...]/mp7fwdirectory
+# e.g. $0 mp7fw_v1_8_0 stable dinyar /[...]/mp7fwdirectory
 # or   $0 mp7fw_v1_7_1 unstable dinyar /[...]/mp7fwdirectory
 "
 
@@ -23,7 +23,7 @@ mp7fwPath=$4
 
 scriptsPath=$(pwd)
 uGMTalgosPath=$scriptsPath"/../"
-topPath=$scriptsPath"/../../"
+#topPath=$scriptsPath"/../../../"
 
 # If directory for mp7fw doesn't exist we'll create it.
 mp7path=$mp7fwPath"/"$tag
@@ -64,8 +64,8 @@ else
 	echo "Error, couldn't check out mp7fw."
 	exit
 fi
-./ProjectManager.py fetch projects/examples/mp7xe_690
-./ProjectManager.py vivado projects/examples/mp7xe_690
+./ProjectManager.py fetch projects/ugmt
+./ProjectManager.py vivado projects/ugmt
 
 cd ..
 
@@ -77,35 +77,19 @@ mp7currPath=$mp7fwPath/$mp7currDir
 
 cd $mp7currPath
 
-echo "Adding dependency file for the uGMT to the null algo dep file."
-pushd cactusupgrades/components/mp7_null_algo/firmware/cfg/
-sed -i '1iinclude -c components/uGMT_algos uGMT_algo.dep' mp7_null_algo.dep
+echo "Replacing ugmt algos from SVN repo with our version.. "
+pushd cactusupgrades/projects/ugmt
+rm -rf *
+ln -s $uGMTalgosPath/* .
 
 popd
 
-echo "Linking uGMT_algos into cactusupgrades/components"
-pushd cactusupgrades/components/
-ln -s $uGMTalgosPath/uGMT_algos .
-
-popd
-
-echo "Replacing top_decl.vhd by link to custom version"
-pushd cactusupgrades/projects/examples/mp7xe_690/firmware/hdl
-rm -f top_decl.vhd
-
-ln -s $uGMTalgosPath/top_decl.vhd .
-
-popd
-
-echo "Removing constraints for null algo."
-echo "" > cactusupgrades/components/mp7_null_algo/firmware/ucf/mp7_null_algo.tcl
-
-cd mp7xe_690
-ln -s $uGMTalgosPath/runAll.sh .
+cd ugmt 
+ln -s $scriptsPath/runAll.sh .
 
 pushd $scriptsPath
 echo "Retrieving LUT content files.."
-python get_luts.py binary --outpath ../uGMT_algos/firmware/hdl/ipbus_slaves/
+python get_luts.py binary --outpath ../firmware/hdl/ipbus_slaves/
 
 echo "#############################################################################"
 echo "To complete the setup process navigate to
@@ -115,7 +99,7 @@ as well as
 cactusupgrades/components/mp7_infra/addr_table/mp7xe_infra.xml
 as described in README.md."
 echo "To then create the project execute 'make project' in
-$mp7currPath/mp7xe_690."
+$mp7currPath/ugmt ."
 echo "#############################################################################"
 
 exit

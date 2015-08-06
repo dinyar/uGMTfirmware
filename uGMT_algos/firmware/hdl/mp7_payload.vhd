@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.all;
 use work.mp7_data_types.all;
 use work.ipbus.all;
 use work.ipbus_reg_types.all;
-use work.ipbus_decode_ugmt_serdes.all;
+use work.ipbus_decode_mp7_payload.all;
 
 use work.mp7_ttc_decl.all;
 use work.mp7_brd_decl.all;
@@ -12,27 +12,29 @@ use work.mp7_brd_decl.all;
 use work.ugmt_constants.all;
 use work.GMTTypes.all;
 
-entity ugmt_serdes is
-  generic(
-    NCHAN     : positive  := 72;
-    VALID_BIT : std_logic := '0'
+entity mp7_payload is
+  generic (
+    NCHAN : natural := 72
     );
   port(
-    clk_ipb : in  std_logic;
-    ipb_rst : in  std_logic;
-    ipb_in  : in  ipb_wbus;
-    ipb_out : out ipb_rbus;
-    ctrs    : in  ttc_stuff_array(N_REGION - 1 downto 0);
-    clk240  : in  std_logic;
-    clk40   : in  std_logic;
-    rst40   : in  std_logic;
-    d       : in  ldata(NCHAN - 1 downto 0);
-    q       : out ldata(NCHAN - 1 downto 0)
+    ctrs        : in  ttc_stuff_array(N_REGION - 1 downto 0);
+    clk         : in  std_logic;
+    rst         : in  std_logic;
+    ipb_in      : in  ipb_wbus;
+    ipb_out     : out ipb_rbus;
+    clk_payload : in  std_logic;
+    rst_payload : in  std_logic;
+    clk_p       : in  std_logic;
+    rst_loc     : in std_logic_vector(N_REGION - 1 downto 0); -- per-region reset signals
+    clken_loc   : in std_logic_vector(N_REGION - 1 downto 0); -- per-region clken signals
+    d           : in  ldata(NCHAN - 1 downto 0);
+    bc0         : out std_logic;
+    q           : out ldata(NCHAN - 1 downto 0)
     );
 
-end ugmt_serdes;
+end mp7_payload;
 
-architecture rtl of ugmt_serdes is
+architecture rtl of mp7_payload is
 
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
@@ -115,7 +117,7 @@ begin
     port map(
       ipb_in          => ipb_in,
       ipb_out         => ipb_out,
-      sel             => ipbus_sel_ugmt_serdes(ipb_in.ipb_addr),
+      sel             => ipbus_sel_mp7_payload(ipb_in.ipb_addr),
       ipb_to_slaves   => ipbw,
       ipb_from_slaves => ipbr
       );
@@ -124,19 +126,18 @@ begin
   -- Begin 240 MHz domain.
   -----------------------------------------------------------------------------
 
-  deserialize_muons : entity work.deserializer_stage_muons
+  muon_input_stage : entity work.muon_input
     generic map (
-      NCHAN     => NCHAN,
-      VALID_BIT => VALID_BIT
+      NCHAN     => NCHAN
       )
     port map (
-      clk_ipb      => clk_ipb,
-      rst          => rst40,
+      clk_ipb      => clk,
+      rst          => rst_loc,
       ipb_in       => ipbw(N_SLV_MU_DESERIALIZATION),
       ipb_out      => ipbr(N_SLV_MU_DESERIALIZATION),
       ctrs         => ctrs,
-      clk240       => clk240,
-      clk40        => clk40,
+      clk240       => clk_p,
+      clk40        => clk_payload,
       d            => d(NCHAN-1 downto 0),
       oMuons       => sMuons,
       oTracks      => sTracks,
@@ -146,19 +147,18 @@ begin
       oCaloIdxBits => sCaloIndexBits
       );
 
-  deserialize_energies : entity work.deserializer_stage_energies
+  energy_input_stage : entity work.energy_input
     generic map (
-      NCHAN     => NCHAN,
-      VALID_BIT => VALID_BIT
+      NCHAN     => NCHAN
       )
     port map (
-      clk_ipb   => clk_ipb,
-      rst       => rst40,
+      clk_ipb   => clk,
+      rst       => rst_loc,
       ipb_in    => ipbw(N_SLV_ENERGY_DESERIALIZATION),
       ipb_out   => ipbr(N_SLV_ENERGY_DESERIALIZATION),
       ctrs      => ctrs,
-      clk240    => clk240,
-      clk40     => clk40,
+      clk240    => clk_p,
+      clk40     => clk_payload,
       d         => d(NCHAN-1 downto 0),
       oEnergies => sEnergies,
       oValid    => sValid_energies
@@ -174,9 +174,9 @@ begin
   -- Begin 40 MHz domain.
   -----------------------------------------------------------------------------
 
-  delay_valid_bit : process(clk40)
+  delay_valid_bit : process(clk_payload)
   begin  -- process delay_valid_bit
-    if clk40'event and clk40 = '1' then  -- rising clock edge
+    if clk_payload'event and clk_payload = '1' then  -- rising clock edge
       sValid_muons_reg                           <= sValid_muons;
       sValid_energies_reg                        <= sValid_energies;
       sValid_buffer(sValid_buffer'high downto 1) <= sValid_buffer(sValid_buffer'high-1 downto 0);
@@ -184,9 +184,9 @@ begin
   end process delay_valid_bit;
 
 
-  gmt_index_comp : process (clk40)
+  gmt_index_comp : process (clk_payload)
   begin  -- process gmt_index_comp
-    if clk40'event and clk40 = '1' then  -- rising clock edge
+    if clk_payload'event and clk_payload = '1' then  -- rising clock edge
       for index in sMuons'range loop
         sIndexBits(index) <= to_unsigned(index, sIndexBits(index)'length);
       end loop;  -- index
@@ -198,8 +198,8 @@ begin
         N_REG => 1
     )
     port map(
-        clk => clk_ipb,
-        reset => ipb_rst,
+        clk => clk,
+        reset => rst,
         ipbus_in => ipbw(N_SLV_INPUT_DISABLE_REG),
         ipbus_out => ipbr(N_SLV_INPUT_DISABLE_REG),
         q => sInputDisable
@@ -312,16 +312,17 @@ begin
       oMuons => oMuons,
       oIso   => sIso,
 
-      clk     => clk40,
-      clk_ipb => clk_ipb,
-      sinit   => rst40,
+      clk     => clk_payload,
+      clk_ipb => clk,
+      sinit   => rst_payload,
+      rst_loc => rst_loc,
       ipb_in  => ipbw(N_SLV_UGMT),
       ipb_out => ipbr(N_SLV_UGMT)
       );
 
-  gmt_out_reg : process (clk40)
+  gmt_out_reg : process (clk_payload)
   begin  -- process gmt_out_reg
-    if clk40'event and clk40 = '1' then  -- rising clock edge
+    if clk_payload'event and clk_payload = '1' then  -- rising clock edge
       sIso_reg   <= sIso;
       oMuons_reg <= oMuons;
 
@@ -345,9 +346,9 @@ begin
   -----------------------------------------------------------------------------
   serialize : entity work.serializer_stage
     port map (
-      clk240               => clk240,
-      clk40                => clk40,
-      rst                  => rst40,
+      clk240               => clk_p,
+      clk40                => clk_payload,
+      rst                  => rst_payload,
       iValid               => sValid_buffer(sValid_buffer'high),
       sMuons               => oMuons_reg,
       sIso                 => sIso_reg,

@@ -8,6 +8,7 @@ CACTUSREPOPATH=/afs/cern.ch/work/d/dinyar/ugmt_firmware/mp7fw_current
 
 vlib ugmt_serdes
 vmap work ugmt_serdes
+vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_types.vhd
 vcom -check_synthesis ../../hdl/common/ugmt_constants.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/mp7_datapath/firmware/hdl/mp7_data_types.vhd
 vcom -check_synthesis ../../hdl/common/GMTTypes_pkg.vhd
@@ -16,11 +17,10 @@ vcom -check_synthesis ../../hdl/ipbus_decode_sorting.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_sort_rank_mems.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_deserialization.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_core/firmware/hdl/ipbus_fabric_sel.vhd
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_types.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_v.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/boards/mp7/base_fw/mp7xe_690/firmware/hdl/mp7_brd_decl.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/boards/mp7/base_fw/common/firmware/hdl/mp7_top_decl.vhd
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/projects/examples/mp7xe_690/firmware/hdl/top_decl.vhd
+vcom -check_synthesis ../../hdl/top_decl.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/mp7_ttc/firmware/hdl/mp7_ttc_decl.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_reg_setable.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_counter.vhd
@@ -31,12 +31,12 @@ vcom -check_synthesis ../../hdl/ipbus_decode_cancel_out_*.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_*_deserialization.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_isolation*.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_uGMT.vhd
-vcom -check_synthesis ../../hdl/ipbus_decode_ugmt_serdes.vhd
-vcom -check_synthesis ../../hdl/deserializer_stages/deserialize_energy_quad.vhd
-vcom -check_synthesis ../../hdl/deserializer_stages/deserialize_mu_quad.vhd
-vcom -check_synthesis ../../hdl/deserializer_stages/gen_idx_bits.vhd
-vcom -check_synthesis ../../hdl/deserializer_stages/deserializer_stage_energies.vhd
-vcom -check_synthesis ../../hdl/deserializer_stages/deserializer_stage_muons.vhd
+vcom -check_synthesis ../../hdl/ipbus_decode_mp7_payload.vhd
+vcom -check_synthesis ../../hdl/input_stages/deserialize_energy_quad.vhd
+vcom -check_synthesis ../../hdl/input_stages/deserialize_mu_quad.vhd
+vcom -check_synthesis ../../hdl/input_stages/gen_idx_bits.vhd
+vcom -check_synthesis ../../hdl/input_stages/energy_input.vhd
+vcom -check_synthesis ../../hdl/input_stages/muon_input.vhd
 vcom -check_synthesis ../../hdl/Sorting/SorterUnit.vhd
 vcom -check_synthesis ../../hdl/MatchAndMerge/*
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit.vhd
@@ -62,7 +62,7 @@ vcom -check_synthesis ../../hdl/Isolation/iso_check.vhd
 vcom -check_synthesis ../../hdl/Isolation/IsoAssignmentUnit.vhd
 vcom -check_synthesis ../../hdl/GMT.vhd
 vcom -check_synthesis ../../hdl/serializer_stage.vhd
-vcom -check_synthesis ../../hdl/ugmt_serdes.vhd
+vcom -check_synthesis ../../hdl/mp7_payload.vhd
 vcom -check_synthesis ../tb_helpers.vhd
 vcom -check_synthesis ugmt_serdes_tb.vhd
 
@@ -87,4 +87,3 @@ ln -s ../../hdl/ipbus_slaves/BONegMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FOPosMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FONegMatchQual.mif .
 vmake work > Makefile
-

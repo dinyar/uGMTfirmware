@@ -25,6 +25,7 @@ architecture behavior of testbench is
   signal   clk240          : std_logic := '0';
   signal   clk40           : std_logic := '0';
   signal   rst             : std_logic := '0';
+  signal   rst_loc         : std_logic_vector(17 downto 0) := (others => '0');
 
   signal iMuonsB             : TGMTMu_vector(35 downto 0);
   signal iMuonsO             : TGMTMu_vector(35 downto 0);
@@ -92,6 +93,7 @@ begin
       clk                     => clk40,
       clk_ipb                 => clk240,
       sinit                   => rst,
+      rst_loc                 => rst_loc,
       ipb_in.ipb_addr         => (others => '0'),
       ipb_in.ipb_wdata        => (others => '0'),
       ipb_in.ipb_strobe       => '0',

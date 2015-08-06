@@ -4,7 +4,7 @@ use IEEE.numeric_std.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_decode_mu_deserialization.all;
+use work.ipbus_decode_muon_input.all;
 
 use work.mp7_ttc_decl.all;
 use work.mp7_brd_decl.all;
@@ -12,14 +12,13 @@ use work.mp7_brd_decl.all;
 use work.GMTTypes.all;
 use work.ugmt_constants.all;
 
-entity deserializer_stage_muons is
+entity muon_input is
   generic (
-    NCHAN     : positive;
-    VALID_BIT : std_logic
+    NCHAN     : positive
     );
   port (
     clk_ipb      : in  std_logic;
-    rst          : in  std_logic;
+    rst          : in  std_logic_vector(N_REGION - 1 downto 0);
     ipb_in       : in  ipb_wbus;
     ipb_out      : out ipb_rbus;
     ctrs         : in  ttc_stuff_array(N_REGION - 1 downto 0);
@@ -33,9 +32,9 @@ entity deserializer_stage_muons is
     oValid       : out std_logic;
     oCaloIdxBits : out TCaloIndexBit_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0) -- Out one bx after muons
     );
-end deserializer_stage_muons;
+end muon_input;
 
-architecture Behavioral of deserializer_stage_muons is
+architecture Behavioral of muon_input is
 
   signal ipbw : ipb_wbus_array(N_SLAVES-1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES-1 downto 0);
@@ -56,7 +55,7 @@ begin
       port map(
         ipb_in          => ipb_in,
         ipb_out         => ipb_out,
-        sel             => ipbus_sel_mu_deserialization(ipb_in.ipb_addr),
+        sel             => ipbus_sel_muon_input(ipb_in.ipb_addr),
         ipb_to_slaves   => ipbw,
         ipb_from_slaves => ipbr
         );
@@ -64,12 +63,11 @@ begin
   deserialize_loop : for i in MU_QUAD_ASSIGNMENT'range generate
     deserialize : entity work.deserialize_mu_quad
       generic map (
-        VALID_BIT       => VALID_BIT,
-	INIT_PHI_OFFSET => INIT_PHI_OFFSET_ASSIGN(i)
+        INIT_PHI_OFFSET => INIT_PHI_OFFSET_ASSIGN(i)
         )
       port map (
         clk_ipb    => clk_ipb,
-        rst        => rst,
+        rst        => rst(MU_QUAD_ASSIGNMENT(i)),
         ipb_in     => ipbw(N_SLV_MU_QUAD_0+i),
         ipb_out    => ipbr(N_SLV_MU_QUAD_0+i),
         bctr       => ctrs(MU_QUAD_ASSIGNMENT(i)).bctr,
@@ -92,7 +90,7 @@ begin
       )
       port map (
         clk_ipb       => clk_ipb,
-        rst           => rst,
+        rst           => rst(i),
         ipb_in        => ipbw(N_SLV_GEN_CALO_IDX_BITS_QUAD_0+i),
         ipb_out       => ipbr(N_SLV_GEN_CALO_IDX_BITS_QUAD_0+i),
         clk240        => clk240,

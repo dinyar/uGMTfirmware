@@ -12,8 +12,7 @@ use work.ugmt_constants.all;
 
 entity deserialize_energy_quad is
   generic (
-    NCHAN     : positive := 4;
-    VALID_BIT : std_logic
+    NCHAN     : positive := 4
     );
   port (
     clk_ipb   : in  std_logic;

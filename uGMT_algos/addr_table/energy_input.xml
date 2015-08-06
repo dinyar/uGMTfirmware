@@ -1,0 +1,9 @@
+<node description="Energy input stage for uGMT" fwinfo="endpoint">
+    <node id="energy_quad_0" address="0x0" module="file://energy_quad_deserialization.xml" description="Contains error counters for the energy deserialization of input links 8-11." />
+    <node id="energy_quad_1" address="0x10000" module="file://energy_quad_deserialization.xml" description="Contains error counters for the energy deserialization of input links 12-15." />
+    <node id="energy_quad_2" address="0x20000" module="file://energy_quad_deserialization.xml" description="Contains error counters for the energy deserialization of input links 16-19." />
+    <node id="energy_quad_3" address="0x30000" module="file://energy_quad_deserialization.xml" description="Contains error counters for the energy deserialization of input links 20-23." />
+    <node id="energy_quad_4" address="0x40000" module="file://energy_quad_deserialization.xml" description="Contains error counters for the energy deserialization of input links 24-27." />
+    <node id="energy_quad_5" address="0x50000" module="file://energy_quad_deserialization.xml" description="Contains error counters for the energy deserialization of input links 28-31." />
+    <node id="energy_quad_6" address="0x60000" module="file://energy_quad_deserialization.xml" description="Contains error counters for the energy deserialization of input links 32-35." />
+</node>

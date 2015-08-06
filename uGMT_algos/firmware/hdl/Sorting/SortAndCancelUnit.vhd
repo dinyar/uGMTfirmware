@@ -10,6 +10,7 @@ use work.ipbus_decode_sorting.all;
 
 use work.GMTTypes.all;
 use work.ugmt_constants.all;
+use work.mp7_brd_decl.all;
 
 entity SortAndCancelUnit is
   generic (
@@ -62,6 +63,7 @@ entity SortAndCancelUnit is
     clk     : in  std_logic;
     clk_ipb : in  std_logic;
     sinit   : in  std_logic;
+    rst_loc : in  std_logic_vector(N_REGION - 1 downto 0);
     ipb_in  : in  ipb_wbus;
     ipb_out : out ipb_rbus
     );
@@ -346,7 +348,7 @@ begin
         )
     port map (
       clk_ipb     => clk_ipb,
-      rst         => sinit,
+      rst         => rst_loc(COU_BO_POS),
       ipb_in      => ipbw(N_SLV_COU_BO_POS),
       ipb_out     => ipbr(N_SLV_COU_BO_POS),
       iWedges_Ovl => sTracksO_plus,
@@ -363,7 +365,7 @@ begin
       )
     port map (
       clk_ipb     => clk_ipb,
-      rst         => sinit,
+      rst         => rst_loc(COU_BO_NEG),
       ipb_in      => ipbw(N_SLV_COU_BO_NEG),
       ipb_out     => ipbr(N_SLV_COU_BO_NEG),
       iWedges_Ovl => sTracksO_minus,
@@ -381,7 +383,7 @@ begin
       )
     port map (
       clk_ipb     => clk_ipb,
-      rst         => sinit,
+      rst         => rst_loc(COU_FO_POS),
       ipb_in      => ipbw(N_SLV_COU_FO_POS),
       ipb_out     => ipbr(N_SLV_COU_FO_POS),
       iWedges_Ovl => sTracksO_plus,
@@ -398,7 +400,7 @@ begin
       )
     port map (
       clk_ipb     => clk_ipb,
-      rst         => sinit,
+      rst         => rst_loc(COU_FO_NEG),
       ipb_in      => ipbw(N_SLV_COU_FO_NEG),
       ipb_out     => ipbr(N_SLV_COU_FO_NEG),
       iWedges_Ovl => sTracksO_minus,
@@ -418,7 +420,7 @@ begin
       )
     port map (
       clk_ipb => clk_ipb,
-      rst     => sinit,
+      rst     => rst_loc(COU_BRL),
       ipb_in  => ipbw(N_SLV_COU_BRL),
       ipb_out => ipbr(N_SLV_COU_BRL),
       iWedges => iTracksB,
@@ -435,7 +437,7 @@ begin
       )
     port map (
       clk_ipb => clk_ipb,
-      rst     => sinit,
+      rst     => rst_loc(COU_OVL_POS),
       ipb_in  => ipbw(N_SLV_COU_OVL_POS),
       ipb_out => ipbr(N_SLV_COU_OVL_POS),
       iWedges => sTracksO_plus,
@@ -452,7 +454,7 @@ begin
       )
     port map (
       clk_ipb => clk_ipb,
-      rst     => sinit,
+      rst     => rst_loc(COU_OVL_NEG),
       ipb_in  => ipbw(N_SLV_COU_OVL_NEG),
       ipb_out => ipbr(N_SLV_COU_OVL_NEG),
       iWedges => sTracksO_minus,
@@ -469,7 +471,7 @@ begin
       )
     port map (
       clk_ipb => clk_ipb,
-      rst     => sinit,
+      rst     => rst_loc(COU_FWD_POS),
       ipb_in  => ipbw(N_SLV_COU_FWD_POS),
       ipb_out => ipbr(N_SLV_COU_FWD_POS),
       iWedges => sTracksF_plus,
@@ -486,7 +488,7 @@ begin
       )
     port map (
       clk_ipb => clk_ipb,
-      rst     => sinit,
+      rst     => rst_loc(COU_FWD_NEG),
       ipb_in  => ipbw(N_SLV_COU_FWD_NEG),
       ipb_out => ipbr(N_SLV_COU_FWD_NEG),
       iWedges => sTracksF_minus,

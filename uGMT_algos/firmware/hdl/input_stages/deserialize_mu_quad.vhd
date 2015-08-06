@@ -15,7 +15,6 @@ use work.ugmt_constants.all;
 
 entity deserialize_mu_quad is
   generic (
-    VALID_BIT       : std_logic;
     INIT_PHI_OFFSET : ipb_reg_v(0 to 3)
     );
   port (
@@ -240,7 +239,7 @@ begin
     phi_offset_reg : entity work.ipbus_reg_setable
       generic map(
         N_REG => 1,
-	INIT  => INIT_PHI_OFFSET(i)
+  INIT  => INIT_PHI_OFFSET(i)
         )
       port map(
         clk       => clk_ipb,
