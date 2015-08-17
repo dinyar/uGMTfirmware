@@ -42,7 +42,7 @@ fi
 chmod a+x ProjectManager.py
 if [ "$2" == "stable" ];
 then
-	checkoutString=""
+	unstableSelector="stable/"
 elif [ "$2" == "unstable" ];
 then
 	unstableSelector="unstable/"
