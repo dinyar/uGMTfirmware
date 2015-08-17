@@ -4,7 +4,7 @@ export XILINXD_LICENSE_FILE='2112@lxlic01,2112@lxlic02,2112@lxlic03'
 export LD_LIBRARY_PATH=/opt/cactus/lib:$LD_LIBRARY_PATH
 export PATH=/opt/cactus/bin:/opt/cactus/bin/uhal/tools:$PATH
 
-source /home/scratch/Xilinx/Vivado/2014.4/settings64.sh
+source /home/scratch/Vivado2015.2/Vivado/2015.2/settings64.sh
 
 PROJECTFILE="top/top.xpr"
 
