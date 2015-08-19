@@ -64,9 +64,9 @@ begin
       gen_addr_based : if CANCEL_OUT_TYPE /= string'("COORDINATE") generate
         x : entity work.GhostCheckerUnit
          port map (
-           mu1     => wedge1(i).address,
+           mu1     => (others => '0'),
            qual1   => wedge1(i).qual,
-           mu2     => wedge2(j).address,
+           mu2     => (others => '0'),
            qual2   => wedge2(i).qual,
            ghost1  => sIntermediateCancel1(j)(i),
            ghost2  => sIntermediateCancel2(j)(i)
