@@ -95,8 +95,17 @@ package ugmt_constants is
   constant SIGN_IN      : natural := 31;
   constant VALIDSIGN_IN : natural := 32;
 
-  constant ADDRESS_IN_LOW  : natural := 33;
-  constant ADDRESS_IN_HIGH : natural := 61;
+  constant BMTF_ADDRESS_STATION_1_IN_LOW  : natural := 35;
+  constant BMTF_ADDRESS_STATION_1_IN_HIGH : natural := 36;
+  constant BMTF_ADDRESS_STATION_2_IN_LOW  : natural := 37;
+  constant BMTF_ADDRESS_STATION_2_IN_HIGH : natural := 40;
+  constant BMTF_ADDRESS_STATION_3_IN_LOW  : natural := 41;
+  constant BMTF_ADDRESS_STATION_3_IN_HIGH : natural := 44;
+  constant BMTF_ADDRESS_STATION_4_IN_LOW  : natural := 45;
+  constant BMTF_ADDRESS_STATION_4_IN_HIGH : natural := 48;
+
+  constant BMTF_WHEEL_NO_IN_LOW  : natural := 51;
+  constant BMTF_WHEEL_NO_IN_HIGH : natural := 53;
 
   --
   -- out

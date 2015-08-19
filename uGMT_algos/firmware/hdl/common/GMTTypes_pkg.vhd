@@ -303,7 +303,7 @@ package body GMTTypes is
       for j in oWedges(i)'range loop
         oWedges(i)(j).eta     := signed(iMuon_flat(3*i+j)(ETA_IN_HIGH downto ETA_IN_LOW));
         oWedges(i)(j).phi     := signed(iMuon_flat(3*i+j)(PHI_IN_HIGH downto PHI_IN_LOW));
-        oWedges(i)(j).address := iMuon_flat(3*i+j)(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW);
+        --oWedges(i)(j).address := iMuon_flat(3*i+j)(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW);
 
         oWedges(i)(j).qual  := unsigned(iMuon_flat(3*i+j)(QUAL_IN_HIGH downto QUAL_IN_LOW));
         oWedges(i)(j).empty := iEmpty(i)(j);
