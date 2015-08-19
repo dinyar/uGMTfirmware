@@ -17,11 +17,11 @@ use work.GMTTypes.all;
 
 entity CancelOutUnit_Single is
   generic (
-    COORDINATE_BASED : boolean := true; -- whether coordinate-based cancel-out should be done.
+    CANCEL_OUT_TYPE  : boolean := true;   -- which type of cancel-out should be used.
     DATA_FILE        : string;
-    num_wedges       : natural := 12;         -- number of wedges to be checked
-    num_tracks       : natural := 3;          -- number of tracks per wedge
-    LOCAL_PHI_OFFSET : signed(8 downto 0)     -- distance of one wedge/sector from another
+    num_wedges       : natural := 12;     -- number of wedges to be checked
+    num_tracks       : natural := 3;      -- number of tracks per wedge
+    LOCAL_PHI_OFFSET : signed(8 downto 0) -- distance of one wedge/sector from another
     );
   port (
     clk_ipb : in  std_logic;
@@ -77,7 +77,7 @@ begin
   g1 : for i in iWedges'range generate
     x1 : entity work.WedgeCheckerUnit
     generic map (
-      COORDINATE_BASED => COORDINATE_BASED,
+      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE,
       DATA_FILE        => DATA_FILE,
       LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
       )

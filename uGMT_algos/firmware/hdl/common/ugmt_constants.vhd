@@ -183,11 +183,11 @@ package ugmt_constants is
   -- Cancel-out selector
   -----------------------------------------------------------------------------
 
-  constant COORDINATE_BASED_CANCEL_OUT_BRL : boolean := true;
-  constant COORDINATE_BASED_CANCEL_OUT_OVL : boolean := true;
-  constant COORDINATE_BASED_CANCEL_OUT_FWD : boolean := true;
-  constant COORDINATE_BASED_CANCEL_OUT_BO  : boolean := true;
-  constant COORDINATE_BASED_CANCEL_OUT_FO  : boolean := true;
+  constant CANCEL_OUT_TYPE_BRL : string := string'("COORDINATE");
+  constant CANCEL_OUT_TYPE_OVL : string := string'("COORDINATE");
+  constant CANCEL_OUT_TYPE_FWD : string := string'("COORDINATE");
+  constant CANCEL_OUT_TYPE_BO  : string := string'("COORDINATE");
+  constant CANCEL_OUT_TYPE_FO  : string := string'("COORDINATE");
 
   -----------------------------------------------------------------------------
   -- Cancel-out unit mapping to chip regions
