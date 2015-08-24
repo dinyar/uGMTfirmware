@@ -29,7 +29,9 @@ entity mp7_payload is
     clken_loc   : in std_logic_vector(N_REGION - 1 downto 0); -- per-region clken signals
     d           : in  ldata(NCHAN - 1 downto 0);
     bc0         : out std_logic;
-    q           : out ldata(NCHAN - 1 downto 0)
+    q           : out ldata(NCHAN - 1 downto 0);
+    gpio        : out std_logic_vector(29 downto 0);
+    gpio_en     : out std_logic_vector(29 downto 0)
     );
 
 end mp7_payload;
@@ -107,6 +109,9 @@ architecture rtl of mp7_payload is
   signal sFinalEnergies_reg          : TCaloArea_vector(7 downto 0);
 
 begin
+
+  gpio    <= (others => '0');
+  gpio_en <= (others => '0');
 
   -- ipbus address decode
   fabric : entity work.ipbus_fabric_sel
