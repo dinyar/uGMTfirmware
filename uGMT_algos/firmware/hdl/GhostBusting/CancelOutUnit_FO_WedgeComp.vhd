@@ -10,7 +10,7 @@ use work.GMTTypes.all;
 
 entity CancelOutUnit_FO_WedgeComp is
   generic (
-    COORDINATE_BASED : boolean := true; -- whether coordinate-based cancel-out should be done.
+    CANCEL_OUT_TYPE  : string := string'("COORDINATE"); -- which type of cancel-out should be used.
     DATA_FILE        : string;
     LOCAL_PHI_OFFSET : signed(8 downto 0)
     );
@@ -54,49 +54,51 @@ begin
   -- Compare muons from this wedge with muons from each neighbour
   x0 : entity work.WedgeCheckerUnit
   generic map (
-    COORDINATE_BASED => COORDINATE_BASED,
+    CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE,
     DATA_FILE        => DATA_FILE,
     LOCAL_PHI_OFFSET => -LOCAL_PHI_OFFSET
     )
-     port map (
-        clk_ipb => clk_ipb,
-        rst     => rst,
-        ipb_in  => ipbw(N_SLV_CANCEL_OUT_MEMS_0),
-        ipb_out => ipbr(N_SLV_CANCEL_OUT_MEMS_0),
-        wedge1  => iWedge_Ovl,
-        wedge2  => iWedge_Fwd1,
-        ghosts1 => oCancel_Ovl(0),
-        ghosts2 => oCancel_Fwd1,
-        clk     => clk);
-    x1 : entity work.WedgeCheckerUnit
-    generic map (
-        DATA_FILE        => DATA_FILE,
-        LOCAL_PHI_OFFSET => to_signed(0, 9)
-      )
-      port map (
-        clk_ipb => clk_ipb,
-        rst     => rst,
-        ipb_in  => ipbw(N_SLV_CANCEL_OUT_MEMS_1),
-        ipb_out => ipbr(N_SLV_CANCEL_OUT_MEMS_1),
-        wedge1  => iWedge_Ovl,
-        wedge2  => iWedge_Fwd2,
-        ghosts1 => oCancel_Ovl(1),
-        ghosts2 => oCancel_Fwd2,
-        clk     => clk);
-    x2 : entity work.WedgeCheckerUnit
-    generic map (
-        DATA_FILE        => DATA_FILE,
-        LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
-      )
-      port map (
-        clk_ipb => clk_ipb,
-        rst     => rst,
-        ipb_in  => ipbw(N_SLV_CANCEL_OUT_MEMS_2),
-        ipb_out => ipbr(N_SLV_CANCEL_OUT_MEMS_2),
-        wedge1  => iWedge_Ovl,
-        wedge2  => iWedge_Fwd3,
-        ghosts1 => oCancel_Ovl(2),
-        ghosts2 => oCancel_Fwd3,
-        clk     => clk);
+  port map (
+    clk_ipb => clk_ipb,
+    rst     => rst,
+    ipb_in  => ipbw(N_SLV_CANCEL_OUT_MEMS_0),
+    ipb_out => ipbr(N_SLV_CANCEL_OUT_MEMS_0),
+    wedge1  => iWedge_Ovl,
+    wedge2  => iWedge_Fwd1,
+    ghosts1 => oCancel_Ovl(0),
+    ghosts2 => oCancel_Fwd1,
+    clk     => clk);
+  x1 : entity work.WedgeCheckerUnit
+  generic map (
+    CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE,
+    DATA_FILE        => DATA_FILE,
+    LOCAL_PHI_OFFSET => to_signed(0, 9)
+    )
+  port map (
+    clk_ipb => clk_ipb,
+    rst     => rst,
+    ipb_in  => ipbw(N_SLV_CANCEL_OUT_MEMS_1),
+    ipb_out => ipbr(N_SLV_CANCEL_OUT_MEMS_1),
+    wedge1  => iWedge_Ovl,
+    wedge2  => iWedge_Fwd2,
+    ghosts1 => oCancel_Ovl(1),
+    ghosts2 => oCancel_Fwd2,
+    clk     => clk);
+  x2 : entity work.WedgeCheckerUnit
+  generic map (
+    CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE,
+    DATA_FILE        => DATA_FILE,
+    LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
+  )
+  port map (
+    clk_ipb => clk_ipb,
+    rst     => rst,
+    ipb_in  => ipbw(N_SLV_CANCEL_OUT_MEMS_2),
+    ipb_out => ipbr(N_SLV_CANCEL_OUT_MEMS_2),
+    wedge1  => iWedge_Ovl,
+    wedge2  => iWedge_Fwd3,
+    ghosts1 => oCancel_Ovl(2),
+    ghosts2 => oCancel_Fwd3,
+    clk     => clk);
 
 end Behavioral;

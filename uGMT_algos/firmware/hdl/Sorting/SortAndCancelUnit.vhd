@@ -342,7 +342,7 @@ begin
   -- If match found then cancel out (non-)ovl mu (configurable?)
   cou_bo_plus : entity work.CancelOutUnit_BO
     generic map (
-        COORDINATE_BASED => COORDINATE_BASED_CANCEL_OUT_BO,
+        CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BO,
         DATA_FILE        => "BOPosMatchQual.mif",
         LOCAL_PHI_OFFSET => to_signed(48, 9)
         )
@@ -359,7 +359,7 @@ begin
       );
   cou_bo_minus : entity work.CancelOutUnit_BO
     generic map (
-      COORDINATE_BASED => COORDINATE_BASED_CANCEL_OUT_BO,
+      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BO,
       DATA_FILE        => "BONegMatchQual.mif",
       LOCAL_PHI_OFFSET => to_signed(48, 9)
       )
@@ -377,7 +377,7 @@ begin
 
   cou_fo_plus : entity work.CancelOutUnit_FO
     generic map (
-      COORDINATE_BASED => COORDINATE_BASED_CANCEL_OUT_FO,
+      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_FO,
       DATA_FILE        => "FOPosMatchQual.mif",
       LOCAL_PHI_OFFSET => to_signed(96, 9)
       )
@@ -394,7 +394,7 @@ begin
       );
   cou_fo_minus : entity work.CancelOutUnit_FO
     generic map (
-      COORDINATE_BASED => COORDINATE_BASED_CANCEL_OUT_FO,
+      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_FO,
       DATA_FILE        => "FONegMatchQual.mif",
       LOCAL_PHI_OFFSET => to_signed(96, 9)
       )
@@ -412,7 +412,7 @@ begin
 
   cou_b : entity work.CancelOutUnit_Single
     generic map (
-      COORDINATE_BASED => COORDINATE_BASED_CANCEL_OUT_BRL,
+      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BRL,
       DATA_FILE        => "BrlSingleMatchQual.mif",
       num_wedges       => 12,
       num_tracks       => 3,
@@ -429,7 +429,7 @@ begin
       );
   cou_o_plus : entity work.CancelOutUnit_Single
     generic map (
-      COORDINATE_BASED => COORDINATE_BASED_CANCEL_OUT_OVL,
+      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_OVL,
       DATA_FILE        => "OvlPosSingleMatchQual.mif",
       num_wedges       => 6,
       num_tracks       => 3,
@@ -446,7 +446,7 @@ begin
       );
   cou_o_minus : entity work.CancelOutUnit_Single
     generic map (
-      COORDINATE_BASED => COORDINATE_BASED_CANCEL_OUT_OVL,
+      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_OVL,
       DATA_FILE        => "OvlNegSingleMatchQual.mif",
       num_wedges       => 6,
       num_tracks       => 3,
@@ -463,7 +463,7 @@ begin
       );
   cou_f_plus : entity work.CancelOutUnit_Single
     generic map (
-      COORDINATE_BASED => COORDINATE_BASED_CANCEL_OUT_FWD,
+      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_FWD,
       DATA_FILE        => "FwdPosSingleMatchQual.mif",
       num_wedges       => 6,
       num_tracks       => 3,
@@ -480,7 +480,7 @@ begin
       );
   cou_f_minus : entity work.CancelOutUnit_Single
     generic map (
-      COORDINATE_BASED => COORDINATE_BASED_CANCEL_OUT_FWD,
+      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_FWD,
       DATA_FILE        => "FwdNegSingleMatchQual.mif",
       num_wedges       => 6,
       num_tracks       => 3,
