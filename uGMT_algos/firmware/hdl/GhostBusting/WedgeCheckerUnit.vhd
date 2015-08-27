@@ -61,17 +61,29 @@ begin
   -- Compare the two wedges' muons with each other.
   g1 : for i in wedge1'range generate
     g2 : for j in wedge2'range generate
-      gen_addr_based : if CANCEL_OUT_TYPE /= string'("COORDINATE") generate
-        x : entity work.GhostCheckerUnit
+      gen_bmtf_addr_based : if CANCEL_OUT_TYPE = string'("BMTF_ADDRESSES") generate
+        x : entity work.GhostCheckerUnit_BMTF
          port map (
-           mu1     => wedge1(i).address,
+           mu1     => wedge1(i).bmtfAddress,
            qual1   => wedge1(i).qual,
-           mu2     => wedge2(j).address,
+           mu2     => wedge2(i).bmtfAddress,
            qual2   => wedge2(i).qual,
            ghost1  => sIntermediateCancel1(j)(i),
            ghost2  => sIntermediateCancel2(j)(i)
            );
-      end generate gen_addr_based;
+      end generate gen_bmtf_addr_based;
+
+      -- TODO: MISSING!
+      gen_omtf_addr_based : if CANCEL_OUT_TYPE = string'("OMTF_ADDRESSES") generate
+        sIntermediateCancel1(j)(i) <= '0';
+        sIntermediateCancel2(j)(i) <= '0';
+      end generate gen_omtf_addr_based;
+
+      -- TODO: MISSING!
+      gen_emtf_addr_based : if CANCEL_OUT_TYPE = string'("EMTF_ADDRESSES") generate
+        sIntermediateCancel1(j)(i) <= '0';
+        sIntermediateCancel2(j)(i) <= '0';
+      end generate gen_emtf_addr_based;
 
       gen_coord_based : if CANCEL_OUT_TYPE = string'("COORDINATE") generate
         x : entity work.GhostCheckerUnit_spatialCoords
@@ -79,21 +91,21 @@ begin
           DATA_FILE        => DATA_FILE,
           LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
           )
-          port map (
-            clk_ipb => clk_ipb,
-            rst     => rst,
-            ipb_in  => ipbw(3*i +j),
-            ipb_out => ipbr(3*i +j),
-            eta1    => wedge1(i).eta,
-            phi1    => wedge1(i).phi,
-            qual1   => wedge1(i).qual,
-            eta2    => wedge2(j).eta,
-            phi2    => wedge2(j).phi,
-            qual2   => wedge2(i).qual,
-            ghost1  => sIntermediateCancel1(j)(i),
-            ghost2  => sIntermediateCancel2(j)(i),
-            clk     => clk
-            );
+        port map (
+          clk_ipb => clk_ipb,
+          rst     => rst,
+          ipb_in  => ipbw(3*i +j),
+          ipb_out => ipbr(3*i +j),
+          eta1    => wedge1(i).eta,
+          phi1    => wedge1(i).phi,
+          qual1   => wedge1(i).qual,
+          eta2    => wedge2(j).eta,
+          phi2    => wedge2(j).phi,
+          qual2   => wedge2(i).qual,
+          ghost1  => sIntermediateCancel1(j)(i),
+          ghost2  => sIntermediateCancel2(j)(i),
+          clk     => clk
+          );
       end generate gen_coord_based;
     end generate g2;
   end generate g1;

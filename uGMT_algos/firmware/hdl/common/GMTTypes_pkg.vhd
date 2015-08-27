@@ -13,9 +13,6 @@ package GMTTypes is
   -- GMT muon at the input to the GMT.
   -----------------------------------------------------------------------------
 
-  -- Cancel-out information at station level
-  subtype TMuonAddress is std_logic_vector(28 downto 0);
-
   type TGMTMuIn is record
     sign       : std_logic;                     -- charge bit (1= plus)
     sign_valid : std_logic;                     -- charge bit valid indicator
@@ -66,10 +63,20 @@ package GMTTypes is
   -- Information used for ghostbusting (track addresses and/or spatial
   -- coordinates.
   -----------------------------------------------------------------------------
+
+  subtype TBMTFSectorAddresses is array (2 downto 0) of unsigned(3 downto 0);
+
+  type TBMTFTrackAddress is record
+    wheelNo : signed(3 downto 0);  -- Not clear yet if signed or unsigned
+
+    addressStation0  : unsigned(1 downto 0); -- 1 or 2. 3 for empty
+    stationAddresses : TBMTFSectorAddresses; -- 8 to D; 0 to 5. F for empty
+  end record;
+
   type TGMTMuTrackInfo is record
     eta : signed(8 downto 0);
     phi : signed(7 downto 0);
-    address : TMuonAddress;
+    bmtfAddress : TBMTFTrackAddress;
 
     qual  : unsigned(3 downto 0);
     empty : std_logic;
@@ -301,9 +308,19 @@ package body GMTTypes is
     for i in oWedges'range loop
       -- put 3 muons into wedge vector.
       for j in oWedges(i)'range loop
-        oWedges(i)(j).eta     := signed(iMuon_flat(3*i+j)(ETA_IN_HIGH downto ETA_IN_LOW));
-        oWedges(i)(j).phi     := signed(iMuon_flat(3*i+j)(PHI_IN_HIGH downto PHI_IN_LOW));
-        --oWedges(i)(j).address := iMuon_flat(3*i+j)(ADDRESS_IN_HIGH downto ADDRESS_IN_LOW);
+        oWedges(i)(j).eta := signed(iMuon_flat(3*i+j)(ETA_IN_HIGH downto ETA_IN_LOW));
+        oWedges(i)(j).phi := signed(iMuon_flat(3*i+j)(PHI_IN_HIGH downto PHI_IN_LOW));
+
+        oWedges(i)(j).bmtfAddress.addressStation0 := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_1_IN_HIGH downto BMTF_ADDRESS_STATION_1_IN_LOW));
+
+        oWedges(i)(j).bmtfAddress.stationAddresses[0] := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_2_IN_HIGH downto BMTF_ADDRESS_STATION_2_IN_LOW));
+        oWedges(i)(j).bmtfAddress.stationAddresses[1] := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_3_IN_HIGH downto BMTF_ADDRESS_STATION_3_IN_LOW));
+        oWedges(i)(j).bmtfAddress.stationAddresses[2] := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_4_IN_HIGH downto BMTF_ADDRESS_STATION_4_IN_LOW));
+
+        oWedges(i)(j).bmtfAddress.wheelNo         := signed(iMuon_flat(3*i+j)(BMTF_WHEEL_NO_IN_HIGH downto BMTF_WHEEL_NO_IN_LOW));
+
+        -- TODO: Missing EMTF and OMTF addresses here. Should be optimized away
+        -- by tools when not used downstream.
 
         oWedges(i)(j).qual  := unsigned(iMuon_flat(3*i+j)(QUAL_IN_HIGH downto QUAL_IN_LOW));
         oWedges(i)(j).empty := iEmpty(i)(j);
@@ -311,22 +328,6 @@ package body GMTTypes is
     end loop;  -- oWedges'Range
     return oWedges;
   end;
-
-  -----------------------------------------------------------------------------
-  -- Muon addresses
-  -----------------------------------------------------------------------------
-  --
-  -- Unpack
-  --
-  -- TODO: This is completely wrong, but is a placeholder until we know how
-  -- we will encode Muon track addresses.
-  function unpack_address_from_flat (
-    signal flat : std_logic_vector(28 downto 0))
-    return TMuonAddress is
-    variable vec : TMuonAddress;
-  begin  -- unpack_address_from_flat
-    return vec;
-  end unpack_address_from_flat;
 
 
   -----------------------------------------------------------------------------

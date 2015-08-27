@@ -192,7 +192,7 @@ package ugmt_constants is
   -- Cancel-out selector
   -----------------------------------------------------------------------------
 
-  constant CANCEL_OUT_TYPE_BRL : string := string'("COORDINATE");
+  constant CANCEL_OUT_TYPE_BRL : string := string'("BMTF_ADDRESSES");
   constant CANCEL_OUT_TYPE_OVL : string := string'("COORDINATE");
   constant CANCEL_OUT_TYPE_FWD : string := string'("COORDINATE");
   constant CANCEL_OUT_TYPE_BO  : string := string'("COORDINATE");
