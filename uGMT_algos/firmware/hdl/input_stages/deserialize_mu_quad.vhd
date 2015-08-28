@@ -200,19 +200,25 @@ begin
         end loop;  -- iFrame
 
         -- Check for errors
-        if bctr = (11 downto 0 => '0') then
-          if in_buf(0)(iChan).data(31) = '1' then
-            sBCerror(iChan) <= '0';
-          else
+        if in_buf(0)(iChan).valid = '1' then
+          if ((bctr /= (11 downto 0 => '0')) and (in_buf(0)(iChan).data(31) = '1')) or
+             ((bctr = (11 downto 0 => '0')) and (in_buf(0)(iChan).data(31) = '0')) then
             sBCerror(iChan) <= '1';
+          else
+            sBCerror(iChan) <= '0';
+          end if;
+
+          if in_buf(2)(iChan).data(31) /= bctr(0) or
+             in_buf(3)(iChan).data(31) /= bctr(1) or
+             in_buf(4)(iChan).data(31) /= bctr(2) then
+            sBnchCntErr(iChan) <= '1';
+          else
+            sBnchCntErr(iChan) <= '0';
           end if;
         else
-          sBCerror(iChan) <= '0';
-        end if;
-        if in_buf(2)(iChan).data(31) = bctr(0) and in_buf(3)(iChan).data(31) = bctr(1) and in_buf(4)(iChan).data(31) = bctr(2) then
+          -- If valid bit is '0'
+          sBCerror(iChan)    <= '0';
           sBnchCntErr(iChan) <= '0';
-        else
-          sBnchCntErr(iChan) <= '1';
         end if;
 
       end loop;  -- iChan
