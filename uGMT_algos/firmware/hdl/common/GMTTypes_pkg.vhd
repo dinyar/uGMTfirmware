@@ -64,10 +64,10 @@ package GMTTypes is
   -- coordinates.
   -----------------------------------------------------------------------------
 
-  subtype TBMTFSectorAddresses is array (2 downto 0) of unsigned(3 downto 0);
+  type TBMTFSectorAddresses is array (2 downto 0) of unsigned(3 downto 0);
 
   type TBMTFTrackAddress is record
-    wheelNo : signed(3 downto 0);  -- Not clear yet if signed or unsigned
+    wheelNo : signed(2 downto 0);  -- Not clear yet if signed or unsigned
 
     addressStation0  : unsigned(1 downto 0); -- 1 or 2. 3 for empty
     stationAddresses : TBMTFSectorAddresses; -- 8 to D; 0 to 5. F for empty
@@ -313,11 +313,11 @@ package body GMTTypes is
 
         oWedges(i)(j).bmtfAddress.addressStation0 := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_1_IN_HIGH downto BMTF_ADDRESS_STATION_1_IN_LOW));
 
-        oWedges(i)(j).bmtfAddress.stationAddresses[0] := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_2_IN_HIGH downto BMTF_ADDRESS_STATION_2_IN_LOW));
-        oWedges(i)(j).bmtfAddress.stationAddresses[1] := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_3_IN_HIGH downto BMTF_ADDRESS_STATION_3_IN_LOW));
-        oWedges(i)(j).bmtfAddress.stationAddresses[2] := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_4_IN_HIGH downto BMTF_ADDRESS_STATION_4_IN_LOW));
+        oWedges(i)(j).bmtfAddress.stationAddresses(0) := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_2_IN_HIGH downto BMTF_ADDRESS_STATION_2_IN_LOW));
+        oWedges(i)(j).bmtfAddress.stationAddresses(1) := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_3_IN_HIGH downto BMTF_ADDRESS_STATION_3_IN_LOW));
+        oWedges(i)(j).bmtfAddress.stationAddresses(2) := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_4_IN_HIGH downto BMTF_ADDRESS_STATION_4_IN_LOW));
 
-        oWedges(i)(j).bmtfAddress.wheelNo         := signed(iMuon_flat(3*i+j)(BMTF_WHEEL_NO_IN_HIGH downto BMTF_WHEEL_NO_IN_LOW));
+        oWedges(i)(j).bmtfAddress.wheelNo := signed(iMuon_flat(3*i+j)(BMTF_WHEEL_NO_IN_HIGH downto BMTF_WHEEL_NO_IN_LOW));
 
         -- TODO: Missing EMTF and OMTF addresses here. Should be optimized away
         -- by tools when not used downstream.
