@@ -18,9 +18,9 @@ vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_core/firmw
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/boards/mp7/base_fw/mp7xe_690/firmware/hdl/mp7_brd_decl.vhd
 vcom -check_synthesis ../../hdl/Sorting/SorterUnit.vhd
 vcom -check_synthesis ../../hdl/MatchAndMerge/*
-vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_dpram_dist.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_cancel_out_*.vhd
+vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_BMTF.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_spatialCoords.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/WedgeCheckerUnit.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_BO_WedgeComp.vhd
@@ -48,4 +48,3 @@ ln -s ../../hdl/ipbus_slaves/BOPosMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/BONegMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FOPosMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FONegMatchQual.mif .
-
