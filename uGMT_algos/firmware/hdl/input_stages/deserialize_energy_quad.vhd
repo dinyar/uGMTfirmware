@@ -99,25 +99,25 @@ end process shift_buffers;
         end loop;  -- frame
 
         -- Check for errors
-        if in_buf(0)(iChan).valid = '1' then
-          if ((bctr /= (11 downto 0 => '0')) and (in_buf(0)(iChan).data(31) = '1')) or
-             ((bctr = (11 downto 0 => '0')) and (in_buf(0)(iChan).data(31) = '0')) then
-            sBCerror(iChan) <= '1';
+        if in_buf(0)(chan).valid = '1' then
+          if ((bctr /= (11 downto 0 => '0')) and (in_buf(0)(chan).data(31) = '1')) or
+             ((bctr = (11 downto 0 => '0')) and (in_buf(0)(chan).data(31) = '0')) then
+            sBCerror(chan) <= '1';
           else
-            sBCerror(iChan) <= '0';
+            sBCerror(chan) <= '0';
           end if;
 
-          if in_buf(2)(iChan).data(31) /= bctr(0) or
-             in_buf(3)(iChan).data(31) /= bctr(1) or
-             in_buf(4)(iChan).data(31) /= bctr(2) then
-            sBnchCntErr(iChan) <= '1';
+          if in_buf(2)(chan).data(31) /= bctr(0) or
+             in_buf(3)(chan).data(31) /= bctr(1) or
+             in_buf(4)(chan).data(31) /= bctr(2) then
+            sBnchCntErr(chan) <= '1';
           else
-            sBnchCntErr(iChan) <= '0';
+            sBnchCntErr(chan) <= '0';
           end if;
         else
           -- If valid bit is '0'
-          sBCerror(iChan)    <= '0';
-          sBnchCntErr(iChan) <= '0';
+          sBCerror(chan)    <= '0';
+          sBnchCntErr(chan) <= '0';
         end if;
 
       end loop;  -- chan
