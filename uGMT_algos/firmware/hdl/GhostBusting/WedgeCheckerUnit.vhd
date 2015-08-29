@@ -111,7 +111,7 @@ begin
   end generate g1;
 
   -- If one of the muons are empty we won't check for ghosts.
-  check_empty : process (sIntermediateCancel2, sIntermediateCancel2, wedge1_reg, wedge2_reg)
+  check_empty : process (sIntermediateCancel1, sIntermediateCancel2, wedge1_reg, wedge2_reg)
   begin  -- process check_empty
     for i in wedge1'range loop
         for j in wedge2'range loop
