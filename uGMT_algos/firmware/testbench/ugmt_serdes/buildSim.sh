@@ -28,6 +28,7 @@ vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_dpram_dist.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_dpram.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_gen_calo_idx_bits.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_cancel_out_*.vhd
+vcom -check_synthesis ../../hdl/ipbus_decode_*_input.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_*_deserialization.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_isolation*.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_uGMT.vhd
@@ -39,7 +40,7 @@ vcom -check_synthesis ../../hdl/input_stages/energy_input.vhd
 vcom -check_synthesis ../../hdl/input_stages/muon_input.vhd
 vcom -check_synthesis ../../hdl/Sorting/SorterUnit.vhd
 vcom -check_synthesis ../../hdl/MatchAndMerge/*
-vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit.vhd
+vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_BMTF.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_spatialCoords.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/WedgeCheckerUnit.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_BO_WedgeComp.vhd
