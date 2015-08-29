@@ -54,8 +54,8 @@ begin
             matchedStation <= true;
           end if;
         --  If one muon in 0+ and one muon in 0- (0+ and 0- are physically the same wheel)
-        elsif ((mu1.wheelNo = WHEEL_ZERO_POS) and (mu2.wheelNo = WHEEL_ZERO_NEG)) or
-              ((mu1.wheelNo = WHEEL_ZERO_NEG) and (mu2.wheelNo = WHEEL_ZERO_POS)) then
+        elsif (mu1.detectorSide /= mu2.detectorSide) and
+              (mu1.wheelNo = 0 and mu2.wheelNo = 0) then
             if (mu1.stationAddresses(station) = X"8" and mu2.stationAddresses(station) = X"A") or
                (mu1.stationAddresses(station) = X"9" and mu2.stationAddresses(station) = X"B") then
                matchedStation <= true;
@@ -64,10 +64,10 @@ begin
       end loop;
   end process;
 
-  check_ghosts : process (match, qual1, qual2, deltaPhi, deltaEta)
+  check_ghosts : process (matchedStation, qual1, qual2)
   begin  -- process check_ghosts
     -- If the muons are 'far enough' apart we don't check the LUT output.
-    if match = true then
+    if matchedStation = true then
       if qual1 > qual2 then
         ghost1 <= '0';
         ghost2 <= '1';
