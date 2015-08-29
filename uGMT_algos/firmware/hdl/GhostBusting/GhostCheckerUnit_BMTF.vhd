@@ -4,9 +4,9 @@ use IEEE.STD_LOGIC_1164.all;
 use work.GMTTypes.all;
 
 entity GhostCheckerUnit_BMTF is
-  port (mu1    : in  TBMTFSectorAddresses;
+  port (mu1    : in  TBMTFTrackAddress;
         qual1  : in  unsigned(3 downto 0);
-        mu2    : in  TBMTFSectorAddresses;
+        mu2    : in  TBMTFTrackAddress;
         qual2  : in  unsigned(3 downto 0);
         ghost1 : out std_logic;
         ghost2 : out std_logic);

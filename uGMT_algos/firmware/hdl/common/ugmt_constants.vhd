@@ -105,7 +105,10 @@ package ugmt_constants is
   constant BMTF_ADDRESS_STATION_4_IN_HIGH : natural := 48;
 
   constant BMTF_WHEEL_NO_IN_LOW  : natural := 51;
-  constant BMTF_WHEEL_NO_IN_HIGH : natural := 53;
+  constant BMTF_WHEEL_NO_IN_HIGH : natural := 52;
+
+  constant BMTF_DETECTOR_SIDE_LOW  : natural := 53;
+  constant BMTF_DETECTOR_SIDE_HIGH : natural := 53;
 
   --
   -- out
