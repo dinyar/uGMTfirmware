@@ -17,7 +17,7 @@ use work.GMTTypes.all;
 
 entity CancelOutUnit_Single is
   generic (
-    CANCEL_OUT_TYPE  : boolean := true;   -- which type of cancel-out should be used.
+    CANCEL_OUT_TYPE  : string := string'("COORDINATE"); -- which type of cancel-out should be used.
     DATA_FILE        : string;
     num_wedges       : natural := 12;     -- number of wedges to be checked
     num_tracks       : natural := 3;      -- number of tracks per wedge
