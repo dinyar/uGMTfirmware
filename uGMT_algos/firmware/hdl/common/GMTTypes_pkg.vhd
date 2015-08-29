@@ -68,7 +68,7 @@ package GMTTypes is
 
   type TBMTFTrackAddress is record
     detectorSide : std_logic_vector(0 downto 0); -- Side of detector
-    wheelNo : signed(1 downto 0);  -- Not clear yet if signed or unsigned
+    wheelNo      : unsigned(1 downto 0);  -- Not clear yet if signed or unsigned
 
     addressStation0  : unsigned(1 downto 0); -- 1 or 2. 3 for empty
     stationAddresses : TBMTFSectorAddresses; -- 8 to D; 0 to 5. F for empty
@@ -318,8 +318,8 @@ package body GMTTypes is
         oWedges(i)(j).bmtfAddress.stationAddresses(1) := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_3_IN_HIGH downto BMTF_ADDRESS_STATION_3_IN_LOW));
         oWedges(i)(j).bmtfAddress.stationAddresses(2) := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_4_IN_HIGH downto BMTF_ADDRESS_STATION_4_IN_LOW));
 
-        oWedges(i)(j).bmtfAddress.detectorSide := signed(iMuon_flat(3*i+j)(BMTF_DETECTOR_SIDE_HIGH downto BMTF_DETECTOR_SIDE_LOW));
-        oWedges(i)(j).bmtfAddress.wheelNo      := signed(iMuon_flat(3*i+j)(BMTF_WHEEL_NO_IN_HIGH downto BMTF_WHEEL_NO_IN_LOW));
+        oWedges(i)(j).bmtfAddress.detectorSide := iMuon_flat(3*i+j)(BMTF_DETECTOR_SIDE_HIGH downto BMTF_DETECTOR_SIDE_LOW);
+        oWedges(i)(j).bmtfAddress.wheelNo      := unsigned(iMuon_flat(3*i+j)(BMTF_WHEEL_NO_IN_HIGH downto BMTF_WHEEL_NO_IN_LOW));
 
         -- TODO: Missing EMTF and OMTF addresses here. Should be optimized away
         -- by tools when not used downstream.
