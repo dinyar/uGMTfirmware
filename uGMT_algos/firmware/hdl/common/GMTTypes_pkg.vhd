@@ -318,7 +318,7 @@ package body GMTTypes is
         oWedges(i)(j).bmtfAddress.stationAddresses(1) := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_3_IN_HIGH downto BMTF_ADDRESS_STATION_3_IN_LOW));
         oWedges(i)(j).bmtfAddress.stationAddresses(2) := unsigned(iMuon_flat(3*i+j)(BMTF_ADDRESS_STATION_4_IN_HIGH downto BMTF_ADDRESS_STATION_4_IN_LOW));
 
-        oWedges(i)(j).bmtfAddress.detectorSide := signed(iMuon_flat(3*i+j)(BMTF_DETECTOR_SIDE downto BMTF_DETECTOR_SIDE));
+        oWedges(i)(j).bmtfAddress.detectorSide := signed(iMuon_flat(3*i+j)(BMTF_DETECTOR_SIDE_HIGH downto BMTF_DETECTOR_SIDE_LOW));
         oWedges(i)(j).bmtfAddress.wheelNo      := signed(iMuon_flat(3*i+j)(BMTF_WHEEL_NO_IN_HIGH downto BMTF_WHEEL_NO_IN_LOW));
 
         -- TODO: Missing EMTF and OMTF addresses here. Should be optimized away
