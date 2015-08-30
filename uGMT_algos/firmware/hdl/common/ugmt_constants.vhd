@@ -145,6 +145,14 @@ package ugmt_constants is
   constant CANCEL_OUT_DATA_FILE_FWD_POS : string := string'("FwdPosSingleMatchQual.mif")
   constant CANCEL_OUT_DATA_FILE_FWD_NEG : string := string'("FwdNegSingleMatchQual.mif")
 
+  constant ABSOLUTE_ISO_CHECK_DATA_FILE : string := string'("AbsIsoCheckMem.mif")
+  constant RELATIVE_ISO_CHECK_DATA_FILE : string := string'("RelIsoCheckMem.mif")
+
+  constant CALO_ETA_IDX_BITS_DATA_FILE : string := string'("IdxSelMemEta.mif")
+  constant CALO_PHI_IDX_BITS_DATA_FILE : string := string'("IdxSelMemPhi.mif")
+
+  constant SORT_RANK_DATA_FILE : string := string'("SortRank.mif")
+
   type ContentFileAssignment_vector is array (0 to 3) of string(1 to 21);
   -- Barrel
   constant ETA_BRL_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"));
