@@ -46,7 +46,7 @@ begin
   iso_check_loop : for i in oIsoBits'range generate
     abs_iso_check : entity work.ipbus_dpram_dist
         generic map (
-          DATA_FILE  => "AbsIsoCheckMem.mif",
+          DATA_FILE  => ABSOLUTE_ISO_CHECK_DATA_FILE,
           ADDR_WIDTH => ABS_ISO_ADDR_WIDTH,
           WORD_WIDTH => ABS_ISO_WORD_SIZE
           )

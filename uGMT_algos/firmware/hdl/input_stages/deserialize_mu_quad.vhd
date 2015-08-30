@@ -117,7 +117,7 @@ begin
                     d(i).data(PT_IN_HIGH downto PT_IN_LOW);
     sort_rank_assignment : entity work.ipbus_dpram
       generic map (
-        DATA_FILE  => "SortRank.mif",
+        DATA_FILE  => SORT_RANK_DATA_FILE,
         ADDR_WIDTH => SORT_RANK_MEM_ADDR_WIDTH,
         WORD_WIDTH => SORT_RANK_MEM_WORD_SIZE
         )

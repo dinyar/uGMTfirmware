@@ -343,7 +343,7 @@ begin
   cou_bo_plus : entity work.CancelOutUnit_BO
     generic map (
         CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BO,
-        DATA_FILE        => "BOPosMatchQual.mif",
+        DATA_FILE        => CANCEL_OUT_DATA_FILE_BO_POS,
         LOCAL_PHI_OFFSET => to_signed(48, 9)
         )
     port map (
@@ -360,7 +360,7 @@ begin
   cou_bo_minus : entity work.CancelOutUnit_BO
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BO,
-      DATA_FILE        => "BONegMatchQual.mif",
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_BO_NEG,
       LOCAL_PHI_OFFSET => to_signed(48, 9)
       )
     port map (
@@ -378,7 +378,7 @@ begin
   cou_fo_plus : entity work.CancelOutUnit_FO
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_FO,
-      DATA_FILE        => "FOPosMatchQual.mif",
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_FO_POS,
       LOCAL_PHI_OFFSET => to_signed(96, 9)
       )
     port map (
@@ -395,7 +395,7 @@ begin
   cou_fo_minus : entity work.CancelOutUnit_FO
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_FO,
-      DATA_FILE        => "FONegMatchQual.mif",
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_FO_NEG,
       LOCAL_PHI_OFFSET => to_signed(96, 9)
       )
     port map (
@@ -413,7 +413,7 @@ begin
   cou_b : entity work.CancelOutUnit_Single
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BRL,
-      DATA_FILE        => "BrlSingleMatchQual.mif",
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_BRL,
       num_wedges       => 12,
       num_tracks       => 3,
       LOCAL_PHI_OFFSET => to_signed(48, 9)
@@ -430,7 +430,7 @@ begin
   cou_o_plus : entity work.CancelOutUnit_Single
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_OVL,
-      DATA_FILE        => "OvlPosSingleMatchQual.mif",
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_OVL_POS,
       num_wedges       => 6,
       num_tracks       => 3,
       LOCAL_PHI_OFFSET => to_signed(96, 9)
@@ -447,7 +447,7 @@ begin
   cou_o_minus : entity work.CancelOutUnit_Single
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_OVL,
-      DATA_FILE        => "OvlNegSingleMatchQual.mif",
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_OVL_NEG,
       num_wedges       => 6,
       num_tracks       => 3,
       LOCAL_PHI_OFFSET => to_signed(96, 9)
@@ -464,7 +464,7 @@ begin
   cou_f_plus : entity work.CancelOutUnit_Single
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_FWD,
-      DATA_FILE        => "FwdPosSingleMatchQual.mif",
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_FWD_POS,
       num_wedges       => 6,
       num_tracks       => 3,
       LOCAL_PHI_OFFSET => to_signed(96, 9)
@@ -481,7 +481,7 @@ begin
   cou_f_minus : entity work.CancelOutUnit_Single
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_FWD,
-      DATA_FILE        => "FwdNegSingleMatchQual.mif",
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_FWD_NEG,
       num_wedges       => 6,
       num_tracks       => 3,
       LOCAL_PHI_OFFSET => to_signed(96, 9)

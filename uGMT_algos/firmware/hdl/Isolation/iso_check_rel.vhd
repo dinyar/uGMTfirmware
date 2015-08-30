@@ -51,18 +51,18 @@ begin
     sRelInputVec(i)   <= std_logic_vector(iAreaSums(i)) & std_logic_vector(iMuonPT(i));
     rel_iso_check : entity work.ipbus_dpram
         generic map (
-          DATA_FILE  => "RelIsoCheckMem.mif",
+          DATA_FILE  => RELATIVE_ISO_CHECK_DATA_FILE,
           ADDR_WIDTH => REL_ISO_ADDR_WIDTH,
           WORD_WIDTH => REL_ISO_WORD_SIZE
           )
         port map (
-            clk => clk_ipb,
-            rst => rst,
-            ipb_in => ipbw(i),
+            clk     => clk_ipb,
+            rst     => rst,
+            ipb_in  => ipbw(i),
             ipb_out => ipbr(i),
-            rclk => clk,
-            q => oIsoBits(i downto i),
-            addr => sRelInputVec(i)
+            rclk    => clk,
+            q       => oIsoBits(i downto i),
+            addr    => sRelInputVec(i)
         );
   end generate iso_check_loop;
 

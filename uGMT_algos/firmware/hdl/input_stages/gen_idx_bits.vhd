@@ -177,7 +177,7 @@ begin
   lookup_calo_idx_bits : for i in sExtrapolatedCoords'range generate
     eta_idx_bits_mem : entity work.ipbus_dpram_dist
       generic map (
-        DATA_FILE  => "IdxSelMemEta.mif",
+        DATA_FILE  => CALO_ETA_IDX_BITS_DATA_FILE,
         ADDR_WIDTH => ETA_IDX_MEM_ADDR_WIDTH,
         WORD_WIDTH => ETA_IDX_MEM_WORD_SIZE
         )
@@ -192,7 +192,7 @@ begin
     sCaloIndexBits(i).eta <= unsigned(sEtaIdxBitsLutOutput(i)(ETA_IDX_MEM_WORD_SIZE-1 downto 0));
     phi_idx_bits_mem : entity work.ipbus_dpram_dist
       generic map (
-        DATA_FILE  => "IdxSelMemPhi.mif",
+        DATA_FILE  => CALO_PHI_IDX_BITS_DATA_FILE,
         ADDR_WIDTH => PHI_IDX_MEM_ADDR_WIDTH,
         WORD_WIDTH => PHI_IDX_MEM_WORD_SIZE
         )
