@@ -14,32 +14,7 @@ This has been tested on SLC6, but no guarantees given for anything.
 
 Full instructions on how to check out a CACTUS project and build it can be found at https://twiki.cern.ch/twiki/bin/view/CMS/MP7FirmwareNews. Replace `examples/mp7xe_690` with `ugmt` as project and possibly `trunk` with your preferred tag.
 
-Once you followed the steps outlined in the Twiki above until `make project` it is currently still necessary to perform the following edits manually:
-
-1. Replace the existing payload entry in `cactusupgrades/components/mp7_infra/addr_table/mp7xe_infra.xml` with `<node id="payload" module="file://mp7_payload.xml" address="0x80000000" fwinfo="endpoint"/>`
-2. Replace the payload definition with the `ugmt_serdes.vhd` block definition
-
-  ```
-          payload: entity work.mp7_payload
-                port map(
-                        ctrs => ctrs,
-                        clk => clk_ipb,
-                        rst => rst_ipb,
-                        ipb_in => ipb_in_payload,
-                        ipb_out => ipb_out_payload,
-                        clk_payload => clk_payload,
-                        rst_payload => rst_payload,
-                        clk_p => clk_p,
-                        rst_loc => rst_loc,
-                        clken_loc => clken_loc,
-                        bc0 => payload_bc0,
-                        d => payload_d,
-                        q => payload_q
-                );
-  ```
-  in the top block. You can find it in `cactusupgrades/boards/mp7/base_fw/mp7xe_690/firmware/hdl/mp7xe_690.vhd`
-
-It is then possible to setup and build the uGMT firmware by issuing `make project` followed by `make bitfile` and `make package` as described in the Twiki.
+It is then possible to setup and build the uGMT firmware by issuing `make project` followed by `make bitfile` and `make package` as described in the Twiki. After having run `make bitfile` the command `make reset` has to be used before another build can be performed.
 
 ## Instructions for running the testbenches
 

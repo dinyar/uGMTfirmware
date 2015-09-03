@@ -51,8 +51,8 @@ else
 	exit
 fi
 
-checkoutString="checkout tags/mp7/"$unstableSelector"firmware/"$tag
-checkoutCommand="$checkoutString -u $username"
+checkoutString="create tags/mp7/"$unstableSelector"firmware/"$tag
+checkoutCommand="$checkoutString -u $username --board mp7"
 ./ProjectManager.py $checkoutCommand
 
 if [ "$?" == 0 ];
@@ -92,13 +92,7 @@ echo "Retrieving LUT content files.."
 python get_luts.py binary --outpath ../firmware/hdl/ipbus_slaves/
 
 echo "#############################################################################"
-echo "To complete the setup process navigate to
-$mp7currPath and edit
-cactusupgrades/boards/mp7/base_fw/mp7xe_690/firmware/hdl/mp7xe_690.vhd
-as well as
-cactusupgrades/components/mp7_infra/addr_table/mp7xe_infra.xml
-as described in README.md."
-echo "To then create the project execute 'make project' in
+echo "To create the project execute 'make project' in 
 $mp7currPath/ugmt ."
 echo "#############################################################################"
 
