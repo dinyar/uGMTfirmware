@@ -135,23 +135,23 @@ package ugmt_constants is
   -- Constants for LUTs
   -----------------------------------------------------------------------------
 
-  constant CANCEL_OUT_DATA_FILE_BO_POS  : string := string'("BOPosMatchQual.mif")
-  constant CANCEL_OUT_DATA_FILE_BO_NEG  : string := string'("BONegMatchQual.mif")
-  constant CANCEL_OUT_DATA_FILE_FO_POS  : string := string'("FOPosMatchQual.mif")
-  constant CANCEL_OUT_DATA_FILE_FO_NEG  : string := string'("FONegMatchQual.mif")
-  constant CANCEL_OUT_DATA_FILE_BRL     : string := string'("BrlSingleMatchQual.mif")
-  constant CANCEL_OUT_DATA_FILE_OVL_POS : string := string'("OvlPosSingleMatchQual.mif")
-  constant CANCEL_OUT_DATA_FILE_OVL_NEG : string := string'("OvlNegSingleMatchQual.mif")
-  constant CANCEL_OUT_DATA_FILE_FWD_POS : string := string'("FwdPosSingleMatchQual.mif")
-  constant CANCEL_OUT_DATA_FILE_FWD_NEG : string := string'("FwdNegSingleMatchQual.mif")
+  constant CANCEL_OUT_DATA_FILE_BO_POS  : string := string'("BOPosMatchQual.mif");
+  constant CANCEL_OUT_DATA_FILE_BO_NEG  : string := string'("BONegMatchQual.mif");
+  constant CANCEL_OUT_DATA_FILE_FO_POS  : string := string'("FOPosMatchQual.mif");
+  constant CANCEL_OUT_DATA_FILE_FO_NEG  : string := string'("FONegMatchQual.mif");
+  constant CANCEL_OUT_DATA_FILE_BRL     : string := string'("BrlSingleMatchQual.mif");
+  constant CANCEL_OUT_DATA_FILE_OVL_POS : string := string'("OvlPosSingleMatchQual.mif");
+  constant CANCEL_OUT_DATA_FILE_OVL_NEG : string := string'("OvlNegSingleMatchQual.mif");
+  constant CANCEL_OUT_DATA_FILE_FWD_POS : string := string'("FwdPosSingleMatchQual.mif");
+  constant CANCEL_OUT_DATA_FILE_FWD_NEG : string := string'("FwdNegSingleMatchQual.mif");
 
-  constant ABSOLUTE_ISO_CHECK_DATA_FILE : string := string'("AbsIsoCheckMem.mif")
-  constant RELATIVE_ISO_CHECK_DATA_FILE : string := string'("RelIsoCheckMem.mif")
+  constant ABSOLUTE_ISO_CHECK_DATA_FILE : string := string'("AbsIsoCheckMem.mif");
+  constant RELATIVE_ISO_CHECK_DATA_FILE : string := string'("RelIsoCheckMem.mif");
 
-  constant CALO_ETA_IDX_BITS_DATA_FILE : string := string'("IdxSelMemEta.mif")
-  constant CALO_PHI_IDX_BITS_DATA_FILE : string := string'("IdxSelMemPhi.mif")
+  constant CALO_ETA_IDX_BITS_DATA_FILE : string := string'("IdxSelMemEta.mif");
+  constant CALO_PHI_IDX_BITS_DATA_FILE : string := string'("IdxSelMemPhi.mif");
 
-  constant SORT_RANK_DATA_FILE : string := string'("SortRank.mif")
+  constant SORT_RANK_DATA_FILE : string := string'("SortRank.mif");
 
   type ContentFileAssignment_vector is array (0 to 3) of string(1 to 21);
   -- Barrel
