@@ -41,7 +41,7 @@ src GhostBusting/CancelOutUnit_FO_WedgeComp.vhd
 src GhostBusting/CancelOutUnit_Single.vhd
 src GhostBusting/WedgeCheckerUnit.vhd
 src GhostBusting/GhostCheckerUnit_spatialCoords.vhd
-src GhostBusting/GhostCheckerUnit.vhd
+src GhostBusting/GhostCheckerUnit_BMTF.vhd
 src MatchAndMerge/FindMaxMatchQualities.vhd
 src MatchAndMerge/MatchingUnit.vhd
 src MatchAndMerge/MatchPairs.vhd
