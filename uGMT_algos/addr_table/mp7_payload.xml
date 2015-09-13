@@ -12,4 +12,5 @@
       <node id="forward_positive" mask="0x10" />
       <node id="forward_negative" mask="0x20" />
   </node>
+  <node id="muon_counter_reset" module="file://muon_counter_reset.xml" address="0x8000100" description="Register to take manual control of muon counter reset signal."/>
 </node>

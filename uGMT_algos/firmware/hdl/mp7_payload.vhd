@@ -18,15 +18,15 @@ entity mp7_payload is
     );
   port(
     ctrs        : in  ttc_stuff_array(N_REGION - 1 downto 0);
-    clk         : in  std_logic;
-    rst         : in  std_logic;
+    clk         : in  std_logic;  -- IPbus clock
+    rst         : in  std_logic;  -- IPbus reset
     ipb_in      : in  ipb_wbus;
     ipb_out     : out ipb_rbus;
-    clk_payload : in  std_logic;
+    clk_payload : in  std_logic;  -- LHC clock (40 MHz)
     rst_payload : in  std_logic;
-    clk_p       : in  std_logic;
-    rst_loc     : in std_logic_vector(N_REGION - 1 downto 0); -- per-region reset signals
-    clken_loc   : in std_logic_vector(N_REGION - 1 downto 0); -- per-region clken signals
+    clk_p       : in  std_logic;  -- board clock (240 MHz)
+    rst_loc     : in  std_logic_vector(N_REGION - 1 downto 0); -- per-region reset signals
+    clken_loc   : in  std_logic_vector(N_REGION - 1 downto 0); -- per-region clken signals
     d           : in  ldata(NCHAN - 1 downto 0);
     bc0         : out std_logic;
     q           : out ldata(NCHAN - 1 downto 0);
@@ -49,6 +49,9 @@ architecture rtl of mp7_payload is
   signal   sValid_muons_reg     : std_logic;
   signal   sValid_energies      : std_logic;
   signal   sValid_energies_reg  : std_logic;
+
+  -- Muon counter reset signal
+  signal sMuCtrReset : std_logic_vector(N_REGION - 1 downto 0);
 
   -- Register to disable/enable inputs
   signal sInputDisable : ipb_reg_v(0 downto 0);
@@ -126,6 +129,18 @@ begin
       ipb_to_slaves   => ipbw,
       ipb_from_slaves => ipbr
       );
+
+  muon_counter_reset_gen : entity work.muon_counter_reset
+    port map (
+      clk_ipb      => clk,
+      rst          => rst_payload,
+      ipb_in       => ipbw(N_SLV_MUON_COUNTER_RESET),
+      ipb_out      => ipbr(N_SLV_MUON_COUNTER_RESET),
+      ttc_command  => ctrs(4).ttc_command,  -- Using ctrs from one of the two central clock regions
+      clk240       => clk_p,
+      clk40        => clk_payload,
+      mu_ctr_rst   => sMuCtrReset
+    )
 
   -----------------------------------------------------------------------------
   -- Begin 240 MHz domain.

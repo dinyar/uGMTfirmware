@@ -1,0 +1,8 @@
+<node description="Register to take manual control of muon counter reset signal." fwinfo="endpoint">
+  <node id="manual_reset_sel" address="0x0" description="Register to activate manual reset mode ('1' is enabled)." fwinfo="endpoint;width=0">
+      <node id="enable_manual" mask="0x1" />
+  </node>
+  <node id="manual_reset_ctrl" address="0x1" description="Register to trigger the muon counter reset ('1' triggers reset; contents automatically reset to '0' by firmware)." fwinfo="endpoint;width=0">
+      <node id="fire_reset" mask="0x1" />
+  </node>
+</node>
