@@ -236,7 +236,8 @@ package ugmt_constants is
   -----------------------------------------------------------------------------
   -- Misc. constants
   -----------------------------------------------------------------------------
-  constant MAX_PHI_VAL : natural := 576;
+  constant MAX_PHI_VAL         : natural := 576;
+  constant LS_LENGTH_IN_ORBITS : natural := 2**18;
 
 end ugmt_constants;
 
