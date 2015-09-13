@@ -15,38 +15,15 @@ git clone https://github.com/dinyar/uGMTfirmware.git
 ### Run project setup script
 From the root of the uGMTfirmware project:
 ```
-cd scripts
-bash makeProject.sh
+cd uGMT_algos/scripts
+bash makeProject.sh [required options]
 ```
-### Edit project files
-1. Replace the existing payload entry in `cactusupgrades/components/mp7_infra/addr_table/mp7xe_infra.xml` with `<node id="payload" module="file://mp7_payload.xml" address="0x80000000" fwinfo="endpoint"/>`
-2. Replace the payload definition with the `ugmt_serdes.vhd` block definition
-
-  ```
-          payload: entity work.mp7_payload
-                port map(
-                        ctrs => ctrs,
-                        clk => clk_ipb,
-                        rst => rst_ipb,
-                        ipb_in => ipb_in_payload,
-                        ipb_out => ipb_out_payload,
-                        clk_payload => clk_payload,
-                        rst_payload => rst_payload,
-                        clk_p => clk_p,
-                        rst_loc => rst_loc,
-                        clken_loc => clken_loc,
-                        bc0 => payload_bc0,
-                        d => payload_d,
-                        q => payload_q
-                );
-  ```
-  in the top block. You can find it in `cactusupgrades/boards/mp7/base_fw/mp7xe_690/firmware/hdl/mp7xe_690.vhd`
 
 ### Generating the Vivado project
 Visit the project folder, source the Xilinx environment (if you haven't already) and execute `make project` followed by `make bitfile`:
 
   ```
-  cd [mp7framework_directory]/mp7xe_690
+  cd [mp7framework_directory]/ugmt
   [source Xilinx environment]
   make project
   make bitfile
@@ -59,15 +36,15 @@ Visit the project folder, source the Xilinx environment (if you haven't already)
 ```
 make addrtab
 cd addrtab
-../cactus/trunk/cactusupgrades/scripts/firmware/dep_tree.py -p b ../cactus/trunk/cactusupgrades projects/examples/mp7xe_690 > mkDecode.sh
+../cactus/trunk/cactusupgrades/scripts/firmware/dep_tree.py -p b ../cactus/trunk/cactusupgrades projects/ugmt > mkDecode.sh
 chmod u+x mkDecode.sh
 ./mkDecode.sh
 ```
 
-The provided Makefile then provides the facilities to build the project from the command line:
+The Makefile then provides the facilities to build the project from the command line:
 
 ```
-cd [mp7framework_directory]/mp7xe_690
+cd [mp7framework_directory]/ugmt
 bash runAll.sh
 ```
 
