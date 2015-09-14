@@ -1,3 +1,4 @@
+<!-- TODO: Set read-only flags. -->
 <node description="Mu deserializer regs and memories" fwinfo="endpoint">
     <node id="sort_rank_mem_0" address="0x0" size="0x2000" mode="block" description="SortRank LUT for first channel." fwinfo="endpoint;width=13" />
     <node id="sort_rank_mem_1" address="0x2000" size="0x2000" mode="block" description="SortRank LUT for second channel." fwinfo="endpoint;width=13" />
@@ -11,8 +12,12 @@
     <node id="bnch_cnt_errors_1" address="0x8010" description="Bunch counter errors on channel 1." fwinfo="endpoint;width=0" />
     <node id="bnch_cnt_errors_2" address="0x8020" description="Bunch counter errors on channel 2." fwinfo="endpoint;width=0" />
     <node id="bnch_cnt_errors_3" address="0x8040" description="Bunch counter errors on channel 3." fwinfo="endpoint;width=0" />
-    <node id="phi_offset_0" address="0x9000" description="Register containing the phi offset for channel 0." fwinfo="endpoint;width=0" />
-    <node id="phi_offset_1" address="0x9001" description="Register containing the phi offset for channel 1." fwinfo="endpoint;width=0" />
-    <node id="phi_offset_2" address="0x9002" description="Register containing the phi offset for channel 2." fwinfo="endpoint;width=0" />
-    <node id="phi_offset_3" address="0x9004" description="Register containing the phi offset for channel 3." fwinfo="endpoint;width=0" />
+    <node id="phi_offset_0" address="0x8080" description="Register containing the phi offset for channel 0." fwinfo="endpoint;width=0" />
+    <node id="phi_offset_1" address="0x8100" description="Register containing the phi offset for channel 1." fwinfo="endpoint;width=0" />
+    <node id="phi_offset_2" address="0x8200" description="Register containing the phi offset for channel 2." fwinfo="endpoint;width=0" />
+    <node id="phi_offset_3" address="0x8400" description="Register containing the phi offset for channel 3." fwinfo="endpoint;width=0" />
+    <node id="muon_counter_1" address="0x8800" description="" fwinfo="endpoint;width=0" />
+    <node id="muon_counter_2" address="0x9000" description="" fwinfo="endpoint;width=0" />
+    <node id="muon_counter_3" address="0x9001" description="" fwinfo="endpoint;width=0" />
+    <node id="muon_counter_4" address="0x9002" description="" fwinfo="endpoint;width=0" />
 </node>

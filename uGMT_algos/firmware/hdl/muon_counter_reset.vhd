@@ -98,7 +98,7 @@ begin
       elsif ttc_command = TTC_BCMD_OC0 then -- TODO: Is this command delayed or do I have to do this here still?
         lumi_section_ended <= '1';
         orbit_ctr          := 0;
-      elsif orbit_ctr = LS_LENGTH_IN_ORBITS then  -- TODO: Define LS length in ugmt_constants.
+      elsif orbit_ctr = LS_LENGTH_IN_ORBITS then
         lumi_section_ended <= '1';
         orbit_ctr          := 0;
       elsif ttc_command = TTC_BCMD_BC0 then

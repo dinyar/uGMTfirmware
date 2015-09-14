@@ -22,6 +22,7 @@ entity muon_input is
     ipb_in       : in  ipb_wbus;
     ipb_out      : out ipb_rbus;
     ctrs         : in  ttc_stuff_array(N_REGION - 1 downto 0);
+    mu_ctr_rst   : in std_logic_vector(N_REGION - 1 downto 0);
     clk240       : in  std_logic;
     clk40        : in  std_logic;
     d            : in  ldata (NCHAN-1 downto 0);
@@ -66,21 +67,22 @@ begin
         INIT_PHI_OFFSET => INIT_PHI_OFFSET_ASSIGN(i)
         )
       port map (
-        clk_ipb    => clk_ipb,
-        rst        => rst(MU_QUAD_ASSIGNMENT(i)),
-        ipb_in     => ipbw(N_SLV_MU_QUAD_0+i),
-        ipb_out    => ipbr(N_SLV_MU_QUAD_0+i),
-        bctr       => ctrs(MU_QUAD_ASSIGNMENT(i)).bctr,
-        clk240     => clk240,
-        clk40      => clk40,
-        d          => d(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
-        oMuons     => oMuons(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
-        oTracks    => oTracks(i*4+3 downto i*4),
-        oEmpty     => oEmpty(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
-        oSortRanks => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
-        oValid     => sValid(i),
-        q          => q(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
-        oGlobalPhi => sGlobalPhi(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4)
+        clk_ipb            => clk_ipb,
+        rst                => rst(MU_QUAD_ASSIGNMENT(i)),
+        ipb_in             => ipbw(N_SLV_MU_QUAD_0+i),
+        ipb_out            => ipbr(N_SLV_MU_QUAD_0+i),
+        bctr               => ctrs(MU_QUAD_ASSIGNMENT(i)).bctr,
+        muon_counter_reset => mu_ctr_rst(i),
+        clk240             => clk240,
+        clk40              => clk40,
+        d                  => d(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
+        oMuons             => oMuons(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
+        oTracks            => oTracks(i*4+3 downto i*4),
+        oEmpty             => oEmpty(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
+        oSortRanks         => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
+        oValid             => sValid(i),
+        q                  => q(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
+        oGlobalPhi         => sGlobalPhi(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4)
         );
 
     extrapolate : entity work.gen_idx_bits

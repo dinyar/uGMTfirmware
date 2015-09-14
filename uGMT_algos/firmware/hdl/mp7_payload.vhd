@@ -156,6 +156,7 @@ begin
       ipb_in       => ipbw(N_SLV_MU_DESERIALIZATION),
       ipb_out      => ipbr(N_SLV_MU_DESERIALIZATION),
       ctrs         => ctrs,
+      mu_ctr_rst   => sMuCtrReset,
       clk240       => clk_p,
       clk40        => clk_payload,
       d            => d(NCHAN-1 downto 0),

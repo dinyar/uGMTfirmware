@@ -18,21 +18,22 @@ entity deserialize_mu_quad is
     INIT_PHI_OFFSET : ipb_reg_v(0 to 3)
     );
   port (
-    clk_ipb    : in  std_logic;
-    rst        : in  std_logic;
-    ipb_in     : in  ipb_wbus;
-    ipb_out    : out ipb_rbus;
-    bctr       : in  bctr_t;
-    clk240     : in  std_logic;
-    clk40      : in  std_logic;
-    d          : in  ldata(3 downto 0);
-    oMuons     : out TGMTMu_vector(4*NUM_MUONS_IN-1 downto 0);
-    oTracks    : out TGMTMuTracks_vector(3 downto 0);
-    oEmpty     : out std_logic_vector(4*NUM_MUONS_IN-1 downto 0);
-    oSortRanks : out TSortRank10_vector(4*NUM_MUONS_IN-1 downto 0);
-    oValid     : out std_logic;
-    q          : out ldata(3 downto 0);
-    oGlobalPhi : out TGlobalPhi_frame(3 downto 0)
+    clk_ipb            : in  std_logic;
+    rst                : in  std_logic;
+    ipb_in             : in  ipb_wbus;
+    ipb_out            : out ipb_rbus;
+    bctr               : in  bctr_t;
+    muon_counter_reset : in  std_logic;
+    clk240             : in  std_logic;
+    clk40              : in  std_logic;
+    d                  : in  ldata(3 downto 0);
+    oMuons             : out TGMTMu_vector(4*NUM_MUONS_IN-1 downto 0);
+    oTracks            : out TGMTMuTracks_vector(3 downto 0);
+    oEmpty             : out std_logic_vector(4*NUM_MUONS_IN-1 downto 0);
+    oSortRanks         : out TSortRank10_vector(4*NUM_MUONS_IN-1 downto 0);
+    oValid             : out std_logic;
+    q                  : out ldata(3 downto 0);
+    oGlobalPhi         : out TGlobalPhi_frame(3 downto 0)
     );
 end deserialize_mu_quad;
 
