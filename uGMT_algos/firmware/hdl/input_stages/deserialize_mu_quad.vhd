@@ -74,6 +74,11 @@ architecture Behavioral of deserialize_mu_quad is
   signal sBCerror    : std_logic_vector(NCHAN-1 downto 0);
   signal sBnchCntErr : std_logic_vector(NCHAN-1 downto 0);
 
+  type TLocalMuonCounter is array (NCHAN-1 downto 0) of unsigned(1 downto 0);
+  type TMuonCounter is array (NCHAN-1 downto 0) of unsigned(31 downto 0);
+  signal sMuonCounters       : TMuonCounter;
+  signal sMuonCounters_store : TMuonCounter;
+
   -- Stores sort ranks for each 32 bit word that arrives from TFs. Every second
   -- such rank is garbage and will be disregarded in second step.
   type   TSortRankBuffer is array (2*NUM_MUONS_LINK-1 downto 0) of TSortRank10_vector(NCHAN-1 downto 0);
@@ -160,9 +165,10 @@ begin
       sIntermediatePhi_reg                                                    <= sIntermediatePhi;
       sGlobalPhi_buffer((sGlobalPhi_buffer'high-PHI_COMP_LATENCY)-1 downto 0) <= sGlobalPhi_buffer(sGlobalPhi_buffer'high-PHI_COMP_LATENCY downto 1);
     end if;
-  end process shift_buffers;
+  end process shift_buffers;sMuonCounterssMuonCounters
 
   gmt_in_reg : process (clk40)
+    variable muonCount : TLocalMuonCounter;
   begin  -- process gmt_in_reg
     if clk40'event and clk40 = '1' then  -- rising clock edge
       -- Store valid bit.
@@ -180,7 +186,9 @@ begin
               sEmpty_link(iChan)(iFrame/2) <= '1';
             else
               sEmpty_link(iChan)(iFrame/2) <= '0';
+              muonCount                    := muonCount+1;
             end if;
+
 
             -- Store global phi value.
             sGlobalPhi_event(iChan)(iFrame/2) <= sGlobalPhi_buffer(iFrame)(iChan);
@@ -222,7 +230,18 @@ begin
           sBnchCntErr(iChan) <= '0';
         end if;
 
+        if muon_counter_reset = '1' then
+          -- Reset muon counter after storing its contents in register.
+          sMuonCounters_store(iChan) <= sMuonCounters(iChan);
+          sMuonCounters(iChan) <= resize(muonCount(iChan), sMuonCounters(iChan));
+        else
+          sMuonCounters(iChan) <= sMuonCounters(iChan) + resize(muonCount(iChan), sMuonCounters(iChan));
+        end if;
+
+
+
       end loop;  -- iChan
+
     end if;
   end process gmt_in_reg;
 
@@ -246,7 +265,7 @@ begin
     phi_offset_reg : entity work.ipbus_reg_setable
       generic map(
         N_REG => 1,
-  INIT  => INIT_PHI_OFFSET(i)
+        INIT  => INIT_PHI_OFFSET(i)
         )
       port map(
         clk       => clk_ipb,
@@ -254,6 +273,18 @@ begin
         ipbus_in  => ipbw(N_SLV_PHI_OFFSET_0+i),
         ipbus_out => ipbr(N_SLV_PHI_OFFSET_0+i),
         q         => sPhiOffsetRegOutput(i downto i)
+        );
+    muon_counter : entity work.ipbus_reg_status
+      generic map(
+        N_REG => 1
+        )
+      port map(
+        ipbus_in  => ipbw(N_SLV_MUON_COUNTER_0+i),
+        ipbus_out => ipbr(N_SLV_MUON_COUNTER_0+i),
+        clk       => clk_ipb,
+        reset     => rst,
+        d         => sMuonCounters_store,
+        q         => open
         );
   end generate gen_ipb_registers;
 

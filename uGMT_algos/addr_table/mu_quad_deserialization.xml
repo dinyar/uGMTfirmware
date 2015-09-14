@@ -16,8 +16,8 @@
     <node id="phi_offset_1" address="0x8100" description="Register containing the phi offset for channel 1." fwinfo="endpoint;width=0" />
     <node id="phi_offset_2" address="0x8200" description="Register containing the phi offset for channel 2." fwinfo="endpoint;width=0" />
     <node id="phi_offset_3" address="0x8400" description="Register containing the phi offset for channel 3." fwinfo="endpoint;width=0" />
-    <node id="muon_counter_1" address="0x8800" description="" fwinfo="endpoint;width=0" />
-    <node id="muon_counter_2" address="0x9000" description="" fwinfo="endpoint;width=0" />
-    <node id="muon_counter_3" address="0x9001" description="" fwinfo="endpoint;width=0" />
-    <node id="muon_counter_4" address="0x9002" description="" fwinfo="endpoint;width=0" />
+    <node id="muon_counter_0" address="0x8800" description="" fwinfo="endpoint;width=0" />
+    <node id="muon_counter_1" address="0x9000" description="" fwinfo="endpoint;width=0" />
+    <node id="muon_counter_2" address="0x9001" description="" fwinfo="endpoint;width=0" />
+    <node id="muon_counter_3" address="0x9002" description="" fwinfo="endpoint;width=0" />
 </node>

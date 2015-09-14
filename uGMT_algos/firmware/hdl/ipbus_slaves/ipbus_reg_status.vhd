@@ -1,7 +1,6 @@
--- ipbus_reg_setable
+-- ipbus_reg_status
 --
--- Generic ipbus register bank
--- Allows to set a default value at reset
+-- Generic ipbus status register bank
 --
 -- Dave Newbold, March 2011
 -- Dinyar Rabady, July 2015
@@ -12,23 +11,22 @@ use ieee.numeric_std.all;
 use work.ipbus.all;
 use work.ipbus_reg_types.all;
 
-entity ipbus_reg_setable is
+entity ipbus_reg_status is
   generic(
     N_REG : positive := 1;
-    INIT  : std_logic_vector(31 downto 0) := (others => '0')
   );
   port(
-    clk: in std_logic;
-    reset: in std_logic;
     ipbus_in: in ipb_wbus;
     ipbus_out: out ipb_rbus;
-    q: out ipb_reg_v(N_REG - 1 downto 0);
-    qmask: in ipb_reg_v(N_REG - 1 downto 0) := (others => (others => '1'))
+    clk: in std_logic; -- Algorithm clock!
+    reset: in std_logic;
+    d: in ipb_reg_v(N_REG - 1 downto 0);
+    q: out ipb_reg_v(N_REG - 1 downto 0)
   );
 
-end ipbus_reg_setable;
+end ipbus_reg_status;
 
-architecture rtl of ipbus_reg_setable is
+architecture rtl of ipbus_reg_status is
 
   constant ADDR_WIDTH: integer := calc_width(N_REG);
 
@@ -38,15 +36,13 @@ architecture rtl of ipbus_reg_setable is
 
 begin
 
-  sel <= to_integer(unsigned(ipbus_in.ipb_addr(ADDR_WIDTH - 1 downto 0))) when ADDR_WIDTH > 0 else 0;
-
   process(clk)
   begin
     if rising_edge(clk) then
       if reset = '1' then
-        reg <= (others => INIT);
-      elsif ipbus_in.ipb_strobe = '1' and ipbus_in.ipb_write = '1' and sel < N_REG then
-        reg(sel) <= ipbus_in.ipb_wdata and qmask(sel);
+        reg <= (others => (others => '0'));
+      else
+        reg <= d;
       end if;
     end if;
   end process;
