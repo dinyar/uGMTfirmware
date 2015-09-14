@@ -77,7 +77,7 @@ architecture Behavioral of deserialize_mu_quad is
   type TLocalMuonCounter is array (NCHAN-1 downto 0) of unsigned(1 downto 0);
   type TMuonCounter is array (NCHAN-1 downto 0) of unsigned(31 downto 0);
   signal sMuonCounters       : TMuonCounter;
-  signal sMuonCounters_store : TMuonCounter;
+  signal sMuonCounters_store : ipb_reg_v(NCHAN-1 downto 0);
 
   -- Stores sort ranks for each 32 bit word that arrives from TFs. Every second
   -- such rank is garbage and will be disregarded in second step.
@@ -165,7 +165,7 @@ begin
       sIntermediatePhi_reg                                                    <= sIntermediatePhi;
       sGlobalPhi_buffer((sGlobalPhi_buffer'high-PHI_COMP_LATENCY)-1 downto 0) <= sGlobalPhi_buffer(sGlobalPhi_buffer'high-PHI_COMP_LATENCY downto 1);
     end if;
-  end process shift_buffers;sMuonCounterssMuonCounters
+  end process shift_buffers;
 
   gmt_in_reg : process (clk40)
     variable muonCount : TLocalMuonCounter;
@@ -186,7 +186,7 @@ begin
               sEmpty_link(iChan)(iFrame/2) <= '1';
             else
               sEmpty_link(iChan)(iFrame/2) <= '0';
-              muonCount                    := muonCount+1;
+              muonCount(iChan)             := muonCount(iChan)+to_unsigned(1, muonCount(iChan)'length);
             end if;
 
 
@@ -232,10 +232,10 @@ begin
 
         if muon_counter_reset = '1' then
           -- Reset muon counter after storing its contents in register.
-          sMuonCounters_store(iChan) <= sMuonCounters(iChan);
-          sMuonCounters(iChan) <= resize(muonCount(iChan), sMuonCounters(iChan));
+          sMuonCounters_store(iChan) <= std_logic_vector(sMuonCounters(iChan));
+          sMuonCounters(iChan) <= resize(muonCount(iChan), sMuonCounters(iChan)'length);
         else
-          sMuonCounters(iChan) <= sMuonCounters(iChan) + resize(muonCount(iChan), sMuonCounters(iChan));
+          sMuonCounters(iChan) <= sMuonCounters(iChan) + resize(muonCount(iChan), sMuonCounters(iChan)'length);
         end if;
 
 
@@ -283,7 +283,7 @@ begin
         ipbus_out => ipbr(N_SLV_MUON_COUNTER_0+i),
         clk       => clk_ipb,
         reset     => rst,
-        d         => sMuonCounters_store,
+        d         => sMuonCounters_store(i downto i),
         q         => open
         );
   end generate gen_ipb_registers;

@@ -13,7 +13,7 @@ use work.ipbus_reg_types.all;
 
 entity ipbus_reg_status is
   generic(
-    N_REG : positive := 1;
+    N_REG : positive := 1
   );
   port(
     ipbus_in: in ipb_wbus;
