@@ -136,11 +136,10 @@ begin
       rst          => rst_payload,
       ipb_in       => ipbw(N_SLV_MUON_COUNTER_RESET),
       ipb_out      => ipbr(N_SLV_MUON_COUNTER_RESET),
-      ttc_command  => ctrs(4).ttc_command,  -- Using ctrs from one of the two central clock regions
-      clk240       => clk_p,
+      ttc_command  => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
       clk40        => clk_payload,
       mu_ctr_rst   => sMuCtrReset
-    )
+    );
 
   -----------------------------------------------------------------------------
   -- Begin 240 MHz domain.
@@ -153,8 +152,8 @@ begin
     port map (
       clk_ipb      => clk,
       rst          => rst_loc,
-      ipb_in       => ipbw(N_SLV_MU_DESERIALIZATION),
-      ipb_out      => ipbr(N_SLV_MU_DESERIALIZATION),
+      ipb_in       => ipbw(N_SLV_MUON_INPUT),
+      ipb_out      => ipbr(N_SLV_MUON_INPUT),
       ctrs         => ctrs,
       mu_ctr_rst   => sMuCtrReset,
       clk240       => clk_p,
@@ -175,8 +174,8 @@ begin
     port map (
       clk_ipb   => clk,
       rst       => rst_loc,
-      ipb_in    => ipbw(N_SLV_ENERGY_DESERIALIZATION),
-      ipb_out   => ipbr(N_SLV_ENERGY_DESERIALIZATION),
+      ipb_in    => ipbw(N_SLV_ENERGY_INPUT),
+      ipb_out   => ipbr(N_SLV_ENERGY_INPUT),
       ctrs      => ctrs,
       clk240    => clk_p,
       clk40     => clk_payload,

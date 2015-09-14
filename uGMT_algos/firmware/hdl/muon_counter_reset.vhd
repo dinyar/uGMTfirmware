@@ -14,16 +14,12 @@ use work.GMTTypes.all;
 use work.ugmt_constants.all;
 
 entity muon_counter_reset is
-  generic (
-    NCHAN     : positive
-    );
   port (
     clk_ipb      : in  std_logic;
     rst          : in  std_logic;
     ipb_in       : in  ipb_wbus;
     ipb_out      : out ipb_rbus;
     ttc_command  : in  ttc_cmd_t;
-    clk240       : in  std_logic;
     clk40        : in  std_logic;
     mu_ctr_rst   : out std_logic_vector(N_REGION - 1 downto 0)
     );
@@ -38,10 +34,10 @@ architecture Behavioral of muon_counter_reset is
   signal sManualResetSel  : ipb_reg_v(0 downto 0);
   signal sManualResetCtrl : ipb_reg_v(0 downto 0);
 
-  signal sDelayedReset : std_logic := 0;
-  signal sRegReset     : std_logic := 0;
+  signal sDelayedReset : std_logic := '0';
+  signal sRegReset     : std_logic := '0';
 
-  signal lumi_section_ended : std_logic := 0;
+  signal lumi_section_ended : std_logic := '0';
 
 
 begin
@@ -68,7 +64,7 @@ begin
         N_REG => 1
     )
     port map(
-        clk       => clk,
+        clk       => clk_ipb,
         reset     => rst,
         ipbus_in  => ipbw(N_SLV_MANUAL_RESET_SEL),
         ipbus_out => ipbr(N_SLV_MANUAL_RESET_SEL),
@@ -79,7 +75,7 @@ begin
           N_REG => 1
       )
       port map(
-          clk       => clk,
+          clk       => clk_ipb,
           reset     => sRegReset,
           ipbus_in  => ipbw(N_SLV_MANUAL_RESET_CTRL),
           ipbus_out => ipbr(N_SLV_MANUAL_RESET_CTRL),
