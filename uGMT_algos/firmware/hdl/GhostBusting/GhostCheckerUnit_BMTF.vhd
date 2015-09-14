@@ -16,7 +16,7 @@ architecture Behavioral of GhostCheckerUnit_BMTF is
   signal matchedStation : boolean := false;  -- whether a track segement was shared between two tracks
 begin
 
-  P : process(mu1, mu2, qual1, qual2, matchedStation)
+  P : process(mu1, mu2)
   begin
       -- TODO: Loop over all stations. Need to make station container an array.
       for station in 0 to 2 loop

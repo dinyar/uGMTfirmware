@@ -17,7 +17,7 @@ package ipbus_decode_energy_quad_deserialization is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_energy_quad_deserialization(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Thu Jun 18 17:12:06 2015 
+-- START automatically  generated VHDL the Mon Sep 14 14:18:30 2015 
   constant N_SLV_BC0_ERRORS_0: integer := 0;
   constant N_SLV_BC0_ERRORS_1: integer := 1;
   constant N_SLV_BC0_ERRORS_2: integer := 2;
@@ -38,7 +38,7 @@ package body ipbus_decode_energy_quad_deserialization is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Thu Jun 18 17:12:06 2015 
+-- START automatically  generated VHDL the Mon Sep 14 14:18:30 2015 
     if    std_match(addr, "-------------------------0000000") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_BC0_ERRORS_0, IPBUS_SEL_WIDTH)); -- bc0_errors_0 / base 0x00000000 / mask 0x0000007f
     elsif std_match(addr, "-------------------------0000001") then
