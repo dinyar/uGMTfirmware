@@ -141,9 +141,7 @@ begin
   begin -- process select_source
     if clk40'event and clk40 = '1' then -- rising clock edge
       -- Creating "single shot" from this register.
-      if sManualResetSel(0)(0) = '1' then
-        sDelayedReset <= sManualResetCtrl(0)(0);
-      end if;
+      sDelayedReset <= sManualResetCtrl(0)(0);
 
       for i in N_REGION - 1 downto 0 loop
         if sManualResetSel(0)(0) = '1' then
