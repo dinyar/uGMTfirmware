@@ -62,6 +62,7 @@ src Sorting/SorterUnit.vhd
 src ipbus_slaves/ipbus_reg_setable.vhd
 src ipbus_slaves/ipbus_reg_status.vhd
 src ipbus_slaves/ipbus_counter.vhd
+src ipbus_slaves/ipbus_permanent_counter.vhd
 src ipbus_slaves/ipbus_dpram.vhd
 src ipbus_slaves/ipbus_dpram_dist.vhd
 ?toolset=="ISE"?    src cores/matchingLUT_dist.vhd

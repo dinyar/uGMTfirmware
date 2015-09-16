@@ -5,4 +5,5 @@
   <node id="manual_reset_ctrl" address="0x1" description="Register to trigger the muon counter reset ('1' triggers reset; contents automatically reset to '0' by firmware)." fwinfo="endpoint;width=0">
       <node id="fire_reset" mask="0x1" />
   </node>
+  <node id="lumi_section_cnt" address="0x2" description="Constains the current lumi section." fwinfo="endpoint;width=0"/>
 </node>
