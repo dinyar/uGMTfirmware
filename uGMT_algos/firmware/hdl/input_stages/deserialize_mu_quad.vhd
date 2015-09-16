@@ -178,6 +178,7 @@ begin
       -- Store valid bit.
       oValid <= combine_or(sValid_buf);
       for iChan in NCHAN-1 downto 0 loop
+      muonCount(iChan) := (others => '0');
         for iFrame in 2*NUM_MUONS_LINK-1 downto 0 loop
           if (iFrame mod 2) = 0 then
             -- Get first half of muon.
@@ -241,8 +242,6 @@ begin
         else
           sMuonCounters(iChan) <= sMuonCounters(iChan) + resize(muonCount(iChan), sMuonCounters(iChan)'length);
         end if;
-
-
 
       end loop;  -- iChan
 
