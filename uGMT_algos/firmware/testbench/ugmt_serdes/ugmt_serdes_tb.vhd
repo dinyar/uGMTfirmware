@@ -60,6 +60,21 @@ begin
   clk240 <= not clk240 after half_period_240;
   clk40  <= not clk40  after half_period_40;
 
+  -- Dummy BC0
+   bgo_process :process
+   begin
+       	wait for half_period_40;
+	for i in dummyCtrs'range loop
+        	dummyCtrs(i).ttc_cmd <= X"00";    
+	end loop;
+       	wait for 2*half_period_40;
+	for i in dummyCtrs'range loop
+        	dummyCtrs(i).ttc_cmd <= X"01";    
+	end loop;
+       	wait for half_period_40;
+   end process;
+
+
   tb : process
     file F                   : text open read_mode  is "ugmt_testfile.dat";
     file FO                  : text open write_mode is "../results/ugmt_serdes_tb.results";
@@ -86,12 +101,18 @@ begin
         end loop;  -- j
     end loop;  -- i
 
+
     rst     <= '1';
     rst_loc <= (others => '1');
     wait for 3*half_period_40;
     rst     <= '0';
     rst_loc <= (others => '0');
     wait for 20*half_period_40;  -- wait until global set/reset completes
+
+--    dummyCtrs.ttc_cmd <= X"08";    
+--    wait for 2*half_period_40;
+--    dummyCtrs.ttc_cmd <= X"00";    
+
 
     -- Add user defined stimulus here
     while remainingEvents > 0 loop
