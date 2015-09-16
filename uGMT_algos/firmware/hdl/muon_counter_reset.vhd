@@ -37,6 +37,8 @@ architecture Behavioral of muon_counter_reset is
   signal sDelayedReset : std_logic := '0';
   signal sRegReset     : std_logic := '0';
 
+  signal receivedOC0 : std_logic := '0';
+
   signal lumi_section_ended : std_logic := '0';
 
 
@@ -82,25 +84,34 @@ begin
           q         => sManualResetCtrl
       );
 
-  -- TODO: Generate decoder logic
-
   gen_lumi_section_ended : process (clk40)
     variable orbit_ctr : integer := 0;
   begin  -- process gen_lumi_section_ended
     if clk40'event and clk40 = '1' then  -- rising clock edge
       if rst = '1' then
+        --General reset
         lumi_section_ended <= '1';
         orbit_ctr          := 0;
-      elsif ttc_command = TTC_BCMD_OC0 then -- TODO: Is this command delayed or do I have to do this here still?
-        lumi_section_ended <= '1';
-        orbit_ctr          := 0;
+      elsif ttc_command = TTC_BCMD_OC0 then
+        -- Received OC0 at BX 2000. Need to wait for BC0.
+        receivedOC0 <= '1';
       elsif orbit_ctr = LS_LENGTH_IN_ORBITS then
+        -- Reached end of lumi section. Resetting muon counters.
         lumi_section_ended <= '1';
         orbit_ctr          := 0;
       elsif ttc_command = TTC_BCMD_BC0 then
-        lumi_section_ended <= '0';
-        orbit_ctr          := orbit_ctr+1;
+        if receivedOC0 = '1' then
+          -- End of orbit and OC0 received. Going to reset everything.
+          lumi_section_ended <= '1';
+          receivedOC0        <= '0';
+          orbit_ctr          := 0;
+        else
+          -- End of orbit, increasing orbit counter.
+          lumi_section_ended <= '0';
+          orbit_ctr          := orbit_ctr+1;
+        end if;
       else
+        -- Holding reset signal at '0'.
         lumi_section_ended <= '0';
       end if;
     end if;
