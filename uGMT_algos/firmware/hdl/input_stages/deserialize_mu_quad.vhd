@@ -74,6 +74,8 @@ architecture Behavioral of deserialize_mu_quad is
   signal sBCerror    : std_logic_vector(NCHAN-1 downto 0);
   signal sBnchCntErr : std_logic_vector(NCHAN-1 downto 0);
 
+  muon_counter_reset_reg : std_logic;
+
   type TLocalMuonCounter is array (NCHAN-1 downto 0) of unsigned(1 downto 0);
   type TMuonCounter is array (NCHAN-1 downto 0) of unsigned(31 downto 0);
   signal sMuonCounters       : TMuonCounter;
@@ -171,6 +173,8 @@ begin
     variable muonCount : TLocalMuonCounter;
   begin  -- process gmt_in_reg
     if clk40'event and clk40 = '1' then  -- rising clock edge
+      --Store muon counter reset
+      muon_counter_reset_reg <= muon_counter_reset;
       -- Store valid bit.
       oValid <= combine_or(sValid_buf);
       for iChan in NCHAN-1 downto 0 loop
@@ -231,7 +235,7 @@ begin
           sBnchCntErr(iChan) <= '0';
         end if;
 
-        if muon_counter_reset = '1' then
+        if muon_counter_reset_reg = '1' then
           -- Reset muon counter after storing its contents in register.
           sMuonCounters_store(iChan) <= std_logic_vector(sMuonCounters(iChan));
           sMuonCounters(iChan) <= resize(muonCount(iChan), sMuonCounters(iChan)'length);
