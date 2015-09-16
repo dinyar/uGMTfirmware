@@ -17,7 +17,7 @@ package ipbus_decode_cancel_out_fo_wedge is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_cancel_out_fo_wedge(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Mon Sep 14 23:45:35 2015 
+-- START automatically  generated VHDL the Wed Sep 16 19:50:52 2015 
   constant N_SLV_CANCEL_OUT_MEMS_0: integer := 0;
   constant N_SLV_CANCEL_OUT_MEMS_1: integer := 1;
   constant N_SLV_CANCEL_OUT_MEMS_2: integer := 2;
@@ -33,7 +33,7 @@ package body ipbus_decode_cancel_out_fo_wedge is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Mon Sep 14 23:45:35 2015 
+-- START automatically  generated VHDL the Wed Sep 16 19:50:52 2015 
     if    std_match(addr, "-------------------00-----------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEMS_0, IPBUS_SEL_WIDTH)); -- cancel_out_mems_0 / base 0x00000000 / mask 0x00001800
     elsif std_match(addr, "-------------------01-----------") then
