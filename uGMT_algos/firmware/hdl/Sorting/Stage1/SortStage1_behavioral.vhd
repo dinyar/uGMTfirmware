@@ -59,16 +59,16 @@ begin  -- architecture behavioral
   -----------------------------------------------------------------------------
   -- Remark: Diagonal elements of GEMatrix are never used and also not
   -- generated.
-  gen_ge_matrix : process (sSortRanks)
+  gen_ge_matrix : process (sSortRanks, GEMatrix)
   begin  -- process gen_ge_matrix
     -- Going through FWD+
     for i in 0 to 22 loop
       for j in i+1 to 23 loop
         if (i < 4) and (j < 4) then -- Staying inside FWD+
           GEMatrix(i, j) <= '1';
-        elsif (i >= 4) and (j >= 4) and (i < 7) and (j < 7) then -- Staying inside OVL+
+        elsif (i >= 4) and (j >= 4) and (i < 8) and (j < 8) then -- Staying inside OVL+
           GEMatrix(i, j) <= '1';
-        elsif (i >= 7) and (j >= 7) and (i < 16) and (j < 16) then -- Staying inside BRL
+        elsif (i >= 8) and (j >= 8) and (i < 16) and (j < 16) then -- Staying inside BRL
           GEMatrix(i, j) <= '1';
         elsif (i >= 16) and (j >= 16) and (i < 20) and (j < 20) then -- Staying inside OVL-
           GEMatrix(i, j) <= '1';
@@ -81,10 +81,10 @@ begin  -- architecture behavioral
              GEMatrix(i, j) <= '0';
           end if;
         end if;
+    	-- in case of equal ranks the lower index muon wins
+    	GEMatrix(j, i) <= not GEMatrix(i, j);
       end loop;
     end loop;
-    -- in case of equal ranks the lower index muon wins
-    GEMatrix(j, i) <= not GEMatrix(i, j);
   end process gen_ge_matrix;
 
   -----------------------------------------------------------------------------
