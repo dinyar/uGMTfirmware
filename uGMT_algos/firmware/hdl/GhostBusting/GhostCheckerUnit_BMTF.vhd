@@ -9,11 +9,13 @@ entity GhostCheckerUnit_BMTF is
         mu2    : in  TBMTFTrackAddress;
         qual2  : in  unsigned(3 downto 0);
         ghost1 : out std_logic;
-        ghost2 : out std_logic);
+        ghost2 : out std_logic;
+        clk    : in  std_logic);
 end GhostCheckerUnit_BMTF;
 
 architecture Behavioral of GhostCheckerUnit_BMTF is
-  signal matchedStation : boolean := false;  -- whether a track segement was shared between two tracks
+  signal matchedStation     : boolean := false;  -- whether a track segement was shared between two tracks
+  signal matchedStation_reg : boolean := false;
 begin
 
   P : process(mu1, mu2)
@@ -64,10 +66,17 @@ begin
       end loop;
   end process;
 
-  check_ghosts : process (matchedStation, qual1, qual2)
+  reg_matched_stations : process (clk)
+  begin  -- reg_matched_stations
+    if clk'event and clk = '1' then  -- rising clock edge
+      matchedStation_reg <= matchedStation;
+    end if;
+  end process reg_matched_stations;
+
+  check_ghosts : process (matchedStation_reg, qual1, qual2)
   begin  -- process check_ghosts
     -- If the muons are 'far enough' apart we don't check the LUT output.
-    if matchedStation = true then
+    if matchedStation_reg = true then
       if qual1 > qual2 then
         ghost1 <= '0';
         ghost2 <= '1';
