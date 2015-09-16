@@ -128,7 +128,7 @@ begin
     end if;
   end process gen_lumi_section_reset;
 
-  count_lumi_sections : work.ipbus_permanent_counter
+  count_lumi_sections : entity work.ipbus_permanent_counter
     port map(
       clk          => clk_ipb,
       reset        => sLumiSectionReset,

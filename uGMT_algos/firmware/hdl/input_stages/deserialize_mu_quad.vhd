@@ -74,7 +74,7 @@ architecture Behavioral of deserialize_mu_quad is
   signal sBCerror    : std_logic_vector(NCHAN-1 downto 0);
   signal sBnchCntErr : std_logic_vector(NCHAN-1 downto 0);
 
-  muon_counter_reset_reg : std_logic;
+  signal muon_counter_reset_reg : std_logic;
 
   type TLocalMuonCounter is array (NCHAN-1 downto 0) of unsigned(1 downto 0);
   type TMuonCounter is array (NCHAN-1 downto 0) of unsigned(31 downto 0);

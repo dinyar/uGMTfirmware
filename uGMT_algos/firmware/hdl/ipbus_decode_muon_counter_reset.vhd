@@ -17,10 +17,11 @@ package ipbus_decode_muon_counter_reset is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_muon_counter_reset(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Mon Sep 14 23:45:35 2015 
+-- START automatically  generated VHDL the Wed Sep 16 19:50:53 2015 
   constant N_SLV_MANUAL_RESET_SEL: integer := 0;
   constant N_SLV_MANUAL_RESET_CTRL: integer := 1;
-  constant N_SLAVES: integer := 2;
+  constant N_SLV_LUMI_SECTION_CNT: integer := 2;
+  constant N_SLAVES: integer := 3;
 -- END automatically generated VHDL
 
     
@@ -32,11 +33,13 @@ package body ipbus_decode_muon_counter_reset is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Mon Sep 14 23:45:35 2015 
-    if    std_match(addr, "-------------------------------0") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_MANUAL_RESET_SEL, IPBUS_SEL_WIDTH)); -- manual_reset_sel / base 0x00000000 / mask 0x00000001
-    elsif std_match(addr, "-------------------------------1") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_MANUAL_RESET_CTRL, IPBUS_SEL_WIDTH)); -- manual_reset_ctrl / base 0x00000001 / mask 0x00000001
+-- START automatically  generated VHDL the Wed Sep 16 19:50:53 2015 
+    if    std_match(addr, "------------------------------00") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_MANUAL_RESET_SEL, IPBUS_SEL_WIDTH)); -- manual_reset_sel / base 0x00000000 / mask 0x00000003
+    elsif std_match(addr, "------------------------------01") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_MANUAL_RESET_CTRL, IPBUS_SEL_WIDTH)); -- manual_reset_ctrl / base 0x00000001 / mask 0x00000003
+    elsif std_match(addr, "------------------------------10") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_LUMI_SECTION_CNT, IPBUS_SEL_WIDTH)); -- lumi_section_cnt / base 0x00000002 / mask 0x00000003
 -- END automatically generated VHDL
 
     else
