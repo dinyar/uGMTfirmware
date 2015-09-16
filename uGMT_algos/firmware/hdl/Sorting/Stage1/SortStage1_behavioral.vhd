@@ -59,20 +59,25 @@ begin  -- architecture behavioral
   -----------------------------------------------------------------------------
   -- Remark: Diagonal elements of GEMatrix are never used and also not
   -- generated.
+  -- Remark: Don't have to compute results for TF internal comparisons as these
+  -- are known already.
   gen_ge_matrix : process (sSortRanks, GEMatrix)
   begin  -- process gen_ge_matrix
-    -- Going through FWD+
     for i in 0 to 22 loop
       for j in i+1 to 23 loop
-        if (i < 4) and (j < 4) then -- Staying inside FWD+
+        if (i < MU_OVL_POS_BEGIN) and (j < MU_OVL_POS_BEGIN) then -- Staying inside FWD+
           GEMatrix(i, j) <= '1';
-        elsif (i >= 4) and (j >= 4) and (i < 8) and (j < 8) then -- Staying inside OVL+
+        elsif (i >= MU_OVL_POS_BEGIN) and (j >= MU_OVL_POS_BEGIN) and
+              (i < MU_BRL_BEGIN) and (j < MU_BRL_BEGIN) then -- Staying inside OVL+
           GEMatrix(i, j) <= '1';
-        elsif (i >= 8) and (j >= 8) and (i < 16) and (j < 16) then -- Staying inside BRL
+        elsif (i >= MU_BRL_BEGIN) and (j >= MU_BRL_BEGIN) and
+              (i < MU_OVL_NEG_BEGIN) and (j < MU_OVL_NEG_BEGIN) then -- Staying inside BRL
           GEMatrix(i, j) <= '1';
-        elsif (i >= 16) and (j >= 16) and (i < 20) and (j < 20) then -- Staying inside OVL-
+        elsif (i >= MU_OVL_NEG_BEGIN) and (j >= MU_OVL_NEG_BEGIN) and
+              (i < MU_FWD_NEG_BEGIN) and (j < MU_FWD_NEG_BEGIN) then -- Staying inside OVL-
           GEMatrix(i, j) <= '1';
-        elsif (i >= 20) and (j >= 20) and (i < 24) and (j < 24) then -- Staying inside FWD-
+        elsif (i >= MU_FWD_NEG_BEGIN) and (j >= MU_FWD_NEG_BEGIN) and
+              (i < SORTING_END) and (j < SORTING_END) then -- Staying inside FWD-
           GEMatrix(i, j) <= '1';
         else
           if (sSortRanks(i) >= sSortRanks(j)) then
@@ -81,8 +86,8 @@ begin  -- architecture behavioral
              GEMatrix(i, j) <= '0';
           end if;
         end if;
-    	-- in case of equal ranks the lower index muon wins
-    	GEMatrix(j, i) <= not GEMatrix(i, j);
+      -- in case of equal ranks the lower index muon wins
+      GEMatrix(j, i) <= not GEMatrix(i, j);
       end loop;
     end loop;
   end process gen_ge_matrix;

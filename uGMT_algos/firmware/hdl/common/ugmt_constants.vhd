@@ -234,6 +234,17 @@ package ugmt_constants is
   constant COU_FWD_POS : natural := 8;
 
   -----------------------------------------------------------------------------
+  -- Constants for stage 1 sorter
+  -----------------------------------------------------------------------------
+  constant MU_FWD_POS_BEGIN : natural := 0;
+  constant MU_OVL_POS_BEGIN : natural := 4;
+  constant MU_BRL_BEGIN     : natural := 8;
+  constant MU_OVL_NEG_BEGIN : natural := 16;
+  constant MU_FWD_NEG_BEGIN : natural := 20;
+  constant SORTING_END   : natural := 24;
+
+
+  -----------------------------------------------------------------------------
   -- Misc. constants
   -----------------------------------------------------------------------------
   constant MAX_PHI_VAL         : natural := 576;
@@ -242,6 +253,5 @@ package ugmt_constants is
 end ugmt_constants;
 
 package body ugmt_constants is
-
 
 end ugmt_constants;
