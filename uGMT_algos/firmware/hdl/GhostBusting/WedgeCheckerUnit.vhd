@@ -69,7 +69,8 @@ begin
            mu2     => wedge2(i).bmtfAddress,
            qual2   => wedge2(i).qual,
            ghost1  => sIntermediateCancel1(j)(i),
-           ghost2  => sIntermediateCancel2(j)(i)
+           ghost2  => sIntermediateCancel2(j)(i),
+           clk     => clk
            );
       end generate gen_bmtf_addr_based;
 

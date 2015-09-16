@@ -40,7 +40,7 @@ architecture Behavioral of muon_counter_reset is
   signal receivedOC0 : std_logic := '0';
 
   signal lumi_section_ended : std_logic := '0';
-
+  signal sLumiSectionReset  : std_logic := '0';
 
 begin
 
@@ -116,6 +116,26 @@ begin
       end if;
     end if;
   end process gen_lumi_section_ended;
+
+  gen_lumi_section_reset : process (clk40)
+  begin  -- process gen_lumi_section_reset
+    if clk40'event and clk40 = '1' then  -- rising clock edge
+      if (ttc_command = TTC_BCMD_BC0) and (receivedOC0 = '1') then
+        sLumiSectionReset  <= '1';
+      else
+        sLumiSectionReset  <= '0';
+      end if;
+    end if;
+  end process gen_lumi_section_reset;
+
+  count_lumi_sections : work.ipbus_permanent_counter
+    port map(
+      clk          => clk_ipb,
+      reset        => sLumiSectionReset,
+      ipbus_in     => ipbw(N_SLV_LUMI_SECTION_CNT),
+      ipbus_out    => ipbr(N_SLV_LUMI_SECTION_CNT),
+      incr_counter => lumi_section_ended
+      );
 
   select_source : process (clk40)
   begin -- process select_source
