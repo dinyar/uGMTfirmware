@@ -47,7 +47,7 @@ architecture behavioral of SortStage1 is
   signal sSelBits : TSelBits_1_of_24_vec (0 to 7);
 
 begin  -- architecture behavioral
-  
+
   sSortRanks <= iSortRanksF(7 downto 4) & iSortRanksO(7 downto 4) & iSortRanksB & iSortRanksO(3 downto 0) & iSortRanksF(3 downto 0);
   sMuons     <= iMuonsF(7 downto 4) & iMuonsO(7 downto 4) & iMuonsB & iMuonsO(3 downto 0) & iMuonsF(3 downto 0);
   sIdxBits   <= iIdxBitsF(7 downto 4) & iIdxBitsO(7 downto 4) & iIdxBitsB & iIdxBitsO(3 downto 0) & iIdxBitsF(3 downto 0);
@@ -55,25 +55,41 @@ begin  -- architecture behavioral
   sEmpty <= iEmptyF(7 downto 4) & iEmptyO(7 downto 4) & iEmptyB & iEmptyO(3 downto 0) & iEmptyF(3 downto 0);
 
   -----------------------------------------------------------------------------
-  -- calculate GE Matrix : 
-  ----------------------------------------------------------------------------- 
+  -- calculate GE Matrix :
+  -----------------------------------------------------------------------------
   -- Remark: Diagonal elements of GEMatrix are never used and also not
-  -- generated. 
-  g1 : for i in 0 to 22 generate
-    g2 : for j in i+1 to 23 generate
-      x : comp10_ge
-        port map (
-          a      => sSortRanks(i),
-          b      => sSortRanks(j),
-          a_ge_b => GEMatrix(i, j));
+  -- generated.
+  gen_ge_matrix : process (sSortRanks)
+  begin  -- process gen_ge_matrix
+    -- Going through FWD+
+    for i in 0 to 22 loop
+      for j in i+1 to 23 loop
+        if (i < 4) and (j < 4) then -- Staying inside FWD+
+          GEMatrix(i, j) <= '1';
+        elsif (i >= 4) and (j >= 4) and (i < 7) and (j < 7) then -- Staying inside OVL+
+          GEMatrix(i, j) <= '1';
+        elsif (i >= 7) and (j >= 7) and (i < 16) and (j < 16) then -- Staying inside BRL
+          GEMatrix(i, j) <= '1';
+        elsif (i >= 16) and (j >= 16) and (i < 20) and (j < 20) then -- Staying inside OVL-
+          GEMatrix(i, j) <= '1';
+        elsif (i >= 20) and (j >= 20) and (i < 24) and (j < 24) then -- Staying inside FWD-
+          GEMatrix(i, j) <= '1';
+        else
+          x : comp10_ge
+            port map (
+              a      => sSortRanks(i),
+              b      => sSortRanks(j),
+              a_ge_b => GEMatrix(i, j));
+        end if;
+      end loop;
+    end loop;
+    -- in case of equal ranks the lower index muon wins
+    GEMatrix(j, i) <= not GEMatrix(i, j);
+  end process gen_ge_matrix;
 
-      -- in case of equal ranks the lower index muon wins
-      GEMatrix(j, i) <= not GEMatrix(i, j);
-    end generate;
-  end generate;
   -----------------------------------------------------------------------------
   -- sort and eight 24 to 1 Muxes
-  -----------------------------------------------------------------------------  
+  -----------------------------------------------------------------------------
   count_wins24(GEMatrix, sEmpty, sSelBits);
 
   mux : process (sSelBits, sMuons, sIdxBits)
@@ -134,7 +150,7 @@ begin  -- architecture behavioral
         when "000000000000000000000001" => oIdxBits(iplace) <= sIdxBits(23);
         when others                     => oIdxBits(iplace) <= (others => '0');
       end case;
-    end loop;  -- iplace    
+    end loop;  -- iplace
   end process mux;
 
 end architecture behavioral;
