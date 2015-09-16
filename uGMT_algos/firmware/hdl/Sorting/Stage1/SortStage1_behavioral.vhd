@@ -4,6 +4,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.NUMERIC_STD.all;
 use work.GMTTypes.all;
+use work.ugmt_constants.all;
 use work.SorterUnit.all;                -- use procedure in package
 
 
