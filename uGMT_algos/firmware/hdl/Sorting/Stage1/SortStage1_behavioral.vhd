@@ -75,11 +75,11 @@ begin  -- architecture behavioral
         elsif (i >= 20) and (j >= 20) and (i < 24) and (j < 24) then -- Staying inside FWD-
           GEMatrix(i, j) <= '1';
         else
-          x : comp10_ge
-            port map (
-              a      => sSortRanks(i),
-              b      => sSortRanks(j),
-              a_ge_b => GEMatrix(i, j));
+          if (sSortRanks(i) >= sSortRanks(j)) then
+             GEMatrix(i, j) <= '1';
+          else
+             GEMatrix(i, j) <= '0';
+          end if;
         end if;
       end loop;
     end loop;
