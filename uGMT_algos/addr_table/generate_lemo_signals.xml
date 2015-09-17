@@ -1,3 +1,3 @@
-node description="Register to take manual control of muon counter reset signal." fwinfo="endpoint">
+<node description="Register to take manual control of muon counter reset signal." fwinfo="endpoint">
   <node id="prescale" address="0x0" description="Register containing prescale for pseudo-trigger." fwinfo="endpoint;width=0"/>
 </node>

@@ -2,7 +2,12 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.NUMERIC_STD.all;
 use work.GMTTypes.all;
+
+use work.ipbus.all;
+use work.ipbus_reg_types.all;
 use work.ipbus_decode_generate_lemo_signals.all;
+
+use work.mp7_ttc_decl.all;
 
 entity generate_lemo_signals is
   port (
@@ -20,6 +25,9 @@ entity generate_lemo_signals is
 end entity generate_lemo_signals;
 
 architecture behavioral of generate_lemo_signals is
+
+  signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
+  signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
   signal sRegisterPrescale : ipb_reg_v(0 downto 0);
   signal sPrescale         : unsigned(31 downto 0);
@@ -95,10 +103,10 @@ begin  -- architecture behavioral
     if clk'event and clk = '1' then  -- rising clock edge
       mu_present := '0';
       for i in iMuons'range loop
-        if iMuons(i).pt = (others => '0') then
-          mu_present <= '0';
+        if iMuons(i).pt = 0 then
+          mu_present := '0';
         else
-          mu_present <= '1';
+          mu_present := '1';
         end if;
       end loop;
 

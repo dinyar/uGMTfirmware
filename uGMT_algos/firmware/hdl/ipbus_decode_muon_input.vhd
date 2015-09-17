@@ -17,7 +17,7 @@ package ipbus_decode_muon_input is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_muon_input(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Wed Sep 16 19:50:53 2015 
+-- START automatically  generated VHDL the Thu Sep 17 15:25:05 2015 
   constant N_SLV_MU_QUAD_0: integer := 0;
   constant N_SLV_MU_QUAD_1: integer := 1;
   constant N_SLV_MU_QUAD_2: integer := 2;
@@ -48,7 +48,7 @@ package body ipbus_decode_muon_input is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Wed Sep 16 19:50:53 2015 
+-- START automatically  generated VHDL the Thu Sep 17 15:25:05 2015 
     if    std_match(addr, "-------000000000----------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_MU_QUAD_0, IPBUS_SEL_WIDTH)); -- mu_quad_0 / base 0x00000000 / mask 0x01ff0000
     elsif std_match(addr, "-------000000001----------------") then
