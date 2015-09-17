@@ -11,16 +11,17 @@ use work.mp7_ttc_decl.all;
 
 entity generate_lemo_signals is
   port (
-    clk_ipb : in  std_logic;
-    ipb_in  : in  ipb_wbus;
-    ipb_out : out ipb_rbus;
-    clk     : in  std_logic;
-    rst     : in  std_logic;
-    iMuons  : in  TGMTMu_vector(7 downto 0);
-    iBGOs   : in  ttc_cmd_t;
-    iValid  : in  std_logic;
-    gpio    : out std_logic_vector(29 downto 0);
-    gpio_en : out std_logic_vector(29 downto 0)
+    clk_ipb  : in  std_logic;
+    ipb_in   : in  ipb_wbus;
+    ipb_out  : out ipb_rbus;
+    clk      : in  std_logic;
+    rst      : in  std_logic;
+    iMuons   : in  TGMTMu_vector(7 downto 0);
+    iBGOs    : in  ttc_cmd_t;
+    iValid   : in  std_logic;
+    oTrigger : out std_logic;
+    gpio     : out std_logic_vector(29 downto 0);
+    gpio_en  : out std_logic_vector(29 downto 0)
     );
 end entity generate_lemo_signals;
 
@@ -109,9 +110,11 @@ begin  -- architecture behavioral
       end loop;
 
       if (mu_present = '1') and (trigger_allowed = '1') then
-        gpio(0) <= '1';
+        gpio(0)  <= '1';
+        oTrigger <= '1';
       else
-        gpio(0) <= '0';
+        gpio(0)  <= '0';
+        oTrigger <= '0';
       end if;
     end if;
   end process send_triggers;

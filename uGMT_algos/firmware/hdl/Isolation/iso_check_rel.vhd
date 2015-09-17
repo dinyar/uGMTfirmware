@@ -49,7 +49,7 @@ begin
 
   iso_check_loop : for i in oIsoBits'range generate
     sRelInputVec(i)   <= std_logic_vector(iAreaSums(i)) & std_logic_vector(iMuonPT(i));
-    rel_iso_check : entity work.ipbus_dpram
+    rel_iso_check : entity work.ipbus_initialized_dpram
         generic map (
           DATA_FILE  => RELATIVE_ISO_CHECK_DATA_FILE,
           ADDR_WIDTH => REL_ISO_ADDR_WIDTH,

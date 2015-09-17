@@ -41,6 +41,8 @@ architecture rtl of mp7_payload is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
+  signal sTrigger : std_logic := '0';
+
   constant GMT_ALGO_LATENCY     : natural := 6;
   -- Valid bits delayed less than algo latency due to one register before and
   -- requirement to be 1 bx early in serializer.
@@ -137,6 +139,7 @@ begin
       iMuons       => oMuons_reg,
       iBGOs        => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
       iValid       => sValid_buffer(0),
+      oTrigger     => sTrigger,
       gpio         => gpio,
       gpio_en      => gpio_en
     );
@@ -375,6 +378,18 @@ begin
   -----------------------------------------------------------------------------
   -- Begin 240 MHz domain.
   -----------------------------------------------------------------------------
+
+  spy_buffer : entity work.spy_buffer_control
+    port map (
+      clk_ipb  => clk,
+      rst      => rst,
+      ipb_in   => ipbw(N_SLV_SPY_BUFFER_CONTROL),
+      ipb_out  => ipbr(N_SLV_SPY_BUFFER_CONTROL),
+      clk240   => clk_p,
+      iTrigger => sTrigger,
+      q        => q(3 downto 0)
+      );
+
   serialize : entity work.serializer_stage
     port map (
       clk240               => clk_p,
@@ -390,7 +405,8 @@ begin
       iSortRanksO          => sIntermediateSortRanksO_reg,
       iSortRanksF          => sIntermediateSortRanksF_reg,
       iFinalEnergies       => sFinalEnergies_reg,
-      q                    => q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0));
+      q                    => q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0)
+      );
 
   strobe_high : for i in q'high downto (NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS) generate
         q(i).strobe <= '1';

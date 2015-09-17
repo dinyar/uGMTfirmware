@@ -98,7 +98,7 @@ begin
     sEtaAbs(i)               <= unsigned(abs(signed(d(i).data(ETA_IN_HIGH downto ETA_IN_LOW))));
     sExtrapolationAddress(i) <= std_logic_vector(sEtaAbs(i)(7 downto 2)) &
                                 d(i).data(PT_IN_LOW+5 downto PT_IN_LOW);
-    phi_extrapolation : entity work.ipbus_dpram
+    phi_extrapolation : entity work.ipbus_initialized_dpram
       generic map (
         DATA_FILE  => PHI_EXTRAPOLATION_DATA_FILE(i),
         ADDR_WIDTH => EXTRAPOLATION_ADDR_WIDTH,
@@ -115,7 +115,7 @@ begin
         );
     -- TODO: Do I need this intermediate signal?
     sDeltaPhi(i) <= unsigned(sPhiExtrapolationLutOutput(i)(PHI_EXTRAPOLATION_WORD_SIZE-1 downto 0));
-    eta_extrapolation : entity work.ipbus_dpram
+    eta_extrapolation : entity work.ipbus_initialized_dpram
       generic map (
         DATA_FILE  => ETA_EXTRAPOLATION_DATA_FILE(i),
         ADDR_WIDTH => EXTRAPOLATION_ADDR_WIDTH,
