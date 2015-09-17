@@ -113,9 +113,6 @@ architecture rtl of mp7_payload is
 
 begin
 
-  gpio    <= (others => '0');
-  gpio_en <= (others => '0');
-
   -- ipbus address decode
   fabric : entity work.ipbus_fabric_sel
     generic map(
@@ -129,6 +126,20 @@ begin
       ipb_to_slaves   => ipbw,
       ipb_from_slaves => ipbr
       );
+
+  generate_lemo_signals : entity work.generate_lemo_signals
+    port map (
+      clk_ipb      => clk,
+      ipb_in       => ipbw(N_SLV_GENERATE_LEMO_SIGNALS),
+      ipb_out      => ipbr(N_SLV_GENERATE_LEMO_SIGNALS),
+      clk          => clk_payload,
+      rst          => rst_payload,
+      iMuons       => oMuons_reg,
+      iBGOs        => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
+      iValid       => sValid_buffer(0),
+      gpio         => gpio,
+      gpio_en      => gpio_en
+    );
 
   muon_counter_reset_gen : entity work.muon_counter_reset
     port map (

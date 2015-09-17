@@ -18,9 +18,11 @@ addrtab -t muon_input.xml
 addrtab -t energy_input.xml
 addrtab -t uGMT.xml
 addrtab -t muon_counter_reset.xml
+addrtab -t generate_lemo_signals.xml
 addrtab -t mp7_payload.xml
 src mp7_payload.vhd
 src muon_counter_reset.vhd
+src generate_lemo_signals.vhd
 src input_stages/energy_input.vhd
 src input_stages/deserialize_energy_quad.vhd
 src input_stages/muon_input.vhd
@@ -95,6 +97,7 @@ src ipbus_decode_mu_quad_deserialization.vhd
 src ipbus_decode_energy_input.vhd
 src ipbus_decode_muon_input.vhd
 src ipbus_decode_muon_counter_reset.vhd
+src ipbus_decode_generate_lemo_signals.vhd
 src ipbus_decode_mp7_payload.vhd
 src common/GMTTypes_pkg.vhd
 src common/ugmt_constants.vhd
