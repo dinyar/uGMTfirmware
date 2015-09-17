@@ -3,7 +3,7 @@
 # TODO: Add warning to modify path to CACTUSREPO here!
 
 ################## MODIFY HERE ##################
-CACTUSREPOPATH=/afs/cern.ch/work/d/dinyar/ugmt_firmware/mp7fw_current
+CACTUSREPOPATH=/home/scratch/ugmt_firmware/mp7fw_current
 #################################################
 
 vlib serializer_tb
