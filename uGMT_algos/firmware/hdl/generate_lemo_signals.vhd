@@ -103,9 +103,7 @@ begin  -- architecture behavioral
     if clk'event and clk = '1' then  -- rising clock edge
       mu_present := '0';
       for i in iMuons'range loop
-        if iMuons(i).pt = 0 then
-          mu_present := '0';
-        else
+        if iMuons(i).pt /= 0 then
           mu_present := '1';
         end if;
       end loop;
