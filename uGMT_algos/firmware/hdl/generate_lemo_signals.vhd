@@ -111,7 +111,7 @@ begin  -- architecture behavioral
       if (mu_present = '1') and (trigger_allowed = '1') then
         gpio(0) <= '1';
       else
-        gpio(1) <= '0';
+        gpio(0) <= '0';
       end if;
     end if;
   end process send_triggers;
