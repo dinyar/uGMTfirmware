@@ -113,6 +113,8 @@ architecture rtl of mp7_payload is
   signal sFinalEnergies              : TCaloArea_vector(7 downto 0);
   signal sFinalEnergies_reg          : TCaloArea_vector(7 downto 0);
 
+  signal sQ : ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0);
+
 begin
 
   -- ipbus address decode
@@ -385,9 +387,10 @@ begin
       rst      => rst,
       ipb_in   => ipbw(N_SLV_SPY_BUFFER_CONTROL),
       ipb_out  => ipbr(N_SLV_SPY_BUFFER_CONTROL),
+      clk40    => clk_payload,
       clk240   => clk_p,
       iTrigger => sTrigger,
-      q        => q(3 downto 0)
+      q        => sQ(3 downto 0)
       );
 
   serialize : entity work.serializer_stage
@@ -405,9 +408,11 @@ begin
       iSortRanksO          => sIntermediateSortRanksO_reg,
       iSortRanksF          => sIntermediateSortRanksF_reg,
       iFinalEnergies       => sFinalEnergies_reg,
-      q                    => q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0)
+      q                    => sQ 
       );
 
+  q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0) <= sQ;
+  
   strobe_high : for i in q'high downto (NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS) generate
         q(i).strobe <= '1';
   end generate;

@@ -14,5 +14,5 @@
   </node>
   <node id="generate_lemo_signals" module="file://generate_lemo_signals.xml" address="0x8000100" description="Contains register to set prescale for pseudo-triggers."/>
   <node id="muon_counter_reset" module="file://muon_counter_reset.xml" address="0x8000200" description="Registers to take manual control of muon counter reset signal."/>
-  <node id="spy_buffer_control" module="file://spy_buffer_control.xml" address="0x8001000" description="Spy buffers for output channels."/>
+  <node id="spy_buffer_control" module="file://spy_buffer_control.xml" address="0x8004000" description="Spy buffers for output channels."/>
 </node>
