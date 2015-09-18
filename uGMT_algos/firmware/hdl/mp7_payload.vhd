@@ -138,7 +138,7 @@ begin
       ipb_out      => ipbr(N_SLV_GENERATE_LEMO_SIGNALS),
       clk          => clk_payload,
       rst          => rst_payload,
-      iMuons       => oMuons,
+      iMuons       => oMuons_reg,
       iBGOs        => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
       iValid       => sValid_buffer(0),
       oTrigger     => sTrigger,

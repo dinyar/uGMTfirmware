@@ -31,6 +31,9 @@ architecture behavioral of spy_buffer_control is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
+  constant DELAY_LATENCY : natural := 6;
+  signal in_buf          : TQuadTransceiverBufferIn;
+
   signal mu_present : std_logic := '0';
 
   signal muon_word_counter : natural range 0 to (2**SPY_BUFFER_DEPTH)-1 := 0;
@@ -56,13 +59,20 @@ begin  -- architecture behavioral
       ipb_from_slaves => ipbr
     );
 
+  fill_delay_line : process (clk240)
+  begin  -- process fill_delay_line
+    if clk240'event and clk240 = '1' then  -- rising clock edge
+      in_buf(DELAY_LATENCY-1 downto 0) <= in_buf(DELAY_LATENCY downto 1);
+    end if;
+  end process fill_delay_line;
+
   inc_muon_word_counter : process (clk240)
   begin  -- process inc_muon_word_counter
     if clk240'event and clk240 = '1' then  -- rising clock edge
       if iTrigger = '1' then
         -- Fill with muon data.
         for i in q'range loop
-          capture_muon_words(i) <= q(i).data;
+          capture_muon_words(i) <= in_buf(0)(i).data;
         end loop;
         -- Increment address pointer
         if muon_word_counter < (2**SPY_BUFFER_DEPTH)-1 then
