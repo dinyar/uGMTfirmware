@@ -56,32 +56,24 @@ begin  -- architecture behavioral
       ipb_from_slaves => ipbr
     );
 
-  sync_trigger : process(clk40)
-  begin  -- process sync_trigger
-    if clk40'event and clk40 = '1' then  -- rising clock edge
-      -- TODO: Delay trigger signal here to coincide with muon.
-    end if;
-  end process sync_trigger;
-
   inc_muon_word_counter : process (clk240)
   begin  -- process inc_muon_word_counter
     if clk240'event and clk240 = '1' then  -- rising clock edge
       if iTrigger = '1' then
-	-- Fill with muon data.
-	for i in q'range loop
+        -- Fill with muon data.
+        for i in q'range loop
           capture_muon_words(i) <= q(i).data;
-	end loop;
-
-	-- Increment address pointer
+        end loop;
+        -- Increment address pointer
         if muon_word_counter < (2**SPY_BUFFER_DEPTH)-1 then
           muon_word_counter <= muon_word_counter+1;
         else
           muon_word_counter <= 0;
         end if;
       else
-	-- Fill with zeros and don't increment address pointer.
+      -- Fill with zeros and don't increment address pointer.
         for i in q'range loop
-	  capture_muon_words(i) <= (others => '0');
+          capture_muon_words(i) <= (others => '0');
         end loop;
       end if;
     end if;
