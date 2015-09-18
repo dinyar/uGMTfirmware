@@ -138,7 +138,7 @@ begin
       ipb_out      => ipbr(N_SLV_GENERATE_LEMO_SIGNALS),
       clk          => clk_payload,
       rst          => rst_payload,
-      iMuons       => oMuons_reg,
+      iMuons       => oMuons,
       iBGOs        => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
       iValid       => sValid_buffer(0),
       oTrigger     => sTrigger,
@@ -408,11 +408,11 @@ begin
       iSortRanksO          => sIntermediateSortRanksO_reg,
       iSortRanksF          => sIntermediateSortRanksF_reg,
       iFinalEnergies       => sFinalEnergies_reg,
-      q                    => sQ 
+      q                    => sQ
       );
 
   q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0) <= sQ;
-  
+
   strobe_high : for i in q'high downto (NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS) generate
         q(i).strobe <= '1';
   end generate;
