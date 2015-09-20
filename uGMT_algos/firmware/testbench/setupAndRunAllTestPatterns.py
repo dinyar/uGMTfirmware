@@ -14,7 +14,7 @@ subprocess.call(os.getcwd() + "/update_testfiles.sh")
 subprocess.call(os.getcwd() + "/setupAll.sh")
 
 for pattern in testpatterns:
-    print "#################################################################################"
+    print "###############################################################################"
     print "Running " + pattern + " pattern:"
     subprocess.call([os.getcwd() + "/setTestfile.sh", pattern])
     tmpError = subprocess.call(os.getcwd() + "/runAll.sh")
