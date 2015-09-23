@@ -81,7 +81,7 @@ begin  -- architecture behavioral
           muon_word_counter <= 0;
         end if;
       else
-      -- Fill with zeros and don't increment address pointer.
+        -- Fill with zeros and don't increment address pointer.
         for i in q'range loop
           capture_muon_words(i) <= (others => '0');
         end loop;
@@ -102,6 +102,7 @@ begin  -- architecture behavioral
         ipb_in  => ipbw(N_SLV_SPY_BUFFER_0+i),
         ipb_out => ipbr(N_SLV_SPY_BUFFER_0+i),
         rclk    => clk240,
+        we      => '1',
         addr    => muon_word_address,
         d       => capture_muon_words(i),
         q       => open
