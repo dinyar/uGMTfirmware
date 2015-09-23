@@ -62,7 +62,8 @@ begin  -- architecture behavioral
   fill_delay_line : process (clk240)
   begin  -- process fill_delay_line
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      in_buf(DELAY_LATENCY-1 downto 0) <= in_buf(DELAY_LATENCY downto 1);
+      in_buf(DELAY_LATENCY-1) <= q;
+      in_buf(DELAY_LATENCY-2 downto 0) <= in_buf(DELAY_LATENCY-1 downto 1);
     end if;
   end process fill_delay_line;
 
