@@ -113,7 +113,7 @@ architecture rtl of mp7_payload is
   signal sFinalEnergies              : TCaloArea_vector(7 downto 0);
   signal sFinalEnergies_reg          : TCaloArea_vector(7 downto 0);
 
-  signal sQ : ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0);
+  signal sQ : ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0);
 
 begin
 
