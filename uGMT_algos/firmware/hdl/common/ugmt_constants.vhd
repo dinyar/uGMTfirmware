@@ -45,6 +45,11 @@ package ugmt_constants is
   constant FWD_POS_HIGH : integer := 5;
   constant FWD_POS_LOW  : integer := 0;
 
+  constant IMD_HIGH : natural := 11;
+  constant IMD_LOW  : natural := 4;
+  constant OUT_HIGH : natural := 3;
+  constant OUT_LOW  : natural := 0;
+
   -----------------------------------------------------------------------------
   -- Quad assignments
   -- IMPORTANT: THESE HAVE TO BE SYNCHRONIZED WITH AREA CONSTRAINTS IN .ucf
