@@ -54,9 +54,6 @@ begin
       iIntermediateMuonsB  => iIntermediateMuonsB,
       iIntermediateMuonsO  => iIntermediateMuonsO,
       iIntermediateMuonsF  => iIntermediateMuonsF,
-      iSortRanksB          => iIntermediateSortRanksB,
-      iSortRanksO          => iIntermediateSortRanksO,
-      iSortRanksF          => iIntermediateSortRanksF,
       iFinalEnergies       => iFinalEnergies,
       q                    => oQ);
 
@@ -106,9 +103,6 @@ begin
         iIntermediateMuonsB     <= event.intMuons_brl;
         iIntermediateMuonsO     <= event.intMuons_ovl;
         iIntermediateMuonsF     <= event.intMuons_fwd;
-        iIntermediateSortRanksB <= event.intSortRanks_brl;
-        iIntermediateSortRanksO <= event.intSortRanks_ovl;
-        iIntermediateSortRanksF <= event.intSortRanks_fwd;
         iFinalEnergies          <= (others => "00000");
         iExtrapolatedCoordsB    <= (others => ("000000000", "0000000000"));
         iExtrapolatedCoordsO    <= (others => ("000000000", "0000000000"));

@@ -404,9 +404,6 @@ begin
       iIntermediateMuonsB  => sIntermediateMuonsB_reg,
       iIntermediateMuonsO  => sIntermediateMuonsO_reg,
       iIntermediateMuonsF  => sIntermediateMuonsF_reg,
-      iSortRanksB          => sIntermediateSortRanksB_reg,
-      iSortRanksO          => sIntermediateSortRanksO_reg,
-      iSortRanksF          => sIntermediateSortRanksF_reg,
       iFinalEnergies       => sFinalEnergies_reg,
       q                    => sQ
       );
