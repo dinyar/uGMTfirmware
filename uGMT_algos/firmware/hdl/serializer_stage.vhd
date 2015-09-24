@@ -90,9 +90,6 @@ begin
           q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
         end if;
       end loop;  -- i
-      for i in NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS to q'high loop
-       q(i).strobe <= '1';
-      end loop;  -- i
 
       if rst = '1' then
         sSel <= 1;
