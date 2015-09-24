@@ -41,9 +41,6 @@ architecture Behavioral of IsoAssignmentUnit is
   signal sCaloIdxBitsO_reg : TCaloIndexBit_vector(35 downto 0);
   signal sCaloIdxBitsF_reg : TCaloIndexBit_vector(35 downto 0);
 
-  type TEnergiesBuf is array (integer range <> ) of TCaloRegionEtaSlice_vector(iEnergies'range);
-  signal sEnergies_buf : TEnergiesBuf(2 downto 0); -- TODO: Move delay to constants file.
-
   signal sStripEnergies : TCaloStripEtaSlice_vector;
 
   signal sAreaSums         : TCaloArea_vector(7 downto 0);
@@ -96,18 +93,10 @@ begin
     end if;
   end process idx_bits_delay;
 
-  energies_store : process (clk)
-  begin  -- process energies_store
-    if clk'event and clk = '1' then     -- rising clock edge
-      sEnergies_buf(0) <= iEnergies;
-      sEnergies_buf(sEnergies_buf'high downto 1) <= sEnergies_buf(sEnergies_buf'high-1 downto 0);
-    end if;
-  end process energies_store;
-
   -- Has one register (receives sStripEnergies for second clk).
   calc_complete_sums : entity work.compute_complete_sums
     port map (
-      iEnergies     => sEnergies_buf(sEnergies_buf'high),
+      iEnergies     => iEnergies,
       iCaloIdxBitsB => sCaloIdxBitsB_reg,
       iCaloIdxBitsO => sCaloIdxBitsO_reg,
       iCaloIdxBitsF => sCaloIdxBitsF_reg,

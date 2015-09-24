@@ -30,8 +30,12 @@ architecture behavior of testbench is
   signal   rst             : std_logic := '0';
   signal   rst_loc         : std_logic_vector(N_REGION - 1 downto 0) := (others => '0');
 
-  signal iD              : ldata(71 downto 0);
-  signal oQ              : ldata(71 downto 0);
+  signal iD       : ldata(71 downto 0);
+  signal iD_muons : ldata(NUM_MU_CHANS downto 0);
+  signal oQ       : ldata(71 downto 0);
+
+  type TCaloTransceiverBuffer is array (integer range <>) of ldata(36-1 downto 0);
+  signal iD_buffer_calo : TCaloTransceiverBuffer(2 downto 0);
 
   signal dummyCtrs : ttc_stuff_array(N_REGION - 1 downto 0);
 
@@ -52,7 +56,7 @@ begin
         rst_payload       => rst,
         rst_loc           => rst_loc,
         clken_loc         => (others => '0'),
-	d                 => iD,
+        d                 => iD,
         q                 => oQ
         );
 
@@ -60,20 +64,19 @@ begin
   clk240 <= not clk240 after half_period_240;
   clk40  <= not clk40  after half_period_40;
 
-  -- Dummy BC0
-   bgo_process :process
-   begin
-       	wait for half_period_40;
-	for i in dummyCtrs'range loop
-        	dummyCtrs(i).ttc_cmd <= X"00";    
-	end loop;
-       	wait for 2*half_period_40;
-	for i in dummyCtrs'range loop
-        	dummyCtrs(i).ttc_cmd <= X"01";    
-	end loop;
-       	wait for half_period_40;
-   end process;
-
+  -- Dummy BC0 (one BC0 at every second BX.)
+  bgo_process :process
+  begin
+    wait for half_period_40;
+  for i in dummyCtrs'range loop
+    dummyCtrs(i).ttc_cmd <= X"00";
+  end loop;
+    wait for 2*half_period_40;
+  for i in dummyCtrs'range loop
+    dummyCtrs(i).ttc_cmd <= X"01";
+  end loop;
+    wait for half_period_40;
+  end process;
 
   tb : process
     file F                   : text open read_mode  is "ugmt_testfile.dat";
@@ -101,18 +104,12 @@ begin
         end loop;  -- j
     end loop;  -- i
 
-
     rst     <= '1';
     rst_loc <= (others => '1');
     wait for 3*half_period_40;
     rst     <= '0';
     rst_loc <= (others => '0');
     wait for 20*half_period_40;  -- wait until global set/reset completes
-
---    dummyCtrs.ttc_cmd <= X"08";    
---    wait for 2*half_period_40;
---    dummyCtrs.ttc_cmd <= X"00";    
-
 
     -- Add user defined stimulus here
     while remainingEvents > 0 loop
@@ -122,7 +119,14 @@ begin
 
         -- Filling uGMT
         for cnt in 0 to 5 loop
-          iD <= event.iD(cnt);
+          iD_muons <=
+          iD_buffer_calo(0) <= event.iD(cnt)(71 downto 36)event.iD(cnt)(35 downto 0);
+          iD_buffer_calo(2 downto 1) <= iD_buffer_calo(1 downto 0);
+
+          iD(71 downto 36) <= event.iD(cnt)(71 downto 36);
+          iD(35 downto 0) <= iD_buffer_calo(iD_buffer_calo'high);
+
+
           wait for 2*half_period_240;
           vOutput(cnt) := oQ;
         end loop;  -- cnt

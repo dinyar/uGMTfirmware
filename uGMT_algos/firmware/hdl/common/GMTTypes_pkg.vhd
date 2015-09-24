@@ -212,7 +212,7 @@ package GMTTypes is
   -----------------------------------------------------------------------------
   -- Types for Transceivers
   -----------------------------------------------------------------------------
- type TQuadTransceiverBufferIn is array (2*NUM_MUONS_IN-1 downto 0) of ldata(3 downto 0);
+  type TQuadTransceiverBufferIn is array (2*NUM_MUONS_IN-1 downto 0) of ldata(3 downto 0);
 
   -- Contains only the data words received from the links
   type TDataBuffer is array (natural range <>) of std_logic_vector(31 downto 0);
