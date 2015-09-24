@@ -6,6 +6,7 @@ use work.mp7_data_types.all;
 use work.ipbus.all;
 use work.ipbus_decode_isolation_assignment.all;
 
+use work.ugmt_constants.all;
 use work.GMTTypes.all;
 
 entity iso_check is
