@@ -344,7 +344,7 @@ begin
     generic map (
         CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BO,
         DATA_FILE        => CANCEL_OUT_DATA_FILE_BO_POS,
-        LOCAL_PHI_OFFSET => to_signed(48, 9)
+        LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_BRL
         )
     port map (
       clk_ipb     => clk_ipb,
@@ -361,7 +361,7 @@ begin
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BO,
       DATA_FILE        => CANCEL_OUT_DATA_FILE_BO_NEG,
-      LOCAL_PHI_OFFSET => to_signed(48, 9)
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_BRL
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -379,7 +379,7 @@ begin
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_FO,
       DATA_FILE        => CANCEL_OUT_DATA_FILE_FO_POS,
-      LOCAL_PHI_OFFSET => to_signed(96, 9)
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OVL_FWD
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -396,7 +396,7 @@ begin
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_FO,
       DATA_FILE        => CANCEL_OUT_DATA_FILE_FO_NEG,
-      LOCAL_PHI_OFFSET => to_signed(96, 9)
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OVL_FWD
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -416,7 +416,7 @@ begin
       DATA_FILE        => CANCEL_OUT_DATA_FILE_BRL,
       num_wedges       => 12,
       num_tracks       => 3,
-      LOCAL_PHI_OFFSET => to_signed(48, 9)
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_BRL
       )
     port map (
       clk_ipb => clk_ipb,
@@ -433,7 +433,7 @@ begin
       DATA_FILE        => CANCEL_OUT_DATA_FILE_OVL_POS,
       num_wedges       => 6,
       num_tracks       => 3,
-      LOCAL_PHI_OFFSET => to_signed(96, 9)
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OVL_FWD
       )
     port map (
       clk_ipb => clk_ipb,
@@ -450,7 +450,7 @@ begin
       DATA_FILE        => CANCEL_OUT_DATA_FILE_OVL_NEG,
       num_wedges       => 6,
       num_tracks       => 3,
-      LOCAL_PHI_OFFSET => to_signed(96, 9)
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OVL_FWD
       )
     port map (
       clk_ipb => clk_ipb,
@@ -467,7 +467,7 @@ begin
       DATA_FILE        => CANCEL_OUT_DATA_FILE_FWD_POS,
       num_wedges       => 6,
       num_tracks       => 3,
-      LOCAL_PHI_OFFSET => to_signed(96, 9)
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OVL_FWD
       )
     port map (
       clk_ipb => clk_ipb,
@@ -484,7 +484,7 @@ begin
       DATA_FILE        => CANCEL_OUT_DATA_FILE_FWD_NEG,
       num_wedges       => 6,
       num_tracks       => 3,
-      LOCAL_PHI_OFFSET => to_signed(96, 9)
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OVL_FWD
       )
     port map (
       clk_ipb => clk_ipb,

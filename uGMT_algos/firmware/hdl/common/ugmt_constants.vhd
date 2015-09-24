@@ -131,6 +131,12 @@ package ugmt_constants is
   constant PHI_OUT_HIGH : natural := 9;
   constant PHI_OUT_LOW  : natural := 0;
 
+  --
+  -- isolation bits within the iso word
+  --
+  constant ABS_ISO_BIT : natural := 0;
+  constant REL_ISO_BIT : natural := 1;
+
   -----------------------------------------------------------------------------
   -- Constants for LUTs
   -----------------------------------------------------------------------------
@@ -208,6 +214,9 @@ package ugmt_constants is
                        (X"00000198", X"000001F8", X"00000018", X"00000078"),
                        (X"000000D8", X"00000138", X"00000198", X"000001F8")
                       );
+
+  constant LOCAL_PHI_OFFSET_BRL : signed(8 downto 0) := to_signed(48, 9);
+  constant LOCAL_PHI_OFFSET_OVL_FWD : signed(8 downto 0) := to_signed(96, 9);
 
   -----------------------------------------------------------------------------
   -- Cancel-out selector

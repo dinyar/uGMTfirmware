@@ -121,7 +121,7 @@ begin
   -- 3.5th BX
   -----------------------------------------------------------------------------
   -- TODO: (TIMING) If making register in compute_complete_sums 'rising edge'
-  -- we will have to change notClk to clk again here. 
+  -- we will have to change notClk to clk again here.
   iso_lut : entity work.iso_check
     port map (
       iAreaSums => sSelectedEnergies,
@@ -138,8 +138,8 @@ begin
   p1 : process (clk)
   begin  -- process p1
     if clk'event and clk = '1' then     -- rising clock edge
-      sFinalEnergies_buffer(0)                                         <= sSelectedEnergies;
-      sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-1 downto 1)      <= sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-2 downto 0);
+      sFinalEnergies_buffer(0)                                    <= sSelectedEnergies;
+      sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-1 downto 1) <= sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-2 downto 0);
     end if;
   end process p1;
 

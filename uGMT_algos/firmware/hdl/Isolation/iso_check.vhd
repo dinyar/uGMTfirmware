@@ -12,7 +12,6 @@ entity iso_check is
   port (
     iAreaSums : in  TCaloArea_vector (7 downto 0);
     iMuonPT   : in  TMuonPT_vector(7 downto 0);
---        iPileUp   : in  unsigned (6 downto 0);
     oIsoBits  : out TIsoBits_vector (7 downto 0);
     clk       : in  std_logic;
     clk_ipb   : in  std_logic;
@@ -83,11 +82,11 @@ begin
   begin  -- process assign_iso_bits
     for i in oIsoBits'range loop
       if sMuonPT_reg(i) = (sMuonPT_reg(i)'range => '0') then
-        oIsoBits(i)(0) <= '0';
-        oIsoBits(i)(1) <= '0';
+        oIsoBits(i)(ABS_ISO_BIT) <= '0';
+        oIsoBits(i)(REL_ISO_BIT) <= '0';
       else
-        oIsoBits(i)(0) <= sAbsIsoBits(i);
-        oIsoBits(i)(1) <= sRelIsoBits(i);
+        oIsoBits(i)(ABS_ISO_BIT) <= sAbsIsoBits(i);
+        oIsoBits(i)(REL_ISO_BIT) <= sRelIsoBits(i);
       end if;
     end loop;  -- i
   end process assign_iso_bits;
