@@ -119,8 +119,7 @@ begin
 
         -- Filling uGMT
         for cnt in 0 to 5 loop
-          iD_muons <=
-          iD_buffer_calo(0) <= event.iD(cnt)(71 downto 36)event.iD(cnt)(35 downto 0);
+          iD_buffer_calo(0) <= event.iD(cnt)(35 downto 0);
           iD_buffer_calo(2 downto 1) <= iD_buffer_calo(1 downto 0);
 
           iD(71 downto 36) <= event.iD(cnt)(71 downto 36);
