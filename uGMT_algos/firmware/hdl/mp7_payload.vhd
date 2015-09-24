@@ -390,7 +390,7 @@ begin
       clk40    => clk_payload,
       clk240   => clk_p,
       iTrigger => sTrigger,
-      q        => sQ(3 downto 0)
+      q        => sQ(NUM_OUT_CHANS-1 downto 0)
       );
 
   serialize : entity work.serializer_stage
@@ -411,9 +411,9 @@ begin
       q                    => sQ
       );
 
-  q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0) <= sQ;
+  q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0) <= sQ;
 
-  strobe_high : for i in q'high downto (NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS) generate
+  strobe_high : for i in q'high downto (NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS) generate
         q(i).strobe <= '1';
   end generate;
 

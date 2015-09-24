@@ -15,11 +15,8 @@ entity serializer_stage is
         iIntermediateMuonsB  : in  TGMTMu_vector(7 downto 0);
         iIntermediateMuonsO  : in  TGMTMu_vector(7 downto 0);
         iIntermediateMuonsF  : in  TGMTMu_vector(7 downto 0);
-        iSortRanksB          : in  TSortRank10_vector(7 downto 0);
-        iSortRanksO          : in  TSortRank10_vector(7 downto 0);
-        iSortRanksF          : in  TSortRank10_vector(7 downto 0);
         iFinalEnergies       : in  TCaloArea_vector(7 downto 0);
-        q                    : out ldata ((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0));
+        q                    : out ldata ((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0));
 end serializer_stage;
 
 architecture Behavioral of serializer_stage is
@@ -31,7 +28,6 @@ architecture Behavioral of serializer_stage is
   signal sSel    : integer range 0 to 5;
 
   signal sIntermediateMuons : TGMTMu_vector(23 downto 0);
-  signal sSortRanks         : TSortRank10_vector(23 downto 0);
   signal sFakeIso           : TIsoBits := "00";
 begin
 
