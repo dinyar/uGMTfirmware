@@ -35,7 +35,7 @@ architecture behavior of testbench is
   signal oQ       : ldata(71 downto 0);
 
   type TCaloTransceiverBuffer is array (integer range <>) of ldata(36-1 downto 0);
-  signal iD_buffer_calo : TCaloTransceiverBuffer(2 downto 0);
+  signal iD_buffer_calo : TCaloTransceiverBuffer(1 downto 0);
 
   signal dummyCtrs : ttc_stuff_array(N_REGION - 1 downto 0);
 
@@ -120,11 +120,10 @@ begin
         -- Filling uGMT
         for cnt in 0 to 5 loop
           iD_buffer_calo(0) <= event.iD(cnt)(35 downto 0);
-          iD_buffer_calo(2 downto 1) <= iD_buffer_calo(1 downto 0);
+          iD_buffer_calo(1) <= iD_buffer_calo(0);
 
           iD(71 downto 36) <= event.iD(cnt)(71 downto 36);
           iD(35 downto 0) <= iD_buffer_calo(iD_buffer_calo'high);
-
 
           wait for 2*half_period_240;
           vOutput(cnt) := oQ;
