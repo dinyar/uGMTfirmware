@@ -1,5 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
+use IEEE.NUMERIC_STD.all;
 use work.ipbus_reg_types.all;
 
 package ugmt_constants is
@@ -215,7 +216,7 @@ package ugmt_constants is
                        (X"000000D8", X"00000138", X"00000198", X"000001F8")
                       );
 
-  constant LOCAL_PHI_OFFSET_BRL : signed(8 downto 0) := to_signed(48, 9);
+  constant LOCAL_PHI_OFFSET_BRL     : signed(8 downto 0) := to_signed(48, 9);
   constant LOCAL_PHI_OFFSET_OVL_FWD : signed(8 downto 0) := to_signed(96, 9);
 
   -----------------------------------------------------------------------------
