@@ -32,7 +32,7 @@ architecture Behavioral of compute_complete_sums is
   signal sReducedStripEnergies_reg : TSelectedEtaSlice_vector(7 downto 0);
 begin
 
-  reg_calo_bits : process (clk, sinit)
+  reg_calo_bits : process (clk)
   begin  -- process reg_calo_bits
     -- TODO: (TIMING) May be able to save latency by making this a rising flank
     -- To do this we need to reduce delay of calo idx bits and energy sums by 1/2 bx.

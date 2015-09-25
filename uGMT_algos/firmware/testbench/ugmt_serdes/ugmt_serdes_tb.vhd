@@ -120,11 +120,11 @@ begin
 
         -- Filling uGMT
         for cnt in 0 to 5 loop
-          iD_buffer_calo(0) <= event.iD(cnt)(35 downto 0);
-          iD_buffer_calo(iD_buffer_calo'high-1 downto 1) <= iD_buffer_calo(iD_buffer_calo'high-2 downto 0);
+          iD_buffer_calo(0)                            <= event.iD(cnt)(35 downto 0);
+          iD_buffer_calo(iD_buffer_calo'high downto 1) <= iD_buffer_calo(iD_buffer_calo'high-1 downto 0);
 
           iD(71 downto 36) <= event.iD(cnt)(71 downto 36);
-          iD(35 downto 0) <= iD_buffer_calo(iD_buffer_calo'high);
+          iD(35 downto 0)  <= iD_buffer_calo(iD_buffer_calo'high);
 
           wait for 2*half_period_240;
           vOutput(cnt) := oQ;
@@ -133,19 +133,21 @@ begin
         event_buffer(0) := event;
 
       else
-          for cnt in 0 to 5 loop
-            for i in iD'range loop
-              iD(i).data   <= (others => '0');
-              iD(i).valid  <= '1';
-              iD(i).strobe <= '1';
-            end loop;  -- i
-            wait for 2*half_period_240;
+        for cnt in 0 to 5 loop
+          iD_buffer_calo(iD_buffer_calo'high downto 1) <= iD_buffer_calo(iD_buffer_calo'high-1 downto 0);
+          iD(35 downto 0)                              <= iD_buffer_calo(iD_buffer_calo'high);
+          for i in 71 downto 36 loop
+            iD(i).data   <= (others => '0');
+            iD(i).valid  <= '1';
+            iD(i).strobe <= '1';
+          end loop;  -- i
+          wait for 2*half_period_240;
 
-            vOutput(cnt) := oQ;
+          vOutput(cnt) := oQ;
 
-          end loop;  -- cnt
+        end loop;  -- cnt
 
-          remainingEvents := remainingEvents-1;
+        remainingEvents := remainingEvents-1;
       end if;
 
       event_buffer(uGMT_LATENCY-1 downto 1) := event_buffer(uGMT_LATENCY-2 downto 0);
