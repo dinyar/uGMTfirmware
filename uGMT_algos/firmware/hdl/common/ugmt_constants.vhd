@@ -206,11 +206,11 @@ package ugmt_constants is
   constant SORT_RANK_MEM_WORD_SIZE : natural := 10;
 
   -----------------------------------------------------------------------------
-  -- Constants for registers
+  -- Phi offset initialization vector
   -----------------------------------------------------------------------------
 
-  type RegisterValueAssignment_vector is array (0 to 8) of ipb_reg_v(0 to 3);
-  constant INIT_PHI_OFFSET_ASSIGN : RegisterValueAssignment_vector := ((X"00000018", X"00000078", X"000000D8", X"00000138"),
+  type PhiOffsetRegisterValueAssignment_vector is array (0 to 8) of ipb_reg_v(0 to 3);
+  constant INIT_PHI_OFFSET_ASSIGN : PhiOffsetRegisterValueAssignment_vector := ((X"00000018", X"00000078", X"000000D8", X"00000138"),
                        (X"00000198", X"000001F8", X"00000018", X"00000078"),
                        (X"000000D8", X"00000138", X"00000198", X"000001F8"),
                        (X"00000228", X"00000018", X"00000048", X"00000078"),
@@ -251,6 +251,7 @@ package ugmt_constants is
   -----------------------------------------------------------------------------
   -- Constants for stage 1 sorter
   -----------------------------------------------------------------------------
+
   constant MU_FWD_POS_BEGIN : natural := 0;
   constant MU_OVL_POS_BEGIN : natural := 4;
   constant MU_BRL_BEGIN     : natural := 8;
@@ -262,8 +263,9 @@ package ugmt_constants is
   -----------------------------------------------------------------------------
   -- Misc. constants
   -----------------------------------------------------------------------------
-  constant MAX_PHI_VAL         : natural := 576;
-  constant LS_LENGTH_IN_ORBITS : natural := 2**18;
+  constant MAX_PHI_VAL          : natural := 576;
+  constant EXTRAPOLATION_PT_CUT : natural := 63; -- 31.5 GeV is lowest pT value to be still extrapolated.
+  constant LS_LENGTH_IN_ORBITS  : natural := 2**18;
 
 end ugmt_constants;
 
