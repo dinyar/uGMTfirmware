@@ -35,8 +35,8 @@ architecture behavior of testbench is
   signal oQ       : ldata(71 downto 0);
 
   type TCaloTransceiverBuffer is array (integer range <>) of ldata(36-1 downto 0);
-  -- Delay by 3 BX (3*6 frames)
-  signal iD_buffer_calo : TCaloTransceiverBuffer(3*6-1 downto 0);
+  -- Delay by 2 BX (2*6 frames)
+  signal iD_buffer_calo : TCaloTransceiverBuffer(2*6-1 downto 0);
 
   signal dummyCtrs : ttc_stuff_array(N_REGION - 1 downto 0);
 
@@ -83,7 +83,7 @@ begin
     file F                   : text open read_mode  is "ugmt_testfile.dat";
     file FO                  : text open write_mode is "../results/ugmt_serdes_tb.results";
     variable L, LO           : line;
-    constant uGMT_LATENCY    : integer := 8;
+    constant uGMT_LATENCY    : integer := 7;
     variable event           : TGMTEvent;
     variable event_buffer    : TGMTEvent_vec(uGMT_LATENCY-1 downto 0);
     variable iEvent          : integer := 0;

@@ -32,6 +32,8 @@ architecture Behavioral of WedgeCheckerUnit is
   signal ipbw    : ipb_wbus_array(N_SLAVES-1 downto 0);
   signal ipbr    : ipb_rbus_array(N_SLAVES-1 downto 0);
 
+  signal notClk : std_logic;
+
   subtype muon_cancel is std_logic_vector(wedge2'range);
   type    muon_cancel_vec is array (integer range <>) of muon_cancel;
   signal  sCancel1             : muon_cancel_vec(wedge1'range);
@@ -43,6 +45,7 @@ architecture Behavioral of WedgeCheckerUnit is
   signal wedge2_reg : TGMTMuTracks3;
 
 begin
+    notClk <= not clk;
 
     -- IPbus address decode
     fabric : entity work.ipbus_fabric_sel
@@ -70,7 +73,7 @@ begin
            qual2   => wedge2(i).qual,
            ghost1  => sIntermediateCancel1(j)(i),
            ghost2  => sIntermediateCancel2(j)(i),
-           clk     => clk
+           clk     => notClk
            );
       end generate gen_bmtf_addr_based;
 
@@ -105,11 +108,19 @@ begin
           qual2   => wedge2(i).qual,
           ghost1  => sIntermediateCancel1(j)(i),
           ghost2  => sIntermediateCancel2(j)(i),
-          clk     => clk
+          clk     => notClk
           );
       end generate gen_coord_based;
     end generate g2;
   end generate g1;
+
+  reg_wedges : process (clk)
+  begin  -- reg_wedges
+    if clk'event and clk = '0' then  -- falling clock edge
+      wedge1_reg <= wedge1;
+      wedge2_reg <= wedge2;
+    end if;
+  end process reg_wedges;
 
   -- If one of the muons are empty we won't check for ghosts.
   check_empty : process (sIntermediateCancel1, sIntermediateCancel2, wedge1_reg, wedge2_reg)
@@ -126,14 +137,6 @@ begin
         end loop;
     end loop;
   end process check_empty;
-
-  reg_wedges : process (clk)
-  begin  -- reg_wedges
-    if clk'event and clk = '1' then  -- rising clock edge
-      wedge1_reg <= wedge1;
-      wedge2_reg <= wedge2;
-    end if;
-  end process reg_wedges;
 
   g3 : for i in ghosts1'range generate
     ghosts1(i) <= sCancel1(i)(0) or sCancel1(i)(1) or sCancel1(i)(2);

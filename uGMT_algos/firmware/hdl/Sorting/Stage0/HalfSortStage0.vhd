@@ -90,7 +90,7 @@ begin  -- architecture behavioral
 
   reg_ge : process (clk) is
   begin  -- process reg_ge
-    if clk'event and clk = '1' then
+    if clk'event and clk = '0' then  -- falling clock edge 
       GEMatrix_reg     <= GEMatrix;
       sIdxBits_store   <= sIdxBits;
       sSortRanks_store <= sSortRanks;

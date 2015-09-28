@@ -43,7 +43,7 @@ architecture rtl of mp7_payload is
 
   signal sTrigger : std_logic := '0';
 
-  constant GMT_ALGO_LATENCY     : natural := 6;
+  constant GMT_ALGO_LATENCY     : natural := 5;
   -- Valid bits delayed less than algo latency due to one register before and
   -- requirement to be 1 bx early in serializer.
   signal   sValid_buffer        : std_logic_vector(GMT_ALGO_LATENCY-3 downto 0);
