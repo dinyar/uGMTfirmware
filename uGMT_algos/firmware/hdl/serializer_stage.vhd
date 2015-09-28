@@ -15,6 +15,7 @@ entity serializer_stage is
         iIntermediateMuonsB  : in  TGMTMu_vector(7 downto 0);
         iIntermediateMuonsO  : in  TGMTMu_vector(7 downto 0);
         iIntermediateMuonsF  : in  TGMTMu_vector(7 downto 0);
+        iFinalEnergies       : in  TCaloArea_vector(7 downto 0);
         q                    : out ldata ((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0));
 end serializer_stage;
 
