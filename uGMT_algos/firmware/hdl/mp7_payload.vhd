@@ -43,7 +43,7 @@ architecture rtl of mp7_payload is
 
   signal sTrigger : std_logic := '0';
 
-  constant GMT_ALGO_LATENCY     : natural := 6;
+  constant GMT_ALGO_LATENCY     : natural := 5;
   -- Valid bits delayed less than algo latency due to one register before and
   -- requirement to be 1 bx early in serializer.
   signal   sValid_buffer        : std_logic_vector(GMT_ALGO_LATENCY-3 downto 0);
@@ -101,17 +101,10 @@ architecture rtl of mp7_payload is
   signal sIntermediateMuonsB         : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsO         : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsF         : TGMTMu_vector(7 downto 0);
-  signal sIntermediateMuonsB_reg     : TGMTMu_vector(7 downto 0);
-  signal sIntermediateMuonsO_reg     : TGMTMu_vector(7 downto 0);
-  signal sIntermediateMuonsF_reg     : TGMTMu_vector(7 downto 0);
   signal sIntermediateSortRanksB     : TSortRank10_vector(7 downto 0);
   signal sIntermediateSortRanksO     : TSortRank10_vector(7 downto 0);
   signal sIntermediateSortRanksF     : TSortRank10_vector(7 downto 0);
-  signal sIntermediateSortRanksB_reg : TSortRank10_vector(7 downto 0);
-  signal sIntermediateSortRanksO_reg : TSortRank10_vector(7 downto 0);
-  signal sIntermediateSortRanksF_reg : TSortRank10_vector(7 downto 0);
   signal sFinalEnergies              : TCaloArea_vector(7 downto 0);
-  signal sFinalEnergies_reg          : TCaloArea_vector(7 downto 0);
 
   signal sQ : ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0);
 
@@ -356,22 +349,6 @@ begin
       ipb_out => ipbr(N_SLV_UGMT)
       );
 
-  gmt_out_reg : process (clk_payload)
-  begin  -- process gmt_out_reg
-    if clk_payload'event and clk_payload = '1' then  -- rising clock edge
-      sIso_reg   <= sIso;
-      oMuons_reg <= oMuons;
-
-      sIntermediateMuonsO_reg     <= sIntermediateMuonsO;
-      sIntermediateMuonsB_reg     <= sIntermediateMuonsB;
-      sIntermediateMuonsF_reg     <= sIntermediateMuonsF;
-      sIntermediateSortRanksB_reg <= sIntermediateSortRanksB;
-      sIntermediateSortRanksO_reg <= sIntermediateSortRanksO;
-      sIntermediateSortRanksF_reg <= sIntermediateSortRanksF;
-      sFinalEnergies_reg          <= sFinalEnergies;
-    end if;
-  end process gmt_out_reg;
-
   -----------------------------------------------------------------------------
   -- End 40 MHz domain.
   -----------------------------------------------------------------------------
@@ -399,12 +376,11 @@ begin
       clk40                => clk_payload,
       rst                  => rst_payload,
       iValid               => sValid_buffer(sValid_buffer'high),
-      sMuons               => oMuons_reg,
-      sIso                 => sIso_reg,
-      iIntermediateMuonsB  => sIntermediateMuonsB_reg,
-      iIntermediateMuonsO  => sIntermediateMuonsO_reg,
-      iIntermediateMuonsF  => sIntermediateMuonsF_reg,
-      iFinalEnergies       => sFinalEnergies_reg,
+      sMuons               => oMuons,
+      sIso                 => sIso,
+      iIntermediateMuonsB  => sIntermediateMuonsB,
+      iIntermediateMuonsO  => sIntermediateMuonsO,
+      iIntermediateMuonsF  => sIntermediateMuonsF,
       q                    => sQ
       );
 

@@ -32,13 +32,6 @@ architecture behavior of testbench is
   signal iIntermediateMuonsB     : TGMTMu_vector(7 downto 0);
   signal iIntermediateMuonsO     : TGMTMu_vector(7 downto 0);
   signal iIntermediateMuonsF     : TGMTMu_vector(7 downto 0);
-  signal iIntermediateSortRanksB : TSortRank10_vector(7 downto 0);
-  signal iIntermediateSortRanksO : TSortRank10_vector(7 downto 0);
-  signal iIntermediateSortRanksF : TSortRank10_vector(7 downto 0);
-  signal iFinalEnergies          : TCaloArea_vector(7 downto 0);
-  signal iExtrapolatedCoordsB    : TSpatialCoordinate_vector(35 downto 0);
-  signal iExtrapolatedCoordsO    : TSpatialCoordinate_vector(35 downto 0);
-  signal iExtrapolatedCoordsF    : TSpatialCoordinate_vector(35 downto 0);
   signal oQ                      : ldata(N_SERIALIZER_CHAN-1 downto 0);
 
 begin
@@ -54,7 +47,6 @@ begin
       iIntermediateMuonsB  => iIntermediateMuonsB,
       iIntermediateMuonsO  => iIntermediateMuonsO,
       iIntermediateMuonsF  => iIntermediateMuonsF,
-      iFinalEnergies       => iFinalEnergies,
       q                    => oQ);
 
   -- Clocks

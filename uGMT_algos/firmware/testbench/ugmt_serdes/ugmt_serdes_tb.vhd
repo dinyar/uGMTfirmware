@@ -83,7 +83,7 @@ begin
     file F                   : text open read_mode  is "ugmt_testfile.dat";
     file FO                  : text open write_mode is "../results/ugmt_serdes_tb.results";
     variable L, LO           : line;
-    constant uGMT_LATENCY    : integer := 8;
+    constant uGMT_LATENCY    : integer := 7;
     variable event           : TGMTEvent;
     variable event_buffer    : TGMTEvent_vec(uGMT_LATENCY-1 downto 0);
     variable iEvent          : integer := 0;
