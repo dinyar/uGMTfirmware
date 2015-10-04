@@ -95,8 +95,6 @@ architecture rtl of mp7_payload is
 
   signal sIso       : TIsoBits_vector(7 downto 0);
   signal oMuons     : TGMTMu_vector(7 downto 0);
-  signal oMuons_reg : TGMTMu_vector(7 downto 0);
-  signal sIso_reg   : TIsoBits_vector(7 downto 0);
 
   signal sIntermediateMuonsB         : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsO         : TGMTMu_vector(7 downto 0);
@@ -130,21 +128,6 @@ begin
       ipb_to_slaves   => ipbw,
       ipb_from_slaves => ipbr
       );
-
-  generate_lemo_signals : entity work.generate_lemo_signals
-    port map (
-      clk_ipb      => clk,
-      ipb_in       => ipbw(N_SLV_GENERATE_LEMO_SIGNALS),
-      ipb_out      => ipbr(N_SLV_GENERATE_LEMO_SIGNALS),
-      clk          => clk_payload,
-      rst          => rst_payload,
-      iMuons       => oMuons_reg,
-      iBGOs        => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
-      iValid       => sValid_buffer(0),
-      oTrigger     => sTrigger,
-      gpio         => gpio,
-      gpio_en      => gpio_en
-    );
 
   muon_counter_reset_gen : entity work.muon_counter_reset
     port map (
@@ -371,6 +354,21 @@ begin
       sFinalEnergies_reg          <= sFinalEnergies;
     end if;
   end process gmt_out_reg;
+
+  generate_lemo_signals : entity work.generate_lemo_signals
+    port map (
+      clk_ipb  => clk,
+      ipb_in   => ipbw(N_SLV_GENERATE_LEMO_SIGNALS),
+      ipb_out  => ipbr(N_SLV_GENERATE_LEMO_SIGNALS),
+      clk      => clk_payload,
+      rst      => rst_payload,
+      iMuons   => oMuons,
+      iBGOs    => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
+      iValid   => sValid_buffer(0),
+      oTrigger => sTrigger,
+      gpio     => gpio,
+      gpio_en  => gpio_en
+      );
 
   -----------------------------------------------------------------------------
   -- End 40 MHz domain.

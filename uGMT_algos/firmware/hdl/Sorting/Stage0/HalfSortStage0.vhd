@@ -15,21 +15,22 @@ use work.SorterUnit.all;
 entity HalfSortStage0 is
   generic (
     sorter_lat_start : integer := 6);                 -- start latency
-  port (iSortRanks : in  TSortRank10_vector(17 downto 0);
-        iEmpty     : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later?
-        iCancel_A  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
-        iCancel_B  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
-        iCancel_C  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
-        iMuons     : in  TGMTMu_vector(17 downto 0);      -- arrive 1/2 bx later?
-        iIdxBits   : in  TIndexBits_vector(17 downto 0);  -- arrive 1/2 bx later?
-        oMuons     : out TGMTMu_vector(3 downto 0);
-        oIdxBits   : out TIndexBits_vector(3 downto 0);
-        oSortRanks : out TSortRank10_vector(3 downto 0);
-        oEmpty     : out std_logic_vector(3 downto 0);
+  port (
+    iSortRanks : in  TSortRank10_vector(17 downto 0);
+    iEmpty     : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later?
+    iCancel_A  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
+    iCancel_B  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
+    iCancel_C  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
+    iMuons     : in  TGMTMu_vector(17 downto 0);      -- arrive 1/2 bx later?
+    iIdxBits   : in  TIndexBits_vector(17 downto 0);  -- arrive 1/2 bx later?
+    oMuons     : out TGMTMu_vector(3 downto 0);
+    oIdxBits   : out TIndexBits_vector(3 downto 0);
+    oSortRanks : out TSortRank10_vector(3 downto 0);
+    oEmpty     : out std_logic_vector(3 downto 0);
 
-        -- Clock and control
-        clk   : in std_logic;
-        sinit : in std_logic);
+    -- Clock and control
+    clk   : in std_logic;
+    sinit : in std_logic);
 end;
 
 architecture behavioral of HalfSortStage0 is
@@ -42,10 +43,6 @@ architecture behavioral of HalfSortStage0 is
       B      : in  std_logic_vector(9 downto 0);
       A_GE_B : out std_logic);
   end component;
-
--- Synplicity black box declaration
---  attribute syn_black_box              : boolean;
---  attribute syn_black_box of comp10_ge : component is true;
 
   signal sMuons_reg   : TGMTMu_vector(17 downto 0);
   signal sMuons_store : TGMTMu_vector(17 downto 0);

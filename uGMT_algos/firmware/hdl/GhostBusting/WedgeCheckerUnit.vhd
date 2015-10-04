@@ -32,8 +32,6 @@ architecture Behavioral of WedgeCheckerUnit is
   signal ipbw    : ipb_wbus_array(N_SLAVES-1 downto 0);
   signal ipbr    : ipb_rbus_array(N_SLAVES-1 downto 0);
 
-  signal notClk : std_logic;
-
   subtype muon_cancel is std_logic_vector(wedge2'range);
   type    muon_cancel_vec is array (integer range <>) of muon_cancel;
   signal  sCancel1             : muon_cancel_vec(wedge1'range);
@@ -45,7 +43,6 @@ architecture Behavioral of WedgeCheckerUnit is
   signal wedge2_reg : TGMTMuTracks3;
 
 begin
-    notClk <= not clk;
 
     -- IPbus address decode
     fabric : entity work.ipbus_fabric_sel
@@ -73,7 +70,7 @@ begin
            qual2   => wedge2(i).qual,
            ghost1  => sIntermediateCancel1(j)(i),
            ghost2  => sIntermediateCancel2(j)(i),
-           clk     => notClk
+           clk     => clk
            );
       end generate gen_bmtf_addr_based;
 

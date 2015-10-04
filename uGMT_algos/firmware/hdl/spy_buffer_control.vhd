@@ -31,6 +31,7 @@ architecture behavioral of spy_buffer_control is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
+  -- We're one BX delayed. (6 240 MHz ticks)
   constant DELAY_LATENCY : natural := 6;
   signal in_buf          : TQuadTransceiverBufferIn;
 

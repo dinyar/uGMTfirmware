@@ -11,21 +11,23 @@ use work.SorterUnit.all;
 entity SortStage0 is
   generic (
     sorter_lat_start : integer := 6);                 -- start latency
-  port (iSortRanks : in  TSortRank10_vector(35 downto 0);
-        iEmpty     : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later?
-        iCancel_A  : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later
-        iCancel_B  : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later
-        iCancel_C  : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later
-        iMuons     : in  TGMTMu_vector(35 downto 0);      -- arrive 1/2 bx later?
-        iIdxBits   : in  TIndexBits_vector(35 downto 0);  -- arrive 1/2 bx later?
-        oMuons     : out TGMTMu_vector(7 downto 0);
-        oIdxBits   : out TIndexBits_vector(7 downto 0);
-        oSortRanks : out TSortRank10_vector(7 downto 0);
-        oEmpty     : out std_logic_vector(7 downto 0);
+  port (
+    iSortRanks : in  TSortRank10_vector(35 downto 0);
+    iEmpty     : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later?
+    iCancel_A  : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later
+    iCancel_B  : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later
+    iCancel_C  : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later
+    iMuons     : in  TGMTMu_vector(35 downto 0);      -- arrive 1/2 bx later?
+    iIdxBits   : in  TIndexBits_vector(35 downto 0);  -- arrive 1/2 bx later?
+    oMuons     : out TGMTMu_vector(7 downto 0);
+    oIdxBits   : out TIndexBits_vector(7 downto 0);
+    oSortRanks : out TSortRank10_vector(7 downto 0);
+    oEmpty     : out std_logic_vector(7 downto 0);
 
-        -- Clock and control
-        clk   : in std_logic;
-        sinit : in std_logic);
+    -- Clock and control
+    clk   : in std_logic;
+    sinit : in std_logic
+    );
 end;
 
 architecture behavioral of SortStage0 is
@@ -64,7 +66,7 @@ begin  -- architecture behavioral
   -- calculate GE Matrix
   -----------------------------------------------------------------------------
   -- Remark: Diagonal elements of GEMatrix are never used and also not
-  -- generated. 
+  -- generated.
   g1 : for i in 0 to 34 generate
     g2 : for j in i+1 to 35 generate
       x : comp10_ge
