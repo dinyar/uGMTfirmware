@@ -105,7 +105,7 @@ begin
           qual2   => wedge2(i).qual,
           ghost1  => sIntermediateCancel1(j)(i),
           ghost2  => sIntermediateCancel2(j)(i),
-          clk     => notClk
+          clk     => clk
           );
       end generate gen_coord_based;
     end generate g2;
@@ -123,15 +123,15 @@ begin
   check_empty : process (sIntermediateCancel1, sIntermediateCancel2, wedge1_reg, wedge2_reg)
   begin  -- process check_empty
     for i in wedge1'range loop
-        for j in wedge2'range loop
-            if (wedge1_reg(i).empty = '1') or (wedge2_reg(j).empty = '1') then
-                sCancel1(j)(i) <= '0';
-                sCancel2(j)(i) <= '0';
-            else
-                sCancel1(j)(i) <= sIntermediateCancel1(j)(i);
-                sCancel2(j)(i) <= sIntermediateCancel2(j)(i);
-            end if;
-        end loop;
+      for j in wedge2'range loop
+        if (wedge1_reg(i).empty = '1') or (wedge2_reg(j).empty = '1') then
+          sCancel1(j)(i) <= '0';
+          sCancel2(j)(i) <= '0';
+        else
+          sCancel1(j)(i) <= sIntermediateCancel1(j)(i);
+          sCancel2(j)(i) <= sIntermediateCancel2(j)(i);
+        end if;
+      end loop;
     end loop;
   end process check_empty;
 

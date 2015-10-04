@@ -33,6 +33,9 @@ end GhostCheckerUnit_spatialCoords;
 
 architecture Behavioral of GhostCheckerUnit_spatialCoords is
   signal ipbusWe     : std_logic;
+
+  signal notClk : std_logic;
+
   signal deltaEta    : signed(9 downto 0);
   signal deltaPhi    : signed(8 downto 0);
   signal deltaEtaRed : unsigned(3 downto 0);
@@ -41,6 +44,8 @@ architecture Behavioral of GhostCheckerUnit_spatialCoords is
   signal match       : std_logic_vector(0 downto 0);
 begin
   ipbusWe <= ipb_in.ipb_write and ipb_in.ipb_strobe;
+
+  notClk <= not clk;
 
   deltaEta    <= abs(resize(eta1, 10) - resize(eta2, 10));
   deltaPhi    <= abs(resize(phi1, 9) - (LOCAL_PHI_OFFSET + resize(phi2, 9)));
@@ -59,7 +64,7 @@ begin
         clk     => clk_ipb,
         ipb_in  => ipb_in,
         ipb_out => ipb_out,
-        rclk    => clk,
+        rclk    => notClk,
         q       => match,
         addr    => lutInput
         );
