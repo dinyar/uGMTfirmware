@@ -94,7 +94,9 @@ architecture rtl of mp7_payload is
   signal sIndexBitsF : TIndexBits_vector(35 downto 0);
 
   signal sIso       : TIsoBits_vector(7 downto 0);
+  signal sIso_reg   : TIsoBits_vector(7 downto 0);
   signal oMuons     : TGMTMu_vector(7 downto 0);
+  signal oMuons_reg : TGMTMu_vector(7 downto 0);
 
   signal sIntermediateMuonsB         : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsO         : TGMTMu_vector(7 downto 0);
