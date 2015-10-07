@@ -41,7 +41,8 @@ architecture rtl of mp7_payload is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
-  signal sTrigger : std_logic := '0';
+  signal sTrigger     : std_logic := '0';
+  signal sTrigger_reg : std_logic := '0';
 
   constant GMT_ALGO_LATENCY     : natural := 5;
   -- Valid bits delayed less than algo latency due to one register before and
@@ -341,22 +342,6 @@ begin
       ipb_out => ipbr(N_SLV_UGMT)
       );
 
-  gmt_out_reg : process (clk_payload)
-  begin  -- process gmt_out_reg
-    if clk_payload'event and clk_payload = '1' then  -- rising clock edge
-      sIso_reg   <= sIso;
-      oMuons_reg <= oMuons;
-
-      sIntermediateMuonsO_reg     <= sIntermediateMuonsO;
-      sIntermediateMuonsB_reg     <= sIntermediateMuonsB;
-      sIntermediateMuonsF_reg     <= sIntermediateMuonsF;
-      sIntermediateSortRanksB_reg <= sIntermediateSortRanksB;
-      sIntermediateSortRanksO_reg <= sIntermediateSortRanksO;
-      sIntermediateSortRanksF_reg <= sIntermediateSortRanksF;
-      sFinalEnergies_reg          <= sFinalEnergies;
-    end if;
-  end process gmt_out_reg;
-
   generate_lemo_signals : entity work.generate_lemo_signals
     port map (
       clk_ipb  => clk,
@@ -371,6 +356,24 @@ begin
       gpio     => gpio,
       gpio_en  => gpio_en
       );
+
+  gmt_out_reg : process (clk_payload)
+  begin  -- process gmt_out_reg
+    if clk_payload'event and clk_payload = '1' then  -- rising clock edge
+      sIso_reg   <= sIso;
+      oMuons_reg <= oMuons;
+
+      sIntermediateMuonsO_reg     <= sIntermediateMuonsO;
+      sIntermediateMuonsB_reg     <= sIntermediateMuonsB;
+      sIntermediateMuonsF_reg     <= sIntermediateMuonsF;
+      sIntermediateSortRanksB_reg <= sIntermediateSortRanksB;
+      sIntermediateSortRanksO_reg <= sIntermediateSortRanksO;
+      sIntermediateSortRanksF_reg <= sIntermediateSortRanksF;
+      sFinalEnergies_reg          <= sFinalEnergies;
+
+      sTrigger_reg <= sTrigger;
+    end if;
+  end process gmt_out_reg;
 
   -----------------------------------------------------------------------------
   -- End 40 MHz domain.
@@ -389,7 +392,7 @@ begin
       ipb_out  => ipbr(N_SLV_SPY_BUFFER_CONTROL),
       clk40    => clk_payload,
       clk240   => clk_p,
-      iTrigger => sTrigger,
+      iTrigger => sTrigger_reg,
       q        => sQ(NUM_OUT_CHANS-1 downto 0)
       );
 
