@@ -9,25 +9,25 @@ use work.GMTTypes.all;
 
 entity IsoAssignmentUnit is
   port (
-    iEnergies            : in  TCaloRegionEtaSlice_vector;
-    iMuonsB              : in  TGMTMu_vector (35 downto 0);
-    iMuonsO              : in  TGMTMu_vector (35 downto 0);
-    iMuonsF              : in  TGMTMu_vector (35 downto 0);
-    iCaloIdxBitsB        : in TCaloIndexBit_vector(35 downto 0);
-    iCaloIdxBitsO        : in TCaloIndexBit_vector(35 downto 0);
-    iCaloIdxBitsF        : in TCaloIndexBit_vector(35 downto 0);
-    iMuIdxBits           : in  TIndexBits_vector (7 downto 0);
-    iFinalMuPt           : in  TMuonPT_vector(7 downto 0);
-    oIsoBits             : out TIsoBits_vector (7 downto 0);
-    oFinalEnergies       : out TCaloArea_vector(7 downto 0);
-    oFinalCaloIdxBits    : out TCaloIndexBit_vector(7 downto 0); -- Debugging output
-    oMuIdxBits           : out TIndexBits_vector (7 downto 0);
-    oFinalMuPt           : out TMuonPT_vector(7 downto 0);
-    clk                  : in  std_logic;
-    clk_ipb              : in  std_logic;
-    sinit                : in  std_logic;
-    ipb_in               : in  ipb_wbus;
-    ipb_out              : out ipb_rbus
+    iEnergies         : in  TCaloRegionEtaSlice_vector;
+    iMuonsB           : in  TGMTMu_vector (35 downto 0);
+    iMuonsO           : in  TGMTMu_vector (35 downto 0);
+    iMuonsE           : in  TGMTMu_vector (35 downto 0);
+    iCaloIdxBitsB     : in TCaloIndexBit_vector(35 downto 0);
+    iCaloIdxBitsO     : in TCaloIndexBit_vector(35 downto 0);
+    iCaloIdxBitsE     : in TCaloIndexBit_vector(35 downto 0);
+    iMuIdxBits        : in  TIndexBits_vector (7 downto 0);
+    iFinalMuPt        : in  TMuonPT_vector(7 downto 0);
+    oIsoBits          : out TIsoBits_vector (7 downto 0);
+    oFinalEnergies    : out TCaloArea_vector(7 downto 0);
+    oFinalCaloIdxBits : out TCaloIndexBit_vector(7 downto 0); -- Debugging output
+    oMuIdxBits        : out TIndexBits_vector (7 downto 0);
+    oFinalMuPt        : out TMuonPT_vector(7 downto 0);
+    clk               : in  std_logic;
+    clk_ipb           : in  std_logic;
+    sinit             : in  std_logic;
+    ipb_in            : in  ipb_wbus;
+    ipb_out           : out ipb_rbus
     );
 end IsoAssignmentUnit;
 
@@ -44,18 +44,17 @@ architecture Behavioral of IsoAssignmentUnit is
 
   signal sIsoBitsB : std_logic_vector(0 to 35);
   signal sIsoBitsO : std_logic_vector(0 to 35);
-  signal sIsoBitsF : std_logic_vector(0 to 35);
+  signal sIsoBitsE : std_logic_vector(0 to 35);
 
   -- For intermediates
   type TEnergyBuffer is array (integer range <>) of TCaloArea_vector(7 downto 0);
   constant ENERGY_INTERMEDIATE_DELAY : natural := 4;  -- Delay to sync
                                                       -- energies  with
                                                       -- final muons.
-  signal sFinalEnergies_buffer       : TEnergyBuffer(ENERGY_INTERMEDIATE_DELAY-1 downto 0);
+  signal sFinalEnergies_buffer : TEnergyBuffer(ENERGY_INTERMEDIATE_DELAY-1 downto 0);
 
   signal sSelectedCaloIdxBits : TCaloIndexBit_vector(7 downto 0);
   signal sMuIdxBits_reg       : TIndexBits_vector(7 downto 0);
-
 
 begin
 
@@ -82,7 +81,7 @@ begin
       iEnergies     => iEnergies,
       iCaloIdxBitsB => iCaloIdxBitsB,
       iCaloIdxBitsO => iCaloIdxBitsO,
-      iCaloIdxBitsF => iCaloIdxBitsF,
+      iCaloIdxBitsE => iCaloIdxBitsE,
       iMuIdxBits    => iMuIdxBits,
       oEnergies     => sSelectedEnergies,
       oCaloIdxBits  => sSelectedCaloIdxBits,

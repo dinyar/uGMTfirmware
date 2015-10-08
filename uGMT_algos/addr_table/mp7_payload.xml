@@ -7,10 +7,10 @@
   <node id="input_disable_reg" address="0x8000000" description="Register to disable inputs ('1' is disabled)." fwinfo="endpoint;width=0">
       <node id="energy_sum" mask="0x1" />
       <node id="BMTF" mask="0x2" />
-      <node id="overlap_positive" mask="0x4" />
-      <node id="overlap_negative" mask="0x8" />
-      <node id="forward_positive" mask="0x10" />
-      <node id="forward_negative" mask="0x20" />
+      <node id="OMTF_positive" mask="0x4" />
+      <node id="OMTF_negative" mask="0x8" />
+      <node id="EMTF_positive" mask="0x10" />
+      <node id="EMTF_negative" mask="0x20" />
   </node>
   <node id="generate_lemo_signals" module="file://generate_lemo_signals.xml" address="0x8000100" description="Contains register to set prescale for pseudo-triggers."/>
   <node id="muon_counter_reset" module="file://muon_counter_reset.xml" address="0x8000200" description="Registers to take manual control of muon counter reset signal."/>

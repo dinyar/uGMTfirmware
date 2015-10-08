@@ -14,8 +14,7 @@ entity serializer_stage is
         sIso                 : in  TIsoBits_vector(NUM_OUT_CHANS*NUM_MUONS_OUT-1 downto 0);
         iIntermediateMuonsB  : in  TGMTMu_vector(7 downto 0);
         iIntermediateMuonsO  : in  TGMTMu_vector(7 downto 0);
-        iIntermediateMuonsF  : in  TGMTMu_vector(7 downto 0);
-        iFinalEnergies       : in  TCaloArea_vector(7 downto 0);
+        iIntermediateMuonsE  : in  TGMTMu_vector(7 downto 0);
         q                    : out ldata ((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0));
 end serializer_stage;
 
@@ -31,7 +30,7 @@ architecture Behavioral of serializer_stage is
   signal sFakeIso           : TIsoBits := "00";
 begin
 
-  sIntermediateMuons <= iIntermediateMuonsF(7 downto 4) & iIntermediateMuonsO(7 downto 4) & iIntermediateMuonsB & iIntermediateMuonsO(3 downto 0) & iIntermediateMuonsF(3 downto 0);
+  sIntermediateMuons <= iIntermediateMuonsE(7 downto 4) & iIntermediateMuonsO(7 downto 4) & iIntermediateMuonsB & iIntermediateMuonsO(3 downto 0) & iIntermediateMuonsE(3 downto 0);
 
   serialize_muons : for i in NUM_MUONS_LINK-1 downto 0 generate
     split_muons : for j in NUM_OUT_CHANS-1 downto 0 generate

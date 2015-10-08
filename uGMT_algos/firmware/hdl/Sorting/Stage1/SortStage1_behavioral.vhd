@@ -20,10 +20,10 @@ entity SortStage1 is
     iIdxBitsO   : in TIndexBits_vector(7 downto 0);
     iMuonsO     : in TGMTMu_vector(7 downto 0);
 
-    iSortRanksF : in TSortRank10_vector(7 downto 0);
-    iEmptyF     : in std_logic_vector(7 downto 0);
-    iIdxBitsF   : in TIndexBits_vector(7 downto 0);
-    iMuonsF     : in TGMTMu_vector(7 downto 0);
+    iSortRanksE : in TSortRank10_vector(7 downto 0);
+    iEmptyE     : in std_logic_vector(7 downto 0);
+    iIdxBitsE   : in TIndexBits_vector(7 downto 0);
+    iMuonsE     : in TGMTMu_vector(7 downto 0);
 
     oIdxBits : out TIndexBits_vector(7 downto 0);  -- Sent to IsoAU.
     oMuons   : out TGMTMu_vector(7 downto 0)
@@ -49,11 +49,11 @@ architecture behavioral of SortStage1 is
 
 begin  -- architecture behavioral
 
-  sSortRanks <= iSortRanksF(7 downto 4) & iSortRanksO(7 downto 4) & iSortRanksB & iSortRanksO(3 downto 0) & iSortRanksF(3 downto 0);
-  sMuons     <= iMuonsF(7 downto 4) & iMuonsO(7 downto 4) & iMuonsB & iMuonsO(3 downto 0) & iMuonsF(3 downto 0);
-  sIdxBits   <= iIdxBitsF(7 downto 4) & iIdxBitsO(7 downto 4) & iIdxBitsB & iIdxBitsO(3 downto 0) & iIdxBitsF(3 downto 0);
+  sSortRanks <= iSortRanksE(7 downto 4) & iSortRanksO(7 downto 4) & iSortRanksB & iSortRanksO(3 downto 0) & iSortRanksE(3 downto 0);
+  sMuons     <= iMuonsE(7 downto 4) & iMuonsO(7 downto 4) & iMuonsB & iMuonsO(3 downto 0) & iMuonsE(3 downto 0);
+  sIdxBits   <= iIdxBitsE(7 downto 4) & iIdxBitsO(7 downto 4) & iIdxBitsB & iIdxBitsO(3 downto 0) & iIdxBitsE(3 downto 0);
 
-  sEmpty <= iEmptyF(7 downto 4) & iEmptyO(7 downto 4) & iEmptyB & iEmptyO(3 downto 0) & iEmptyF(3 downto 0);
+  sEmpty <= iEmptyE(7 downto 4) & iEmptyO(7 downto 4) & iEmptyB & iEmptyO(3 downto 0) & iEmptyE(3 downto 0);
 
   -----------------------------------------------------------------------------
   -- calculate GE Matrix :

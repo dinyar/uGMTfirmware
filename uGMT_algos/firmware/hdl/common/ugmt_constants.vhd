@@ -40,8 +40,8 @@ package ugmt_constants is
   constant OMTF_NEG_LOW  : integer := 24;
   constant BMTF_HIGH  : integer := 23;  -- Begin of barrel region.
   constant BMTF_LOW   : integer := 12;  -- End of barrel region.
-  constant OMTF_POS_HIGH : integer := 11;  -- Begin of positiv ovl region.
-  constant OMTF_POS_LOW  : integer := 6;   -- End of pos. ovl region.
+  constant OMTF_POS_HIGH : integer := 11;  -- Begin of positive overlap region.
+  constant OMTF_POS_LOW  : integer := 6;   -- End of pos. overlap region.
   constant EMTF_POS_HIGH : integer := 5;
   constant EMTF_POS_LOW  : integer := 0;
 
@@ -149,13 +149,13 @@ package ugmt_constants is
 
   constant CANCEL_OUT_DATA_FILE_BO_POS  : string := string'("BOPosMatchQual.mif");
   constant CANCEL_OUT_DATA_FILE_BO_NEG  : string := string'("BONegMatchQual.mif");
-  constant CANCEL_OUT_DATA_FILE_FO_POS  : string := string'("FOPosMatchQual.mif");
-  constant CANCEL_OUT_DATA_FILE_FO_NEG  : string := string'("FONegMatchQual.mif");
+  constant CANCEL_OUT_DATA_FILE_EO_POS  : string := string'("EOPosMatchQual.mif");
+  constant CANCEL_OUT_DATA_FILE_EO_NEG  : string := string'("EONegMatchQual.mif");
   constant CANCEL_OUT_DATA_FILE_BMTF     : string := string'("BmtfSingleMatchQual.mif");
-  constant CANCEL_OUT_DATA_FILE_OMTF_POS : string := string'("OvlPosSingleMatchQual.mif");
-  constant CANCEL_OUT_DATA_FILE_OMTF_NEG : string := string'("OvlNegSingleMatchQual.mif");
-  constant CANCEL_OUT_DATA_FILE_EMTF_POS : string := string'("FwdPosSingleMatchQual.mif");
-  constant CANCEL_OUT_DATA_FILE_EMTF_NEG : string := string'("FwdNegSingleMatchQual.mif");
+  constant CANCEL_OUT_DATA_FILE_OMTF_POS : string := string'("OmtfPosSingleMatchQual.mif");
+  constant CANCEL_OUT_DATA_FILE_OMTF_NEG : string := string'("OmtfNegSingleMatchQual.mif");
+  constant CANCEL_OUT_DATA_FILE_EMTF_POS : string := string'("EmtfPosSingleMatchQual.mif");
+  constant CANCEL_OUT_DATA_FILE_EMTF_NEG : string := string'("EmtfNegSingleMatchQual.mif");
 
   constant ABSOLUTE_ISO_CHECK_DATA_FILE : string := string'("AbsIsoCheckMem.mif");
   constant RELATIVE_ISO_CHECK_DATA_FILE : string := string'("RelIsoCheckMem.mif");
@@ -169,17 +169,17 @@ package ugmt_constants is
   -- Barrel
   constant ETA_BMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"));
   constant PHI_BMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("BPhiExtrapolation.mif"), string'("BPhiExtrapolation.mif"), string'("BPhiExtrapolation.mif"), string'("BPhiExtrapolation.mif"));
-  -- Overlap
+  -- OMTF
   constant ETA_OMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"));
   constant PHI_OMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"));
-  -- Overlap/Endcap shared
+  -- OMTF/EMTF shared
   constant ETA_OMTF_EMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"));
   constant PHI_OMTF_EMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"));
-  constant ETA_EMTF_OMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"));
-  constant PHI_EMTF_OMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"));
+  constant ETA_EMTF_OMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("EEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"));
+  constant PHI_EMTF_OMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("EPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"));
   -- Endcap
-  constant ETA_EMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"));
-  constant PHI_EMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"));
+  constant ETA_EMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("EEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"));
+  constant PHI_EMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("EPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"));
 
   type ContentFileQuadAssignment_vector is array (natural range <>) of ContentFileAssignment_vector;
   constant ETA_EXTRAP_CONT_ASSIGN : ContentFileQuadAssignment_vector(0 to 8) := (ETA_EMTF_EXTRAP_CONT_ASSIGN, ETA_EMTF_OMTF_EXTRAP_CONT_ASSIGN, ETA_OMTF_EXTRAP_CONT_ASSIGN, ETA_BMTF_EXTRAP_CONT_ASSIGN, ETA_BMTF_EXTRAP_CONT_ASSIGN, ETA_BMTF_EXTRAP_CONT_ASSIGN, ETA_OMTF_EXTRAP_CONT_ASSIGN, ETA_OMTF_EMTF_EXTRAP_CONT_ASSIGN, ETA_EMTF_EXTRAP_CONT_ASSIGN);
@@ -232,20 +232,20 @@ package ugmt_constants is
   constant CANCEL_OUT_TYPE_OMTF : string := string'("COORDINATE");
   constant CANCEL_OUT_TYPE_EMTF : string := string'("COORDINATE");
   constant CANCEL_OUT_TYPE_BO  : string := string'("COORDINATE");
-  constant CANCEL_OUT_TYPE_FO  : string := string'("COORDINATE");
+  constant CANCEL_OUT_TYPE_EO  : string := string'("COORDINATE");
 
   -----------------------------------------------------------------------------
   -- Cancel-out unit mapping to chip regions
   -----------------------------------------------------------------------------
 
   constant COU_EMTF_NEG : natural := 0;
-  constant COU_FO_NEG  : natural := 1;
+  constant COU_EO_NEG  : natural := 1;
   constant COU_OMTF_NEG : natural := 2;
   constant COU_BO_NEG  : natural := 3;
   constant COU_BMTF     : natural := 4;
   constant COU_BO_POS  : natural := 5;
   constant COU_OMTF_POS : natural := 6;
-  constant COU_FO_POS  : natural := 7;
+  constant COU_EO_POS  : natural := 7;
   constant COU_EMTF_POS : natural := 8;
 
   -----------------------------------------------------------------------------

@@ -26,36 +26,28 @@ architecture behavior of testbench is
   signal   clk40           : std_logic := '0';
   signal   rst             : std_logic := '0';
 
-  signal iValid                  : std_logic := '0';
-  signal iMuons                  : TGMTMu_vector(7 downto 0);
-  signal iIso                    : TIsoBits_vector(7 downto 0);
-  signal iIntermediateMuonsB     : TGMTMu_vector(7 downto 0);
-  signal iIntermediateMuonsO     : TGMTMu_vector(7 downto 0);
-  signal iIntermediateMuonsF     : TGMTMu_vector(7 downto 0);
-  signal iIntermediateSortRanksB : TSortRank10_vector(7 downto 0);
-  signal iIntermediateSortRanksO : TSortRank10_vector(7 downto 0);
-  signal iIntermediateSortRanksF : TSortRank10_vector(7 downto 0);
-  signal iFinalEnergies          : TCaloArea_vector(7 downto 0);
-  signal iExtrapolatedCoordsB    : TSpatialCoordinate_vector(35 downto 0);
-  signal iExtrapolatedCoordsO    : TSpatialCoordinate_vector(35 downto 0);
-  signal iExtrapolatedCoordsF    : TSpatialCoordinate_vector(35 downto 0);
-  signal oQ                      : ldata(N_SERIALIZER_CHAN-1 downto 0);
+  signal iValid              : std_logic := '0';
+  signal iMuons              : TGMTMu_vector(7 downto 0);
+  signal iIso                : TIsoBits_vector(7 downto 0);
+  signal iIntermediateMuonsB : TGMTMu_vector(7 downto 0);
+  signal iIntermediateMuonsO : TGMTMu_vector(7 downto 0);
+  signal iIntermediateMuonsE : TGMTMu_vector(7 downto 0);
+  signal oQ                  : ldata(N_SERIALIZER_CHAN-1 downto 0);
 
 begin
 
   uut : entity work.serializer_stage
     port map (
-      clk240               => clk240,
-      clk40                => clk40,
-      rst                  => rst,
-      iValid               => iValid,
-      sMuons               => iMuons,
-      sIso                 => iIso,
-      iIntermediateMuonsB  => iIntermediateMuonsB,
-      iIntermediateMuonsO  => iIntermediateMuonsO,
-      iIntermediateMuonsF  => iIntermediateMuonsF,
-      iFinalEnergies       => iFinalEnergies,
-      q                    => oQ);
+      clk240              => clk240,
+      clk40               => clk40,
+      rst                 => rst,
+      iValid              => iValid,
+      sMuons              => iMuons,
+      sIso                => iIso,
+      iIntermediateMuonsB => iIntermediateMuonsB,
+      iIntermediateMuonsO => iIntermediateMuonsO,
+      iIntermediateMuonsE => iIntermediateMuonsE,
+      q                   => oQ);
 
   -- Clocks
   clk240 <= not clk240 after half_period_240;
@@ -97,12 +89,12 @@ begin
         ReadOutEvent(F, iEvent, event);
 
         -- Filling serializer
-        iValid                  <= '1';
-        iMuons                  <= event_buffer(1).muons;
-        iIso                    <= event_buffer(1).iso;
-        iIntermediateMuonsB     <= event.intMuons_bmtf;
-        iIntermediateMuonsO     <= event.intMuons_ovl;
-        iIntermediateMuonsF     <= event.intMuons_fwd;
+        iValid              <= '1';
+        iMuons              <= event_buffer(1).muons;
+        iIso                <= event_buffer(1).iso;
+        iIntermediateMuonsB <= event.intMuons_bmtf;
+        iIntermediateMuonsO <= event.intMuons_omtf;
+        iIntermediateMuonsE <= event.intMuons_emtf;
 
         event_buffer(0) := event;
 

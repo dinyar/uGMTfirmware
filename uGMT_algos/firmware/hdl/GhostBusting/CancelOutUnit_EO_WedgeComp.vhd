@@ -4,34 +4,34 @@ use IEEE.numeric_std.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_decode_cancel_out_fo_wedge.all;
+use work.ipbus_decode_cancel_out_eo_wedge.all;
 
 use work.GMTTypes.all;
 
-entity CancelOutUnit_FO_WedgeComp is
+entity CancelOutUnit_EO_WedgeComp is
   generic (
     CANCEL_OUT_TYPE  : string := string'("COORDINATE"); -- which type of cancel-out should be used.
     DATA_FILE        : string;
     LOCAL_PHI_OFFSET : signed(8 downto 0)
     );
   port (
-    clk_ipb      : in  std_logic;
-    rst          : in  std_logic;
-    ipb_in       : in  ipb_wbus;
-    ipb_out      : out ipb_rbus;
-    iWedge_Ovl   : in  TGMTMuTracks;
-    iWedge_Fwd1  : in  TGMTMuTracks;
-    iWedge_Fwd2  : in  TGMTMuTracks;
-    iWedge_Fwd3  : in  TGMTMuTracks;
-    oCancel_Ovl  : out TCancelWedge(2 downto 0);
-    oCancel_Fwd1 : out std_logic_vector (2 downto 0);
-    oCancel_Fwd2 : out std_logic_vector (2 downto 0);
-    oCancel_Fwd3 : out std_logic_vector (2 downto 0);
-    clk          : in  std_logic
+    clk_ipb       : in  std_logic;
+    rst           : in  std_logic;
+    ipb_in        : in  ipb_wbus;
+    ipb_out       : out ipb_rbus;
+    iWedge_O      : in  TGMTMuTracks;
+    iWedge_EMTF1  : in  TGMTMuTracks;
+    iWedge_EMTF2  : in  TGMTMuTracks;
+    iWedge_EMTF3  : in  TGMTMuTracks;
+    oCancel_O     : out TCancelWedge(2 downto 0);
+    oCancel_EMTF1 : out std_logic_vector (2 downto 0);
+    oCancel_EMTF2 : out std_logic_vector (2 downto 0);
+    oCancel_EMTF3 : out std_logic_vector (2 downto 0);
+    clk           : in  std_logic
     );
-end CancelOutUnit_FO_WedgeComp;
+end CancelOutUnit_EO_WedgeComp;
 
-architecture Behavioral of CancelOutUnit_FO_WedgeComp is
+architecture Behavioral of CancelOutUnit_EO_WedgeComp is
   signal ipbw      : ipb_wbus_array(N_SLAVES-1 downto 0);
   signal ipbr      : ipb_rbus_array(N_SLAVES-1 downto 0);
 
@@ -45,7 +45,7 @@ begin
       port map(
         ipb_in          => ipb_in,
         ipb_out         => ipb_out,
-        sel             => ipbus_sel_cancel_out_fo_wedge(ipb_in.ipb_addr),
+        sel             => ipbus_sel_cancel_out_eo_wedge(ipb_in.ipb_addr),
         ipb_to_slaves   => ipbw,
         ipb_from_slaves => ipbr
         );
@@ -63,10 +63,10 @@ begin
     rst     => rst,
     ipb_in  => ipbw(N_SLV_CANCEL_OUT_MEMS_0),
     ipb_out => ipbr(N_SLV_CANCEL_OUT_MEMS_0),
-    wedge1  => iWedge_Ovl,
-    wedge2  => iWedge_Fwd1,
-    ghosts1 => oCancel_Ovl(0),
-    ghosts2 => oCancel_Fwd1,
+    wedge1  => iWedge_O,
+    wedge2  => iWedge_EMTF1,
+    ghosts1 => oCancel_O(0),
+    ghosts2 => oCancel_EMTF1,
     clk     => clk);
   x1 : entity work.WedgeCheckerUnit
   generic map (
@@ -79,10 +79,10 @@ begin
     rst     => rst,
     ipb_in  => ipbw(N_SLV_CANCEL_OUT_MEMS_1),
     ipb_out => ipbr(N_SLV_CANCEL_OUT_MEMS_1),
-    wedge1  => iWedge_Ovl,
-    wedge2  => iWedge_Fwd2,
-    ghosts1 => oCancel_Ovl(1),
-    ghosts2 => oCancel_Fwd2,
+    wedge1  => iWedge_O,
+    wedge2  => iWedge_EMTF2,
+    ghosts1 => oCancel_O(1),
+    ghosts2 => oCancel_EMTF2,
     clk     => clk);
   x2 : entity work.WedgeCheckerUnit
   generic map (
@@ -95,10 +95,10 @@ begin
     rst     => rst,
     ipb_in  => ipbw(N_SLV_CANCEL_OUT_MEMS_2),
     ipb_out => ipbr(N_SLV_CANCEL_OUT_MEMS_2),
-    wedge1  => iWedge_Ovl,
-    wedge2  => iWedge_Fwd3,
-    ghosts1 => oCancel_Ovl(2),
-    ghosts2 => oCancel_Fwd3,
+    wedge1  => iWedge_O,
+    wedge2  => iWedge_EMTF3,
+    ghosts1 => oCancel_O(2),
+    ghosts2 => oCancel_EMTF3,
     clk     => clk);
 
 end Behavioral;

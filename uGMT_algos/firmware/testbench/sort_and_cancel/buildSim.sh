@@ -25,8 +25,8 @@ vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_spatialCoords.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/WedgeCheckerUnit.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_BO_WedgeComp.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_BO.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_FO_WedgeComp.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_FO.vhd
+vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_EO_WedgeComp.vhd
+vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_EO.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_*
 vcom -check_synthesis ../../hdl/common/comp10_ge_behavioral.vhd
 vcom -check_synthesis ../../hdl/Sorting/Stage0/SortStage0_countWins.vhd
@@ -40,11 +40,11 @@ vcom -check_synthesis SortAndCancelUnit_tb.vhd
 vmake work > Makefile
 
 ln -s ../../hdl/ipbus_slaves/BmtfSingleMatchQual.mif .
-ln -s ../../hdl/ipbus_slaves/OvlPosSingleMatchQual.mif .
-ln -s ../../hdl/ipbus_slaves/OvlNegSingleMatchQual.mif .
-ln -s ../../hdl/ipbus_slaves/FwdPosSingleMatchQual.mif .
-ln -s ../../hdl/ipbus_slaves/FwdNegSingleMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/OmtfPosSingleMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/OmtfNegSingleMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/EmtfPosSingleMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/EmtfNegSingleMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/BOPosMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/BONegMatchQual.mif .
-ln -s ../../hdl/ipbus_slaves/FOPosMatchQual.mif .
-ln -s ../../hdl/ipbus_slaves/FONegMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/EOPosMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/EONegMatchQual.mif .

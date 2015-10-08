@@ -29,27 +29,27 @@ architecture behavior of testbench is
 
   signal iMuonsB             : TGMTMu_vector(35 downto 0);
   signal iMuonsO             : TGMTMu_vector(35 downto 0);
-  signal iMuonsF             : TGMTMu_vector(35 downto 0);
+  signal iMuonsE             : TGMTMu_vector(35 downto 0);
   signal iMuonsRPCb          : TGMTMuRPC_vector(3 downto 0);
   signal iMuonsRPCf          : TGMTMuRPC_vector(3 downto 0);
   signal iTracksB            : TGMTMuTracks_vector(11 downto 0);
   signal iTracksO            : TGMTMuTracks_vector(11 downto 0);
-  signal iTracksF            : TGMTMuTracks_vector(11 downto 0);
+  signal iTracksE            : TGMTMuTracks_vector(11 downto 0);
   signal iSortRanksB         : TSortRank10_vector(35 downto 0);
   signal iSortRanksO         : TSortRank10_vector(35 downto 0);
-  signal iSortRanksF         : TSortRank10_vector(35 downto 0);
+  signal iSortRanksE         : TSortRank10_vector(35 downto 0);
   signal iEmptyB             : std_logic_vector(35 downto 0);
   signal iEmptyO             : std_logic_vector(35 downto 0);
-  signal iEmptyF             : std_logic_vector(35 downto 0);
+  signal iEmptyE             : std_logic_vector(35 downto 0);
   signal iIdxBitsB           : TIndexBits_vector(35 downto 0);
   signal iIdxBitsO           : TIndexBits_vector(35 downto 0);
-  signal iIdxBitsF           : TIndexBits_vector(35 downto 0);
+  signal iIdxBitsE           : TIndexBits_vector(35 downto 0);
   signal oIntermediateMuonsB : TGMTMu_vector(7 downto 0);
   signal oIntermediateMuonsO : TGMTMu_vector(7 downto 0);
-  signal oIntermediateMuonsF : TGMTMu_vector(7 downto 0);
+  signal oIntermediateMuonsE : TGMTMu_vector(7 downto 0);
   signal oSortRanksB         : TSortRank10_vector(7 downto 0);
   signal oSortRanksO         : TSortRank10_vector(7 downto 0);
-  signal oSortRanksF         : TSortRank10_vector(7 downto 0);
+  signal oSortRanksE         : TSortRank10_vector(7 downto 0);
   signal oIdxBits            : TIndexBits_vector(7 downto 0);
   signal oMuPt               : TMuonPT_vector(7 downto 0);
   signal oMuons              : TGMTMu_vector(7 downto 0);
@@ -60,7 +60,7 @@ begin
     port map(
       iMuonsB                 => iMuonsB,
       iMuonsO                 => iMuonsO,
-      iMuonsF                 => iMuonsF,
+      iMuonsE                 => iMuonsE,
       iMuonsRPCb              => iMuonsRPCb,
       iMuonsRPCf              => iMuonsRPCf,
       iSortRanksRPCb          => (others => "0000000000"),
@@ -71,22 +71,22 @@ begin
       iIdxBitsRPCf            => (others => "0000000"),
       iTracksB                => iTracksB,
       iTracksO                => iTracksO,
-      iTracksF                => iTracksF,
+      iTracksE                => iTracksE,
       iSortRanksB             => iSortRanksB,
       iSortRanksO             => iSortRanksO,
-      iSortRanksF             => iSortRanksF,
+      iSortRanksE             => iSortRanksE,
       iEmptyB                 => iEmptyB,
       iEmptyO                 => iEmptyO,
-      iEmptyF                 => iEmptyF,
+      iEmptyE                 => iEmptyE,
       iIdxBitsB               => iIdxBitsB,
       iIdxBitsO               => iIdxBitsO,
-      iIdxBitsF               => iIdxBitsF,
+      iIdxBitsE               => iIdxBitsE,
       oIntermediateMuonsB     => oIntermediateMuonsB,
       oIntermediateMuonsO     => oIntermediateMuonsO,
-      oIntermediateMuonsF     => oIntermediateMuonsF,
+      oIntermediateMuonsE     => oIntermediateMuonsE,
       oIntermediateSortRanksB => oSortRanksB,
       oIntermediateSortRanksO => oSortRanksO,
-      oIntermediateSortRanksF => oSortRanksF,
+      oIntermediateSortRanksE => oSortRanksE,
       oIdxBits                => oIdxBits,
       oMuPt                   => oMuPt,
       oMuons                  => oMuons,
@@ -117,11 +117,11 @@ begin
     constant INTERMEDIATE_DELAY          : integer                        := 3;
     variable vIntermediateB_buffer       : TIntermediateMu_buf(INTERMEDIATE_DELAY-1 downto 0);
     variable vIntermediateO_buffer       : TIntermediateMu_buf(INTERMEDIATE_DELAY-1 downto 0);
-    variable vIntermediateF_buffer       : TIntermediateMu_buf(INTERMEDIATE_DELAY-1 downto 0);
+    variable vIntermediateE_buffer       : TIntermediateMu_buf(INTERMEDIATE_DELAY-1 downto 0);
     variable vSortRankB_buffer           : TSortRank_buf(INTERMEDIATE_DELAY-1 downto 0);
     variable vSortRankO_buffer           : TSortRank_buf(INTERMEDIATE_DELAY-1 downto 0);
-    variable vSortRankF_buffer           : TSortRank_buf(INTERMEDIATE_DELAY-1 downto 0);
-    variable vMuons, vIntB, vIntO, vIntF : TGMTMu_vector(oMuons'range);
+    variable vSortRankE_buffer           : TSortRank_buf(INTERMEDIATE_DELAY-1 downto 0);
+    variable vMuons, vIntB, vIntO, vIntE : TGMTMu_vector(oMuons'range);
     variable vDummySortRanks             : TSortRank10_vector(7 downto 0) := (others => "0000000000");
     variable fin_id                      : string(1 to 3)                 := string'("FIN");
     variable int_id                      : string(1 to 3)                 := string'("INT");
@@ -141,27 +141,27 @@ begin
         event_buffer(iEvent).muons_bmtf(i).qual       := "0000";
         event_buffer(iEvent).muons_bmtf(i).sign       := '0';
         event_buffer(iEvent).muons_bmtf(i).sign_valid := '0';
-        event_buffer(iEvent).muons_ovl(i).phi        := "0000000000";
-        event_buffer(iEvent).muons_ovl(i).eta        := "000000000";
-        event_buffer(iEvent).muons_ovl(i).pt         := "000000000";
-        event_buffer(iEvent).muons_ovl(i).qual       := "0000";
-        event_buffer(iEvent).muons_ovl(i).sign       := '0';
-        event_buffer(iEvent).muons_ovl(i).sign_valid := '0';
-        event_buffer(iEvent).muons_fwd(i).phi        := "0000000000";
-        event_buffer(iEvent).muons_fwd(i).eta        := "000000000";
-        event_buffer(iEvent).muons_fwd(i).pt         := "000000000";
-        event_buffer(iEvent).muons_fwd(i).qual       := "0000";
-        event_buffer(iEvent).muons_fwd(i).sign       := '0';
-        event_buffer(iEvent).muons_fwd(i).sign_valid := '0';
+        event_buffer(iEvent).muons_omtf(i).phi        := "0000000000";
+        event_buffer(iEvent).muons_omtf(i).eta        := "000000000";
+        event_buffer(iEvent).muons_omtf(i).pt         := "000000000";
+        event_buffer(iEvent).muons_omtf(i).qual       := "0000";
+        event_buffer(iEvent).muons_omtf(i).sign       := '0';
+        event_buffer(iEvent).muons_omtf(i).sign_valid := '0';
+        event_buffer(iEvent).muons_emtf(i).phi        := "0000000000";
+        event_buffer(iEvent).muons_emtf(i).eta        := "000000000";
+        event_buffer(iEvent).muons_emtf(i).pt         := "000000000";
+        event_buffer(iEvent).muons_emtf(i).qual       := "0000";
+        event_buffer(iEvent).muons_emtf(i).sign       := '0';
+        event_buffer(iEvent).muons_emtf(i).sign_valid := '0';
         event_buffer(iEvent).sortRanks_bmtf(i)        := "0000000000";
-        event_buffer(iEvent).sortRanks_ovl(i)        := "0000000000";
-        event_buffer(iEvent).sortRanks_fwd(i)        := "0000000000";
+        event_buffer(iEvent).sortRanks_omtf(i)        := "0000000000";
+        event_buffer(iEvent).sortRanks_emtf(i)        := "0000000000";
         event_buffer(iEvent).empty_bmtf(i)            := '1';
-        event_buffer(iEvent).empty_ovl(i)            := '1';
-        event_buffer(iEvent).empty_fwd(i)            := '1';
+        event_buffer(iEvent).empty_omtf(i)            := '1';
+        event_buffer(iEvent).empty_emtf(i)            := '1';
         event_buffer(iEvent).idxBits_bmtf(i)          := (others => '0');
-        event_buffer(iEvent).idxBits_ovl(i)          := (others => '0');
-        event_buffer(iEvent).idxBits_fwd(i)          := (others => '0');
+        event_buffer(iEvent).idxBits_omtf(i)          := (others => '0');
+        event_buffer(iEvent).idxBits_emtf(i)          := (others => '0');
       end loop;
       for i in event_buffer(iEvent).expectedMuons'range loop
         event_buffer(iEvent).expectedMuons(i).phi         := "0000000000";
@@ -197,12 +197,12 @@ begin
           event_buffer(iEvent).tracks_bmtf(i)(j).eta  := "000000000";
           event_buffer(iEvent).tracks_bmtf(i)(j).phi  := "00000000";
           event_buffer(iEvent).tracks_bmtf(i)(j).qual := "0000";
-          event_buffer(iEvent).tracks_ovl(i)(j).eta  := "000000000";
-          event_buffer(iEvent).tracks_ovl(i)(j).phi  := "00000000";
-          event_buffer(iEvent).tracks_ovl(i)(j).qual := "0000";
-          event_buffer(iEvent).tracks_fwd(i)(j).eta  := "000000000";
-          event_buffer(iEvent).tracks_fwd(i)(j).phi  := "00000000";
-          event_buffer(iEvent).tracks_fwd(i)(j).qual := "0000";
+          event_buffer(iEvent).tracks_omtf(i)(j).eta  := "000000000";
+          event_buffer(iEvent).tracks_omtf(i)(j).phi  := "00000000";
+          event_buffer(iEvent).tracks_omtf(i)(j).qual := "0000";
+          event_buffer(iEvent).tracks_emtf(i)(j).eta  := "000000000";
+          event_buffer(iEvent).tracks_emtf(i)(j).phi  := "00000000";
+          event_buffer(iEvent).tracks_emtf(i)(j).qual := "0000";
         end loop;  -- j
       end loop;  -- i
     end loop;  -- event
@@ -221,15 +221,15 @@ begin
         vIntermediateO_buffer(iInt)(iMu).qual       := "0000";
         vIntermediateO_buffer(iInt)(iMu).sign       := '0';
         vIntermediateO_buffer(iInt)(iMu).sign_valid := '0';
-        vIntermediateF_buffer(iInt)(iMu).phi        := "0000000000";
-        vIntermediateF_buffer(iInt)(iMu).eta        := "000000000";
-        vIntermediateF_buffer(iInt)(iMu).pt         := "000000000";
-        vIntermediateF_buffer(iInt)(iMu).qual       := "0000";
-        vIntermediateF_buffer(iInt)(iMu).sign       := '0';
-        vIntermediateF_buffer(iInt)(iMu).sign_valid := '0';
+        vIntermediateE_buffer(iInt)(iMu).phi        := "0000000000";
+        vIntermediateE_buffer(iInt)(iMu).eta        := "000000000";
+        vIntermediateE_buffer(iInt)(iMu).pt         := "000000000";
+        vIntermediateE_buffer(iInt)(iMu).qual       := "0000";
+        vIntermediateE_buffer(iInt)(iMu).sign       := '0';
+        vIntermediateE_buffer(iInt)(iMu).sign_valid := '0';
         vSortRankB_buffer(iInt)(iMu)                := "0000000000";
         vSortRankO_buffer(iInt)(iMu)                := "0000000000";
-        vSortRankF_buffer(iInt)(iMu)                := "0000000000";
+        vSortRankE_buffer(iInt)(iMu)                := "0000000000";
       end loop;  -- iMu
     end loop;  -- iInt
 
@@ -242,20 +242,20 @@ begin
 
         -- Filling uGMT
         iMuonsB     <= event.muons_bmtf;
-        iMuonsO     <= event.muons_ovl;
-        iMuonsF     <= event.muons_fwd;
+        iMuonsO     <= event.muons_omtf;
+        iMuonsE     <= event.muons_emtf;
         iTracksB    <= event.tracks_bmtf;
-        iTracksO    <= event.tracks_ovl;
-        iTracksF    <= event.tracks_fwd;
+        iTracksO    <= event.tracks_omtf;
+        iTracksE    <= event.tracks_emtf;
         iSortRanksB <= event.sortRanks_bmtf;
-        iSortRanksO <= event.sortRanks_ovl;
-        iSortRanksF <= event.sortRanks_fwd;
+        iSortRanksO <= event.sortRanks_omtf;
+        iSortRanksE <= event.sortRanks_emtf;
         iEmptyB     <= event.empty_bmtf;
-        iEmptyO     <= event.empty_ovl;
-        iEmptyF     <= event.empty_fwd;
+        iEmptyO     <= event.empty_omtf;
+        iEmptyE     <= event.empty_emtf;
         iIdxBitsB   <= event.idxBits_bmtf;
-        iIdxBitsO   <= event.idxBits_ovl;
-        iIdxBitsF   <= event.idxBits_fwd;
+        iIdxBitsO   <= event.idxBits_omtf;
+        iIdxBitsE   <= event.idxBits_emtf;
 
         event_buffer(0) := event;
 
@@ -266,19 +266,19 @@ begin
       event_buffer(SORTER_LATENCY-1 downto 1)                    := event_buffer(SORTER_LATENCY-2 downto 0);
       vIntermediateB_buffer(0)                                   := oIntermediateMuonsB;
       vIntermediateO_buffer(0)                                   := oIntermediateMuonsO;
-      vIntermediateF_buffer(0)                                   := oIntermediateMuonsF;
+      vIntermediateE_buffer(0)                                   := oIntermediateMuonsE;
       vIntermediateB_buffer(vIntermediateB_buffer'high downto 1) := vIntermediateB_buffer(vIntermediateB_buffer'high-1 downto 0);
       vIntermediateO_buffer(vIntermediateO_buffer'high downto 1) := vIntermediateO_buffer(vIntermediateO_buffer'high-1 downto 0);
-      vIntermediateF_buffer(vIntermediateF_buffer'high downto 1) := vIntermediateF_buffer(vIntermediateF_buffer'high-1 downto 0);
+      vIntermediateE_buffer(vIntermediateE_buffer'high downto 1) := vIntermediateE_buffer(vIntermediateE_buffer'high-1 downto 0);
       vSortRankB_buffer(0)                                       := oSortRanksB;
       vSortRankO_buffer(0)                                       := oSortRanksO;
-      vSortRankF_buffer(0)                                       := oSortRanksF;
+      vSortRankE_buffer(0)                                       := oSortRanksE;
       vSortRankB_buffer(vSortRankB_buffer'high downto 1)         := vSortRankB_buffer(vSortRankB_buffer'high-1 downto 0);
       vSortRankO_buffer(vSortRankO_buffer'high downto 1)         := vSortRankO_buffer(vSortRankO_buffer'high-1 downto 0);
-      vSortRankF_buffer(vSortRankF_buffer'high downto 1)         := vSortRankF_buffer(vSortRankF_buffer'high-1 downto 0);
+      vSortRankE_buffer(vSortRankE_buffer'high downto 1)         := vSortRankE_buffer(vSortRankE_buffer'high-1 downto 0);
       vMuons                                                     := oMuons;
 
-      ValidateSorterOutput(vMuons, vIntermediateB_buffer(vIntermediateB_buffer'high), vIntermediateO_buffer(vIntermediateO_buffer'high), vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), event_buffer(SORTER_LATENCY-1), FO, tmpError);
+      ValidateSorterOutput(vMuons, vIntermediateB_buffer(vIntermediateB_buffer'high), vIntermediateO_buffer(vIntermediateO_buffer'high), vIntermediateE_buffer(vIntermediateE_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), vSortRankE_buffer(vSortRankE_buffer'high), event_buffer(SORTER_LATENCY-1), FO, tmpError);
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
@@ -293,7 +293,7 @@ begin
         DumpMuEvent(event_buffer(SORTER_LATENCY-1), FO);
         DumpMuons(vIntermediateB_buffer(vIntermediateB_buffer'high), vSortRankB_buffer(vSortRankB_buffer'high), FO, int_id);
         DumpMuons(vIntermediateO_buffer(vIntermediateO_buffer'high), vSortRankO_buffer(vSortRankO_buffer'high), FO, int_id);
-        DumpMuons(vIntermediateF_buffer(vIntermediateF_buffer'high), vSortRankF_buffer(vSortRankF_buffer'high), FO, int_id);
+        DumpMuons(vIntermediateE_buffer(vIntermediateE_buffer'high), vSortRankE_buffer(vSortRankE_buffer'high), FO, int_id);
         DumpMuons(vMuons, vDummySortRanks, FO, fin_id);
         write(LO, string'(""));
         writeline (FO, LO);

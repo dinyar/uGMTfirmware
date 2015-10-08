@@ -10,8 +10,8 @@ entity PairFindingUnit is
     oPairs    : out TPairVector(3 downto 0);  -- Holds the indices of the TF
                                               -- muons that should be merged
                                               -- with the Nth RPC muon.
-                                              -- Muons from BMTF/fwd: 35 -> 0
-                                              -- Muons from ovl: 71 -> 36
+                                              -- Muons from BMTF/EMTF: 35 -> 0
+                                              -- Muons from OMTF: 71 -> 36
     clk       : in  std_logic;
     sinit     : in  std_logic);
 
