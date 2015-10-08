@@ -87,7 +87,7 @@ ln -s ../../hdl/ipbus_slaves/RelIsoCheckMem.mif .
 ln -s ../../hdl/ipbus_slaves/AbsIsoCheckMem.mif .
 ln -s ../../hdl/ipbus_slaves/IdxSelMemEta.mif .
 ln -s ../../hdl/ipbus_slaves/IdxSelMemPhi.mif .
-ln -s ../../hdl/ipbus_slaves/BrlSingleMatchQual.mif .
+ln -s ../../hdl/ipbus_slaves/BmtfSingleMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/OvlPosSingleMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/OvlNegSingleMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/FwdPosSingleMatchQual.mif .

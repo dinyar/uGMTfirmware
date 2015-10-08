@@ -1,9 +1,9 @@
 <node description="Sorting and cancel-out algorithm LUTs" fwinfo="endpoint">
-  <node id="cou_bo_pos" address="0x0" module="file://cancel_out_bo.xml" description="LUTs containing match qualities for barrel-overlap matching on positive side."/>
-  <node id="cou_bo_neg" address="0x10000" module="file://cancel_out_bo.xml" description="LUTs containing match qualities for barrel-overlap matching on negative side."/>
+  <node id="cou_bo_pos" address="0x0" module="file://cancel_out_bo.xml" description="LUTs containing match qualities for BMTF-overlap matching on positive side."/>
+  <node id="cou_bo_neg" address="0x10000" module="file://cancel_out_bo.xml" description="LUTs containing match qualities for BMTF-overlap matching on negative side."/>
   <node id="cou_fo_pos" address="0x20000" module="file://cancel_out_fo.xml" description="LUTs containing match qualities for forward-overlap matching on positive side."/>
   <node id="cou_fo_neg" address="0x30000" module="file://cancel_out_fo.xml" description="LUTs containing match qualities for forward-overlap matching on negative side."/>
-  <node id="cou_brl" address="0x40000" module="file://cancel_out_barrel.xml" description="LUTs containing match qualities for matching within the barrel region."/>
+  <node id="cou_bmtf" address="0x40000" module="file://cancel_out_bmtf.xml" description="LUTs containing match qualities for matching within the BMTF region."/>
   <node id="cou_ovl_pos" address="0x50000" module="file://cancel_out_half_sorters.xml" description="LUTs containing match qualities for matching within the overlap region on positive side."/>
   <node id="cou_ovl_neg" address="0x60000" module="file://cancel_out_half_sorters.xml" description="LUTs containing match qualities for matching within the overlap region on negative side."/>
   <node id="cou_fwd_pos" address="0x70000" module="file://cancel_out_half_sorters.xml" description="LUTs containing match qualities for matching within the forward region on positive side."/>

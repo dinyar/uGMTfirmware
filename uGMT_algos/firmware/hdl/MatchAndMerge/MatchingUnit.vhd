@@ -5,12 +5,12 @@ use IEEE.NUMERIC_STD.all;
 use work.GMTTypes.all;
 
 entity MatchingUnit is
-  
+
   port (
-    iSortRanksBrlFwd : in  TSortRank10_vector(7 downto 0);
-    iEmptyBrlFwd     : in  std_logic_vector(7 downto 0);
-    iIdxBitsBrlFwd   : in  TIndexBits_vector(7 downto 0);
-    iMuonsBrlFwd     : in  TGMTMu_vector(7 downto 0);
+    iSortRanksBmtfFwd : in  TSortRank10_vector(7 downto 0);
+    iEmptyBmtfFwd     : in  std_logic_vector(7 downto 0);
+    iIdxBitsBmtfFwd   : in  TIndexBits_vector(7 downto 0);
+    iMuonsBmtfFwd     : in  TGMTMu_vector(7 downto 0);
     iSortRanksOvl    : in  TSortRank10_vector(7 downto 0);
     iEmptyOvl        : in  std_logic_vector(7 downto 0);
     iIdxBitsOvl      : in  TIndexBits_vector(7 downto 0);
@@ -20,7 +20,7 @@ entity MatchingUnit is
     oEmpty           : out std_logic_vector(3 downto 0);
     oIdxBits         : out TIndexBits_vector(3 downto 0);
     oMuons           : out TGMTMu_vector(3 downto 0);
-    oCancelBrlFwd    : out std_logic_vector(7 downto 0);
+    oCancelBmtfFwd    : out std_logic_vector(7 downto 0);
     oCancelOvl       : out std_logic_vector(7 downto 0);
     clk              : in  std_logic;
     sinit            : in  std_logic);
@@ -36,25 +36,25 @@ architecture behavioral of MatchingUnit is
   signal sSortRanksMatched : TSortRank10_vector(3 downto 0);
   signal sEmptyMatched     : std_logic_vector(3 downto 0);
   signal sIdxBitsMatched   : TIndexBits_vector(3 downto 0);
-  signal sCancelBrlFwd     : std_logic_vector(7 downto 0) := (others => '0');
+  signal sCancelBmtfFwd     : std_logic_vector(7 downto 0) := (others => '0');
   signal sCancelOvl        : std_logic_vector(7 downto 0) := (others => '0');
 begin  -- behavioral
 
-  sMuonsTF     <= iMuonsBrlFwd & iMuonsOvl;
-  sSortRanksTF <= iSortRanksBrlFwd & iSortRanksOvl;
-  sEmptyTF     <= iEmptyBrlFwd & iEmptyOvl;
+  sMuonsTF     <= iMuonsBmtfFwd & iMuonsOvl;
+  sSortRanksTF <= iSortRanksBmtfFwd & iSortRanksOvl;
+  sEmptyTF     <= iEmptyBmtfFwd & iEmptyOvl;
 
   -- Add an offset to ovl index bits
   add_offset : for i in iMuonsOvl'range generate
-    sIdxBitsTF(i)   <= iIdxBitsBrlFwd(i);
+    sIdxBitsTF(i)   <= iIdxBitsBmtfFwd(i);
     sIdxBitsTF(i+8) <= iIdxBitsOvl(i) + 36;
   end generate add_offset;
 
 
-  mux : process (iPairVec, sIdxBitsTF, sSortRanksTF, sEmptyTF, sMuonsTF, sCancelBrlFwd, sCancelOvl) is
+  mux : process (iPairVec, sIdxBitsTF, sSortRanksTF, sEmptyTF, sMuonsTF, sCancelBmtfFwd, sCancelOvl) is
     variable sSelBits : TSelBits_1_of_16_vec(3 downto 0);
   begin  -- process mux
-    sCancelBrlFwd <= (others => '0');
+    sCancelBmtfFwd <= (others => '0');
     sCancelOvl    <= (others => '0');
 
     for i in iPairVec'range loop
@@ -146,14 +146,14 @@ begin  -- behavioral
         when others             => sSortRanksMatched(i) <= (others => '0');
       end case;
       case sSelBits(i) is
-        when "1000000000000000" => sCancelBrlFwd(0) <= '1';
-        when "0100000000000000" => sCancelBrlFwd(1) <= '1';
-        when "0010000000000000" => sCancelBrlFwd(2) <= '1';
-        when "0001000000000000" => sCancelBrlFwd(3) <= '1';
-        when "0000100000000000" => sCancelBrlFwd(4) <= '1';
-        when "0000010000000000" => sCancelBrlFwd(5) <= '1';
-        when "0000001000000000" => sCancelBrlFwd(6) <= '1';
-        when "0000000100000000" => sCancelBrlFwd(7) <= '1';
+        when "1000000000000000" => sCancelBmtfFwd(0) <= '1';
+        when "0100000000000000" => sCancelBmtfFwd(1) <= '1';
+        when "0010000000000000" => sCancelBmtfFwd(2) <= '1';
+        when "0001000000000000" => sCancelBmtfFwd(3) <= '1';
+        when "0000100000000000" => sCancelBmtfFwd(4) <= '1';
+        when "0000010000000000" => sCancelBmtfFwd(5) <= '1';
+        when "0000001000000000" => sCancelBmtfFwd(6) <= '1';
+        when "0000000100000000" => sCancelBmtfFwd(7) <= '1';
         when "0000000010000000" => sCancelOvl(0)    <= '1';
         when "0000000001000000" => sCancelOvl(1)    <= '1';
         when "0000000000100000" => sCancelOvl(2)    <= '1';
@@ -171,7 +171,7 @@ begin  -- behavioral
   oEmpty        <= sEmptyMatched;
   oSortRanks    <= sSortRanksMatched;
   oMuons        <= sMuonsMatched;
-  oCancelBrlFwd <= sCancelBrlFwd;
+  oCancelBmtfFwd <= sCancelBmtfFwd;
   oCancelOvl    <= sCancelOvl;
 
 end behavioral;

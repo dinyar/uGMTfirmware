@@ -241,58 +241,58 @@ begin
       if sInputDisable(0)(1) = '1' then -- disable barrel
           sEmptyB <= (others => '1');
       else
-          sEmptyB <= sEmpty((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
+          sEmptyB <= sEmpty((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
       end if;
 
       ---- Disable overlap ----
       if sInputDisable(0)(2) = '1' then -- disable ovl pos
           sEmptyO_plus <= (others => '1');
       else
-          sEmptyO_plus <= sEmpty((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
+          sEmptyO_plus <= sEmpty((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
       end if;
 
       if sInputDisable(0)(3) = '1' then -- disable ovl neg
           sEmptyO_minus <= (others => '1');
       else
-          sEmptyO_minus <= sEmpty((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN);
+          sEmptyO_minus <= sEmpty((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN);
       end if;
 
       ---- Disable forward ----
       if sInputDisable(0)(4) = '1' then -- disable fwd pos
           sEmptyF_plus <= (others => '1');
       else
-          sEmptyF_plus <= sEmpty((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+          sEmptyF_plus <= sEmpty((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
       end if;
 
       if sInputDisable(0)(5) = '1' then -- disable fwd neg
           sEmptyF_minus <= (others => '1');
       else
-          sEmptyF_minus <= sEmpty((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN);
+          sEmptyF_minus <= sEmpty((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN);
       end if;
   end process disable_inputs;
 
-  sMuonsB <= sMuons((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
-  sMuonsO <= sMuons((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sMuons((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
-  sMuonsF <= sMuons((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sMuons((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+  sMuonsB <= sMuons((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
+  sMuonsO <= sMuons((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sMuons((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
+  sMuonsF <= sMuons((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN) & sMuons((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
 
-  sTracksB <= sTracks(BARREL_HIGH downto BARREL_LOW);
-  sTracksO <= sTracks(OVL_NEG_HIGH downto OVL_NEG_LOW) & sTracks(OVL_POS_HIGH downto OVL_POS_LOW);
-  sTracksF <= sTracks(FWD_NEG_HIGH downto FWD_NEG_LOW) & sTracks(FWD_POS_HIGH downto FWD_POS_LOW);
+  sTracksB <= sTracks(BMTF_HIGH downto BMTF_LOW);
+  sTracksO <= sTracks(OMTF_NEG_HIGH downto OMTF_NEG_LOW) & sTracks(OMTF_POS_HIGH downto OMTF_POS_LOW);
+  sTracksF <= sTracks(EMTF_NEG_HIGH downto EMTF_NEG_LOW) & sTracks(EMTF_POS_HIGH downto EMTF_POS_LOW);
 
-  sIndexBitsB <= sIndexBits((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
-  sIndexBitsO <= sIndexBits((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sIndexBits((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
-  sIndexBitsF <= sIndexBits((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sIndexBits((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+  sIndexBitsB <= sIndexBits((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
+  sIndexBitsO <= sIndexBits((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sIndexBits((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
+  sIndexBitsF <= sIndexBits((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN) & sIndexBits((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
 
-  sCaloIndexBitsB <= sCaloIndexBits((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
-  sCaloIndexBitsO <= sCaloIndexBits((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sCaloIndexBits((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
-  sCaloIndexBitsF <= sCaloIndexBits((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sCaloIndexBits((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+  sCaloIndexBitsB <= sCaloIndexBits((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
+  sCaloIndexBitsO <= sCaloIndexBits((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sCaloIndexBits((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
+  sCaloIndexBitsF <= sCaloIndexBits((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN) & sCaloIndexBits((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
 
   sEmptyO <= sEmptyO_minus & sEmptyO_plus;
   sEmptyF <= sEmptyF_minus & sEmptyF_plus;
 
-  sSortRanksB <= sSortRanks((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
-  sSortRanksO <= sSortRanks((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sSortRanks((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
-  sSortRanksF <= sSortRanks((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sSortRanks((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+  sSortRanksB <= sSortRanks((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
+  sSortRanksO <= sSortRanks((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sSortRanks((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
+  sSortRanksF <= sSortRanks((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN) & sSortRanks((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
 
   sEnergies_tmp(sEnergies_tmp'high-4 downto 0) <= sEnergies;
   sEnergies_tmp(sEnergies_tmp'high-3)          <= (others => "00000");

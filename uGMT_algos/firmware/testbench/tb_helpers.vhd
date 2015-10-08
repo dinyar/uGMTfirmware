@@ -35,48 +35,48 @@ package tb_helpers is
   type TGMTInEvent_vec is array (integer range <>) of TGMTInEvent;
 
   type TGMTOutEvent is record
-    iEvent           : integer;
-    muons            : TGMTMu_vector(7 downto 0);
-    iso              : TIsoBits_vector(7 downto 0);
-    intMuons_brl     : TGMTMu_vector(7 downto 0);
+    iEvent            : integer;
+    muons             : TGMTMu_vector(7 downto 0);
+    iso               : TIsoBits_vector(7 downto 0);
+    intMuons_bmtf     : TGMTMu_vector(7 downto 0);
     intMuons_ovl     : TGMTMu_vector(7 downto 0);
     intMuons_fwd     : TGMTMu_vector(7 downto 0);
-    intSortRanks_brl : TSortRank10_vector(7 downto 0);
+    intSortRanks_bmtf : TSortRank10_vector(7 downto 0);
     intSortRanks_ovl : TSortRank10_vector(7 downto 0);
     intSortRanks_fwd : TSortRank10_vector(7 downto 0);
-    finalEnergies    : TCaloArea_vector(7 downto 0);
-    extrCoords_brl   : TSpatialCoordinate_vector(35 downto 0);
+    finalEnergies     : TCaloArea_vector(7 downto 0);
+    extrCoords_bmtf   : TSpatialCoordinate_vector(35 downto 0);
     extrCoords_ovl   : TSpatialCoordinate_vector(35 downto 0);
     extrCoords_fwd   : TSpatialCoordinate_vector(35 downto 0);
-    expectedOutput   : TTransceiverBuffer;
+    expectedOutput    : TTransceiverBuffer;
   end record;
   type TGMTOutEvent_vec is array (integer range <>) of TGMTOutEvent;
 
   type TGMTMuEvent is record
-    iEvent           : integer;
-    muons_brl        : TGMTMu_vector(35 downto 0);
+    iEvent            : integer;
+    muons_bmtf        : TGMTMu_vector(35 downto 0);
     muons_ovl        : TGMTMu_vector(35 downto 0);
     muons_fwd        : TGMTMu_vector(35 downto 0);
-    tracks_brl       : TGMTMuTracks_vector(11 downto 0);
+    tracks_bmtf       : TGMTMuTracks_vector(11 downto 0);
     tracks_ovl       : TGMTMuTracks_vector(11 downto 0);
     tracks_fwd       : TGMTMuTracks_vector(11 downto 0);
-    sortRanks_brl    : TSortRank10_vector(35 downto 0);
+    sortRanks_bmtf    : TSortRank10_vector(35 downto 0);
     sortRanks_ovl    : TSortRank10_vector(35 downto 0);
     sortRanks_fwd    : TSortRank10_vector(35 downto 0);
-    empty_brl        : std_logic_vector(35 downto 0);
+    empty_bmtf        : std_logic_vector(35 downto 0);
     empty_ovl        : std_logic_vector(35 downto 0);
     empty_fwd        : std_logic_vector(35 downto 0);
-    idxBits_brl      : TIndexBits_vector(35 downto 0);
-    idxBits_ovl      : TIndexBits_vector(35 downto 0);
-    idxBits_fwd      : TIndexBits_vector(35 downto 0);
-    expectedMuons    : TGMTMu_vector(7 downto 0);
-    expectedIsoBits  : TIsoBits_vector(7 downto 0);
-    expectedIntMuB   : TGMTMu_vector(7 downto 0);
-    expectedIntMuO   : TGMTMu_vector(7 downto 0);
-    expectedIntMuF   : TGMTMu_vector(7 downto 0);
-    expectedSrtRnksB : TSortRank10_vector(7 downto 0);
-    expectedSrtRnksO : TSortRank10_vector(7 downto 0);
-    expectedSrtRnksF : TSortRank10_vector(7 downto 0);
+    idxBits_bmtf      : TIndexBits_vector(35 downto 0);
+    idxBits_ovl     : TIndexBits_vector(35 downto 0);
+    idxBits_fwd     : TIndexBits_vector(35 downto 0);
+    expectedMuons     : TGMTMu_vector(7 downto 0);
+    expectedIsoBits   : TIsoBits_vector(7 downto 0);
+    expectedIntMuB    : TGMTMu_vector(7 downto 0);
+    expectedIntMuO    : TGMTMu_vector(7 downto 0);
+    expectedIntMuF    : TGMTMu_vector(7 downto 0);
+    expectedSrtRnksB  : TSortRank10_vector(7 downto 0);
+    expectedSrtRnksO  : TSortRank10_vector(7 downto 0);
+    expectedSrtRnksF  : TSortRank10_vector(7 downto 0);
   end record;
   type TGMTMuEvent_vec is array (integer range <>) of TGMTMuEvent;
 
@@ -426,7 +426,7 @@ package body tb_helpers is
       elsif L.all(2 to 4) = "TRK" then
         ReadTrack(L, event.expectedTracks(wedgeNo));
         wedgeNo    := wedgeNo+1;
-    elsif L.all(1 to 3) = "BAR" or L.all(1 to 3) = "OVL" or L.all(1 to 3) = "FWD" then
+    elsif L.all(1 to 4) = "BMTF" or L.all(1 to 4) = "OMTF" or L.all(1 to 4) = "EMTF" then
         ReadInputMuon(L, event.expectedMuons(muNo), event.expectedSortRanks(muNo), event.expectedEmpty(muNo));
         muNo := muNo+1;
     elsif L.all(1 to 3) = "IFR" then
@@ -471,7 +471,7 @@ package body tb_helpers is
         muFinNo := muFinNo+1;
         muNo    := muNo+1;
       elsif L.all(1 to 4) = "BIMD" then
-        ReadInputMuon(L, event.intMuons_brl(muIntBNo), event.intSortRanks_brl(muIntBNo), dummyEmpty);
+        ReadInputMuon(L, event.intMuons_bmtf(muIntBNo), event.intSortRanks_bmtf(muIntBNo), dummyEmpty);
         muIntBNo := muIntBNo+1;
         muNo     := muNo+1;
       elsif L.all(1 to 4) = "OIMD" then
@@ -526,11 +526,11 @@ package body tb_helpers is
     variable event  : out TGMTMuEvent) is
     variable L, L1         : line;
     variable muNo          : integer := 0;
-    variable muBrlNo       : integer := 0;
+    variable muBmtfNo       : integer := 0;
     variable muOvlNo       : integer := 0;
     variable muFwdNo       : integer := 0;
     variable wedgeNo       : integer := 0;
-    variable wedgeBrlNo    : integer := 0;
+    variable wedgeBmtfNo    : integer := 0;
     variable wedgeOvlNo    : integer := 0;
     variable wedgeFwdNo    : integer := 0;
     variable muons         : TGMTMu_vector(107 downto 0);
@@ -562,24 +562,24 @@ package body tb_helpers is
       elsif L.all(1 to 3) = "EVT" then
                                         -- TODO: Parse this maybe?
         next;
-      elsif L.all(1 to 3) = "BAR" then
-        ReadInputMuon(L, event.muons_brl(muBrlNo), event.sortRanks_brl(muBrlNo), event.empty_brl(muBrlNo));
-        event.idxBits_brl(muBrlNo) := to_unsigned(muNo, 7);
-        muBrlNo                    := muBrlNo+1;
-        muNo                       := muNo+1;
-      elsif L.all(1 to 3) = "OVL" then
+      elsif L.all(1 to 4) = "BMTF" then
+        ReadInputMuon(L, event.muons_bmtf(muBmtfNo), event.sortRanks_bmtf(muBmtfNo), event.empty_bmtf(muBmtfNo));
+        event.idxBits_bmtf(muBmtfNo) := to_unsigned(muNo, 7);
+        muBmtfNo                    := muBmtfNo+1;
+        muNo                        := muNo+1;
+      elsif L.all(1 to 4) = "OMTF" then
         ReadInputMuon(L, event.muons_ovl(muOvlNo), event.sortRanks_ovl(muOvlNo), event.empty_ovl(muOvlNo));
         event.idxBits_ovl(muOvlNo) := to_unsigned(muNo, 7);
         muOvlNo                    := muOvlNo+1;
         muNo                       := muNo+1;
-      elsif L.all(1 to 3) = "FWD" then
+      elsif L.all(1 to 4) = "EMTF" then
         ReadInputMuon(L, event.muons_fwd(muFwdNo), event.sortRanks_fwd(muFwdNo), event.empty_fwd(muFwdNo));
         event.idxBits_fwd(muFwdNo) := to_unsigned(muNo, 7);
         muFwdNo                    := muFwdNo+1;
         muNo                       := muNo+1;
       elsif L.all(1 to 4) = "BTRK" then
-        ReadTrack(L, event.tracks_brl(wedgeBrlNo));
-        wedgeBrlNo := wedgeBrlNo+1;
+        ReadTrack(L, event.tracks_bmtf(wedgeBmtfNo));
+        wedgeBmtfNo := wedgeBmtfNo+1;
         wedgeNo    := wedgeNo+1;
       elsif L.all(1 to 4) = "OTRK" then
         ReadTrack(L, event.tracks_ovl(wedgeOvlNo));
@@ -708,7 +708,7 @@ package body tb_helpers is
     variable FO              : in text) is
     variable L1              : line;
     variable fin_id          : string(1 to 3)                 := "OUT";
-    variable brl_id          : string(1 to 3)                 := "INB";
+    variable bmtf_id          : string(1 to 3)                 := "INB";
     variable ovl_id          : string(1 to 3)                 := "INO";
     variable fwd_id          : string(1 to 3)                 := "INF";
     variable vDummySortRanks : TSortRank10_vector(7 downto 0) := (others => "0000000000");
@@ -725,7 +725,7 @@ package body tb_helpers is
       DumpMuons(event.muons, vDummySortRanks, FO, fin_id);
       write(L1, string'("### Dumping intermediate muons: "));
       writeline(FO, L1);
-      DumpMuons(event.intMuons_brl, event.intSortRanks_brl, FO, brl_id);
+      DumpMuons(event.intMuons_bmtf, event.intSortRanks_bmtf, FO, bmtf_id);
       DumpMuons(event.intMuons_ovl, event.intSortRanks_ovl, FO, ovl_id);
       DumpMuons(event.intMuons_fwd, event.intSortRanks_fwd, FO, fwd_id);
       write(L1, string'("### Dumping expected output: "));
@@ -739,10 +739,10 @@ package body tb_helpers is
     variable event     : in TGMTMuEvent;
     variable FO        : in text) is
     variable L1        : line;
-    variable brl_id    : string(1 to 3) := "BRL";
-    variable ovl_id    : string(1 to 3) := "OVL";
-    variable fwd_id    : string(1 to 3) := "FWD";
-    variable brlTrk_id : string(1 to 4) := "BTRK";
+    variable bmtf_id    : string(1 to 4) := "BMTF";
+    variable ovl_id    : string(1 to 4) := "OMTF";
+    variable fwd_id    : string(1 to 4) := "EMTF";
+    variable bmtfTrk_id : string(1 to 4) := "BTRK";
     variable ovlTrk_id : string(1 to 4) := "OTRK";
     variable fwdTrk_id : string(1 to 4) := "FTRK";
   begin  -- DumpMuEvent
@@ -753,7 +753,7 @@ package body tb_helpers is
       writeline(FO, L1);
       DumpEventMuons(event, FO);
 
-      DumpTracks(event.tracks_brl, FO, brlTrk_id);
+      DumpTracks(event.tracks_bmtf, FO, bmtfTrk_id);
       DumpTracks(event.tracks_ovl, FO, ovlTrk_id);
       DumpTracks(event.tracks_fwd, FO, fwdTrk_id);
     end if;
@@ -763,14 +763,14 @@ package body tb_helpers is
     variable event  : in TGMTMuEvent;
     variable FO     : in text) is
     variable L1     : line;
-    variable brl_id : string(1 to 3) := "BRL";
-    variable ovl_id : string(1 to 3) := "OVL";
-    variable fwd_id : string(1 to 3) := "FWD";
+    variable bmtf_id : string(1 to 4) := "BMTF";
+    variable ovl_id : string(1 to 4) := "OMTF";
+    variable fwd_id : string(1 to 4) := "EMTF";
   begin -- DumpEventMuons
       if event.iEvent /= -1 then
         write(L1, string'("++++++++++++++++++++ Dump of input muons: "));
         writeline(FO, L1);
-        DumpMuons(event.muons_brl, event.sortRanks_brl, FO, brl_id);
+        DumpMuons(event.muons_bmtf, event.sortRanks_bmtf, FO, bmtf_id);
         DumpMuons(event.muons_ovl, event.sortRanks_ovl, FO, ovl_id);
         DumpMuons(event.muons_fwd, event.sortRanks_fwd, FO, fwd_id);
       end if;

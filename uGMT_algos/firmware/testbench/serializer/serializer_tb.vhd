@@ -100,7 +100,7 @@ begin
         iValid                  <= '1';
         iMuons                  <= event_buffer(1).muons;
         iIso                    <= event_buffer(1).iso;
-        iIntermediateMuonsB     <= event.intMuons_brl;
+        iIntermediateMuonsB     <= event.intMuons_bmtf;
         iIntermediateMuonsO     <= event.intMuons_ovl;
         iIntermediateMuonsF     <= event.intMuons_fwd;
 

@@ -315,20 +315,20 @@ begin
 
   -- Calculate match quality between RPC and TF muons.
   generate_mq_unit : if rpc_merging generate
-    mq_fwd : entity work.MatchQualityUnit
+    mq_emtf : entity work.MatchQualityUnit
       port map (
         iMuonsRPC    => iMuonsRPCf,
-        iMuonsBrlFwd => iMuonsF,
+        iMuonsBmtfFwd => iMuonsF,
         iMuonsOvl    => iMuonsO,
         oMQMatrix    => sMQMatrixF,
         clk          => clk,
         sinit        => sinit
         );
 
-    mq_brl : entity work.MatchQualityUnit
+    mq_bmtf : entity work.MatchQualityUnit
       port map (
         iMuonsRPC    => iMuonsRPCb,
-        iMuonsBrlFwd => iMuonsB,
+        iMuonsBmtfFwd => iMuonsB,
         iMuonsOvl    => iMuonsO,
         oMQMatrix    => sMQMatrixB,
         clk          => clk,
@@ -344,7 +344,7 @@ begin
     generic map (
         CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BO,
         DATA_FILE        => CANCEL_OUT_DATA_FILE_BO_POS,
-        LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_BRL
+        LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_BMTF
         )
     port map (
       clk_ipb     => clk_ipb,
@@ -361,7 +361,7 @@ begin
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BO,
       DATA_FILE        => CANCEL_OUT_DATA_FILE_BO_NEG,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_BRL
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_BMTF
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -379,7 +379,7 @@ begin
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_FO,
       DATA_FILE        => CANCEL_OUT_DATA_FILE_FO_POS,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OVL_FWD
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OMTF_EMTF
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -396,7 +396,7 @@ begin
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_FO,
       DATA_FILE        => CANCEL_OUT_DATA_FILE_FO_NEG,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OVL_FWD
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OMTF_EMTF
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -412,85 +412,85 @@ begin
 
   cou_b : entity work.CancelOutUnit_Single
     generic map (
-      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BRL,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_BRL,
+      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BMTF,
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_BMTF,
       num_wedges       => 12,
       num_tracks       => 3,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_BRL
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_BMTF
       )
     port map (
       clk_ipb => clk_ipb,
-      rst     => rst_loc(COU_BRL),
-      ipb_in  => ipbw(N_SLV_COU_BRL),
-      ipb_out => ipbr(N_SLV_COU_BRL),
+      rst     => rst_loc(COU_BMTF),
+      ipb_in  => ipbw(N_SLV_COU_BMTF),
+      ipb_out => ipbr(N_SLV_COU_BMTF),
       iWedges => iTracksB,
       oCancel => sCancelB,
       clk     => clk
       );
   cou_o_plus : entity work.CancelOutUnit_Single
     generic map (
-      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_OVL,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_OVL_POS,
+      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_OMTF,
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_OMTF_POS,
       num_wedges       => 6,
       num_tracks       => 3,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OVL_FWD
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OMTF_EMTF
       )
     port map (
       clk_ipb => clk_ipb,
-      rst     => rst_loc(COU_OVL_POS),
-      ipb_in  => ipbw(N_SLV_COU_OVL_POS),
-      ipb_out => ipbr(N_SLV_COU_OVL_POS),
+      rst     => rst_loc(COU_OMTF_POS),
+      ipb_in  => ipbw(N_SLV_COU_OMTF_POS),
+      ipb_out => ipbr(N_SLV_COU_OMTF_POS),
       iWedges => sTracksO_plus,
       oCancel => sCancelO_plus,
       clk     => clk
       );
   cou_o_minus : entity work.CancelOutUnit_Single
     generic map (
-      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_OVL,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_OVL_NEG,
+      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_OMTF,
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_OMTF_NEG,
       num_wedges       => 6,
       num_tracks       => 3,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OVL_FWD
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OMTF_EMTF
       )
     port map (
       clk_ipb => clk_ipb,
-      rst     => rst_loc(COU_OVL_NEG),
-      ipb_in  => ipbw(N_SLV_COU_OVL_NEG),
-      ipb_out => ipbr(N_SLV_COU_OVL_NEG),
+      rst     => rst_loc(COU_OMTF_NEG),
+      ipb_in  => ipbw(N_SLV_COU_OMTF_NEG),
+      ipb_out => ipbr(N_SLV_COU_OMTF_NEG),
       iWedges => sTracksO_minus,
       oCancel => sCancelO_minus,
       clk     => clk
       );
   cou_f_plus : entity work.CancelOutUnit_Single
     generic map (
-      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_FWD,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_FWD_POS,
+      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_EMTF,
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_EMTF_POS,
       num_wedges       => 6,
       num_tracks       => 3,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OVL_FWD
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OMTF_EMTF
       )
     port map (
       clk_ipb => clk_ipb,
-      rst     => rst_loc(COU_FWD_POS),
-      ipb_in  => ipbw(N_SLV_COU_FWD_POS),
-      ipb_out => ipbr(N_SLV_COU_FWD_POS),
+      rst     => rst_loc(COU_EMTF_POS),
+      ipb_in  => ipbw(N_SLV_COU_EMTF_POS),
+      ipb_out => ipbr(N_SLV_COU_EMTF_POS),
       iWedges => sTracksF_plus,
       oCancel => sCancelF_plus,
       clk     => clk
       );
   cou_f_minus : entity work.CancelOutUnit_Single
     generic map (
-      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_FWD,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_FWD_NEG,
+      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_EMTF,
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_EMTF_NEG,
       num_wedges       => 6,
       num_tracks       => 3,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OVL_FWD
+      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OMTF_EMTF
       )
     port map (
       clk_ipb => clk_ipb,
-      rst     => rst_loc(COU_FWD_NEG),
-      ipb_in  => ipbw(N_SLV_COU_FWD_NEG),
-      ipb_out => ipbr(N_SLV_COU_FWD_NEG),
+      rst     => rst_loc(COU_EMTF_NEG),
+      ipb_in  => ipbw(N_SLV_COU_EMTF_NEG),
+      ipb_out => ipbr(N_SLV_COU_EMTF_NEG),
       iWedges => sTracksF_minus,
       oCancel => sCancelF_minus,
       clk     => clk
@@ -613,14 +613,14 @@ begin
 
   gen_pair_finding_unit : if rpc_merging generate
     -- Find pairs based on MQ matrix between RPC and TF muons.
-    pair_finding_fwd : entity work.PairFindingUnit
+    pair_finding_emtf : entity work.PairFindingUnit
       port map (
         iMQMatrix => sMQMatrixF_reg,
         oPairs    => sPairVecF,
         clk       => clk,
         sinit     => sinit);
 
-    pair_finding_brl : entity work.PairFindingUnit
+    pair_finding_bmtf : entity work.PairFindingUnit
       port map (
         iMQMatrix => sMQMatrixB_reg,
         oPairs    => sPairVecB,
@@ -656,12 +656,12 @@ begin
 
   gen_matching_unit : if rpc_merging generate
     -- For RPC merging
-    match_fwd : entity work.MatchingUnit
+    match_emtf : entity work.MatchingUnit
       port map (
-        iSortRanksBrlFwd => sSortRanksF_store,
-        iEmptyBrlFwd     => sEmptyF_store,
-        iIdxBitsBrlFwd   => sIdxBitsF_store,
-        iMuonsBrlFwd     => sMuonsF_store,
+        iSortRanksBmtfFwd => sSortRanksF_store,
+        iEmptyBmtfFwd     => sEmptyF_store,
+        iIdxBitsBmtfFwd   => sIdxBitsF_store,
+        iMuonsBmtfFwd     => sMuonsF_store,
         iSortRanksOvl    => sSortRanksO_store,
         iEmptyOvl        => sEmptyO_store,
         iIdxBitsOvl      => sIdxBitsO_store,
@@ -671,17 +671,17 @@ begin
         oEmpty           => sMatchedEmptyF,
         oIdxBits         => sMatchedIdxBitsF,
         oMuons           => sMatchedMuonsF,
-        oCancelBrlFwd    => sCancelF_matched,
+        oCancelBmtfFwd    => sCancelF_matched,
         oCancelOvl       => sCancelO_matched_A,
         clk              => clk,
         sinit            => sinit);
 
-    match_brl : entity work.MatchingUnit
+    match_bmtf : entity work.MatchingUnit
       port map (
-        iSortRanksBrlFwd => sSortRanksB_store,
-        iEmptyBrlFwd     => sEmptyB_store,
-        iIdxBitsBrlFwd   => sIdxBitsB_store,
-        iMuonsBrlFwd     => sMuonsB_store,
+        iSortRanksBmtfFwd => sSortRanksB_store,
+        iEmptyBmtfFwd     => sEmptyB_store,
+        iIdxBitsBmtfFwd   => sIdxBitsB_store,
+        iMuonsBmtfFwd     => sMuonsB_store,
         iSortRanksOvl    => sSortRanksO_store,
         iEmptyOvl        => sEmptyO_store,
         iIdxBitsOvl      => sIdxBitsO_store,
@@ -691,7 +691,7 @@ begin
         oEmpty           => sMatchedEmptyB,
         oIdxBits         => sMatchedIdxBitsB,
         oMuons           => sMatchedMuonsB,
-        oCancelBrlFwd    => sCancelB_matched,
+        oCancelBmtfFwd    => sCancelB_matched,
         oCancelOvl       => sCancelO_matched_B,
         clk              => clk,
         sinit            => sinit);
@@ -699,7 +699,7 @@ begin
 
   gen_merger_unit : if rpc_merging generate
     -- For RPC merging
-    merger_fwd : entity work.MergerUnit
+    merger_emtf : entity work.MergerUnit
       port map (
         iMuonsTF      => sMatchedMuonsF_reg,
         iSortRanksTF  => sMatchedSortRanksF_reg,
@@ -716,7 +716,7 @@ begin
         clk           => clk,
         sinit         => sinit);
 
-    merger_brl : entity work.MergerUnit
+    merger_bmtf : entity work.MergerUnit
       port map (
         iMuonsTF      => sMatchedMuonsB_reg,
         iSortRanksTF  => sMatchedSortRanksB_reg,

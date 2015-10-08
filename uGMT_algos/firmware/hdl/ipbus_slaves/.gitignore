@@ -3,7 +3,7 @@ BEtaExtrapolation.mif
 BONegMatchQual.mif
 BOPosMatchQual.mif
 BPhiExtrapolation.mif
-BrlSingleMatchQual.mif
+BmtfSingleMatchQual.mif
 FEtaExtrapolation.mif
 FONegMatchQual.mif
 FOPosMatchQual.mif
@@ -18,4 +18,3 @@ OvlNegSingleMatchQual.mif
 OvlPosSingleMatchQual.mif
 RelIsoCheckMem.mif
 SortRank.mif
-

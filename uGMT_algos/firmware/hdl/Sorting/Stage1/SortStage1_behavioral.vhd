@@ -66,19 +66,19 @@ begin  -- architecture behavioral
   begin  -- process gen_ge_matrix
     for i in 0 to 22 loop
       for j in i+1 to 23 loop
-        if (i < MU_OVL_POS_BEGIN) and (j < MU_OVL_POS_BEGIN) then -- Staying inside FWD+
+        if (i < MU_OMTF_POS_BEGIN) and (j < MU_OMTF_POS_BEGIN) then -- Staying inside EMTF+
           GEMatrix(i, j) <= '1';
-        elsif (i >= MU_OVL_POS_BEGIN) and (j >= MU_OVL_POS_BEGIN) and
-              (i < MU_BRL_BEGIN) and (j < MU_BRL_BEGIN) then -- Staying inside OVL+
+        elsif (i >= MU_OMTF_POS_BEGIN) and (j >= MU_OMTF_POS_BEGIN) and
+              (i < MU_BMTF_BEGIN) and (j < MU_BMTF_BEGIN) then -- Staying inside OMTF+
           GEMatrix(i, j) <= '1';
-        elsif (i >= MU_BRL_BEGIN) and (j >= MU_BRL_BEGIN) and
-              (i < MU_OVL_NEG_BEGIN) and (j < MU_OVL_NEG_BEGIN) then -- Staying inside BRL
+        elsif (i >= MU_BMTF_BEGIN) and (j >= MU_BMTF_BEGIN) and
+              (i < MU_OMTF_NEG_BEGIN) and (j < MU_OMTF_NEG_BEGIN) then -- Staying inside BMTF
           GEMatrix(i, j) <= '1';
-        elsif (i >= MU_OVL_NEG_BEGIN) and (j >= MU_OVL_NEG_BEGIN) and
-              (i < MU_FWD_NEG_BEGIN) and (j < MU_FWD_NEG_BEGIN) then -- Staying inside OVL-
+        elsif (i >= MU_OMTF_NEG_BEGIN) and (j >= MU_OMTF_NEG_BEGIN) and
+              (i < MU_EMTF_NEG_BEGIN) and (j < MU_EMTF_NEG_BEGIN) then -- Staying inside OMTF-
           GEMatrix(i, j) <= '1';
-        elsif (i >= MU_FWD_NEG_BEGIN) and (j >= MU_FWD_NEG_BEGIN) and
-              (i < SORTING_END) and (j < SORTING_END) then -- Staying inside FWD-
+        elsif (i >= MU_EMTF_NEG_BEGIN) and (j >= MU_EMTF_NEG_BEGIN) and
+              (i < SORTING_END) and (j < SORTING_END) then -- Staying inside EMTF-
           GEMatrix(i, j) <= '1';
         else
           if (sSortRanks(i) >= sSortRanks(j)) then

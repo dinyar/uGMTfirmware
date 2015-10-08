@@ -4,13 +4,13 @@ use IEEE.STD_LOGIC_1164.all;
 use work.GMTTypes.all;
 
 entity PairFindingUnit is
-  
+
   port (
     iMQMatrix : in  TMQMatrix;
     oPairs    : out TPairVector(3 downto 0);  -- Holds the indices of the TF
                                               -- muons that should be merged
                                               -- with the Nth RPC muon.
-                                              -- Muons from brl/fwd: 35 -> 0
+                                              -- Muons from BMTF/fwd: 35 -> 0
                                               -- Muons from ovl: 71 -> 36
     clk       : in  std_logic;
     sinit     : in  std_logic);

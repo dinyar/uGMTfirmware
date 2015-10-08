@@ -56,7 +56,7 @@ begin
 
 
   -----------------------------------------------------------------------------
-  -- Basic layout of ovl wedges vs. barrel wedges:
+  -- Basic layout of ovl wedges vs. BMTF wedges:
   --
   -- ___ _____________________...
   -- |  ||____________________...
@@ -65,11 +65,11 @@ begin
   -- |__||____________________...
   -- |  ||____________________...
   --
-  -- => Cancel out between one ovl wedge and 2+2 barrel wedges (due to
+  -- => Cancel out between one ovl wedge and 2+2 BMTF wedges (due to
   -- crossings in phi as well as in eta.
   --
-  -- First comparing ovl wedge with "above" brl wedge, then with first adjacent
-  -- brl wedge, second adjacent brl wedge and finally with brl wedge below.
+  -- First comparing ovl wedge with "above" BMTF wedge, then with first adjacent
+  -- BMTF wedge, second adjacent BMTF wedge and finally with BMTF wedge below.
   -----------------------------------------------------------------------------
   g1 : for i in 0 to 5 generate
     x0 : entity work.CancelOutUnit_BO_WedgeComp

@@ -1,5 +1,5 @@
 ?toolset=="Vivado"? src ../ucf/algo_constraints.xdc
-addrtab -t cancel_out_barrel.xml
+addrtab -t cancel_out_bmtf.xml
 addrtab -t cancel_out_bo_wedge.xml
 addrtab -t cancel_out_bo.xml
 addrtab -t cancel_out_fo_wedge.xml
@@ -90,7 +90,7 @@ src ipbus_decode_cancel_out_bo.vhd
 src ipbus_decode_cancel_out_fo_wedge.vhd
 src ipbus_decode_cancel_out_fo.vhd
 src ipbus_decode_cancel_out_half_sorters.vhd
-src ipbus_decode_cancel_out_barrel.vhd
+src ipbus_decode_cancel_out_bmtf.vhd
 src ipbus_decode_cancel_out_mems.vhd
 src ipbus_decode_sorting.vhd
 src ipbus_decode_uGMT.vhd
