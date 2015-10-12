@@ -4,10 +4,10 @@ BONegMatchQual.mif
 BOPosMatchQual.mif
 BPhiExtrapolation.mif
 BmtfSingleMatchQual.mif
-FEtaExtrapolation.mif
+EEtaExtrapolation.mif
 EONegMatchQual.mif
 EOPosMatchQual.mif
-FPhiExtrapolation.mif
+EPhiExtrapolation.mif
 EmtfNegSingleMatchQual.mif
 EmtfPosSingleMatchQual.mif
 IdxSelMemEta.mif

@@ -38,8 +38,8 @@ package ugmt_constants is
   constant EMTF_NEG_LOW  : integer := 30;
   constant OMTF_NEG_HIGH : integer := 29;
   constant OMTF_NEG_LOW  : integer := 24;
-  constant BMTF_HIGH  : integer := 23;  -- Begin of barrel region.
-  constant BMTF_LOW   : integer := 12;  -- End of barrel region.
+  constant BMTF_HIGH     : integer := 23;  -- Begin of barrel region.
+  constant BMTF_LOW      : integer := 12;  -- End of barrel region.
   constant OMTF_POS_HIGH : integer := 11;  -- Begin of positive overlap region.
   constant OMTF_POS_LOW  : integer := 6;   -- End of pos. overlap region.
   constant EMTF_POS_HIGH : integer := 5;
@@ -64,7 +64,6 @@ package ugmt_constants is
 
   -- Calo
   constant ENERGY_QUAD_ASSIGNMENT : QuadAssignment_vector(6 downto 0) := (8, 7, 6, 5, 4, 3, 2);
-
 
   -----------------------------------------------------------------------------
   -- Output word assignment
@@ -175,11 +174,11 @@ package ugmt_constants is
   -- OMTF/EMTF shared
   constant ETA_OMTF_EMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"));
   constant PHI_OMTF_EMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"));
-  constant ETA_EMTF_OMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("EEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"));
-  constant PHI_EMTF_OMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("EPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"));
+  constant ETA_EMTF_OMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("EEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"));
+  constant PHI_EMTF_OMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("EPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"));
   -- Endcap
-  constant ETA_EMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("EEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"));
-  constant PHI_EMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("EPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"));
+  constant ETA_EMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("EEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"));
+  constant PHI_EMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("EPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"));
 
   type ContentFileQuadAssignment_vector is array (natural range <>) of ContentFileAssignment_vector;
   constant ETA_EXTRAP_CONT_ASSIGN : ContentFileQuadAssignment_vector(0 to 8) := (ETA_EMTF_EXTRAP_CONT_ASSIGN, ETA_EMTF_OMTF_EXTRAP_CONT_ASSIGN, ETA_OMTF_EXTRAP_CONT_ASSIGN, ETA_BMTF_EXTRAP_CONT_ASSIGN, ETA_BMTF_EXTRAP_CONT_ASSIGN, ETA_BMTF_EXTRAP_CONT_ASSIGN, ETA_OMTF_EXTRAP_CONT_ASSIGN, ETA_OMTF_EMTF_EXTRAP_CONT_ASSIGN, ETA_EMTF_EXTRAP_CONT_ASSIGN);
@@ -211,17 +210,17 @@ package ugmt_constants is
 
   type PhiOffsetRegisterValueAssignment_vector is array (0 to 8) of ipb_reg_v(0 to 3);
   constant INIT_PHI_OFFSET_ASSIGN : PhiOffsetRegisterValueAssignment_vector := ((X"00000018", X"00000078", X"000000D8", X"00000138"),
-                       (X"00000198", X"000001F8", X"00000018", X"00000078"),
-                       (X"000000D8", X"00000138", X"00000198", X"000001F8"),
-                       (X"00000228", X"00000018", X"00000048", X"00000078"),
-                       (X"000000A8", X"000000D8", X"00000108", X"00000138"),
-                       (X"00000168", X"00000198", X"000001C8", X"000001F8"),
-                       (X"00000018", X"00000078", X"000000D8", X"00000138"),
-                       (X"00000198", X"000001F8", X"00000018", X"00000078"),
-                       (X"000000D8", X"00000138", X"00000198", X"000001F8")
-                      );
+                                                                                (X"00000198", X"000001F8", X"00000018", X"00000078"),
+                                                                                (X"000000D8", X"00000138", X"00000198", X"000001F8"),
+                                                                                (X"00000228", X"00000018", X"00000048", X"00000078"),
+                                                                                (X"000000A8", X"000000D8", X"00000108", X"00000138"),
+                                                                                (X"00000168", X"00000198", X"000001C8", X"000001F8"),
+                                                                                (X"00000018", X"00000078", X"000000D8", X"00000138"),
+                                                                                (X"00000198", X"000001F8", X"00000018", X"00000078"),
+                                                                                (X"000000D8", X"00000138", X"00000198", X"000001F8")
+                                                                               );
 
-  constant LOCAL_PHI_OFFSET_BMTF     : signed(8 downto 0) := to_signed(48, 9);
+  constant LOCAL_PHI_OFFSET_BMTF      : signed(8 downto 0) := to_signed(48, 9);
   constant LOCAL_PHI_OFFSET_OMTF_EMTF : signed(8 downto 0) := to_signed(96, 9);
 
   -----------------------------------------------------------------------------
@@ -231,21 +230,21 @@ package ugmt_constants is
   constant CANCEL_OUT_TYPE_BMTF : string := string'("BMTF_ADDRESSES");
   constant CANCEL_OUT_TYPE_OMTF : string := string'("COORDINATE");
   constant CANCEL_OUT_TYPE_EMTF : string := string'("COORDINATE");
-  constant CANCEL_OUT_TYPE_BO  : string := string'("COORDINATE");
-  constant CANCEL_OUT_TYPE_EO  : string := string'("COORDINATE");
+  constant CANCEL_OUT_TYPE_BO   : string := string'("COORDINATE");
+  constant CANCEL_OUT_TYPE_EO   : string := string'("COORDINATE");
 
   -----------------------------------------------------------------------------
   -- Cancel-out unit mapping to chip regions
   -----------------------------------------------------------------------------
 
   constant COU_EMTF_NEG : natural := 0;
-  constant COU_EO_NEG  : natural := 1;
+  constant COU_EO_NEG   : natural := 1;
   constant COU_OMTF_NEG : natural := 2;
-  constant COU_BO_NEG  : natural := 3;
+  constant COU_BO_NEG   : natural := 3;
   constant COU_BMTF     : natural := 4;
-  constant COU_BO_POS  : natural := 5;
+  constant COU_BO_POS   : natural := 5;
   constant COU_OMTF_POS : natural := 6;
-  constant COU_EO_POS  : natural := 7;
+  constant COU_EO_POS   : natural := 7;
   constant COU_EMTF_POS : natural := 8;
 
   -----------------------------------------------------------------------------
@@ -257,8 +256,7 @@ package ugmt_constants is
   constant MU_BMTF_BEGIN     : natural := 8;
   constant MU_OMTF_NEG_BEGIN : natural := 16;
   constant MU_EMTF_NEG_BEGIN : natural := 20;
-  constant SORTING_END   : natural := 24;
-
+  constant SORTING_END       : natural := 24;
 
   -----------------------------------------------------------------------------
   -- Misc. constants

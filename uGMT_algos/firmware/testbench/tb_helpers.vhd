@@ -988,7 +988,7 @@ package body tb_helpers is
     variable iMuons     : in TGMTMu_vector;
     variable iSortRanks : in TSortRank10_vector;
     variable FO         : in text;
-    variable id         : in string(1 to 3)) is
+    variable id         : in string(1 to 4)) is
     variable L1 : line;
   begin  -- DumpMuons
     for iMu in iMuons'range loop
