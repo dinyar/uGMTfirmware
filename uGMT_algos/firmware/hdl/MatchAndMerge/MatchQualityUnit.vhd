@@ -8,8 +8,8 @@ entity MatchQualityUnit is
 
   port (
     iMuonsRPC    : in  TGMTMuRPC_vector(3 downto 0);
-    iMuonsBrlFwd : in  TGMTMu_vector(35 downto 0);
-    iMuonsOvl    : in  TGMTMu_vector(35 downto 0);
+    iMuonsBmtfEmtf : in  TGMTMu_vector(35 downto 0);
+    iMuonsOmtf    : in  TGMTMu_vector(35 downto 0);
     oMQMatrix    : out TMQMatrix;
     clk          : in  std_logic;
     sinit        : in  std_logic);
@@ -43,7 +43,7 @@ architecture behavioral of MatchQualityUnit is
 
 begin  -- behavioral
   notClk   <= not clk;
-  sMuonsTF <= iMuonsBrlFwd & iMuonsOvl;
+  sMuonsTF <= iMuonsBmtfEmtf & iMuonsOmtf;
 
   g1 : for i in iMuonsRPC'range generate
     g2 : for j in sMuonsTF'range generate

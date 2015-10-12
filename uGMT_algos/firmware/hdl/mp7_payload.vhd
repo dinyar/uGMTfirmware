@@ -61,8 +61,8 @@ architecture rtl of mp7_payload is
 
   signal sEmptyO_plus : std_logic_vector(17 downto 0);
   signal sEmptyO_minus : std_logic_vector(17 downto 0);
-  signal sEmptyF_plus : std_logic_vector(17 downto 0);
-  signal sEmptyF_minus : std_logic_vector(17 downto 0);
+  signal sEmptyE_plus : std_logic_vector(17 downto 0);
+  signal sEmptyE_minus : std_logic_vector(17 downto 0);
 
   signal sEnergies     : TCaloRegionEtaSlice_vector(27 downto 0);  -- All energies from Calo trigger.
   signal sEnergies_tmp : TCaloRegionEtaSlice_vector(31 downto 0);
@@ -71,28 +71,28 @@ architecture rtl of mp7_payload is
   signal sCaloIndexBits : TCaloIndexBit_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sCaloIndexBitsB : TCaloIndexBit_vector(35 downto 0);
   signal sCaloIndexBitsO : TCaloIndexBit_vector(35 downto 0);
-  signal sCaloIndexBitsF : TCaloIndexBit_vector(35 downto 0);
+  signal sCaloIndexBitsE : TCaloIndexBit_vector(35 downto 0);
 
   signal sMuons      : TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sMuonsB     : TGMTMu_vector(35 downto 0);
   signal sMuonsO     : TGMTMu_vector(35 downto 0);
-  signal sMuonsF     : TGMTMu_vector(35 downto 0);
+  signal sMuonsE     : TGMTMu_vector(35 downto 0);
   signal sTracks     : TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
   signal sTracksB    : TGMTMuTracks_vector(11 downto 0);
   signal sTracksO    : TGMTMuTracks_vector(11 downto 0);
-  signal sTracksF    : TGMTMuTracks_vector(11 downto 0);
+  signal sTracksE    : TGMTMuTracks_vector(11 downto 0);
   signal sEmpty      : std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sEmptyB     : std_logic_vector(35 downto 0);
   signal sEmptyO     : std_logic_vector(35 downto 0);
-  signal sEmptyF     : std_logic_vector(35 downto 0);
+  signal sEmptyE     : std_logic_vector(35 downto 0);
   signal sSortRanks  : TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sSortRanksB : TSortRank10_vector(35 downto 0);
   signal sSortRanksO : TSortRank10_vector(35 downto 0);
-  signal sSortRanksF : TSortRank10_vector(35 downto 0);
+  signal sSortRanksE : TSortRank10_vector(35 downto 0);
   signal sIndexBits  : TIndexBits_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sIndexBitsB : TIndexBits_vector(35 downto 0);
   signal sIndexBitsO : TIndexBits_vector(35 downto 0);
-  signal sIndexBitsF : TIndexBits_vector(35 downto 0);
+  signal sIndexBitsE : TIndexBits_vector(35 downto 0);
 
   signal sIso       : TIsoBits_vector(7 downto 0);
   signal sIso_reg   : TIsoBits_vector(7 downto 0);
@@ -101,18 +101,10 @@ architecture rtl of mp7_payload is
 
   signal sIntermediateMuonsB         : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsO         : TGMTMu_vector(7 downto 0);
-  signal sIntermediateMuonsF         : TGMTMu_vector(7 downto 0);
+  signal sIntermediateMuonsE         : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsB_reg     : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsO_reg     : TGMTMu_vector(7 downto 0);
-  signal sIntermediateMuonsF_reg     : TGMTMu_vector(7 downto 0);
-  signal sIntermediateSortRanksB     : TSortRank10_vector(7 downto 0);
-  signal sIntermediateSortRanksO     : TSortRank10_vector(7 downto 0);
-  signal sIntermediateSortRanksF     : TSortRank10_vector(7 downto 0);
-  signal sIntermediateSortRanksB_reg : TSortRank10_vector(7 downto 0);
-  signal sIntermediateSortRanksO_reg : TSortRank10_vector(7 downto 0);
-  signal sIntermediateSortRanksF_reg : TSortRank10_vector(7 downto 0);
-  signal sFinalEnergies              : TCaloArea_vector(7 downto 0);
-  signal sFinalEnergies_reg          : TCaloArea_vector(7 downto 0);
+  signal sIntermediateMuonsE_reg     : TGMTMu_vector(7 downto 0);
 
   signal sQ : ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0);
 
@@ -237,62 +229,62 @@ begin
           sEnergies_fin <= sEnergies_tmp;
       end if;
 
-      ---- Disabling barrel ----
-      if sInputDisable(0)(1) = '1' then -- disable barrel
+      ---- Disabling BMTF ----
+      if sInputDisable(0)(1) = '1' then -- disable BMTF
           sEmptyB <= (others => '1');
       else
-          sEmptyB <= sEmpty((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
+          sEmptyB <= sEmpty((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
       end if;
 
-      ---- Disable overlap ----
-      if sInputDisable(0)(2) = '1' then -- disable ovl pos
+      ---- Disable OMTF ----
+      if sInputDisable(0)(2) = '1' then -- disable OMTF pos
           sEmptyO_plus <= (others => '1');
       else
-          sEmptyO_plus <= sEmpty((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
+          sEmptyO_plus <= sEmpty((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
       end if;
 
-      if sInputDisable(0)(3) = '1' then -- disable ovl neg
+      if sInputDisable(0)(3) = '1' then -- disable OMTF neg
           sEmptyO_minus <= (others => '1');
       else
-          sEmptyO_minus <= sEmpty((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN);
+          sEmptyO_minus <= sEmpty((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN);
       end if;
 
-      ---- Disable forward ----
-      if sInputDisable(0)(4) = '1' then -- disable fwd pos
-          sEmptyF_plus <= (others => '1');
+      ---- Disable EMTF ----
+      if sInputDisable(0)(4) = '1' then -- disable EMTF pos
+          sEmptyE_plus <= (others => '1');
       else
-          sEmptyF_plus <= sEmpty((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+          sEmptyE_plus <= sEmpty((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
       end if;
 
-      if sInputDisable(0)(5) = '1' then -- disable fwd neg
-          sEmptyF_minus <= (others => '1');
+      if sInputDisable(0)(5) = '1' then -- disable EMTF neg
+          sEmptyE_minus <= (others => '1');
       else
-          sEmptyF_minus <= sEmpty((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN);
+          sEmptyE_minus <= sEmpty((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN);
       end if;
   end process disable_inputs;
 
-  sMuonsB <= sMuons((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
-  sMuonsO <= sMuons((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sMuons((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
-  sMuonsF <= sMuons((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sMuons((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+  sMuonsB <= sMuons((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
+  sMuonsO <= sMuons((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sMuons((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
+  sMuonsE <= sMuons((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN) & sMuons((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
 
-  sTracksB <= sTracks(BARREL_HIGH downto BARREL_LOW);
-  sTracksO <= sTracks(OVL_NEG_HIGH downto OVL_NEG_LOW) & sTracks(OVL_POS_HIGH downto OVL_POS_LOW);
-  sTracksF <= sTracks(FWD_NEG_HIGH downto FWD_NEG_LOW) & sTracks(FWD_POS_HIGH downto FWD_POS_LOW);
+  sTracksB <= sTracks(BMTF_HIGH downto BMTF_LOW);
+  sTracksO <= sTracks(OMTF_NEG_HIGH downto OMTF_NEG_LOW) & sTracks(OMTF_POS_HIGH downto OMTF_POS_LOW);
+  sTracksE <= sTracks(EMTF_NEG_HIGH downto EMTF_NEG_LOW) & sTracks(EMTF_POS_HIGH downto EMTF_POS_LOW);
 
-  sIndexBitsB <= sIndexBits((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
-  sIndexBitsO <= sIndexBits((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sIndexBits((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
-  sIndexBitsF <= sIndexBits((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sIndexBits((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+  sIndexBitsB <= sIndexBits((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
+  sIndexBitsO <= sIndexBits((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sIndexBits((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
+  sIndexBitsE <= sIndexBits((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN) & sIndexBits((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
 
-  sCaloIndexBitsB <= sCaloIndexBits((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
-  sCaloIndexBitsO <= sCaloIndexBits((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sCaloIndexBits((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
-  sCaloIndexBitsF <= sCaloIndexBits((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sCaloIndexBits((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+  sCaloIndexBitsB <= sCaloIndexBits((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
+  sCaloIndexBitsO <= sCaloIndexBits((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sCaloIndexBits((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
+  sCaloIndexBitsE <= sCaloIndexBits((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN) & sCaloIndexBits((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
 
   sEmptyO <= sEmptyO_minus & sEmptyO_plus;
-  sEmptyF <= sEmptyF_minus & sEmptyF_plus;
+  sEmptyE <= sEmptyE_minus & sEmptyE_plus;
 
-  sSortRanksB <= sSortRanks((BARREL_HIGH+1)*3-1 downto BARREL_LOW*NUM_MUONS_IN);
-  sSortRanksO <= sSortRanks((OVL_NEG_HIGH+1)*3-1 downto OVL_NEG_LOW*NUM_MUONS_IN) & sSortRanks((OVL_POS_HIGH+1)*3-1 downto OVL_POS_LOW*NUM_MUONS_IN);
-  sSortRanksF <= sSortRanks((FWD_NEG_HIGH+1)*3-1 downto FWD_NEG_LOW*NUM_MUONS_IN) & sSortRanks((FWD_POS_HIGH+1)*3-1 downto FWD_POS_LOW*NUM_MUONS_IN);
+  sSortRanksB <= sSortRanks((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
+  sSortRanksO <= sSortRanks((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sSortRanks((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
+  sSortRanksE <= sSortRanks((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN) & sSortRanks((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
 
   sEnergies_tmp(sEnergies_tmp'high-4 downto 0) <= sEnergies;
   sEnergies_tmp(sEnergies_tmp'high-3)          <= (others => "00000");
@@ -304,32 +296,32 @@ begin
     port map (
       iMuonsB           => sMuonsB,
       iMuonsO           => sMuonsO,
-      iMuonsF           => sMuonsF,
+      iMuonsE           => sMuonsE,
       iTracksB          => sTracksB,
       iTracksO          => sTracksO,
-      iTracksF          => sTracksF,
+      iTracksE          => sTracksE,
       iSortRanksB       => sSortRanksB,
       iSortRanksO       => sSortRanksO,
-      iSortRanksF       => sSortRanksF,
+      iSortRanksE       => sSortRanksE,
       iIdxBitsB         => sIndexBitsB,
       iIdxBitsO         => sIndexBitsO,
-      iIdxBitsF         => sIndexBitsF,
+      iIdxBitsE         => sIndexBitsE,
       iCaloIdxBitsB     => sCaloIndexBitsB,
       iCaloIdxBitsO     => sCaloIndexBitsO,
-      iCaloIdxBitsF     => sCaloIndexBitsF,
+      iCaloIdxBitsE     => sCaloIndexBitsE,
       iEmptyB           => sEmptyB,
       iEmptyO           => sEmptyO,
-      iEmptyF           => sEmptyF,
+      iEmptyE           => sEmptyE,
 
       iEnergies => sEnergies_fin,
 
       oIntermediateMuonsB     => sIntermediateMuonsB,
       oIntermediateMuonsO     => sIntermediateMuonsO,
-      oIntermediateMuonsF     => sIntermediateMuonsF,
-      oIntermediateSortRanksB => sIntermediateSortRanksB,
-      oIntermediateSortRanksO => sIntermediateSortRanksO,
-      oIntermediateSortRanksF => sIntermediateSortRanksF,
-      oFinalEnergies          => sFinalEnergies,
+      oIntermediateMuonsE     => sIntermediateMuonsE,
+      oIntermediateSortRanksB => open,
+      oIntermediateSortRanksO => open,
+      oIntermediateSortRanksE => open,
+      oFinalEnergies          => open,
 
       oMuons => oMuons,
       oIso   => sIso,
@@ -365,11 +357,7 @@ begin
 
       sIntermediateMuonsO_reg     <= sIntermediateMuonsO;
       sIntermediateMuonsB_reg     <= sIntermediateMuonsB;
-      sIntermediateMuonsF_reg     <= sIntermediateMuonsF;
-      sIntermediateSortRanksB_reg <= sIntermediateSortRanksB;
-      sIntermediateSortRanksO_reg <= sIntermediateSortRanksO;
-      sIntermediateSortRanksF_reg <= sIntermediateSortRanksF;
-      sFinalEnergies_reg          <= sFinalEnergies;
+      sIntermediateMuonsE_reg     <= sIntermediateMuonsE;
 
       sTrigger_reg <= sTrigger;
     end if;
@@ -406,8 +394,7 @@ begin
       sIso                 => sIso_reg,
       iIntermediateMuonsB  => sIntermediateMuonsB_reg,
       iIntermediateMuonsO  => sIntermediateMuonsO_reg,
-      iIntermediateMuonsF  => sIntermediateMuonsF_reg,
-      iFinalEnergies       => sFinalEnergies_reg,
+      iIntermediateMuonsE  => sIntermediateMuonsE_reg,
       q                    => sQ
       );
 

@@ -1,9 +1,9 @@
 ?toolset=="Vivado"? src ../ucf/algo_constraints.xdc
-addrtab -t cancel_out_barrel.xml
+addrtab -t cancel_out_bmtf.xml
 addrtab -t cancel_out_bo_wedge.xml
 addrtab -t cancel_out_bo.xml
-addrtab -t cancel_out_fo_wedge.xml
-addrtab -t cancel_out_fo.xml
+addrtab -t cancel_out_eo_wedge.xml
+addrtab -t cancel_out_eo.xml
 addrtab -t cancel_out_half_sorters.xml
 addrtab -t cancel_out_mems.xml
 addrtab -t isolation_assignment.xml
@@ -42,8 +42,8 @@ src Pile-up_subtraction/pile_up_computation.vhd
 src Sorting/SortAndCancelUnit.vhd
 src GhostBusting/CancelOutUnit_BO.vhd
 src GhostBusting/CancelOutUnit_BO_WedgeComp.vhd
-src GhostBusting/CancelOutUnit_FO.vhd
-src GhostBusting/CancelOutUnit_FO_WedgeComp.vhd
+src GhostBusting/CancelOutUnit_EO.vhd
+src GhostBusting/CancelOutUnit_EO_WedgeComp.vhd
 src GhostBusting/CancelOutUnit_Single.vhd
 src GhostBusting/WedgeCheckerUnit.vhd
 src GhostBusting/GhostCheckerUnit_spatialCoords.vhd
@@ -87,10 +87,10 @@ src ipbus_decode_isolation_mem_relative.vhd
 src ipbus_decode_isolation.vhd
 src ipbus_decode_cancel_out_bo_wedge.vhd
 src ipbus_decode_cancel_out_bo.vhd
-src ipbus_decode_cancel_out_fo_wedge.vhd
-src ipbus_decode_cancel_out_fo.vhd
+src ipbus_decode_cancel_out_eo_wedge.vhd
+src ipbus_decode_cancel_out_eo.vhd
 src ipbus_decode_cancel_out_half_sorters.vhd
-src ipbus_decode_cancel_out_barrel.vhd
+src ipbus_decode_cancel_out_bmtf.vhd
 src ipbus_decode_cancel_out_mems.vhd
 src ipbus_decode_sorting.vhd
 src ipbus_decode_uGMT.vhd

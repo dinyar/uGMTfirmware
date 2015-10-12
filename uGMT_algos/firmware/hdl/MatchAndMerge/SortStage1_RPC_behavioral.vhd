@@ -19,10 +19,10 @@ entity SortStage1_RPC is
     iIdxBitsO   : in TIndexBits_vector(0 to 7);
     iMuonsO     : in TGMTMu_vector(0 to 7);
 
-    iSortRanksF : in TSortRank10_vector(0 to 7);
-    iEmptyF     : in std_logic_vector(0 to 7);
-    iIdxBitsF   : in TIndexBits_vector(0 to 7);
-    iMuonsF     : in TGMTMu_vector(0 to 7);
+    iSortRanksE : in TSortRank10_vector(0 to 7);
+    iEmptyE     : in std_logic_vector(0 to 7);
+    iIdxBitsE   : in TIndexBits_vector(0 to 7);
+    iMuonsE     : in TGMTMu_vector(0 to 7);
 
     -- Need the following for RPC merging:
     iSortRanksMergedB : in TSortRank10_vector(3 downto 0);
@@ -31,12 +31,12 @@ entity SortStage1_RPC is
     iMuonsMergedB     : in TGMTMu_vector(3 downto 0);
     iCancelB          : in std_logic_vector(7 downto 0);
     iCancelO_B        : in std_logic_vector(7 downto 0);
-    iSortRanksMergedF : in TSortRank10_vector(3 downto 0);
-    iEmptyMergedF     : in std_logic_vector(3 downto 0);
-    iIdxBitsMergedF   : in TIndexBits_vector(3 downto 0);
-    iMuonsMergedF     : in TGMTMu_vector(3 downto 0);
+    iSortRanksMergedE : in TSortRank10_vector(3 downto 0);
+    iEmptyMergedE     : in std_logic_vector(3 downto 0);
+    iIdxBitsMergedE   : in TIndexBits_vector(3 downto 0);
+    iMuonsMergedE     : in TGMTMu_vector(3 downto 0);
     iCancelO_A        : in std_logic_vector(7 downto 0);
-    iCancelF          : in std_logic_vector(7 downto 0);
+    iCancelE          : in std_logic_vector(7 downto 0);
 
     oIdxBits : out TIndexBits_vector(7 downto 0);  -- Sent to IsoAU.
     oMuons   : out TGMTMu_vector(7 downto 0);
@@ -70,7 +70,7 @@ architecture behavioral of SortStage1_RPC is
   signal sCancel    : std_logic_vector(31 downto 0);
   signal sCancelB   : std_logic_vector(7 downto 0);
   signal sCancelO   : std_logic_vector(7 downto 0);
-  signal sCancelF   : std_logic_vector(7 downto 0);
+  signal sCancelE   : std_logic_vector(7 downto 0);
   signal sMuons     : TGMTMu_vector(0 to 31);
   signal sIdxBits   : TIndexBits_vector(0 to 31);
 
@@ -159,31 +159,31 @@ architecture behavioral of SortStage1_RPC is
         when "00000000000000000000000000000001" => oIdxBits(iplace) <= iIdxBits(31);
         when others                             => oIdxBits(iplace) <= (others => '0');
       end case;
-      
+
     end loop;  -- iplace
-    
+
   end procedure mux_muons;
 
 begin  -- architecture behavioral
-  
-  sSortRanks <= iSortRanksB & iSortRanksO & iSortRanksF & iSortRanksMergedB & iSortRanksMergedF;
-  sMuons     <= iMuonsB & iMuonsO & iMuonsF & iMuonsMergedB & iMuonsMergedF;
-  sIdxBits   <= iIdxBitsB & iIdxBitsO & iIdxBitsF & iIdxBitsMergedB & iIdxBitsMergedF;
+
+  sSortRanks <= iSortRanksB & iSortRanksO & iSortRanksE & iSortRanksMergedB & iSortRanksMergedE;
+  sMuons     <= iMuonsB & iMuonsO & iMuonsE & iMuonsMergedB & iMuonsMergedE;
+  sIdxBits   <= iIdxBitsB & iIdxBitsO & iIdxBitsE & iIdxBitsMergedB & iIdxBitsMergedE;
 
   sCancelB <= iCancelB;
   sCancelO <= iCancelO_A or iCancelO_B;
-  sCancelF <= iCancelF;
-  sCancel  <= sCancelB & sCancelO & sCancelF & "00000000";  -- Don't want to
+  sCancelE <= iCancelE;
+  sCancel  <= sCancelB & sCancelO & sCancelE & "00000000";  -- Don't want to
                                                             -- cancel merged
-                                                            -- muons. 
-  sEmpty   <= iEmptyB & iEmptyO & iEmptyF & iEmptyMergedB & iEmptyMergedF;
+                                                            -- muons.
+  sEmpty   <= iEmptyB & iEmptyO & iEmptyE & iEmptyMergedB & iEmptyMergedE;
   sDisable <= sCancel or sEmpty;
 
   -----------------------------------------------------------------------------
-  -- calculate GE Matrix : 
-  -----------------------------------------------------------------------------  
+  -- calculate GE Matrix :
+  -----------------------------------------------------------------------------
 
-  -- Remark: Diagonal elements of GEMatrix are never used and also not generated. 
+  -- Remark: Diagonal elements of GEMatrix are never used and also not generated.
   g1 : for i in 0 to 30 generate
     g2 : for j in i+1 to 31 generate
       x : comp10_ge
@@ -198,7 +198,7 @@ begin  -- architecture behavioral
   end generate;
   -----------------------------------------------------------------------------
   -- sort and eight 32 to 1 Muxes
-  -----------------------------------------------------------------------------  
+  -----------------------------------------------------------------------------
   count_wins32(GEMatrix, sDisable, sSelBits);
   mux_muons(sSelBits, sMuons, sIdxBits, oMuons, oIdxBits);
 

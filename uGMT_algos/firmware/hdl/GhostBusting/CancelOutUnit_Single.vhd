@@ -10,7 +10,7 @@ use IEEE.numeric_std.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_decode_cancel_out_barrel.all;
+use work.ipbus_decode_cancel_out_bmtf.all;
 use work.ipbus_decode_cancel_out_half_sorters.all;
 
 use work.GMTTypes.all;
@@ -45,13 +45,13 @@ begin
   all_wedges : if num_wedges = 12 generate
       fabric : entity work.ipbus_fabric_sel
         generic map(
-          NSLV      => work.ipbus_decode_cancel_out_barrel.N_SLAVES,
-          SEL_WIDTH => work.ipbus_decode_cancel_out_barrel.IPBUS_SEL_WIDTH
+          NSLV      => work.ipbus_decode_cancel_out_bmtf.N_SLAVES,
+          SEL_WIDTH => work.ipbus_decode_cancel_out_bmtf.IPBUS_SEL_WIDTH
           )
         port map(
           ipb_in          => ipb_in,
           ipb_out         => ipb_out,
-          sel             => ipbus_sel_cancel_out_barrel(ipb_in.ipb_addr),
+          sel             => ipbus_sel_cancel_out_bmtf(ipb_in.ipb_addr),
           ipb_to_slaves   => ipbw,
           ipb_from_slaves => ipbr
           );

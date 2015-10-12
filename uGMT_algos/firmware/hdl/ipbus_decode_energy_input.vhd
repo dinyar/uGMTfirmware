@@ -17,7 +17,7 @@ package ipbus_decode_energy_input is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_energy_input(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Fri Sep 18 02:22:27 2015 
+-- START automatically  generated VHDL the Mon Oct 12 17:59:56 2015 
   constant N_SLV_ENERGY_QUAD_0: integer := 0;
   constant N_SLV_ENERGY_QUAD_1: integer := 1;
   constant N_SLV_ENERGY_QUAD_2: integer := 2;
@@ -37,7 +37,7 @@ package body ipbus_decode_energy_input is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Fri Sep 18 02:22:27 2015 
+-- START automatically  generated VHDL the Mon Oct 12 17:59:56 2015 
     if    std_match(addr, "-------------000----------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_ENERGY_QUAD_0, IPBUS_SEL_WIDTH)); -- energy_quad_0 / base 0x00000000 / mask 0x00070000
     elsif std_match(addr, "-------------001----------------") then

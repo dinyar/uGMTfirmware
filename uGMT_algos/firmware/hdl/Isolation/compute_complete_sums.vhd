@@ -10,7 +10,7 @@ entity compute_complete_sums is
   port (iEnergies     : in  TCaloRegionEtaSlice_vector;
         iCaloIdxBitsB  : in  TCaloIndexBit_vector(35 downto 0);
         iCaloIdxBitsO  : in  TCaloIndexBit_vector(35 downto 0);
-        iCaloIdxBitsF  : in  TCaloIndexBit_vector(35 downto 0);
+        iCaloIdxBitsE  : in  TCaloIndexBit_vector(35 downto 0);
         iMuIdxBits     : in  TIndexBits_vector(7 downto 0);
         oEnergies      : out TCaloArea_vector(7 downto 0);
         oCaloIdxBits   : out TCaloIndexBit_vector(7 downto 0); -- Debugging output
@@ -37,8 +37,8 @@ begin
     -- TODO: (TIMING) May be able to save latency by making this a rising flank
     -- To do this we need to reduce delay of calo idx bits and energy sums by 1/2 bx.
     if clk'event and clk = '0' then     -- falling clock edge
-      sMergedCaloIdxBits <= iCaloIdxBitsF(35 downto 18) & iCaloIdxBitsO(35 downto 18) &
-        iCaloIdxBitsB & iCaloIdxBitsO(17 downto 0) & iCaloIdxBitsF(17 downto 0);
+      sMergedCaloIdxBits <= iCaloIdxBitsE(35 downto 18) & iCaloIdxBitsO(35 downto 18) &
+        iCaloIdxBitsB & iCaloIdxBitsO(17 downto 0) & iCaloIdxBitsE(17 downto 0);
       sMuIdxBits_reg     <= iMuIdxBits;
       sEnergies_reg      <= iEnergies;
     end if;
