@@ -11,7 +11,7 @@ use work.GMTTypes.all;
 entity CancelOutUnit_EO is
   generic (
     CANCEL_OUT_TYPE  : string := string'("COORDINATE"); -- which type of cancel-out should be used.
-    DATA_EILE        : string;
+    DATA_FILE        : string;
     LOCAL_PHI_OFFSET : signed(8 downto 0)
     );
   port (
@@ -61,7 +61,7 @@ begin
       x0 : entity work.CancelOutUnit_EO_WedgeComp
       generic map (
         CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE,
-        DATA_EILE        => DATA_EILE,
+        DATA_FILE        => DATA_FILE,
         LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
         )
         port map (

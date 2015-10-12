@@ -386,9 +386,9 @@ begin
       ipb_in      => ipbw(N_SLV_COU_EO_POS),
       ipb_out     => ipbr(N_SLV_COU_EO_POS),
       iWedges_O   => sTracksO_plus,
-      iWedges_F   => sTracksE_plus,
+      iWedges_E   => sTracksE_plus,
       oCancel_O   => sCancelEO_O_plus,
-      oCancel_F   => sCancelEO_E_plus,
+      oCancel_E   => sCancelEO_E_plus,
       clk         => clk
       );
   cou_eo_minus : entity work.CancelOutUnit_EO
@@ -403,9 +403,9 @@ begin
       ipb_in      => ipbw(N_SLV_COU_EO_NEG),
       ipb_out     => ipbr(N_SLV_COU_EO_NEG),
       iWedges_O   => sTracksO_minus,
-      iWedges_F   => sTracksE_minus,
+      iWedges_E   => sTracksE_minus,
       oCancel_O   => sCancelEO_O_minus,
-      oCancel_F   => sCancelEO_E_minus,
+      oCancel_E   => sCancelEO_E_minus,
       clk         => clk
       );
 
@@ -463,16 +463,16 @@ begin
   cou_f_plus : entity work.CancelOutUnit_Single
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_EMTF,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_EMTE_POS,
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_EMTF_POS,
       num_wedges       => 6,
       num_tracks       => 3,
       LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OMTF_EMTF
       )
     port map (
       clk_ipb => clk_ipb,
-      rst     => rst_loc(COU_EMTE_POS),
-      ipb_in  => ipbw(N_SLV_COU_EMTE_POS),
-      ipb_out => ipbr(N_SLV_COU_EMTE_POS),
+      rst     => rst_loc(COU_EMTF_POS),
+      ipb_in  => ipbw(N_SLV_COU_EMTF_POS),
+      ipb_out => ipbr(N_SLV_COU_EMTF_POS),
       iWedges => sTracksE_plus,
       oCancel => sCancelE_plus,
       clk     => clk
@@ -480,16 +480,16 @@ begin
   cou_f_minus : entity work.CancelOutUnit_Single
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_EMTF,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_EMTE_NEG,
+      DATA_FILE        => CANCEL_OUT_DATA_FILE_EMTF_NEG,
       num_wedges       => 6,
       num_tracks       => 3,
       LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OMTF_EMTF
       )
     port map (
       clk_ipb => clk_ipb,
-      rst     => rst_loc(COU_EMTE_NEG),
-      ipb_in  => ipbw(N_SLV_COU_EMTE_NEG),
-      ipb_out => ipbr(N_SLV_COU_EMTE_NEG),
+      rst     => rst_loc(COU_EMTF_NEG),
+      ipb_in  => ipbw(N_SLV_COU_EMTF_NEG),
+      ipb_out => ipbr(N_SLV_COU_EMTF_NEG),
       iWedges => sTracksE_minus,
       oCancel => sCancelE_minus,
       clk     => clk
@@ -760,7 +760,7 @@ begin
         iCancelB          => sCancelB_matched_reg,
         iCancelO_A        => sCancelO_matched_A_reg,
         iCancelO_B        => sCancelO_matched_B_reg,
-        iCancelF          => sCancelE_matched_reg,
+        iCancelE          => sCancelE_matched_reg,
         oIdxBits          => oIdxBits,  -- Goes out to IsoAU.
         oMuons            => sFinalMuons,
         clk               => clk,

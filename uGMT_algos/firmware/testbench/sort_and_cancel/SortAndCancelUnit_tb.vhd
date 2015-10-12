@@ -123,8 +123,8 @@ begin
     variable vSortRankE_buffer           : TSortRank_buf(INTERMEDIATE_DELAY-1 downto 0);
     variable vMuons, vIntB, vIntO, vIntE : TGMTMu_vector(oMuons'range);
     variable vDummySortRanks             : TSortRank10_vector(7 downto 0) := (others => "0000000000");
-    variable fin_id                      : string(1 to 3)                 := string'("FIN");
-    variable int_id                      : string(1 to 3)                 := string'("INT");
+    variable fin_id                      : string(1 to 4)                 := string'("FINM");
+    variable int_id                      : string(1 to 4)                 := string'("INTM");
     variable iEvent                      : integer                        := 0;
     variable tmpError                    : integer;
     variable cntError                    : integer                        := 0;
@@ -182,15 +182,15 @@ begin
         event_buffer(iEvent).expectedIntMuO(i).qual       := "0000";
         event_buffer(iEvent).expectedIntMuO(i).sign       := '0';
         event_buffer(iEvent).expectedIntMuO(i).sign_valid := '0';
-        event_buffer(iEvent).expectedIntMuF(i).phi        := "0000000000";
-        event_buffer(iEvent).expectedIntMuF(i).eta        := "000000000";
-        event_buffer(iEvent).expectedIntMuF(i).pt         := "000000000";
-        event_buffer(iEvent).expectedIntMuF(i).qual       := "0000";
-        event_buffer(iEvent).expectedIntMuF(i).sign       := '0';
-        event_buffer(iEvent).expectedIntMuF(i).sign_valid := '0';
+        event_buffer(iEvent).expectedIntMuE(i).phi        := "0000000000";
+        event_buffer(iEvent).expectedIntMuE(i).eta        := "000000000";
+        event_buffer(iEvent).expectedIntMuE(i).pt         := "000000000";
+        event_buffer(iEvent).expectedIntMuE(i).qual       := "0000";
+        event_buffer(iEvent).expectedIntMuE(i).sign       := '0';
+        event_buffer(iEvent).expectedIntMuE(i).sign_valid := '0';
         event_buffer(iEvent).expectedSrtRnksB(i)          := (others => '0');
         event_buffer(iEvent).expectedSrtRnksO(i)          := (others => '0');
-        event_buffer(iEvent).expectedSrtRnksF(i)          := (others => '0');
+        event_buffer(iEvent).expectedSrtRnksE(i)          := (others => '0');
       end loop;  -- i
       for i in iTracksB'range loop
         for j in iTracksB(0)'range loop

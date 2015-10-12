@@ -172,8 +172,8 @@ package ugmt_constants is
   constant ETA_OMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"));
   constant PHI_OMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"));
   -- OMTF/EMTF shared
-  constant ETA_OMTF_EMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"), string'("FEtaExtrapolation.mif"));
-  constant PHI_OMTF_EMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"), string'("FPhiExtrapolation.mif"));
+  constant ETA_OMTF_EMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"));
+  constant PHI_OMTF_EMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"));
   constant ETA_EMTF_OMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("EEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"));
   constant PHI_EMTF_OMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("EPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"));
   -- Endcap

@@ -178,14 +178,14 @@ package tb_helpers is
     variable iMuons     : in TGMTMu_vector;
     variable iSortRanks : in TSortRank10_vector;
     variable FO         : in text;
-    variable id         : in string(1 to 3));
+    variable id         : in string(1 to 4));
 
   procedure DumpMuons (
     variable iMuons     : in TGMTMu_vector;
     variable iSortRanks : in TSortRank10_vector;
     variable iEmptyBits : in std_logic_vector;
     variable FO         : in text;
-    variable id         : in string(1 to 3));
+    variable id         : in string(1 to 4));
 
   procedure DumpValidBits (
     variable iValid_muons    : in std_logic;
@@ -261,7 +261,7 @@ package body tb_helpers is
     variable empty       : bit;
     variable iso         : integer;
 
-    variable dummy : string(1 to 4);
+    variable dummy : string(1 to 5);
   begin  -- ReadInputMuon
     read(L, dummy);
 
@@ -426,10 +426,10 @@ package body tb_helpers is
       elsif L.all(2 to 4) = "TRK" then
         ReadTrack(L, event.expectedTracks(wedgeNo));
         wedgeNo    := wedgeNo+1;
-    elsif L.all(1 to 4) = "BMTF" or L.all(1 to 4) = "OMTF" or L.all(1 to 4) = "EMTF" then
+      elsif L.all(1 to 4) = "BMTF" or L.all(1 to 4) = "OMTF" or L.all(1 to 4) = "EMTF" then
         ReadInputMuon(L, event.expectedMuons(muNo), event.expectedSortRanks(muNo), event.expectedEmpty(muNo));
         muNo := muNo+1;
-    elsif L.all(1 to 3) = "IFR" then
+      elsif L.all(1 to 3) = "IFR" then
         ReadInputFrame(L, event.iD(frameNo));
         frameNo := frameNo+1;
       elsif L.all(1 to 4) = "CALO" then
@@ -478,7 +478,7 @@ package body tb_helpers is
         ReadInputMuon(L, event.intMuons_omtf(muIntONo), event.intSortRanks_omtf(muIntONo), dummyEmpty);
         muIntONo := muIntONo+1;
         muNo     := muNo+1;
-      elsif L.all(1 to 4) = "FIMD" then
+      elsif L.all(1 to 4) = "EIMD" then
         ReadInputMuon(L, event.intMuons_emtf(muIntENo), event.intSortRanks_emtf(muIntENo), dummyEmpty);
         muIntENo := muIntENo+1;
         muNo     := muNo+1;
@@ -521,26 +521,26 @@ package body tb_helpers is
   -- end ReadEvent;
 
   procedure ReadMuEvent (
-    file F          :     text;
-    variable iEvent : in  integer;
-    variable event  : out TGMTMuEvent) is
+    file F                 :     text;
+    variable iEvent        : in  integer;
+    variable event         : out TGMTMuEvent) is
     variable L, L1         : line;
     variable muNo          : integer := 0;
-    variable muBmtfNo       : integer := 0;
-    variable muOmtfNo       : integer := 0;
-    variable muEmtfNo       : integer := 0;
+    variable muBmtfNo      : integer := 0;
+    variable muOmtfNo      : integer := 0;
+    variable muEmtfNo      : integer := 0;
     variable wedgeNo       : integer := 0;
-    variable wedgeBmtfNo    : integer := 0;
-    variable wedgeOmtfNo    : integer := 0;
-    variable wedgeEmtfNo    : integer := 0;
+    variable wedgeBmtfNo   : integer := 0;
+    variable wedgeOmtfNo   : integer := 0;
+    variable wedgeEmtfNo   : integer := 0;
     variable muons         : TGMTMu_vector(107 downto 0);
     variable sortRanks     : TSortRank10_vector(107 downto 0);
     variable emptyBits     : std_logic_vector(107 downto 0);
     variable idxBits       : TIndexBits_vector(107 downto 0);
-    variable finId         : string(1 to 3)                := "OUT";
-    variable bimId        : string(1 to 3)                 := "BIM";
-    variable oimId        : string(1 to 3)                 := "OIM";
-    variable fimId        : string(1 to 3)                 := "FIM";
+    variable finId         : string(1 to 3) := "OUT";
+    variable bimId         : string(1 to 3) := "BIM";
+    variable oimId         : string(1 to 3) := "OIM";
+    variable fimId         : string(1 to 3) := "FIM";
     variable dummySrtRnk   : TSortRank10;
     variable dummyEmptyBit : std_logic;
     variable dummyIsoBits  : TIsoBits;
@@ -565,30 +565,30 @@ package body tb_helpers is
       elsif L.all(1 to 4) = "BMTF" then
         ReadInputMuon(L, event.muons_bmtf(muBmtfNo), event.sortRanks_bmtf(muBmtfNo), event.empty_bmtf(muBmtfNo));
         event.idxBits_bmtf(muBmtfNo) := to_unsigned(muNo, 7);
-        muBmtfNo                    := muBmtfNo+1;
-        muNo                        := muNo+1;
+        muBmtfNo                     := muBmtfNo+1;
+        muNo                         := muNo+1;
       elsif L.all(1 to 4) = "OMTF" then
         ReadInputMuon(L, event.muons_omtf(muOmtfNo), event.sortRanks_omtf(muOmtfNo), event.empty_omtf(muOmtfNo));
         event.idxBits_omtf(muOmtfNo) := to_unsigned(muNo, 7);
-        muOmtfNo                    := muOmtfNo+1;
-        muNo                       := muNo+1;
+        muOmtfNo                     := muOmtfNo+1;
+        muNo                         := muNo+1;
       elsif L.all(1 to 4) = "EMTF" then
         ReadInputMuon(L, event.muons_emtf(muEmtfNo), event.sortRanks_emtf(muEmtfNo), event.empty_emtf(muEmtfNo));
         event.idxBits_emtf(muEmtfNo) := to_unsigned(muNo, 7);
-        muEmtfNo                    := muEmtfNo+1;
-        muNo                       := muNo+1;
+        muEmtfNo                     := muEmtfNo+1;
+        muNo                         := muNo+1;
       elsif L.all(1 to 4) = "BTRK" then
         ReadTrack(L, event.tracks_bmtf(wedgeBmtfNo));
         wedgeBmtfNo := wedgeBmtfNo+1;
-        wedgeNo    := wedgeNo+1;
+        wedgeNo     := wedgeNo+1;
       elsif L.all(1 to 4) = "OTRK" then
         ReadTrack(L, event.tracks_omtf(wedgeOmtfNo));
         wedgeOmtfNo := wedgeOmtfNo+1;
-        wedgeNo    := wedgeNo+1;
-      elsif L.all(1 to 4) = "FTRK" then
+        wedgeNo     := wedgeNo+1;
+      elsif L.all(1 to 4) = "ETRK" then
         ReadTrack(L, event.tracks_emtf(wedgeEmtfNo));
         wedgeEmtfNo := wedgeEmtfNo+1;
-        wedgeNo    := wedgeNo+1;
+        wedgeNo     := wedgeNo+1;
       elsif L.all(1 to 3) = "OUT" then
         ReadInputMuon(L, finId, event.expectedMuons(finMuNo), dummySrtRnk, dummyEmptyBit, event.expectedIsoBits(finMuNo));
         finMuNo := finMuNo+1;
@@ -598,7 +598,7 @@ package body tb_helpers is
       elsif L.all(1 to 4) = "OIMD" then
         ReadInputMuon(L, event.expectedIntMuO(intMuONo), event.expectedSrtRnksO(intMuONo), dummyEmptyBit);
         intMuONo := intMuONo+1;
-      elsif L.all(1 to 4) = "FIMD" then
+      elsif L.all(1 to 4) = "EIMD" then
         ReadInputMuon(L, event.expectedIntMuE(intMuENo), event.expectedSrtRnksE(intMuENo), dummyEmptyBit);
         intMuENo := intMuENo+1;
       end if;
@@ -685,7 +685,7 @@ package body tb_helpers is
     variable event : in TGMTInEvent;
     variable FO    : in  text) is
     variable L1    : line;
-    variable in_id : string(1 to 3)                 := "INF";
+    variable in_id : string(1 to 4) := "INMU";
   begin  -- DumpInEvent
     if event.iEvent /= -1 then
       write(L1, string'("++++++++++++++++++++ Dump of event "));
@@ -707,10 +707,10 @@ package body tb_helpers is
     variable event           : in TGMTOutEvent;
     variable FO              : in text) is
     variable L1              : line;
-    variable fin_id          : string(1 to 3)                 := "OUT";
-    variable bmtf_id          : string(1 to 3)                 := "INB";
-    variable omtf_id          : string(1 to 3)                 := "INO";
-    variable emtf_id          : string(1 to 3)                 := "INE";
+    variable fin_id          : string(1 to 4)                 := "OUTM";
+    variable bmtf_id         : string(1 to 4)                 := "INBM";
+    variable omtf_id         : string(1 to 4)                 := "INOM";
+    variable emtf_id         : string(1 to 4)                 := "INEM";
     variable vDummySortRanks : TSortRank10_vector(7 downto 0) := (others => "0000000000");
 
   begin  -- DumpOutEvent
@@ -937,7 +937,7 @@ package body tb_helpers is
     variable iSortRank : in TSortRank10;
     variable iEmpty    : in std_logic;
     variable FO        : in text;
-    variable id        : in string(1 to 3)) is
+    variable id        : in string(1 to 4)) is
     variable L1 : line;
   begin  -- DumpMuon
     if iMu.pt = (8 downto 0 => '0') and iMu.phi = (9 downto 0 => '0') and iMu.eta = (8 downto 0 => '0') and iMu.sign = '0' and iMu.sign_valid = '0' and iMu.qual = (3 downto 0 => '0') then
@@ -959,13 +959,13 @@ package body tb_helpers is
     write(L1, string'(" "));
     write(L1, to_integer(iMu.qual));
     -- If we're looking at an input muon the empty bit is of interest.
-    if id = string'("INS") or id = string'("INF") then
+    if id = string'("INMU") then
         write(L1, string'(" "));
         write(L1, to_bit(iEmpty));
     end if;
     -- For final muons no sort rank information is available and is thus
     -- faked by the testbench. We therefore won't display it.
-    if id /= string'("OUT") then
+    if id /= string'("OUTM") then
       write(L1, string'(" "));
       write(L1, to_integer(unsigned(iSortRank)));
     end if;
@@ -977,7 +977,7 @@ package body tb_helpers is
     variable iMu       : in TGMTMu;
     variable iSortRank : in TSortRank10;
     variable FO        : in text;
-    variable id        : in string(1 to 3)) is
+    variable id        : in string(1 to 4)) is
     variable L1 : line;
     variable dummyEmpty : std_logic := '0';
   begin  -- DumpMuon
@@ -1003,7 +1003,7 @@ package body tb_helpers is
     variable iSortRanks : in TSortRank10_vector;
     variable iEmptyBits : in std_logic_vector;
     variable FO         : in text;
-    variable id         : in string(1 to 3)) is
+    variable id         : in string(1 to 4)) is
     variable L1 : line;
   begin  -- DumpMuons
     for iMu in iMuons'range loop
@@ -1033,11 +1033,11 @@ package body tb_helpers is
     variable iEmuMu     : in  TGMTMu;
     variable iSrtRnk    : in  TSortRank10;
     variable iEmuSrtRnk : in  TSortRank10;
-    variable id         : in  string(1 to 3);
+    variable id         : in  string(1 to 4);
     variable FO         : in  text;
     variable error      : out integer) is
     variable LO    : line;
-    variable idEmu : string(1 to 3) := "EMU";
+    variable idEmu : string(1 to 4) := "EMUL";
   begin  -- CheckMuon
     error := 0;
     if iMu.phi /= iEmuMu.phi or iMu.eta /= iEmuMu.eta or iMu.pt /= iEmuMu.pt or iMu.sign /= iEmuMu.sign or iMu.sign_valid /= iEmuMu.sign_valid or iMu.qual /= iEmuMu.qual then
@@ -1062,12 +1062,12 @@ package body tb_helpers is
     variable iEmuMus     : in  TGMTMu_vector;
     variable iSrtRnks    : in  TSortRank10_vector;
     variable iEmuSrtRnks : in  TSortRank10_vector;
-    variable id          : in  string(1 to 3);
+    variable id          : in  string(1 to 4);
     variable FO          : in  text;
     variable errors      : out integer) is
-    variable LO       : line;
-    variable vErrors  : integer := 0;
-    variable tmpError : integer;
+    variable LO          : line;
+    variable vErrors     : integer := 0;
+    variable tmpError    : integer;
   begin  -- CheckMuons
     errors := 0;
     for i in iMus'range loop
@@ -1079,11 +1079,11 @@ package body tb_helpers is
   end CheckMuons;
 
   procedure CheckMuons (
-    variable iMus    : in  TGMTMu_vector;
-    variable iEmuMus : in  TGMTMu_vector;
-    variable id      : in  string(1 to 3);
-    variable FO      : in  text;
-    variable errors  : out integer) is
+    variable iMus        : in  TGMTMu_vector;
+    variable iEmuMus     : in  TGMTMu_vector;
+    variable id          : in  string(1 to 4);
+    variable FO          : in  text;
+    variable errors      : out integer) is
     variable LO          : line;
     variable vErrors     : integer     := 0;
     variable tmpError    : integer;
@@ -1101,7 +1101,7 @@ package body tb_helpers is
   procedure CheckSortRanks (
     variable iSrtRnks    : in  TSortRank10_vector;
     variable iEmuSrtRnks : in  TSortRank10_vector;
-    variable id          : in  string(1 to 3);
+    variable id          : in  string(1 to 4);
     variable FO          : in  text;
     variable errors      : out integer) is
     variable LO      : line;
@@ -1342,7 +1342,7 @@ package body tb_helpers is
     variable LO       : line;
     variable tmpError : integer := 0;
     variable vErrors  : integer := 0;
-    variable idInMus  : string(1 to 3) := "INM";
+    variable idInMus  : string(1 to 4) := "INMU";
   begin
     if (event.iEvent >= 0) then
       tmpError := 0;
@@ -1411,7 +1411,7 @@ package body tb_helpers is
     variable LO       : line;
     variable vError   : integer        := 0;
     variable tmpError : integer        := 0;
-    variable idFin    : string(1 to 3) := "FIN";
+    variable idFin    : string(1 to 4) := "FINM";
   begin
     if (iEvent.iEvent >= 0) then
       tmpError := 0;
@@ -1443,10 +1443,10 @@ package body tb_helpers is
     variable LO       : line;
     variable vError   : integer        := 0;
     variable tmpError : integer        := 0;
-    variable idFin    : string(1 to 3) := "FIN";
-    variable idIntB   : string(1 to 3) := "IMB";
-    variable idIntO   : string(1 to 3) := "IMO";
-    variable idIntE   : string(1 to 3) := "IMF";
+    variable idFin    : string(1 to 4) := "FINM";
+    variable idIntB   : string(1 to 4) := "IMBM";
+    variable idIntO   : string(1 to 4) := "IMOM";
+    variable idIntE   : string(1 to 4) := "IMFM";
   begin
     if (iEvent.iEvent >= 0) then
       tmpError := 0;
