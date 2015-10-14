@@ -396,6 +396,11 @@ begin
   end process delay_spied_contents;
 
   spy_buffer : entity work.spy_buffer_control
+    generic map (
+        ALGO_LATENCY  => 6*GMT_ALGO_LATENCY,
+        N_IN_CHANS    => 0,
+        N_SPIED_CHANS => 4
+      );
     port map (
       clk_p       => clk_p,
       iTrigger    => sTrigger_reg,
