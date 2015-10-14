@@ -106,9 +106,8 @@ architecture rtl of mp7_payload is
   signal sIntermediateMuonsO_reg     : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsE_reg     : TGMTMu_vector(7 downto 0);
 
-  signal sQ : ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0);
-  -- This is a one BX delay (2*3 240 MHz clocks)
-  signal sOutBuffer : TQuadTransceiverBufferIn(2*NUM_MUONS_IN-1 downto 0);
+  signal sQ         : ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0);
+  signal sOutBuffer : TQuadTransceiverBufferIn;
 
 begin
 
@@ -398,15 +397,12 @@ begin
 
   spy_buffer : entity work.spy_buffer_control
     port map (
-      clk_p    => clk_p,
-      iTrigger => sTrigger_reg,
-      q        => sOutBuffer
+      clk_p       => clk_p,
+      iTrigger    => sTrigger_reg,
+      spied_chans => sOutBuffer
+      q           => q(sOutBuffer'high+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS-1 downto NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)
       );
 
   q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0) <= sQ;
-
-  strobe_high : for i in q'high downto (NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS) generate
-        q(i).strobe <= '1';
-  end generate;
 
 end rtl;
