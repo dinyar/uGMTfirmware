@@ -1,3 +1,7 @@
+-- TODO: DESCRIPTION HERE!
+-- Expecting lower half (i.e. X downto 0) to contain output channels to be spied on.
+--
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.NUMERIC_STD.all;
@@ -5,110 +9,58 @@ use work.GMTTypes.all;
 
 use work.mp7_data_types.all;
 
-use work.ipbus.all;
-use work.ipbus_reg_types.all;
-use work.ipbus_decode_spy_buffer_control.all;
-
-use work.mp7_ttc_decl.all;
-
 entity spy_buffer_control is
+  generic (
+    ALGO_LATENCY   : natural := 6;  -- in 240 MHz clocks
+    N_IN_CHANS     : natural := 0;  -- Number of input channels to be spied on
+    N_SPIED_CHANS  : natural := 1   -- Total number of channels to be spied on
+    );
   port (
-    clk_ipb  : in  std_logic;
-    ipb_in   : in  ipb_wbus;
-    ipb_out  : out ipb_rbus;
-    clk40    : in  std_logic;
-    clk240   : in  std_logic;
-    rst      : in  std_logic;
-    iTrigger : in  std_logic;
-    q        : in  ldata(3 downto 0) -- Will store just the output muons.
+    clk_p        : in  std_logic;
+    rst          : in  std_logic;
+    iTrigger     : in  std_logic;
+    spied_chans  : in  ldata(N_SPIED_CHANS-1 downto 0);
+    q            : out ldata(N_SPIED_CHANS-1 downto 0)
     );
 end entity spy_buffer_control;
 
 architecture behavioral of spy_buffer_control is
 
-  constant SPY_BUFFER_DEPTH : natural := 12;
-
-  signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
-  signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
-
-  -- We're one BX delayed. (6 240 MHz ticks)
-  constant DELAY_LATENCY : natural := 6;
-  signal in_buf          : TQuadTransceiverBufferIn;
-
-  signal mu_present : std_logic := '0';
-
-  signal muon_word_counter : natural range 0 to (2**SPY_BUFFER_DEPTH)-1 := 0;
-  signal muon_word_address : std_logic_vector(SPY_BUFFER_DEPTH-1 downto 0);
-
-  type TMuonWordVector is array (natural range <>) of std_logic_vector(31 downto 0);
-  signal capture_muon_words : TMuonWordVector(3 downto 0);
+  -- TODO: Function that computes width of buffer.
+  type TInTransceiverBuffer is array (ALGO_LATENCY-1 downto 0) of ldata(71 downto 0);
+  signal in_buf : TInTransceiverBuffer;
 
 begin  -- architecture behavioral
+  assert N_SPIED_CHANS >= N_IN_CHANS report "Number of spied channels have to be at least equal to number of input channels." severity failure;
 
-
-  -- IPbus address decode
-  fabric : entity work.ipbus_fabric_sel
-    generic map(
-      NSLV      => N_SLAVES,
-      SEL_WIDTH => IPBUS_SEL_WIDTH
-      )
-    port map(
-      ipb_in          => ipb_in,
-      ipb_out         => ipb_out,
-      sel             => ipbus_sel_spy_buffer_control(ipb_in.ipb_addr),
-      ipb_to_slaves   => ipbw,
-      ipb_from_slaves => ipbr
-    );
-
-  fill_delay_line : process (clk240)
+  fill_delay_line : process (clk_p)
   begin  -- process fill_delay_line
-    if clk240'event and clk240 = '1' then  -- rising clock edge
-      in_buf(DELAY_LATENCY-1) <= q;
-      in_buf(DELAY_LATENCY-2 downto 0) <= in_buf(DELAY_LATENCY-1 downto 1);
+    if clk_p'event and clk_p = '1' then  -- rising clock edge
+      if N_IN_CHANS > 0 then
+        in_buf(ALGO_LATENCY-1)(N_IN_CHANS-1 downto 0) <= in_chans(N_IN_CHANS-1 downto 0);
+        in_buf(ALGO_LATENCY-2 downto 0)               <= in_buf(ALGO_LATENCY-1 downto 1);
+      end if;
     end if;
   end process fill_delay_line;
 
-  inc_muon_word_counter : process (clk240)
-  begin  -- process inc_muon_word_counter
-    if clk240'event and clk240 = '1' then  -- rising clock edge
-      if iTrigger = '1' then
-        -- Fill with muon data.
-        for i in q'range loop
-          capture_muon_words(i) <= in_buf(0)(i).data;
-        end loop;
-        -- Increment address pointer
-        if muon_word_counter < (2**SPY_BUFFER_DEPTH)-1 then
-          muon_word_counter <= muon_word_counter+1;
-        else
-          muon_word_counter <= 0;
-        end if;
-      else
-        -- Fill with zeros and don't increment address pointer.
-        for i in q'range loop
-          capture_muon_words(i) <= (others => '0');
-        end loop;
-      end if;
+  propagate_to_buffers : process(in_buf, out_chans, iTrigger)
+  begin  -- process propagate_to_buffers
+    if N_IN_CHANS > 0 then
+      for iChan in N_IN_CHANS-1 downto 0 loop
+        q(iChan).data   <= in_buf(0)(iChan).data;
+        q(iChan).valid  <= in_buf(0)(iChan).valid;
+        q(iChan).strobe <= iTrigger;
+      end loop;
     end if;
-  end process inc_muon_word_counter;
 
-  muon_word_address <= std_logic_vector(to_unsigned(muon_word_counter, muon_word_address'length));
+    if N_SPIED_CHANS /= N_IN_CHANS then
+      for iChan in out_chans'range loop
+        q(iChan+N_IN_CHANS).data   <= spied_chans(iChan+N_IN_CHANS).data;
+        q(iChan+N_IN_CHANS).valid  <= spied_chans(iChan+N_IN_CHANS).valid;
+        q(iChan+N_IN_CHANS).strobe <= iTrigger;
+      end loop;
+    end if;
 
-  loop_over_muons : for i in q'range generate
-    spy_buffer : entity work.ipbus_dpram
-      generic map (
-        ADDR_WIDTH => SPY_BUFFER_DEPTH
-        )
-      port map (
-        clk     => clk_ipb,
-        rst     => rst,
-        ipb_in  => ipbw(N_SLV_SPY_BUFFER_0+i),
-        ipb_out => ipbr(N_SLV_SPY_BUFFER_0+i),
-        rclk    => clk240,
-        we      => '1',
-        addr    => muon_word_address,
-        d       => capture_muon_words(i),
-        q       => open
-        );
-  end generate loop_over_muons;
+  end process propagate_to_buffers;
 
 end architecture behavioral;

@@ -107,6 +107,8 @@ architecture rtl of mp7_payload is
   signal sIntermediateMuonsE_reg     : TGMTMu_vector(7 downto 0);
 
   signal sQ : ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0);
+  -- This is a one BX delay (2*3 240 MHz clocks)
+  signal sOutBuffer : TQuadTransceiverBufferIn(2*NUM_MUONS_IN-1 downto 0);
 
 begin
 
@@ -372,18 +374,6 @@ begin
   -- Begin 240 MHz domain.
   -----------------------------------------------------------------------------
 
-  spy_buffer : entity work.spy_buffer_control
-    port map (
-      clk_ipb  => clk,
-      rst      => rst,
-      ipb_in   => ipbw(N_SLV_SPY_BUFFER_CONTROL),
-      ipb_out  => ipbr(N_SLV_SPY_BUFFER_CONTROL),
-      clk40    => clk_payload,
-      clk240   => clk_p,
-      iTrigger => sTrigger_reg,
-      q        => sQ(NUM_OUT_CHANS-1 downto 0)
-      );
-
   serialize : entity work.serializer_stage
     port map (
       clk240               => clk_p,
@@ -396,6 +386,21 @@ begin
       iIntermediateMuonsO  => sIntermediateMuonsO_reg,
       iIntermediateMuonsE  => sIntermediateMuonsE_reg,
       q                    => sQ
+      );
+
+  delay_spied_contents : process (clk_p)
+  begin  -- process delay_spied_contents
+    if rising_edge(clk_p) then
+      sOutBuffer(sOutBuffer'high) <= sQ(NUM_OUT_CHANS-1 downto 0);
+      sOutBuffer(sOutBuffer'high-1 downto 0) <= sOutBuffer(sOutBuffer'high downto 1);
+    end if;
+  end process delay_spied_contents;
+
+  spy_buffer : entity work.spy_buffer_control
+    port map (
+      clk_p    => clk_p,
+      iTrigger => sTrigger_reg,
+      q        => sOutBuffer
       );
 
   q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0) <= sQ;

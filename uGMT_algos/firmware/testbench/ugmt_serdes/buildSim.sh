@@ -37,7 +37,6 @@ vcom -check_synthesis ../../hdl/ipbus_decode_isolation*.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_uGMT.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_muon_counter_reset.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_generate_lemo_signals.vhd
-vcom -check_synthesis ../../hdl/ipbus_decode_spy_buffer_control.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_mp7_payload.vhd
 vcom -check_synthesis ../../hdl/input_stages/deserialize_energy_quad.vhd
 vcom -check_synthesis ../../hdl/input_stages/deserialize_mu_quad.vhd

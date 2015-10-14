@@ -1,6 +1,0 @@
-<node description="Spy buffers for output muons" fwinfo="endpoint">
-    <node id="spy_buffer_0" address="0x0" size="0x1000" mode="block" description="Spy buffer for first channel." fwinfo="endpoint;width=12" />
-    <node id="spy_buffer_1" address="0x1000" size="0x1000" mode="block" description="Spy buffer for second channel." fwinfo="endpoint;width=12" />
-    <node id="spy_buffer_2" address="0x2000" size="0x1000" mode="block" description="Spy buffer for third channel." fwinfo="endpoint;width=12" />
-    <node id="spy_buffer_3" address="0x3000" size="0x1000" mode="block" description="Spy buffer for fourth channel." fwinfo="endpoint;width=12" />
-</node>
