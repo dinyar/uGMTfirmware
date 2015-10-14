@@ -399,7 +399,7 @@ begin
     port map (
       clk_p       => clk_p,
       iTrigger    => sTrigger_reg,
-      spied_chans => sOutBuffer,
+      spied_chans => sOutBuffer(0),
       q           => q(sOutBuffer'high+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS-1 downto NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)
       );
 
