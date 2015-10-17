@@ -410,4 +410,8 @@ begin
 
   q((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0) <= sQ;
 
+  strobe_high : for i in q'high downto (sOutBuffer(0)'high+NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+1) generate
+    q(i).strobe <= '1';
+  end generate;
+
 end rtl;
