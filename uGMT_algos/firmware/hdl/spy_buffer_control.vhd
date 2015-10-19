@@ -17,6 +17,7 @@ entity spy_buffer_control is
     );
   port (
     clk_p        : in  std_logic;
+    rst          : in  std_logic;
     iTrigger     : in  std_logic;
     spied_chans  : in  ldata(N_SPIED_CHANS-1 downto 0);
     q            : out ldata(N_SPIED_CHANS-1 downto 0)
@@ -36,13 +37,13 @@ begin  -- architecture behavioral
   begin  -- process fill_delay_line
     if clk_p'event and clk_p = '1' then  -- rising clock edge
       if N_IN_CHANS > 0 then
-        in_buf(ALGO_LATENCY-1)(N_IN_CHANS-1 downto 0) <= spied_chans(N_IN_CHANS-1 downto 0);
+        in_buf(ALGO_LATENCY-1)(N_IN_CHANS-1 downto 0) <= in_chans(N_IN_CHANS-1 downto 0);
         in_buf(ALGO_LATENCY-2 downto 0)               <= in_buf(ALGO_LATENCY-1 downto 1);
       end if;
     end if;
   end process fill_delay_line;
 
-  propagate_to_buffers : process(in_buf, spied_chans, iTrigger)
+  propagate_to_buffers : process(in_buf, out_chans, iTrigger)
   begin  -- process propagate_to_buffers
     if N_IN_CHANS > 0 then
       for iChan in N_IN_CHANS-1 downto 0 loop
@@ -53,10 +54,10 @@ begin  -- architecture behavioral
     end if;
 
     if N_SPIED_CHANS /= N_IN_CHANS then
-      for iChan in N_SPIED_CHANS-1 downto N_IN_CHANS loop
-        q(iChan).data   <= spied_chans(iChan).data;
-        q(iChan).valid  <= spied_chans(iChan).valid;
-        q(iChan).strobe <= iTrigger;
+      for iChan in out_chans'range loop
+        q(iChan+N_IN_CHANS).data   <= spied_chans(iChan+N_IN_CHANS).data;
+        q(iChan+N_IN_CHANS).valid  <= spied_chans(iChan+N_IN_CHANS).valid;
+        q(iChan+N_IN_CHANS).strobe <= iTrigger;
       end loop;
     end if;
 
