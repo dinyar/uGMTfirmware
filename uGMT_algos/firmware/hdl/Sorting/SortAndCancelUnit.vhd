@@ -123,6 +123,7 @@ architecture behavioral of SortAndCancelUnit is
   signal sCancelE_minus        : std_logic_vector(17 downto 0);
   signal sCancelBO_B_plus      : std_logic_vector(35 downto 0);
   signal sCancelBO_B_minus     : std_logic_vector(35 downto 0);
+  signal sCancelBO_B           : std_logic_vector(35 downto 0);
   signal sCancelBO_O_plus      : std_logic_vector(17 downto 0);
   signal sCancelBO_O_minus     : std_logic_vector(17 downto 0);
   signal sCancelEO_E_plus      : std_logic_vector(17 downto 0);
@@ -140,7 +141,6 @@ architecture behavioral of SortAndCancelUnit is
   signal sCancelO_minus_reg    : std_logic_vector(17 downto 0);
   signal sCancelE_plus_reg     : std_logic_vector(17 downto 0);
   signal sCancelE_minus_reg    : std_logic_vector(17 downto 0);
-  signal sCancelBO_B_reg       : std_logic_vector(35 downto 0);
 
   signal sSortedMuonsB     : TGMTMu_vector(7 downto 0);
   signal sSortedIdxBitsB   : TIndexBits_vector(7 downto 0);
