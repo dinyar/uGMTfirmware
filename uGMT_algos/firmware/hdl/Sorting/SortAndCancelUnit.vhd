@@ -495,6 +495,7 @@ begin
       clk     => clk
       );
 
+  sCancelBO_B <= sCancelBO_B_plus or sCancelBO_B_minus;
   -- Register cancel-out bits and pair vector here.
   -- type   : sequential
   -- inputs : clk, sinit, sCancelBO, sCancelFO, sCancelB, sCancelO, sCancelF,
@@ -504,7 +505,6 @@ begin
   register_cobits_pairs : process (clk)
   begin  -- process register_cobits
     if clk'event and clk = '1' then     -- rising clock edge
-      sCancelBO_B_reg       <= sCancelBO_B_plus or sCancelBO_B_minus;
       sCancelBO_O_plus_reg  <= sCancelBO_O_plus;
       sCancelBO_O_minus_reg <= sCancelBO_O_minus;
       sCancelEO_E_plus_reg  <= sCancelEO_E_plus;
@@ -532,7 +532,7 @@ begin
       iSortRanks => iSortRanksB,
       iEmpty     => iEmptyB,
       iCancel_A  => sCancelB,
-      iCancel_B  => sCancelBO_B_plus or sCancelBO_B_minus,
+      iCancel_B  => sCancelBO_B,
       iCancel_C  => (others => '0'),
       iMuons     => iMuonsB,
       iIdxBits   => iIdxBitsB,
