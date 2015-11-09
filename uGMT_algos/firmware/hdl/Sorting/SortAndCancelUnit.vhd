@@ -532,7 +532,7 @@ begin
       iSortRanks => iSortRanksB,
       iEmpty     => iEmptyB,
       iCancel_A  => sCancelB,
-      iCancel_B  => sCancelBO_B,
+      iCancel_B  => sCancelBO_B_plus or sCancelBO_B_minus,
       iCancel_C  => (others => '0'),
       iMuons     => iMuonsB,
       iIdxBits   => iIdxBitsB,
