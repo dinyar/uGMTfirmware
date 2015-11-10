@@ -311,8 +311,9 @@ begin
   out_for_idx_bits : process (clk240)
   begin  -- process out_for_idx_bits
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      q          <= in_buf(0);
-      oGlobalPhi <= sGlobalPhi_buffer(0);
+      -- TODO: If timing problematic use 'd' (doesn't have empty check).
+      q          <= in_buf(in_buf'high);
+      oGlobalPhi <= sGlobalPhi_frame;
     end if;
   end process out_for_idx_bits;
 

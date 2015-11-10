@@ -105,15 +105,6 @@ begin
       ipb_out   => ipbr(N_SLV_ISOLATION_CHECK)
       );
 
-
-  p1 : process (clk)
-  begin  -- process p1
-    if clk'event and clk = '1' then     -- rising clock edge
-      sFinalEnergies_buffer(0)                                    <= sSelectedEnergies;
-      sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-1 downto 1) <= sFinalEnergies_buffer(ENERGY_INTERMEDIATE_DELAY-2 downto 0);
-    end if;
-  end process p1;
-
   energy_reg : process (clk)
   begin  -- process energy_reg
     if clk'event and clk = '0' then     -- falling clock edge

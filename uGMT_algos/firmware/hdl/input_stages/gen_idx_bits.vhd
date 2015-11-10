@@ -26,20 +26,21 @@ entity gen_idx_bits is
     ipb_out      : out ipb_rbus;
     clk240       : in  std_logic;
     clk40        : in  std_logic;
-    d            : in  ldata(NCHAN-1 downto 0);
-    iGlobalPhi   : in  TGlobalPhi_frame(NCHAN-1 downto 0);
+    d            : in  ldata(NCHAN-1 downto 0);              -- in 1 frame late
+    iGlobalPhi   : in  TGlobalPhi_frame(NCHAN-1 downto 0);   -- in 2 frames late
     oCaloIdxBits : out TCaloIndexBit_vector(NCHAN*NUM_MUONS_IN-1 downto 0)
     );
 end gen_idx_bits;
 
 architecture Behavioral of gen_idx_bits is
 
+
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
   constant EXTRAPOLATION_LATENCY : natural := 2;  -- Latency in 240 MHz ticks
   signal in_buf         : TQuadTransceiverBufferIn;
-  signal sGlobalPhi_buf : TGlobalPhiFrameBuffer;
+  signal sGlobalPhi_reg : TGlobalPhi_frame(NCHAN-1 downto 0);
 
   type   TEtaAbs is array (integer range <>) of unsigned(8 downto 0);
   signal sEtaAbs               : TEtaAbs(NCHAN-1 downto 0);
@@ -66,6 +67,7 @@ architecture Behavioral of gen_idx_bits is
   signal sCaloIndexBits          : TCaloIndexBit_vector(NCHAN-1 downto 0);
   signal sCaloIndexBits_buffer   : TCaloIndexBitsBuffer;
   signal sCaloIndexBits_link     : TCaloIndexBits_link(NCHAN-1 downto 0);
+  signal sCaloIndexBits_link_reg : TCaloIndexBits_link(NCHAN-1 downto 0);
 
 begin
 
@@ -84,13 +86,12 @@ begin
       );
 
   in_buf(EXTRAPOLATION_LATENCY)         <= d(NCHAN-1 downto 0);
-  sGlobalPhi_buf(EXTRAPOLATION_LATENCY) <= iGlobalPhi;
 
   fill_buffer : process (clk240)
   begin  -- process fill_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      in_buf(EXTRAPOLATION_LATENCY-1 downto 0)       <= in_buf(EXTRAPOLATION_LATENCY downto 1);
-      sGlobalPhi_buf(EXTRAPOLATION_LATENCY-1 downto 0) <= sGlobalPhi_buf(EXTRAPOLATION_LATENCY downto 1);
+      in_buf(EXTRAPOLATION_LATENCY-1 downto 0) <= in_buf(EXTRAPOLATION_LATENCY downto 1);
+      sGlobalPhi_reg                           <= iGlobalPhi;
     end if;
   end process fill_buffer;
 
@@ -135,7 +136,7 @@ begin
 
   -- We use the output of the (clocked) deltaEta/deltaPhi LUTs here.
   -- As they are clocked we have to take care to extract the muon quantities
-  -- from the buffered value (i.e. d_reg). The exception is the
+  -- from the buffered value (i.e. in_buf). The exception is the
   -- sign bit as this is transmitted one frame later.
   assign_coords : process (clk240)
   begin  -- process assign_coords
@@ -144,16 +145,16 @@ begin
         -- First tick
         sPreCalcEta(i) <= signed(in_buf(EXTRAPOLATION_LATENCY-1)(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(SHIFT_LEFT("000" & sDeltaEta(i), 3), 8));
         if d(i).data(31-SIGN_IN) = '1' then -- SYSIGN_IN assumes 62 bit vector. Need to remove offset of 31.
-          sPreCalcPhi(i) <= signed(resize(sGlobalPhi_buf(EXTRAPOLATION_LATENCY-1)(i), 11)) + signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
+          sPreCalcPhi(i) <= signed(resize(iGlobalPhi(i), 11)) + signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
         else
-          sPreCalcPhi(i) <= signed(resize(sGlobalPhi_buf(EXTRAPOLATION_LATENCY-1)(i), 11)) - signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
+          sPreCalcPhi(i) <= signed(resize(iGlobalPhi(i), 11)) - signed(resize(SHIFT_LEFT("000" & sDeltaPhi(i), 3), 7));
         end if;
 
         -- Second tick
         if unsigned(in_buf(EXTRAPOLATION_LATENCY-2)(i).data(PT_IN_HIGH downto PT_IN_LOW)) > EXTRAPOLATION_PT_CUT then
           -- If muon is high-pT we won't extrapolate.
           sExtrapolatedCoords(i).eta <= signed(in_buf(EXTRAPOLATION_LATENCY-2)(i).data(ETA_IN_HIGH downto ETA_IN_LOW));
-          sIntermediatePhi(i)        <= signed(resize(sGlobalPhi_buf(EXTRAPOLATION_LATENCY-2)(i), 11));
+          sIntermediatePhi(i)        <= signed(resize(sGlobalPhi_reg(i), 11));
         else
           -- If muon is low-pT we extrapolate.
           sExtrapolatedCoords(i).eta <= sPreCalcEta(i);
@@ -206,10 +207,11 @@ begin
     sCaloIndexBits(i).phi <= unsigned(sPhiIdxBitsLutOutput(i)(PHI_IDX_MEM_WORD_SIZE-1 downto 0));
   end generate lookup_calo_idx_bits;
 
+  sCaloIndexBits_buffer(sCaloIndexBits_buffer'high) <= sCaloIndexBits;
+
   shift_idx_bits_buffer : process (clk240)
   begin  -- process shift_idx_bits_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      sCaloIndexBits_buffer(sCaloIndexBits_buffer'high)            <= sCaloIndexBits;
       sCaloIndexBits_buffer(sCaloIndexBits_buffer'high-1 downto 0) <= sCaloIndexBits_buffer(sCaloIndexBits_buffer'high downto 1);
     end if;
   end process shift_idx_bits_buffer;
@@ -228,9 +230,10 @@ begin
           end if;
         end loop;  -- iFrame
       end loop;  -- iChan
+      sCaloIndexBits_link_reg <= sCaloIndexBits_link;
     end if;
   end process gmt_in_reg;
 
-  oCaloIdxBits <= unpack_calo_idx_bits(sCaloIndexBits_link(NCHAN-1 downto 0));
+  oCaloIdxBits <= unpack_calo_idx_bits(sCaloIndexBits_link_reg(NCHAN-1 downto 0));
 
 end Behavioral;
