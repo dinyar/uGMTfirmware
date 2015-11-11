@@ -82,7 +82,7 @@ begin
   end process preselected_sums_reg;
 
   -- MISSING: Select final energies with mu idx bits (like in calc complete sums, incl reg)
-  preselect_sums : entity work.preselect_sums
+  select_final_sums : entity work.select_final_sums
     port map (
       iEnergies     => sSelectedEnergies_reg,
       iMuIdxBits    => iMuIdxBits,
@@ -102,16 +102,5 @@ begin
       ipb_in    => ipbw(N_SLV_ISOLATION_CHECK),
       ipb_out   => ipbr(N_SLV_ISOLATION_CHECK)
       );
-
-  energy_reg : process (clk)
-  begin  -- process energy_reg
-    if clk'event and clk = '0' then     -- falling clock edge
-    -- Sync selected energies with iso bits.
-    oFinalEnergies       <= sSelectedEnergies;
-    sMuIdxBits_reg       <= iMuIdxBits;
-    oMuIdxBits           <= sMuIdxBits_reg;
-    oFinalMuPt           <= iFinalMuPt;
-    end if;
-  end process energy_reg;
 
 end Behavioral;
