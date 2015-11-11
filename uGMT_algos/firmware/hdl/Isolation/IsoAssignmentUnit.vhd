@@ -37,11 +37,23 @@ architecture Behavioral of IsoAssignmentUnit is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
-  signal sSelectedEnergies     : TCaloArea_vector(107 downto 0);
-  signal sSelectedEnergies_reg : TCaloArea_vector(107 downto 0);
-  signal sFinalEnergies        : TCaloArea_vector(7 downto 0);
+  signal sStripEnergies : TCaloStripEtaSlice_vector;
+
+  signal sAreaSums         : TCaloArea_vector(7 downto 0);
+  signal sSelectedEnergies : TCaloArea_vector(7 downto 0);
+
+  signal sIsoBitsB : std_logic_vector(0 to 35);
+  signal sIsoBitsO : std_logic_vector(0 to 35);
+  signal sIsoBitsE : std_logic_vector(0 to 35);
 
   -- For intermediates
+  type TEnergyBuffer is array (integer range <>) of TCaloArea_vector(7 downto 0);
+  constant ENERGY_INTERMEDIATE_DELAY : natural := 4;  -- Delay to sync
+                                                      -- energies  with
+                                                      -- final muons.
+  signal sFinalEnergies_buffer : TEnergyBuffer(ENERGY_INTERMEDIATE_DELAY-1 downto 0);
+
+  signal sSelectedCaloIdxBits : TCaloIndexBit_vector(7 downto 0);
   signal sMuIdxBits_reg       : TIndexBits_vector(7 downto 0);
 
 begin
@@ -63,37 +75,27 @@ begin
       ipb_from_slaves => ipbr
       );
 
-  preselect_sums : entity work.preselect_sums
+  -- Has one register (receives sStripEnergies for second clk).
+  calc_complete_sums : entity work.compute_complete_sums
     port map (
       iEnergies     => iEnergies,
       iCaloIdxBitsB => iCaloIdxBitsB,
       iCaloIdxBitsO => iCaloIdxBitsO,
       iCaloIdxBitsE => iCaloIdxBitsE,
-      oEnergies     => sSelectedEnergies,
-      clk           => clk,
-      sinit         => sinit);
-
-  preselected_sums_reg : process (clk)
-  begin  -- process preselected_sums_reg
-    if clk'event and clk = '1' then     -- rising clock edge
-      -- Sync selected energies with iso bits.
-      sSelectedEnergies_reg <= sSelectedEnergies;
-    end if;
-  end process preselected_sums_reg;
-
-  -- MISSING: Select final energies with mu idx bits (like in calc complete sums, incl reg)
-  preselect_sums : entity work.preselect_sums
-    port map (
-      iEnergies     => sSelectedEnergies_reg,
       iMuIdxBits    => iMuIdxBits,
-      oEnergies     => sFinalEnergies,
+      oEnergies     => sSelectedEnergies,
+      oCaloIdxBits  => sSelectedCaloIdxBits,
       clk           => clk,
       sinit         => sinit);
 
-
+  -----------------------------------------------------------------------------
+  -- 3.5th BX
+  -----------------------------------------------------------------------------
+  -- TODO: (TIMING) If making register in compute_complete_sums 'rising edge'
+  -- we will have to change notClk to clk again here.
   iso_lut : entity work.iso_check
     port map (
-      iAreaSums => sFinalEnergies,
+      iAreaSums => sSelectedEnergies,
       iMuonPt   => iFinalMuPt,
       oIsoBits  => oIsoBits,
       clk       => clk,
@@ -108,6 +110,7 @@ begin
     if clk'event and clk = '0' then     -- falling clock edge
     -- Sync selected energies with iso bits.
     oFinalEnergies       <= sSelectedEnergies;
+    oFinalCaloIdxBits    <= sSelectedCaloIdxBits;
     sMuIdxBits_reg       <= iMuIdxBits;
     oMuIdxBits           <= sMuIdxBits_reg;
     oFinalMuPt           <= iFinalMuPt;

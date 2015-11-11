@@ -33,8 +33,8 @@ src input_stages/gen_idx_bits.vhd
 src GMT.vhd
 src serializer_stage.vhd
 src Isolation/IsoAssignmentUnit.vhd
-src Isolation/preselect_sums.vhd
-src Isolation/select_final_sums.vhd
+src Isolation/compute_complete_sums.vhd
+src Isolation/compute_energy_strip_sums.vhd
 src Isolation/iso_check.vhd
 src Isolation/iso_check_abs.vhd
 src Isolation/iso_check_rel.vhd

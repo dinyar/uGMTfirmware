@@ -40,6 +40,7 @@ entity GMT is
     oIntermediateSortRanksB : out TSortRank10_vector(7 downto 0);
     oIntermediateSortRanksO : out TSortRank10_vector(7 downto 0);
     oIntermediateSortRanksE : out TSortRank10_vector(7 downto 0);
+    oFinalCaloIdxBits       : out TCaloIndexBit_vector(7 downto 0);
     oFinalEnergies          : out TCaloArea_vector(7 downto 0);
     oMuIdxBits              : out TIndexBits_vector (7 downto 0);
 
@@ -90,6 +91,7 @@ architecture Behavioral of GMT is
   signal sIntermediateSortRanksB : TSortRank10_vector(7 downto 0);
   signal sIntermediateSortRanksO : TSortRank10_vector(7 downto 0);
   signal sIntermediateSortRanksE : TSortRank10_vector(7 downto 0);
+  signal sSelectedCaloIdxBits    : TCaloIndexBit_vector(7 downto 0);
   signal sFinalMuIdxBits         : TIndexBits_vector(7 downto 0);
 
 begin
@@ -124,6 +126,7 @@ begin
       iFinalMuPt           => sFinalMuPt,
       oIsoBits             => sIsoBits,
       oFinalEnergies       => sFinalEnergies,
+      oFinalCaloIdxBits    => sSelectedCaloIdxBits,
       oMuIdxBits           => sFinalMuIdxBits,
       oFinalMuPt           => open,
       clk                  => clk,
@@ -191,6 +194,7 @@ begin
   oIntermediateSortRanksO <= sIntermediateSortRanksO;
   oIntermediateSortRanksE <= sIntermediateSortRanksE;
 
+  oFinalCaloIdxBits    <= sSelectedCaloIdxBits;
   oFinalEnergies       <= sFinalEnergies;
   oMuIdxBits           <= sFinalMuIdxBits;
 

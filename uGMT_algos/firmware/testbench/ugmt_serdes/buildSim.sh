@@ -61,8 +61,8 @@ vcom -check_synthesis ../../hdl/Sorting/Stage0/SortStage0_behavioral.vhd
 vcom -check_synthesis ../../hdl/Sorting/Stage0/HalfSortStage0.vhd
 vcom -check_synthesis ../../hdl/Sorting/Stage1/SortStage1_behavioral.vhd
 vcom -check_synthesis ../../hdl/Sorting/SortAndCancelUnit.vhd
-vcom -check_synthesis ../../hdl/Isolation/preselect_sums.vhd
-vcom -check_synthesis ../../hdl/Isolation/select_final_sums.vhd
+vcom -check_synthesis ../../hdl/Isolation/compute_complete_sums.vhd
+vcom -check_synthesis ../../hdl/Isolation/compute_energy_strip_sums.vhd
 vcom -check_synthesis ../../hdl/Isolation/iso_check_abs.vhd
 vcom -check_synthesis ../../hdl/Isolation/iso_check_rel.vhd
 vcom -check_synthesis ../../hdl/Isolation/iso_check.vhd
