@@ -35,8 +35,8 @@ architecture behavior of testbench is
   signal oQ       : ldata(71 downto 0);
 
   type TCaloTransceiverBuffer is array (integer range <>) of ldata(36-1 downto 0);
-  -- Delay by 1 BX (6 frames)
-  signal iD_buffer_calo : TCaloTransceiverBuffer(6-1 downto 0);
+  -- Delay by 2 BX (2*6 frames)
+  signal iD_buffer_calo : TCaloTransceiverBuffer(2*6-1 downto 0);
 
   signal dummyCtrs : ttc_stuff_array(N_REGION - 1 downto 0);
 
