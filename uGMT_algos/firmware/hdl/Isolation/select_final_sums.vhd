@@ -7,7 +7,7 @@ use work.GMTTypes.all;
 use work.ugmt_constants.all;
 
 entity select_final_sums is
-  port (iEnergies      : in  TCaloArea_vector(107 downto 0);
+  port (iEnergies      : in  TCaloRegionEtaSlice_vector;
         iMuIdxBits     : in  TIndexBits_vector(7 downto 0);
         oEnergies      : out TCaloArea_vector(7 downto 0);
 
@@ -17,7 +17,7 @@ end select_final_sums;
 
 architecture Behavioral of select_final_sums is
   signal sMuIdxBits_reg            : TIndexBits_vector(7 downto 0);
-  signal sEnergies_reg             : TCaloArea_vector(iEnergies'range);
+  signal sEnergies_reg             : TCaloRegionEtaSlice_vector(iEnergies'range);
 begin
 
   reg_calo_bits : process (clk)

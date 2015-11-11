@@ -18,6 +18,7 @@ entity preselect_sums is
 end preselect_sums;
 
 architecture Behavioral of preselect_sums is
+  signal iEnergies : TCaloRegionEtaSlice_vector(iEnergies'range);
   signal sCaloIdxBits  : TCaloIndexBit_vector(107 downto 0);
 begin
 
@@ -30,5 +31,7 @@ begin
       oEnergies(i) <= iEnergies(to_integer(sCaloIdxBits(i).eta))((to_integer(sCaloIdxBits(i).phi)) mod iEnergies(0)'length);
     end loop;  -- i
   end process extract_strip_energies;
+
+  oCaloIdxBits <= sCaloIdxBits;
 
 end Behavioral;
