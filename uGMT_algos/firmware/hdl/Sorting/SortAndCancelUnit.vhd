@@ -260,21 +260,6 @@ architecture behavioral of SortAndCancelUnit is
   constant MU_INTERMEDIATE_DELAY : natural := 1;  -- Delay to sync
                                                   -- intermediates with
                                                   -- final muons.
-  type     TMuonBuffer is array (integer range <>) of TGMTMu_vector(7 downto 0);
-  signal   sIntermediateMuonB_buffer : TMuonBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
-  signal   sIntermediateMuonO_buffer : TMuonBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
-  signal   sIntermediateMuonE_buffer : TMuonBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
-  type     TSortRankBuffer is array (integer range <>) of TSortRank10_vector(7 downto 0);
-  signal   sIntermediateSortRankB_buffer : TSortRankBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
-  signal   sIntermediateSortRankO_buffer : TSortRankBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
-  signal   sIntermediateSortRankE_buffer : TSortRankBuffer(MU_INTERMEDIATE_DELAY-1 downto 0);
-
-  signal sIntermediateMuonsB     : TGMTMu_vector(7 downto 0);
-  signal sIntermediateMuonsO     : TGMTMu_vector(7 downto 0);
-  signal sIntermediateMuonsE     : TGMTMu_vector(7 downto 0);
-  signal sIntermediateSortRanksB : TSortRank10_vector(7 downto 0);
-  signal sIntermediateSortRanksO : TSortRank10_vector(7 downto 0);
-  signal sIntermediateSortRanksE : TSortRank10_vector(7 downto 0);
 begin
 
   -- IPbus address decode
@@ -602,13 +587,6 @@ begin
       clk        => clk,
       sinit      => sinit);
 
-  sIntermediateMuonsB     <= sSortedMuonsB;
-  sIntermediateMuonsO     <= sSortedMuonsO_minus & sSortedMuonsO_plus;
-  sIntermediateMuonsE     <= sSortedMuonsE_minus & sSortedMuonsE_plus;
-  sIntermediateSortRanksB <= sSortedSortRanksB;
-  sIntermediateSortRanksO <= sSortedSortRanksO_minus & sSortedSortRanksO_plus;
-  sIntermediateSortRanksE <= sSortedSortRanksE_minus & sSortedSortRanksE_plus;
-
   gen_pair_finding_unit : if rpc_merging generate
     -- Find pairs based on MQ matrix between RPC and TF muons.
     pair_finding_emtf : entity work.PairFindingUnit
@@ -641,14 +619,6 @@ begin
       sSortedMuonsB_reg     <= sSortedMuonsB;
       sSortedMuonsO_reg     <= sSortedMuonsO_minus & sSortedMuonsO_plus;
       sSortedMuonsE_reg     <= sSortedMuonsE_minus & sSortedMuonsE_plus;
-
-
-      -- For RPC merging
-      --sPairVecB_reg <= sPairVecB;
-      --sPairVecE_reg <= sPairVecE;
-
-      --iMuonsRPCf_store2 <= iMuonsRPCf_store;
-      --iMuonsRPCb_store2 <= iMuonsRPCb_store;
     end if;
   end process reg_pairs;
 
@@ -670,7 +640,7 @@ begin
         oIdxBits           => sMatchedIdxBitsE,
         oMuons             => sMatchedMuonsE,
         oCancelBmtfEmtf    => sCancelE_matched,
-        oCancelOmtf         => sCancelO_matched_A,
+        oCancelOmtf        => sCancelO_matched_A,
         clk                => clk,
         sinit              => sinit);
 
@@ -680,19 +650,19 @@ begin
         iEmptyBmtfEmtf     => sEmptyB_store,
         iIdxBitsBmtfEmtf   => sIdxBitsB_store,
         iMuonsBmtfEmtf     => sMuonsB_store,
-        iSortRanksOmtf    => sSortRanksO_store,
-        iEmptyOmtf        => sEmptyO_store,
-        iIdxBitsOmtf      => sIdxBitsO_store,
-        iMuonsOmtf        => sMuonsO_store,
-        iPairVec         => sPairVecB_reg,
-        oSortRanks       => sMatchedSortRanksB,
-        oEmpty           => sMatchedEmptyB,
-        oIdxBits         => sMatchedIdxBitsB,
-        oMuons           => sMatchedMuonsB,
+        iSortRanksOmtf     => sSortRanksO_store,
+        iEmptyOmtf         => sEmptyO_store,
+        iIdxBitsOmtf       => sIdxBitsO_store,
+        iMuonsOmtf         => sMuonsO_store,
+        iPairVec           => sPairVecB_reg,
+        oSortRanks         => sMatchedSortRanksB,
+        oEmpty             => sMatchedEmptyB,
+        oIdxBits           => sMatchedIdxBitsB,
+        oMuons             => sMatchedMuonsB,
         oCancelBmtfEmtf    => sCancelB_matched,
-        oCancelOmtf       => sCancelO_matched_B,
-        clk              => clk,
-        sinit            => sinit);
+        oCancelOmtf        => sCancelO_matched_B,
+        clk                => clk,
+        sinit              => sinit);
   end generate gen_matching_unit;
 
   gen_merger_unit : if rpc_merging generate
@@ -790,19 +760,6 @@ begin
   final_mu_reg : process (clk)
   begin  -- process final_mu_reg
     if clk'event and clk = '0' then     -- falling clock edge
-      sIntermediateMuonB_buffer(0)                                    <= sIntermediateMuonsB;
-      sIntermediateMuonO_buffer(0)                                    <= sIntermediateMuonsO;
-      sIntermediateMuonE_buffer(0)                                    <= sIntermediateMuonsE;
---      sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)     <= sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
---      sIntermediateMuonO_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)     <= sIntermediateMuonO_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
---      sIntermediateMuonE_buffer(MU_INTERMEDIATE_DELAY-1 downto 1)     <= sIntermediateMuonE_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
---      sIntermediateSortRankB_buffer(0)                                <= sIntermediateSortRanksB;
---      sIntermediateSortRankO_buffer(0)                                <= sIntermediateSortRanksO;
---      sIntermediateSortRankE_buffer(0)                                <= sIntermediateSortRanksE;
---      sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-1 downto 1) <= sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
---      sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-1 downto 1) <= sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
---      sIntermediateSortRankE_buffer(MU_INTERMEDIATE_DELAY-1 downto 1) <= sIntermediateSortRankE_buffer(MU_INTERMEDIATE_DELAY-2 downto 0);
-
       sFinalMuons_reg <= sFinalMuons;
     end if;
   end process final_mu_reg;
@@ -813,11 +770,11 @@ begin
 
   oMuons <= sFinalMuons_reg;
 
-  oIntermediateMuonsB     <= sIntermediateMuonB_buffer(MU_INTERMEDIATE_DELAY-1);
-  oIntermediateMuonsO     <= sIntermediateMuonO_buffer(MU_INTERMEDIATE_DELAY-1);
-  oIntermediateMuonsE     <= sIntermediateMuonE_buffer(MU_INTERMEDIATE_DELAY-1);
-  oIntermediateSortRanksB <= sIntermediateSortRankB_buffer(MU_INTERMEDIATE_DELAY-1);
-  oIntermediateSortRanksO <= sIntermediateSortRankO_buffer(MU_INTERMEDIATE_DELAY-1);
-  oIntermediateSortRanksE <= sIntermediateSortRankE_buffer(MU_INTERMEDIATE_DELAY-1);
+  oIntermediateMuonsB     <= sSortedMuonsB_reg;
+  oIntermediateMuonsO     <= sSortedMuonsO_reg;
+  oIntermediateMuonsE     <= sSortedMuonsE_reg;
+  oIntermediateSortRanksB <= sSortedSortRanksB_reg;
+  oIntermediateSortRanksO <= sSortedSortRanksO_reg;
+  oIntermediateSortRanksE <= sSortedSortRanksE_reg;
 
 end architecture behavioral;

@@ -111,7 +111,7 @@ begin
     file FO                              : text open write_mode is "../results/SortAndCancel_tb.results";
     variable L, LO                       : line;
     variable event                       : TGMTMuEvent;
-    constant SORTER_LATENCY              : integer                        := 6;
+    constant SORTER_LATENCY              : integer                        := 5;
     variable event_buffer                : TGMTMuEvent_vec(SORTER_LATENCY-1 downto 0);
     -- Delay is one more than in sorter unit due to the delay in the serializer.
     constant INTERMEDIATE_DELAY          : integer                        := 3;
