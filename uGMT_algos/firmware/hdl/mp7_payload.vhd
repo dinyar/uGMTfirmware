@@ -44,7 +44,7 @@ architecture rtl of mp7_payload is
   signal sTrigger     : std_logic := '0';
   signal sTrigger_reg : std_logic := '0';
 
-  constant GMT_ALGO_LATENCY     : natural := 5;
+  constant GMT_ALGO_LATENCY     : natural := 4;
   -- Valid bits delayed less than algo latency due to one register before and
   -- requirement to be 1 bx early in serializer.
   signal   sValid_buffer        : std_logic_vector(GMT_ALGO_LATENCY-3 downto 0);
@@ -95,7 +95,6 @@ architecture rtl of mp7_payload is
   signal sIndexBitsE : TIndexBits_vector(35 downto 0);
 
   signal sIso       : TIsoBits_vector(7 downto 0);
-  signal sIso_reg   : TIsoBits_vector(7 downto 0);
   signal oMuons     : TGMTMu_vector(7 downto 0);
   signal oMuons_reg : TGMTMu_vector(7 downto 0);
 
@@ -352,7 +351,6 @@ begin
   gmt_out_reg : process (clk_payload)
   begin  -- process gmt_out_reg
     if clk_payload'event and clk_payload = '1' then  -- rising clock edge
-      sIso_reg   <= sIso;
       oMuons_reg <= oMuons;
 
       sIntermediateMuonsO_reg     <= sIntermediateMuonsO;
@@ -391,7 +389,7 @@ begin
       rst                  => rst_payload,
       iValid               => sValid_buffer(sValid_buffer'high),
       sMuons               => oMuons_reg,
-      sIso                 => sIso_reg,
+      sIso                 => sIso,
       iIntermediateMuonsB  => sIntermediateMuonsB_reg,
       iIntermediateMuonsO  => sIntermediateMuonsO_reg,
       iIntermediateMuonsE  => sIntermediateMuonsE_reg,

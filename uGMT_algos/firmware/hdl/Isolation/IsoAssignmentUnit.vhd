@@ -37,14 +37,7 @@ architecture Behavioral of IsoAssignmentUnit is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
-  signal sStripEnergies : TCaloStripEtaSlice_vector;
-
-  signal sAreaSums         : TCaloArea_vector(7 downto 0);
   signal sSelectedEnergies : TCaloArea_vector(7 downto 0);
-
-  signal sIsoBitsB : std_logic_vector(0 to 35);
-  signal sIsoBitsO : std_logic_vector(0 to 35);
-  signal sIsoBitsE : std_logic_vector(0 to 35);
 
   -- For intermediates
   type TEnergyBuffer is array (integer range <>) of TCaloArea_vector(7 downto 0);
@@ -75,7 +68,6 @@ begin
       ipb_from_slaves => ipbr
       );
 
-  -- Has one register (receives sStripEnergies for second clk).
   calc_complete_sums : entity work.compute_complete_sums
     port map (
       iEnergies     => iEnergies,

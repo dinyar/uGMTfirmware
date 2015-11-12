@@ -23,8 +23,6 @@ entity iso_check is
 end iso_check;
 
 architecture Behavioral of iso_check is
-  signal notClk : std_logic;
-
   -- IPbus
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
@@ -34,7 +32,6 @@ architecture Behavioral of iso_check is
 
   signal sMuonPT_reg : TMuonPT_vector(7 downto 0);
 begin
-  notClk <= not clk;
 
   -- IPbus address decode
   fabric : entity work.ipbus_fabric_sel
@@ -56,7 +53,7 @@ begin
       rst       => rst,
       ipb_in    => ipbw(N_SLV_ABS_ISO),
       ipb_out   => ipbr(N_SLV_ABS_ISO),
-      clk       => notClk,
+      clk       => clk,
       iAreaSums => iAreaSums,
       oIsoBits  => sAbsIsoBits
       );
@@ -66,7 +63,7 @@ begin
       rst       => rst,
       ipb_in    => ipbw(N_SLV_REL_ISO),
       ipb_out   => ipbr(N_SLV_REL_ISO),
-      clk       => notClk,
+      clk       => clk,
       iAreaSums => iAreaSums,
       iMuonPT   => iMuonPT,
       oIsoBits  => sRelIsoBits
@@ -74,7 +71,7 @@ begin
 
   reg_pt : process (clk)
   begin  -- process reg_pt
-    if clk'event and clk = '0' then     -- falling clock edge
+    if clk'event and clk = '1' then     -- rising clock edge
       sMuonPT_reg <= iMuonPT;
     end if;
   end process reg_pt;
