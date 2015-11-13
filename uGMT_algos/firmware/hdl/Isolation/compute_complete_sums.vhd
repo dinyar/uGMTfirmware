@@ -23,24 +23,19 @@ architecture Behavioral of compute_complete_sums is
   type TSelectedEtaSlice is array (4 downto 0) of TCaloStripEnergy;
   type TSelectedEtaSlice_vector is array (integer range <>) of TSelectedEtaSlice;
 
-  signal sMuIdxBits_reg            : TIndexBits_vector(7 downto 0);
-  signal sEnergies_reg             : TCaloRegionEtaSlice_vector(iEnergies'range);
-  signal sMergedCaloIdxBits        : TCaloIndexBit_vector(107 downto 0);
-  signal sCaloIdxBits              : TCaloIndexBit_vector(7 downto 0);
-  signal sCaloIdxBits_reg          : TCaloIndexBit_vector(7 downto 0);
-  signal sReducedStripEnergies     : TSelectedEtaSlice_vector(7 downto 0);
-  signal sReducedStripEnergies_reg : TSelectedEtaSlice_vector(7 downto 0);
+  signal sMuIdxBits_reg     : TIndexBits_vector(7 downto 0);
+  signal sMergedCaloIdxBits : TCaloIndexBit_vector(107 downto 0);
+  signal sCaloIdxBits       : TCaloIndexBit_vector(7 downto 0);
 begin
 
   reg_calo_bits : process (clk)
   begin  -- process reg_calo_bits
     -- TODO: (TIMING) May be able to save latency by making this a rising flank
     -- To do this we need to reduce delay of calo idx bits and energy sums by 1/2 bx.
-    if clk'event and clk = '0' then     -- falling clock edge
+    if clk'event and clk = '1' then     -- falling clock edge
       sMergedCaloIdxBits <= iCaloIdxBitsE(35 downto 18) & iCaloIdxBitsO(35 downto 18) &
         iCaloIdxBitsB & iCaloIdxBitsO(17 downto 0) & iCaloIdxBitsE(17 downto 0);
       sMuIdxBits_reg     <= iMuIdxBits;
-      sEnergies_reg      <= iEnergies;
     end if;
   end process reg_calo_bits;
 
@@ -54,10 +49,10 @@ begin
     end loop;  -- i
   end process assign_index_bits;
 
-  extract_strip_energies : process (sCaloIdxBits, sEnergies_reg)
+  extract_strip_energies : process (sCaloIdxBits, iEnergies)
   begin  -- process extract_strip_energies
     for i in oEnergies'range loop
-      oEnergies(i) <= sEnergies_reg(to_integer(sCaloIdxBits(i).eta))((to_integer(sCaloIdxBits(i).phi)) mod sEnergies_reg(0)'length);
+      oEnergies(i) <= iEnergies(to_integer(sCaloIdxBits(i).eta))((to_integer(sCaloIdxBits(i).phi)) mod iEnergies(0)'length);
     end loop;  -- i
   end process extract_strip_energies;
 

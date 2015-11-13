@@ -6,15 +6,9 @@ use ieee.NUMERIC_STD.all;
 
 use work.GMTTypes.all;
 
--- Do I need this?
---library LogicFPGA;
---use LogicFPGA.LFTiming.all;
-
 use work.SorterUnit.all;
 
 entity HalfSortStage0 is
-  generic (
-    sorter_lat_start : integer := 6);                 -- start latency
   port (
     iSortRanks : in  TSortRank10_vector(17 downto 0);
     iEmpty     : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later?
@@ -44,29 +38,11 @@ architecture behavioral of HalfSortStage0 is
       A_GE_B : out std_logic);
   end component;
 
-  signal sMuons_reg   : TGMTMu_vector(17 downto 0);
-  signal sMuons_store : TGMTMu_vector(17 downto 0);
+  signal GEMatrix : TGEMatrix18;
+  signal sDisable : std_logic_vector(17 downto 0);
 
-  signal GEMatrix, GEMatrix_reg : TGEMatrix18;
-
-  signal sIdxBits       : TIndexBits_vector(17 downto 0);
-  signal sIdxBits_reg   : TIndexBits_vector(17 downto 0);
-  signal sIdxBits_store : TIndexBits_vector(17 downto 0);
-
-  signal sSortRanks       : TSortRank10_vector(17 downto 0);
-  signal sSortRanks_reg   : TSortRank10_vector(17 downto 0);
-  signal sSortRanks_store : TSortRank10_vector(17 downto 0);
-
-  signal sDisable     : std_logic_vector(17 downto 0);
-  signal sEmpty_store : std_logic_vector(17 downto 0);
-  signal sEmpty_reg   : std_logic_vector(17 downto 0);
-
-  signal sSelBits     : TSelBits_1_of_18_vec (0 to 3);
-  signal sSelBits_reg : TSelBits_1_of_18_vec (0 to 3);
+  signal sSelBits : TSelBits_1_of_18_vec (0 to 3);
 begin  -- architecture behavioral
-  sIdxBits   <= iIdxBits;
-  sSortRanks <= iSortRanks;
-
   -----------------------------------------------------------------------------
   -- calculate GE Matrix
   -----------------------------------------------------------------------------
@@ -76,8 +52,8 @@ begin  -- architecture behavioral
     g2 : for j in i+1 to 17 generate
       x : comp10_ge
         port map (
-          A      => sSortRanks(i),
-          B      => sSortRanks(j),
+          A      => iSortRanks(i),
+          B      => iSortRanks(j),
           A_GE_B => GEMatrix(i, j));
 
       -- in case of equal ranks the lower index muon wins
@@ -85,125 +61,100 @@ begin  -- architecture behavioral
     end generate;
   end generate;
 
-  reg_ge : process (clk) is
-  begin  -- process reg_ge
-    if clk'event and clk = '0' then  -- falling clock edge 
-      GEMatrix_reg     <= GEMatrix;
-      sIdxBits_store   <= sIdxBits;
-      sSortRanks_store <= sSortRanks;
-      sMuons_store     <= iMuons;
-      sEmpty_store     <= iEmpty;
-    end if;
-  end process reg_ge;
-
   -- If we receive a cancel signal from one of the two CU units or the entry is
   -- empty we will disable the corresponding muon.
-  sDisable <= sEmpty_store or iCancel_A or iCancel_B or iCancel_C;
+  sDisable <= iEmpty or iCancel_A or iCancel_B or iCancel_C;
 
   -----------------------------------------------------------------------------
   -- sort and four 8 to 1 Muxes
   -----------------------------------------------------------------------------
-  count_wins18(GEMatrix_reg, sDisable, sSelBits);
+  count_wins18(GEMatrix, sDisable, sSelBits);
 
-  -----------------------------------------------------------------------------
-  -- register the result of count_wins and the empty inputs
-  -----------------------------------------------------------------------------
-  reg_count_wins : process (clk)
-  begin  -- process reg_count_wins
-    if clk'event and clk = '1' then     -- rising clock edge
-      sSelBits_reg   <= sSelBits;
-      sMuons_reg     <= sMuons_store;
-      sSortRanks_reg <= sSortRanks_store;
-      sEmpty_reg     <= sEmpty_store;
-      sIdxBits_reg   <= sIdxBits_store;
-    end if;
-  end process reg_count_wins;
-
-  mux : process (sSelBits_reg, sMuons_reg, sSortRanks_reg, sEmpty_reg, sIdxBits_reg) is
+  mux : process (sSelBits, iMuons, iSortRanks, iEmpty, iIdxBits) is
   begin
     for iplace in 0 to 3 loop
-      case sSelBits_reg(iplace) is
-        when "100000000000000000" => oMuons(iplace) <= sMuons_reg(0);
-        when "010000000000000000" => oMuons(iplace) <= sMuons_reg(1);
-        when "001000000000000000" => oMuons(iplace) <= sMuons_reg(2);
-        when "000100000000000000" => oMuons(iplace) <= sMuons_reg(3);
-        when "000010000000000000" => oMuons(iplace) <= sMuons_reg(4);
-        when "000001000000000000" => oMuons(iplace) <= sMuons_reg(5);
-        when "000000100000000000" => oMuons(iplace) <= sMuons_reg(6);
-        when "000000010000000000" => oMuons(iplace) <= sMuons_reg(7);
-        when "000000001000000000" => oMuons(iplace) <= sMuons_reg(8);
-        when "000000000100000000" => oMuons(iplace) <= sMuons_reg(9);
-        when "000000000010000000" => oMuons(iplace) <= sMuons_reg(10);
-        when "000000000001000000" => oMuons(iplace) <= sMuons_reg(11);
-        when "000000000000100000" => oMuons(iplace) <= sMuons_reg(12);
-        when "000000000000010000" => oMuons(iplace) <= sMuons_reg(13);
-        when "000000000000001000" => oMuons(iplace) <= sMuons_reg(14);
-        when "000000000000000100" => oMuons(iplace) <= sMuons_reg(15);
-        when "000000000000000010" => oMuons(iplace) <= sMuons_reg(16);
-        when "000000000000000001" => oMuons(iplace) <= sMuons_reg(17);
+      case sSelBits(iplace) is
+        when "100000000000000000" => oMuons(iplace) <= iMuons(0);
+        when "010000000000000000" => oMuons(iplace) <= iMuons(1);
+        when "001000000000000000" => oMuons(iplace) <= iMuons(2);
+        when "000100000000000000" => oMuons(iplace) <= iMuons(3);
+        when "000010000000000000" => oMuons(iplace) <= iMuons(4);
+        when "000001000000000000" => oMuons(iplace) <= iMuons(5);
+        when "000000100000000000" => oMuons(iplace) <= iMuons(6);
+        when "000000010000000000" => oMuons(iplace) <= iMuons(7);
+        when "000000001000000000" => oMuons(iplace) <= iMuons(8);
+        when "000000000100000000" => oMuons(iplace) <= iMuons(9);
+        when "000000000010000000" => oMuons(iplace) <= iMuons(10);
+        when "000000000001000000" => oMuons(iplace) <= iMuons(11);
+        when "000000000000100000" => oMuons(iplace) <= iMuons(12);
+        when "000000000000010000" => oMuons(iplace) <= iMuons(13);
+        when "000000000000001000" => oMuons(iplace) <= iMuons(14);
+        when "000000000000000100" => oMuons(iplace) <= iMuons(15);
+        when "000000000000000010" => oMuons(iplace) <= iMuons(16);
+        when "000000000000000001" => oMuons(iplace) <= iMuons(17);
         when others               => oMuons(iplace) <= ('0', '0', "000000000", "0000", "000000000", "0000000000");
       end case;
-      case sSelBits_reg(iplace) is
-        when "100000000000000000" => oSortRanks(iplace) <= sSortRanks_reg(0);
-        when "010000000000000000" => oSortRanks(iplace) <= sSortRanks_reg(1);
-        when "001000000000000000" => oSortRanks(iplace) <= sSortRanks_reg(2);
-        when "000100000000000000" => oSortRanks(iplace) <= sSortRanks_reg(3);
-        when "000010000000000000" => oSortRanks(iplace) <= sSortRanks_reg(4);
-        when "000001000000000000" => oSortRanks(iplace) <= sSortRanks_reg(5);
-        when "000000100000000000" => oSortRanks(iplace) <= sSortRanks_reg(6);
-        when "000000010000000000" => oSortRanks(iplace) <= sSortRanks_reg(7);
-        when "000000001000000000" => oSortRanks(iplace) <= sSortRanks_reg(8);
-        when "000000000100000000" => oSortRanks(iplace) <= sSortRanks_reg(9);
-        when "000000000010000000" => oSortRanks(iplace) <= sSortRanks_reg(10);
-        when "000000000001000000" => oSortRanks(iplace) <= sSortRanks_reg(11);
-        when "000000000000100000" => oSortRanks(iplace) <= sSortRanks_reg(12);
-        when "000000000000010000" => oSortRanks(iplace) <= sSortRanks_reg(13);
-        when "000000000000001000" => oSortRanks(iplace) <= sSortRanks_reg(14);
-        when "000000000000000100" => oSortRanks(iplace) <= sSortRanks_reg(15);
-        when "000000000000000010" => oSortRanks(iplace) <= sSortRanks_reg(16);
-        when "000000000000000001" => oSortRanks(iplace) <= sSortRanks_reg(17);
+      case sSelBits(iplace) is
+        when "100000000000000000" => oSortRanks(iplace) <= iSortRanks(0);
+        when "010000000000000000" => oSortRanks(iplace) <= iSortRanks(1);
+        when "001000000000000000" => oSortRanks(iplace) <= iSortRanks(2);
+        when "000100000000000000" => oSortRanks(iplace) <= iSortRanks(3);
+        when "000010000000000000" => oSortRanks(iplace) <= iSortRanks(4);
+        when "000001000000000000" => oSortRanks(iplace) <= iSortRanks(5);
+        when "000000100000000000" => oSortRanks(iplace) <= iSortRanks(6);
+        when "000000010000000000" => oSortRanks(iplace) <= iSortRanks(7);
+        when "000000001000000000" => oSortRanks(iplace) <= iSortRanks(8);
+        when "000000000100000000" => oSortRanks(iplace) <= iSortRanks(9);
+        when "000000000010000000" => oSortRanks(iplace) <= iSortRanks(10);
+        when "000000000001000000" => oSortRanks(iplace) <= iSortRanks(11);
+        when "000000000000100000" => oSortRanks(iplace) <= iSortRanks(12);
+        when "000000000000010000" => oSortRanks(iplace) <= iSortRanks(13);
+        when "000000000000001000" => oSortRanks(iplace) <= iSortRanks(14);
+        when "000000000000000100" => oSortRanks(iplace) <= iSortRanks(15);
+        when "000000000000000010" => oSortRanks(iplace) <= iSortRanks(16);
+        when "000000000000000001" => oSortRanks(iplace) <= iSortRanks(17);
         when others               => oSortRanks(iplace) <= (others => '0');
       end case;
-      case sSelBits_reg(iplace) is
-        when "100000000000000000" => oEmpty(iplace) <= sEmpty_reg(0);
-        when "010000000000000000" => oEmpty(iplace) <= sEmpty_reg(1);
-        when "001000000000000000" => oEmpty(iplace) <= sEmpty_reg(2);
-        when "000100000000000000" => oEmpty(iplace) <= sEmpty_reg(3);
-        when "000010000000000000" => oEmpty(iplace) <= sEmpty_reg(4);
-        when "000001000000000000" => oEmpty(iplace) <= sEmpty_reg(5);
-        when "000000100000000000" => oEmpty(iplace) <= sEmpty_reg(6);
-        when "000000010000000000" => oEmpty(iplace) <= sEmpty_reg(7);
-        when "000000001000000000" => oEmpty(iplace) <= sEmpty_reg(8);
-        when "000000000100000000" => oEmpty(iplace) <= sEmpty_reg(9);
-        when "000000000010000000" => oEmpty(iplace) <= sEmpty_reg(10);
-        when "000000000001000000" => oEmpty(iplace) <= sEmpty_reg(11);
-        when "000000000000100000" => oEmpty(iplace) <= sEmpty_reg(12);
-        when "000000000000010000" => oEmpty(iplace) <= sEmpty_reg(13);
-        when "000000000000001000" => oEmpty(iplace) <= sEmpty_reg(14);
-        when "000000000000000100" => oEmpty(iplace) <= sEmpty_reg(15);
-        when "000000000000000010" => oEmpty(iplace) <= sEmpty_reg(16);
-        when "000000000000000001" => oEmpty(iplace) <= sEmpty_reg(17);
+      case sSelBits(iplace) is
+        when "100000000000000000" => oEmpty(iplace) <= iEmpty(0);
+        when "010000000000000000" => oEmpty(iplace) <= iEmpty(1);
+        when "001000000000000000" => oEmpty(iplace) <= iEmpty(2);
+        when "000100000000000000" => oEmpty(iplace) <= iEmpty(3);
+        when "000010000000000000" => oEmpty(iplace) <= iEmpty(4);
+        when "000001000000000000" => oEmpty(iplace) <= iEmpty(5);
+        when "000000100000000000" => oEmpty(iplace) <= iEmpty(6);
+        when "000000010000000000" => oEmpty(iplace) <= iEmpty(7);
+        when "000000001000000000" => oEmpty(iplace) <= iEmpty(8);
+        when "000000000100000000" => oEmpty(iplace) <= iEmpty(9);
+        when "000000000010000000" => oEmpty(iplace) <= iEmpty(10);
+        when "000000000001000000" => oEmpty(iplace) <= iEmpty(11);
+        when "000000000000100000" => oEmpty(iplace) <= iEmpty(12);
+        when "000000000000010000" => oEmpty(iplace) <= iEmpty(13);
+        when "000000000000001000" => oEmpty(iplace) <= iEmpty(14);
+        when "000000000000000100" => oEmpty(iplace) <= iEmpty(15);
+        when "000000000000000010" => oEmpty(iplace) <= iEmpty(16);
+        when "000000000000000001" => oEmpty(iplace) <= iEmpty(17);
         when others               => oEmpty(iplace) <= '1';
       end case;
-      case sSelBits_reg(iplace) is
-        when "100000000000000000" => oIdxBits(iplace) <= sIdxBits_reg(0);
-        when "010000000000000000" => oIdxBits(iplace) <= sIdxBits_reg(1);
-        when "001000000000000000" => oIdxBits(iplace) <= sIdxBits_reg(2);
-        when "000100000000000000" => oIdxBits(iplace) <= sIdxBits_reg(3);
-        when "000010000000000000" => oIdxBits(iplace) <= sIdxBits_reg(4);
-        when "000001000000000000" => oIdxBits(iplace) <= sIdxBits_reg(5);
-        when "000000100000000000" => oIdxBits(iplace) <= sIdxBits_reg(6);
-        when "000000010000000000" => oIdxBits(iplace) <= sIdxBits_reg(7);
-        when "000000001000000000" => oIdxBits(iplace) <= sIdxBits_reg(8);
-        when "000000000100000000" => oIdxBits(iplace) <= sIdxBits_reg(9);
-        when "000000000010000000" => oIdxBits(iplace) <= sIdxBits_reg(10);
-        when "000000000001000000" => oIdxBits(iplace) <= sIdxBits_reg(11);
-        when "000000000000100000" => oIdxBits(iplace) <= sIdxBits_reg(12);
-        when "000000000000010000" => oIdxBits(iplace) <= sIdxBits_reg(13);
-        when "000000000000001000" => oIdxBits(iplace) <= sIdxBits_reg(14);
-        when "000000000000000100" => oIdxBits(iplace) <= sIdxBits_reg(15);
-        when "000000000000000010" => oIdxBits(iplace) <= sIdxBits_reg(16);
-        when "000000000000000001" => oIdxBits(iplace) <= sIdxBits_reg(17);
+      case sSelBits(iplace) is
+        when "100000000000000000" => oIdxBits(iplace) <= iIdxBits(0);
+        when "010000000000000000" => oIdxBits(iplace) <= iIdxBits(1);
+        when "001000000000000000" => oIdxBits(iplace) <= iIdxBits(2);
+        when "000100000000000000" => oIdxBits(iplace) <= iIdxBits(3);
+        when "000010000000000000" => oIdxBits(iplace) <= iIdxBits(4);
+        when "000001000000000000" => oIdxBits(iplace) <= iIdxBits(5);
+        when "000000100000000000" => oIdxBits(iplace) <= iIdxBits(6);
+        when "000000010000000000" => oIdxBits(iplace) <= iIdxBits(7);
+        when "000000001000000000" => oIdxBits(iplace) <= iIdxBits(8);
+        when "000000000100000000" => oIdxBits(iplace) <= iIdxBits(9);
+        when "000000000010000000" => oIdxBits(iplace) <= iIdxBits(10);
+        when "000000000001000000" => oIdxBits(iplace) <= iIdxBits(11);
+        when "000000000000100000" => oIdxBits(iplace) <= iIdxBits(12);
+        when "000000000000010000" => oIdxBits(iplace) <= iIdxBits(13);
+        when "000000000000001000" => oIdxBits(iplace) <= iIdxBits(14);
+        when "000000000000000100" => oIdxBits(iplace) <= iIdxBits(15);
+        when "000000000000000010" => oIdxBits(iplace) <= iIdxBits(16);
+        when "000000000000000001" => oIdxBits(iplace) <= iIdxBits(17);
         when others               => oIdxBits(iplace) <= (others => '0');
       end case;
     end loop;  -- iplace

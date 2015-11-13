@@ -95,6 +95,7 @@ architecture rtl of mp7_payload is
   signal sIndexBitsE : TIndexBits_vector(35 downto 0);
 
   signal sIso       : TIsoBits_vector(7 downto 0);
+  signal sIso_reg   : TIsoBits_vector(7 downto 0);
   signal oMuons     : TGMTMu_vector(7 downto 0);
   signal oMuons_reg : TGMTMu_vector(7 downto 0);
 
@@ -358,6 +359,7 @@ begin
       sIntermediateMuonsE_reg     <= sIntermediateMuonsE;
 
       sTrigger_reg <= sTrigger;
+      sIso_reg     <= sIso;
     end if;
   end process gmt_out_reg;
 
@@ -389,7 +391,7 @@ begin
       rst                  => rst_payload,
       iValid               => sValid_buffer(sValid_buffer'high),
       sMuons               => oMuons_reg,
-      sIso                 => sIso,
+      sIso                 => sIso_reg,
       iIntermediateMuonsB  => sIntermediateMuonsB_reg,
       iIntermediateMuonsO  => sIntermediateMuonsO_reg,
       iIntermediateMuonsE  => sIntermediateMuonsE_reg,

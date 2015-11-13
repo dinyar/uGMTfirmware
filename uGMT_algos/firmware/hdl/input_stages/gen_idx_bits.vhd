@@ -67,7 +67,6 @@ architecture Behavioral of gen_idx_bits is
   signal sCaloIndexBits          : TCaloIndexBit_vector(NCHAN-1 downto 0);
   signal sCaloIndexBits_buffer   : TCaloIndexBitsBuffer;
   signal sCaloIndexBits_link     : TCaloIndexBits_link(NCHAN-1 downto 0);
-  signal sCaloIndexBits_link_reg : TCaloIndexBits_link(NCHAN-1 downto 0);
 
 begin
 
@@ -230,10 +229,9 @@ begin
           end if;
         end loop;  -- iFrame
       end loop;  -- iChan
-      sCaloIndexBits_link_reg <= sCaloIndexBits_link;
     end if;
   end process gmt_in_reg;
 
-  oCaloIdxBits <= unpack_calo_idx_bits(sCaloIndexBits_link_reg(NCHAN-1 downto 0));
+  oCaloIdxBits <= unpack_calo_idx_bits(sCaloIndexBits_link(NCHAN-1 downto 0));
 
 end Behavioral;

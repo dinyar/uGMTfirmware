@@ -119,11 +119,11 @@ begin  -- architecture behavioral
 
   mux : entity work.SortStage0_Mux
     port map (
-      iSelBits   => sSelBits_reg,
-      iMuons     => sMuons_reg,
-      iSortRanks => sSortRanks_reg,
-      iEmpty     => sEmpty_reg,
-      iIdxBits   => sIdxBits_reg,
+      iSelBits   => sSelBits,
+      iMuons     => sMuons_store,
+      iSortRanks => sSortRanks_store,
+      iEmpty     => sEmpty_store,
+      iIdxBits   => sIdxBits_store,
       oMuons     => oMuons,
       oSortRanks => oSortRanks,
       oEmpty     => oEmpty,
