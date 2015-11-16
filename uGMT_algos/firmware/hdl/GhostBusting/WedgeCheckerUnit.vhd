@@ -126,7 +126,7 @@ begin
 
   -- The empty bit will be regarded as cancel bit from here.
   g3 : for i in ghosts1'range generate
-    ghosts1(i) <= wedge1_reg(i).empty or sCancel1(i)(0) or sCancel1(i)(1) or sCancel1(i)(2);
-    ghosts2(i) <= wedge2_reg(i).empty or sCancel2(i)(0) or sCancel2(i)(1) or sCancel2(i)(2);
+    ghosts1(i) <= (not wedge1_reg(i).empty) or sCancel1(i)(0) or sCancel1(i)(1) or sCancel1(i)(2);
+    ghosts2(i) <= (not wedge2_reg(i).empty) or sCancel2(i)(0) or sCancel2(i)(1) or sCancel2(i)(2);
   end generate g3;
 end Behavioral;
