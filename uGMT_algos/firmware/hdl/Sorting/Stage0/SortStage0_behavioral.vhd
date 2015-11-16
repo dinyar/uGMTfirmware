@@ -45,7 +45,7 @@ architecture behavioral of SortStage0 is
   signal sIdxBits_reg   : TIndexBits_vector(35 downto 0);
   signal sIdxBits_store : TIndexBits_vector(35 downto 0);
 
-  signal sDisable : std_logic;
+  signal sDisable : std_logic_vector(35 downto 0);
 
   signal sSortRanks       : TSortRank10_vector(35 downto 0);
   signal sSortRanks_reg   : TSortRank10_vector(35 downto 0);
