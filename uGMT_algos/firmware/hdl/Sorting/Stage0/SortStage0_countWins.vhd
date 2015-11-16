@@ -21,7 +21,7 @@ architecture Behavioral of SortStage0_countWins is
   signal sDisable : std_logic_vector(35 downto 0);
 
 begin
-  sDisable <= iEmpty or iCancel_A or iCancel_B or iCancel_C;
+  sDisable <= iCancel_A or iCancel_B or iCancel_C;
 
   count_wins36(iGEMatrix, sDisable, oSelBits);
 end Behavioral;
