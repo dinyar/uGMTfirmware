@@ -35,14 +35,9 @@ entity SortAndCancelUnit is
     iTracksO : in TGMTMuTracks_vector(11 downto 0);
     iTracksE : in TGMTMuTracks_vector(11 downto 0);
 
-    -- I'm assuming I can assign rank and check for empty during rcv stage.
     iSortRanksB : in TSortRank10_vector(35 downto 0);
     iSortRanksO : in TSortRank10_vector(35 downto 0);
     iSortRanksE : in TSortRank10_vector(35 downto 0);
-
-    iEmptyB : in std_logic_vector(35 downto 0);
-    iEmptyO : in std_logic_vector(35 downto 0);
-    iEmptyE : in std_logic_vector(35 downto 0);
 
     iIdxBitsB : in TIndexBits_vector(35 downto 0);
     iIdxBitsO : in TIndexBits_vector(35 downto 0);
@@ -85,7 +80,6 @@ architecture behavioral of SortAndCancelUnit is
   signal sTracksE_minus : TGMTMuTracks_vector(5 downto 0);
 
   signal sSortRanksO_plus       : TSortRank10_vector(17 downto 0);
-  signal sEmptyO_plus           : std_logic_vector(17 downto 0);
   signal sIdxBitsO_plus         : TIndexBits_vector(17 downto 0);
   signal sSortedMuonsO_plus     : TGMTMu_vector(3 downto 0);
   signal sSortedIdxBitsO_plus   : TIndexBits_vector(3 downto 0);
@@ -93,7 +87,6 @@ architecture behavioral of SortAndCancelUnit is
   signal sSortedEmptyO_plus     : std_logic_vector(3 downto 0);
 
   signal sSortRanksO_minus       : TSortRank10_vector(17 downto 0);
-  signal sEmptyO_minus           : std_logic_vector(17 downto 0);
   signal sIdxBitsO_minus         : TIndexBits_vector(17 downto 0);
   signal sSortedMuonsO_minus     : TGMTMu_vector(3 downto 0);
   signal sSortedIdxBitsO_minus   : TIndexBits_vector(3 downto 0);
@@ -101,7 +94,6 @@ architecture behavioral of SortAndCancelUnit is
   signal sSortedEmptyO_minus     : std_logic_vector(3 downto 0);
 
   signal sSortRanksE_plus       : TSortRank10_vector(17 downto 0);
-  signal sEmptyE_plus           : std_logic_vector(17 downto 0);
   signal sIdxBitsE_plus         : TIndexBits_vector(17 downto 0);
   signal sSortedMuonsE_plus     : TGMTMu_vector(3 downto 0);
   signal sSortedIdxBitsE_plus   : TIndexBits_vector(3 downto 0);
@@ -109,7 +101,6 @@ architecture behavioral of SortAndCancelUnit is
   signal sSortedEmptyE_plus     : std_logic_vector(3 downto 0);
 
   signal sSortRanksE_minus       : TSortRank10_vector(17 downto 0);
-  signal sEmptyE_minus           : std_logic_vector(17 downto 0);
   signal sIdxBitsE_minus         : TIndexBits_vector(17 downto 0);
   signal sSortedMuonsE_minus     : TGMTMu_vector(3 downto 0);
   signal sSortedIdxBitsE_minus   : TIndexBits_vector(3 downto 0);
@@ -288,10 +279,6 @@ begin
   sSortRanksO_minus <= iSortRanksO(35 downto 18);
   sSortRanksE_plus  <= iSortRanksE(17 downto 0);
   sSortRanksE_minus <= iSortRanksE(35 downto 18);
-  sEmptyO_plus      <= iEmptyO(17 downto 0);
-  sEmptyO_minus     <= iEmptyO(35 downto 18);
-  sEmptyE_plus      <= iEmptyE(17 downto 0);
-  sEmptyE_minus     <= iEmptyE(35 downto 18);
   sIdxBitsO_plus    <= iIdxBitsO(17 downto 0);
   sIdxBitsO_minus   <= iIdxBitsO(35 downto 18);
   sIdxBitsE_plus    <= iIdxBitsE(17 downto 0);
@@ -514,7 +501,6 @@ begin
   sortB : entity work.SortStage0
     port map (
       iSortRanks => iSortRanksB,
-      iEmpty     => iEmptyB,
       iCancel_A  => sCancelB,
       iCancel_B  => sCancelBO_B,
       iCancel_C  => (others => '0'),
@@ -529,7 +515,6 @@ begin
   sortO_plus : entity work.HalfSortStage0
     port map (
       iSortRanks => sSortRanksO_plus,
-      iEmpty     => sEmptyO_plus,
       iCancel_A  => sCancelO_plus,
       iCancel_B  => sCancelEO_O_plus,
       iCancel_C  => sCancelBO_O_plus,
@@ -544,7 +529,6 @@ begin
   sortO_minus : entity work.HalfSortStage0
     port map (
       iSortRanks => sSortRanksO_minus,
-      iEmpty     => sEmptyO_minus,
       iCancel_A  => sCancelO_minus,
       iCancel_B  => sCancelEO_O_minus,
       iCancel_C  => sCancelBO_O_minus,
@@ -559,7 +543,6 @@ begin
   sortE_plus : entity work.HalfSortStage0
     port map (
       iSortRanks => sSortRanksE_plus,
-      iEmpty     => sEmptyE_plus,
       iCancel_A  => sCancelE_plus,
       iCancel_B  => sCancelEO_E_plus,
       iCancel_C  => (others => '0'),
@@ -574,7 +557,6 @@ begin
   sortE_minus : entity work.HalfSortStage0
     port map (
       iSortRanks => sSortRanksE_minus,
-      iEmpty     => sEmptyE_minus,
       iCancel_A  => sCancelE_minus,
       iCancel_B  => sCancelEO_E_minus,
       iCancel_C  => (others => '0'),

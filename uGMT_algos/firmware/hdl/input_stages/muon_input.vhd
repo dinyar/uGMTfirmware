@@ -28,7 +28,6 @@ entity muon_input is
     d            : in  ldata (NCHAN-1 downto 0);
     oMuons       : out TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
     oTracks      : out TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
-    oEmpty       : out std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
     oSortRanks   : out TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
     oValid       : out std_logic;
     oCaloIdxBits : out TCaloIndexBit_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0) -- Out one bx after muons
@@ -78,7 +77,6 @@ begin
         d                  => d(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
         oMuons             => oMuons(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oTracks            => oTracks(i*4+3 downto i*4),
-        oEmpty             => oEmpty(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oSortRanks         => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oValid             => sValid(i),
         q                  => q(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),

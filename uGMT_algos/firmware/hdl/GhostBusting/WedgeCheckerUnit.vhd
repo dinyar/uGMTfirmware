@@ -125,8 +125,8 @@ begin
     for i in wedge1'range loop
       for j in wedge2'range loop
         if (wedge1_reg(i).empty = '1') or (wedge2_reg(j).empty = '1') then
-          sCancel1(j)(i) <= '0';
-          sCancel2(j)(i) <= '0';
+          sCancel1(j)(i) <= wedge1_reg(j).empty;
+          sCancel2(j)(i) <= wedge2_reg(j).empty;
         else
           sCancel1(j)(i) <= sIntermediateCancel1(j)(i);
           sCancel2(j)(i) <= sIntermediateCancel2(j)(i);

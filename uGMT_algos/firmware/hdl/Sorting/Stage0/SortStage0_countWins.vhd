@@ -11,7 +11,6 @@ use work.SorterUnit.all;
 entity SortStage0_countWins is
   port (
     iGEMatrix : in  TGEMatrix36;
-    iEmpty    : in  std_logic_vector(35 downto 0);  -- arrive 1/2 bx later?
     iCancel_A : in  std_logic_vector(35 downto 0);  -- arrive 1/2 bx later
     iCancel_B : in  std_logic_vector(35 downto 0);  -- arrive 1/2 bx later
     iCancel_C : in  std_logic_vector(35 downto 0);  -- arrive 1/2 bx later
@@ -26,4 +25,3 @@ begin
 
   count_wins36(iGEMatrix, sDisable, oSelBits);
 end Behavioral;
-

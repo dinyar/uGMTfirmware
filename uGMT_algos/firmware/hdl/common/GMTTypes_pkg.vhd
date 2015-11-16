@@ -250,17 +250,16 @@ package GMTTypes is
   -- Valid bits for words from one link for one BX.
   type TValid_link is array (natural range <>) of std_logic_vector(2*NUM_MUONS_IN-1 downto 0);
 
-  function unroll_link_muons (signal iMuons_link         : TFlatMuons) return TFlatMuon_vector;
-  function unroll_global_phi (signal iGlobalPhi_event    : TGlobalPhi_event) return TGlobalPhi_vector;
-  function gmt_mu_from_in_mu (signal iMuonIn             : TGMTMuIn) return TGMTMu;
-  function calo_etaslice_from_flat (constant flat        : std_logic_vector) return TCaloRegionEtaSlice;
-  function combine_or (or_vec                            : std_logic_vector) return std_logic;
-  function check_valid_bits (signal iValid_link          : TValid_link) return std_logic;
-  function unpack_idx_bits(signal iIdxBits               : TIndexBits_link) return TIndexBits_vector;
-  function unpack_sort_rank(signal iSortRanks            : TSortRank_link) return TSortRank10_vector;
-  function unpack_empty_bits(signal iEmptyBits           : TEmpty_link) return std_logic_vector;
-  function unpack_calo_idx_bits(signal iCaloIdxBits      : TCaloIndexBits_link) return TCaloIndexBit_vector;
-  function apply_global_phi_wraparound(iPhi       : signed(10 downto 0)) return unsigned;
+  function unroll_link_muons (signal iMuons_link      : TFlatMuons) return TFlatMuon_vector;
+  function unroll_global_phi (signal iGlobalPhi_event : TGlobalPhi_event) return TGlobalPhi_vector;
+  function gmt_mu_from_in_mu (signal iMuonIn          : TGMTMuIn) return TGMTMu;
+  function calo_etaslice_from_flat (constant flat     : std_logic_vector) return TCaloRegionEtaSlice;
+  function combine_or (or_vec                         : std_logic_vector) return std_logic;
+  function check_valid_bits (signal iValid_link       : TValid_link) return std_logic;
+  function unpack_idx_bits(signal iIdxBits            : TIndexBits_link) return TIndexBits_vector;
+  function unpack_sort_rank(signal iSortRanks         : TSortRank_link) return TSortRank10_vector;
+  function unpack_calo_idx_bits(signal iCaloIdxBits   : TCaloIndexBits_link) return TCaloIndexBit_vector;
+  function apply_global_phi_wraparound(iPhi           : signed(10 downto 0)) return unsigned;
 
   function track_addresses_from_in_mus(signal iMuon_flat : TFlatMuon_vector;
                                        signal iEmpty     : TEmpty_link) return TGMTMuTracks_vector;
@@ -495,23 +494,6 @@ package body GMTTypes is
   end unpack_idx_bits;
 
 -----------------------------------------------------------------------------
--- Unpack empty bits.
------------------------------------------------------------------------------
-  function unpack_empty_bits (
-    signal iEmptyBits : TEmpty_link)
-    return std_logic_vector is
-    variable oEmptyBits : std_logic_vector(iEmptyBits'length*NUM_MUONS_LINK-1 downto 0);
-  begin  -- unpack_empty_bits
-    for i in iEmptyBits'range loop
-      for j in iEmptyBits(i)'range loop
-        oEmptyBits(i*iEmptyBits(i)'length+j) := iEmptyBits(i)(j);
-      end loop;  -- j
-    end loop;  -- i
-
-    return oEmptyBits;
-  end unpack_empty_bits;
-
------------------------------------------------------------------------------
 -- Unpack sort ranks.
 -----------------------------------------------------------------------------
 
@@ -519,7 +501,7 @@ package body GMTTypes is
     signal iSortRanks : TSortRank_link)
     return TSortRank10_vector is
     variable oSortRanks : TSortRank10_vector(iSortRanks'length*NUM_MUONS_LINK-1 downto 0);
-  begin  -- unpack_empty_bits
+  begin  -- unpack_sort_rank
     for i in iSortRanks'range loop
       for j in iSortRanks(i)'range loop
         oSortRanks(i*iSortRanks(i)'length+j) := iSortRanks(i)(j);
@@ -532,7 +514,7 @@ package body GMTTypes is
     signal iCaloIdxBits : TCaloIndexBits_link)
     return TCaloIndexBit_vector is
     variable oCaloIdxBits : TCaloIndexBit_vector(iCaloIdxBits'length*NUM_MUONS_LINK-1 downto 0);
-  begin  -- unpack_empty_bits
+  begin  -- unpack_calo_idx_bits
     for i in iCaloIdxBits'range loop
       for j in iCaloIdxBits(i)'range loop
         oCaloIdxBits(i*iCaloIdxBits(i)'length+j) := iCaloIdxBits(i)(j);

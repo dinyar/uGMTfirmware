@@ -6,23 +6,16 @@ use ieee.NUMERIC_STD.all;
 
 use work.GMTTypes.all;
 
--- Do I need this?
---library LogicFPGA;
---use LogicFPGA.LFTiming.all;
-
 use work.SorterUnit.all;
 
 entity HalfSortStage0 is
-  generic (
-    sorter_lat_start : integer := 6);                 -- start latency
   port (
     iSortRanks : in  TSortRank10_vector(17 downto 0);
-    iEmpty     : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later?
     iCancel_A  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
     iCancel_B  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
     iCancel_C  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
-    iMuons     : in  TGMTMu_vector(17 downto 0);      -- arrive 1/2 bx later?
-    iIdxBits   : in  TIndexBits_vector(17 downto 0);  -- arrive 1/2 bx later?
+    iMuons     : in  TGMTMu_vector(17 downto 0);
+    iIdxBits   : in  TIndexBits_vector(17 downto 0);
     oMuons     : out TGMTMu_vector(3 downto 0);
     oIdxBits   : out TIndexBits_vector(3 downto 0);
     oSortRanks : out TSortRank10_vector(3 downto 0);
@@ -58,8 +51,6 @@ architecture behavioral of HalfSortStage0 is
   signal sSortRanks_store : TSortRank10_vector(17 downto 0);
 
   signal sDisable     : std_logic_vector(17 downto 0);
-  signal sEmpty_store : std_logic_vector(17 downto 0);
-  signal sEmpty_reg   : std_logic_vector(17 downto 0);
 
   signal sSelBits     : TSelBits_1_of_18_vec (0 to 3);
   signal sSelBits_reg : TSelBits_1_of_18_vec (0 to 3);
@@ -87,18 +78,17 @@ begin  -- architecture behavioral
 
   reg_ge : process (clk) is
   begin  -- process reg_ge
-    if clk'event and clk = '0' then  -- falling clock edge 
+    if clk'event and clk = '0' then  -- falling clock edge
       GEMatrix_reg     <= GEMatrix;
       sIdxBits_store   <= sIdxBits;
       sSortRanks_store <= sSortRanks;
       sMuons_store     <= iMuons;
-      sEmpty_store     <= iEmpty;
     end if;
   end process reg_ge;
 
   -- If we receive a cancel signal from one of the two CU units or the entry is
   -- empty we will disable the corresponding muon.
-  sDisable <= sEmpty_store or iCancel_A or iCancel_B or iCancel_C;
+  sDisable <= iCancel_A or iCancel_B or iCancel_C;
 
   -----------------------------------------------------------------------------
   -- sort and four 8 to 1 Muxes
@@ -114,12 +104,11 @@ begin  -- architecture behavioral
       sSelBits_reg   <= sSelBits;
       sMuons_reg     <= sMuons_store;
       sSortRanks_reg <= sSortRanks_store;
-      sEmpty_reg     <= sEmpty_store;
       sIdxBits_reg   <= sIdxBits_store;
     end if;
   end process reg_count_wins;
 
-  mux : process (sSelBits_reg, sMuons_reg, sSortRanks_reg, sEmpty_reg, sIdxBits_reg) is
+  mux : process (sSelBits_reg, sMuons_reg, sSortRanks_reg, sDisable, sIdxBits_reg) is
   begin
     for iplace in 0 to 3 loop
       case sSelBits_reg(iplace) is
@@ -165,24 +154,24 @@ begin  -- architecture behavioral
         when others               => oSortRanks(iplace) <= (others => '0');
       end case;
       case sSelBits_reg(iplace) is
-        when "100000000000000000" => oEmpty(iplace) <= sEmpty_reg(0);
-        when "010000000000000000" => oEmpty(iplace) <= sEmpty_reg(1);
-        when "001000000000000000" => oEmpty(iplace) <= sEmpty_reg(2);
-        when "000100000000000000" => oEmpty(iplace) <= sEmpty_reg(3);
-        when "000010000000000000" => oEmpty(iplace) <= sEmpty_reg(4);
-        when "000001000000000000" => oEmpty(iplace) <= sEmpty_reg(5);
-        when "000000100000000000" => oEmpty(iplace) <= sEmpty_reg(6);
-        when "000000010000000000" => oEmpty(iplace) <= sEmpty_reg(7);
-        when "000000001000000000" => oEmpty(iplace) <= sEmpty_reg(8);
-        when "000000000100000000" => oEmpty(iplace) <= sEmpty_reg(9);
-        when "000000000010000000" => oEmpty(iplace) <= sEmpty_reg(10);
-        when "000000000001000000" => oEmpty(iplace) <= sEmpty_reg(11);
-        when "000000000000100000" => oEmpty(iplace) <= sEmpty_reg(12);
-        when "000000000000010000" => oEmpty(iplace) <= sEmpty_reg(13);
-        when "000000000000001000" => oEmpty(iplace) <= sEmpty_reg(14);
-        when "000000000000000100" => oEmpty(iplace) <= sEmpty_reg(15);
-        when "000000000000000010" => oEmpty(iplace) <= sEmpty_reg(16);
-        when "000000000000000001" => oEmpty(iplace) <= sEmpty_reg(17);
+        when "100000000000000000" => oEmpty(iplace) <= sDisable(0);
+        when "010000000000000000" => oEmpty(iplace) <= sDisable(1);
+        when "001000000000000000" => oEmpty(iplace) <= sDisable(2);
+        when "000100000000000000" => oEmpty(iplace) <= sDisable(3);
+        when "000010000000000000" => oEmpty(iplace) <= sDisable(4);
+        when "000001000000000000" => oEmpty(iplace) <= sDisable(5);
+        when "000000100000000000" => oEmpty(iplace) <= sDisable(6);
+        when "000000010000000000" => oEmpty(iplace) <= sDisable(7);
+        when "000000001000000000" => oEmpty(iplace) <= sDisable(8);
+        when "000000000100000000" => oEmpty(iplace) <= sDisable(9);
+        when "000000000010000000" => oEmpty(iplace) <= sDisable(10);
+        when "000000000001000000" => oEmpty(iplace) <= sDisable(11);
+        when "000000000000100000" => oEmpty(iplace) <= sDisable(12);
+        when "000000000000010000" => oEmpty(iplace) <= sDisable(13);
+        when "000000000000001000" => oEmpty(iplace) <= sDisable(14);
+        when "000000000000000100" => oEmpty(iplace) <= sDisable(15);
+        when "000000000000000010" => oEmpty(iplace) <= sDisable(16);
+        when "000000000000000001" => oEmpty(iplace) <= sDisable(17);
         when others               => oEmpty(iplace) <= '1';
       end case;
       case sSelBits_reg(iplace) is

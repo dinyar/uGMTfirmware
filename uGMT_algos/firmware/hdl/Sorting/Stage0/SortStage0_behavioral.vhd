@@ -9,16 +9,13 @@ use work.GMTTypes.all;
 use work.SorterUnit.all;
 
 entity SortStage0 is
-  generic (
-    sorter_lat_start : integer := 6);                 -- start latency
   port (
     iSortRanks : in  TSortRank10_vector(35 downto 0);
-    iEmpty     : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later?
     iCancel_A  : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later
     iCancel_B  : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later
     iCancel_C  : in  std_logic_vector(35 downto 0);   -- arrive 1/2 bx later
-    iMuons     : in  TGMTMu_vector(35 downto 0);      -- arrive 1/2 bx later?
-    iIdxBits   : in  TIndexBits_vector(35 downto 0);  -- arrive 1/2 bx later?
+    iMuons     : in  TGMTMu_vector(35 downto 0);
+    iIdxBits   : in  TIndexBits_vector(35 downto 0);
     oMuons     : out TGMTMu_vector(7 downto 0);
     oIdxBits   : out TIndexBits_vector(7 downto 0);
     oSortRanks : out TSortRank10_vector(7 downto 0);
@@ -48,12 +45,11 @@ architecture behavioral of SortStage0 is
   signal sIdxBits_reg   : TIndexBits_vector(35 downto 0);
   signal sIdxBits_store : TIndexBits_vector(35 downto 0);
 
+  signal sDisable : std_logic;
+
   signal sSortRanks       : TSortRank10_vector(35 downto 0);
   signal sSortRanks_reg   : TSortRank10_vector(35 downto 0);
   signal sSortRanks_store : TSortRank10_vector(35 downto 0);
-
-  signal sEmpty_store : std_logic_vector(35 downto 0);
-  signal sEmpty_reg   : std_logic_vector(35 downto 0);
 
   signal sSelBits     : TSelBits_1_of_36_vec (0 to 7);
   signal sSelBits_reg : TSelBits_1_of_36_vec (0 to 7);
@@ -90,7 +86,6 @@ begin  -- architecture behavioral
       sIdxBits_store   <= sIdxBits;
       sSortRanks_store <= sSortRanks;
       sMuons_store     <= iMuons;
-      sEmpty_store     <= iEmpty;
     end if;
   end process reg_ge;
 
@@ -100,11 +95,12 @@ begin  -- architecture behavioral
   countWins : entity work.SortStage0_countWins
     port map (
       iGEMatrix => GEMatrix_reg,
-      iEmpty    => sEmpty_store,
       iCancel_A => iCancel_A,
       iCancel_B => iCancel_B,
       iCancel_C => iCancel_C,
       oSelBits  => sSelBits);
+
+  sDisable <= iCancel_A or iCancel_B or iCancel_C;
 
   reg_count_wins : process (clk)
   begin  -- process reg_count_wins
@@ -112,7 +108,6 @@ begin  -- architecture behavioral
       sSelBits_reg   <= sSelBits;
       sMuons_reg     <= sMuons_store;
       sSortRanks_reg <= sSortRanks_store;
-      sEmpty_reg     <= sEmpty_store;
       sIdxBits_reg   <= sIdxBits_store;
     end if;
   end process reg_count_wins;
@@ -122,7 +117,7 @@ begin  -- architecture behavioral
       iSelBits   => sSelBits_reg,
       iMuons     => sMuons_reg,
       iSortRanks => sSortRanks_reg,
-      iEmpty     => sEmpty_reg,
+      iEmpty     => sDisable,
       iIdxBits   => sIdxBits_reg,
       oMuons     => oMuons,
       oSortRanks => oSortRanks,
