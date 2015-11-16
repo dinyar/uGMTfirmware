@@ -223,10 +223,10 @@ begin
         for i in sTracksB'range loop
           for j in sTracksB(0)'range loop
             sTracksB(i)(j).empty <= '1';
-            sTracksB(i)(j).eta <= sTracks(BMTF_LOW+i)(j).eta
-            sTracksB(i)(j).phi <= sTracks(BMTF_LOW+i)(j).phi
-            sTracksB(i)(j).bmtfAddress <= sTracks(BMTF_LOW+i)(j).bmtfAddress
-            sTracksB(i)(j).qual <= sTracks(BMTF_LOW+i)(j).qual
+            sTracksB(i)(j).eta <= sTracks(BMTF_LOW+i)(j).eta;
+            sTracksB(i)(j).phi <= sTracks(BMTF_LOW+i)(j).phi;
+            sTracksB(i)(j).bmtfAddress <= sTracks(BMTF_LOW+i)(j).bmtfAddress;
+            sTracksB(i)(j).qual <= sTracks(BMTF_LOW+i)(j).qual;
           end loop;
         end loop;
       else
@@ -238,9 +238,9 @@ begin
         for i in 5 downto 0 loop
           for j in sTracksO(0)'range loop
             sTracksO(i)(j).empty <= '1';
-            sTracksO(i)(j).eta <= sTracks(OMTF_POS_LOW+i)(j).eta
-            sTracksO(i)(j).phi <= sTracks(OMTF_POS_LOW+i)(j).phi
-            sTracksO(i)(j).qual <= sTracks(OMTF_POS_LOW+i)(j).qual
+            sTracksO(i)(j).eta <= sTracks(OMTF_POS_LOW+i)(j).eta;
+            sTracksO(i)(j).phi <= sTracks(OMTF_POS_LOW+i)(j).phi;
+            sTracksO(i)(j).qual <= sTracks(OMTF_POS_LOW+i)(j).qual;
           end loop;
         end loop;
       else
@@ -251,9 +251,9 @@ begin
         for i in 5 downto 0 loop
           for j in sTracksO(0)'range loop
             sTracksO(i+6)(j).empty <= '1';
-            sTracksO(i+6)(j).eta <= sTracks(OMTF_NEG_LOW+i)(j).eta
-            sTracksO(i+6)(j).phi <= sTracks(OMTF_NEG_LOW+i)(j).phi
-            sTracksO(i+6)(j).qual <= sTracks(OMTF_NEG_LOW+i)(j).qual
+            sTracksO(i+6)(j).eta <= sTracks(OMTF_NEG_LOW+i)(j).eta;
+            sTracksO(i+6)(j).phi <= sTracks(OMTF_NEG_LOW+i)(j).phi;
+            sTracksO(i+6)(j).qual <= sTracks(OMTF_NEG_LOW+i)(j).qual;
           end loop;
         end loop;
       else
@@ -265,9 +265,9 @@ begin
         for i in 5 downto 0 loop
           for j in sTracksE(0)'range loop
             sTracksE(i)(j).empty <= '1';
-            sTracksE(i)(j).eta <= sTracks(EMTF_POS_LOW+i)(j).eta
-            sTracksE(i)(j).phi <= sTracks(EMTF_POS_LOW+i)(j).phi
-            sTracksE(i)(j).qual <= sTracks(EMTF_POS_LOW+i)(j).qual
+            sTracksE(i)(j).eta <= sTracks(EMTF_POS_LOW+i)(j).eta;
+            sTracksE(i)(j).phi <= sTracks(EMTF_POS_LOW+i)(j).phi;
+            sTracksE(i)(j).qual <= sTracks(EMTF_POS_LOW+i)(j).qual;
           end loop;
         end loop;
       else
@@ -278,9 +278,9 @@ begin
         for i in 5 downto 0 loop
           for j in sTracksE(0)'range loop
             sTracksE(i+6)(j).empty <= '1';
-            sTracksE(i+6)(j).eta <= sTracks(EMTF_NEG_LOW+i)(j).eta
-            sTracksE(i+6)(j).phi <= sTracks(EMTF_NEG_LOW+i)(j).phi
-            sTracksE(i+6)(j).qual <= sTracks(EMTF_NEG_LOW+i)(j).qual
+            sTracksE(i+6)(j).eta <= sTracks(EMTF_NEG_LOW+i)(j).eta;
+            sTracksE(i+6)(j).phi <= sTracks(EMTF_NEG_LOW+i)(j).phi;
+            sTracksE(i+6)(j).qual <= sTracks(EMTF_NEG_LOW+i)(j).qual;
           end loop;
         end loop;
       else
