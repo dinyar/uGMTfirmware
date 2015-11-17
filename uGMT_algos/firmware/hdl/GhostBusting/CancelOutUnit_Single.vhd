@@ -89,7 +89,7 @@ begin
         wedge1  => iWedges(i),
         wedge2  => iWedges((i+1) mod iWedges'length),
         ghosts1 => sCancel1(num_tracks*(i+1)-1 downto num_tracks*i),
-        ghosts2 => sCancel2(num_tracks*(i+1)-1 downto num_tracks*i),
+        ghosts2 => sCancel2(num_tracks*((i+2) mod iWedges'length)-1 downto num_tracks*((i+1) mod iWedges'length)),
         clk     => clk);
   end generate g1;
 
