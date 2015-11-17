@@ -319,6 +319,7 @@ package body tb_helpers is
     track(0).phi  := to_signed(phi1, 8);
     read(L, qual1);
     track(0).qual := to_unsigned(qual1, 4);
+    track(0).empty := '0';
 
     read(L, eta2);
     track(1).eta  := to_signed(eta2, 9);
@@ -326,6 +327,7 @@ package body tb_helpers is
     track(1).phi  := to_signed(phi2, 8);
     read(L, qual2);
     track(1).qual := to_unsigned(qual2, 4);
+    track(1).empty := '0';
 
     read(L, eta3);
     track(2).eta  := to_signed(eta3, 9);
@@ -333,6 +335,7 @@ package body tb_helpers is
     track(2).phi  := to_signed(phi3, 8);
     read(L, qual3);
     track(2).qual := to_unsigned(qual3, 4);
+    track(2).empty := '0';
 
   end ReadTrack;
 

@@ -4,13 +4,17 @@ import sys
 
 
 def encode_error(testbench_name, names):
-    error_code = 1 << names.index(testbench_name)
+    try:
+        error_code = 1 << names.index(testbench_name)
+    except ValueError:
+        print "WARNING: Ignoring unexpected results file: " + testbench_name
+        error_code = 0
     return error_code
 
 
 def main():
     error = 0
-    testbench_names = ["serializer", "SortAndCancel", "ugmt_serdes"]
+    testbench_names = ["serializer", "ugmt_serdes"]
     file_counter = 0
     for root, folders, fnames in os.walk('results'):
         for fname in fnames:
@@ -23,7 +27,7 @@ def main():
                     if n_err != 0:
                         tbname = fname.split("_tb")[0]
                         error += encode_error(tbname, testbench_names)
-    if file_counter != len(testbench_names):
+    if file_counter < len(testbench_names):
         return 999999
     return error
 
