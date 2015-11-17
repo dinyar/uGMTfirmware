@@ -38,9 +38,6 @@ architecture behavior of testbench is
   signal iSortRanksB         : TSortRank10_vector(35 downto 0);
   signal iSortRanksO         : TSortRank10_vector(35 downto 0);
   signal iSortRanksE         : TSortRank10_vector(35 downto 0);
-  signal iEmptyB             : std_logic_vector(35 downto 0);
-  signal iEmptyO             : std_logic_vector(35 downto 0);
-  signal iEmptyE             : std_logic_vector(35 downto 0);
   signal iIdxBitsB           : TIndexBits_vector(35 downto 0);
   signal iIdxBitsO           : TIndexBits_vector(35 downto 0);
   signal iIdxBitsE           : TIndexBits_vector(35 downto 0);
@@ -75,9 +72,6 @@ begin
       iSortRanksB             => iSortRanksB,
       iSortRanksO             => iSortRanksO,
       iSortRanksE             => iSortRanksE,
-      iEmptyB                 => iEmptyB,
-      iEmptyO                 => iEmptyO,
-      iEmptyE                 => iEmptyE,
       iIdxBitsB               => iIdxBitsB,
       iIdxBitsO               => iIdxBitsO,
       iIdxBitsE               => iIdxBitsE,
@@ -250,9 +244,6 @@ begin
         iSortRanksB <= event.sortRanks_bmtf;
         iSortRanksO <= event.sortRanks_omtf;
         iSortRanksE <= event.sortRanks_emtf;
-        iEmptyB     <= event.empty_bmtf;
-        iEmptyO     <= event.empty_omtf;
-        iEmptyE     <= event.empty_emtf;
         iIdxBitsB   <= event.idxBits_bmtf;
         iIdxBitsO   <= event.idxBits_omtf;
         iIdxBitsE   <= event.idxBits_emtf;

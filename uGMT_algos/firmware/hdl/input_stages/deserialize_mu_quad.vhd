@@ -29,7 +29,6 @@ entity deserialize_mu_quad is
     d                  : in  ldata(3 downto 0);
     oMuons             : out TGMTMu_vector(4*NUM_MUONS_IN-1 downto 0);
     oTracks            : out TGMTMuTracks_vector(3 downto 0);
-    oEmpty             : out std_logic_vector(4*NUM_MUONS_IN-1 downto 0);
     oSortRanks         : out TSortRank10_vector(4*NUM_MUONS_IN-1 downto 0);
     oValid             : out std_logic;
     q                  : out ldata(3 downto 0);
@@ -305,7 +304,6 @@ begin
     oMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i));
   end generate convert_muons;
   oTracks    <= track_addresses_from_in_mus(sMuons_flat, sEmpty_link);
-  oEmpty     <= unpack_empty_bits(sEmpty_link(NCHAN-1 downto 0));
   oSortRanks <= unpack_sort_rank(sSortRank_link(NCHAN-1 downto 0));
 
   out_for_idx_bits : process (clk240)

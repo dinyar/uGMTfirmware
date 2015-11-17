@@ -26,9 +26,6 @@ entity GMT is
     iCaloIdxBitsB     : in TCaloIndexBit_vector(35 downto 0);
     iCaloIdxBitsO     : in TCaloIndexBit_vector(35 downto 0);
     iCaloIdxBitsE     : in TCaloIndexBit_vector(35 downto 0);
-    iEmptyB           : in std_logic_vector(35 downto 0);
-    iEmptyO           : in std_logic_vector(35 downto 0);
-    iEmptyE           : in std_logic_vector(35 downto 0);
 
     iEnergies : in TCaloRegionEtaSlice_vector(31 downto 0);
     -- The outer two slices will be set to '0'. XST should optimize logic
@@ -164,9 +161,6 @@ begin
       iSortRanksB             => iSortRanksB,
       iSortRanksO             => iSortRanksO,
       iSortRanksE             => iSortRanksE,
-      iEmptyB                 => iEmptyB,
-      iEmptyO                 => iEmptyO,
-      iEmptyE                 => iEmptyE,
       iIdxBitsB               => iIdxBitsB,
       iIdxBitsO               => iIdxBitsO,
       iIdxBitsE               => iIdxBitsE,

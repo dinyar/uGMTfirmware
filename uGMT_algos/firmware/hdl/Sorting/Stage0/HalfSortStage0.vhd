@@ -11,12 +11,11 @@ use work.SorterUnit.all;
 entity HalfSortStage0 is
   port (
     iSortRanks : in  TSortRank10_vector(17 downto 0);
-    iEmpty     : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later?
     iCancel_A  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
     iCancel_B  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
     iCancel_C  : in  std_logic_vector(17 downto 0);   -- arrive 1/2 bx later
-    iMuons     : in  TGMTMu_vector(17 downto 0);      -- arrive 1/2 bx later?
-    iIdxBits   : in  TIndexBits_vector(17 downto 0);  -- arrive 1/2 bx later?
+    iMuons     : in  TGMTMu_vector(17 downto 0);
+    iIdxBits   : in  TIndexBits_vector(17 downto 0);
     oMuons     : out TGMTMu_vector(3 downto 0);
     oIdxBits   : out TIndexBits_vector(3 downto 0);
     oSortRanks : out TSortRank10_vector(3 downto 0);
@@ -63,14 +62,14 @@ begin  -- architecture behavioral
 
   -- If we receive a cancel signal from one of the two CU units or the entry is
   -- empty we will disable the corresponding muon.
-  sDisable <= iEmpty or iCancel_A or iCancel_B or iCancel_C;
+  sDisable <= iCancel_A or iCancel_B or iCancel_C;
 
   -----------------------------------------------------------------------------
   -- sort and four 8 to 1 Muxes
   -----------------------------------------------------------------------------
   count_wins18(GEMatrix, sDisable, sSelBits);
 
-  mux : process (sSelBits, iMuons, iSortRanks, iEmpty, iIdxBits) is
+  mux : process (sSelBits, iMuons, iSortRanks, sDisable, iIdxBits) is
   begin
     for iplace in 0 to 3 loop
       case sSelBits(iplace) is
@@ -116,24 +115,24 @@ begin  -- architecture behavioral
         when others               => oSortRanks(iplace) <= (others => '0');
       end case;
       case sSelBits(iplace) is
-        when "100000000000000000" => oEmpty(iplace) <= iEmpty(0);
-        when "010000000000000000" => oEmpty(iplace) <= iEmpty(1);
-        when "001000000000000000" => oEmpty(iplace) <= iEmpty(2);
-        when "000100000000000000" => oEmpty(iplace) <= iEmpty(3);
-        when "000010000000000000" => oEmpty(iplace) <= iEmpty(4);
-        when "000001000000000000" => oEmpty(iplace) <= iEmpty(5);
-        when "000000100000000000" => oEmpty(iplace) <= iEmpty(6);
-        when "000000010000000000" => oEmpty(iplace) <= iEmpty(7);
-        when "000000001000000000" => oEmpty(iplace) <= iEmpty(8);
-        when "000000000100000000" => oEmpty(iplace) <= iEmpty(9);
-        when "000000000010000000" => oEmpty(iplace) <= iEmpty(10);
-        when "000000000001000000" => oEmpty(iplace) <= iEmpty(11);
-        when "000000000000100000" => oEmpty(iplace) <= iEmpty(12);
-        when "000000000000010000" => oEmpty(iplace) <= iEmpty(13);
-        when "000000000000001000" => oEmpty(iplace) <= iEmpty(14);
-        when "000000000000000100" => oEmpty(iplace) <= iEmpty(15);
-        when "000000000000000010" => oEmpty(iplace) <= iEmpty(16);
-        when "000000000000000001" => oEmpty(iplace) <= iEmpty(17);
+        when "100000000000000000" => oEmpty(iplace) <= sDisable(0);
+        when "010000000000000000" => oEmpty(iplace) <= sDisable(1);
+        when "001000000000000000" => oEmpty(iplace) <= sDisable(2);
+        when "000100000000000000" => oEmpty(iplace) <= sDisable(3);
+        when "000010000000000000" => oEmpty(iplace) <= sDisable(4);
+        when "000001000000000000" => oEmpty(iplace) <= sDisable(5);
+        when "000000100000000000" => oEmpty(iplace) <= sDisable(6);
+        when "000000010000000000" => oEmpty(iplace) <= sDisable(7);
+        when "000000001000000000" => oEmpty(iplace) <= sDisable(8);
+        when "000000000100000000" => oEmpty(iplace) <= sDisable(9);
+        when "000000000010000000" => oEmpty(iplace) <= sDisable(10);
+        when "000000000001000000" => oEmpty(iplace) <= sDisable(11);
+        when "000000000000100000" => oEmpty(iplace) <= sDisable(12);
+        when "000000000000010000" => oEmpty(iplace) <= sDisable(13);
+        when "000000000000001000" => oEmpty(iplace) <= sDisable(14);
+        when "000000000000000100" => oEmpty(iplace) <= sDisable(15);
+        when "000000000000000010" => oEmpty(iplace) <= sDisable(16);
+        when "000000000000000001" => oEmpty(iplace) <= sDisable(17);
         when others               => oEmpty(iplace) <= '1';
       end case;
       case sSelBits(iplace) is

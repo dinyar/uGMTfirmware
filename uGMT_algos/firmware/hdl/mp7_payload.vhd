@@ -59,11 +59,6 @@ architecture rtl of mp7_payload is
   -- Register to disable/enable inputs
   signal sInputDisable : ipb_reg_v(0 downto 0);
 
-  signal sEmptyO_plus : std_logic_vector(17 downto 0);
-  signal sEmptyO_minus : std_logic_vector(17 downto 0);
-  signal sEmptyE_plus : std_logic_vector(17 downto 0);
-  signal sEmptyE_minus : std_logic_vector(17 downto 0);
-
   signal sEnergies     : TCaloRegionEtaSlice_vector(27 downto 0);  -- All energies from Calo trigger.
   signal sEnergies_tmp : TCaloRegionEtaSlice_vector(31 downto 0);
   signal sEnergies_fin : TCaloRegionEtaSlice_vector(31 downto 0);
@@ -81,10 +76,6 @@ architecture rtl of mp7_payload is
   signal sTracksB    : TGMTMuTracks_vector(11 downto 0);
   signal sTracksO    : TGMTMuTracks_vector(11 downto 0);
   signal sTracksE    : TGMTMuTracks_vector(11 downto 0);
-  signal sEmpty      : std_logic_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-  signal sEmptyB     : std_logic_vector(35 downto 0);
-  signal sEmptyO     : std_logic_vector(35 downto 0);
-  signal sEmptyE     : std_logic_vector(35 downto 0);
   signal sSortRanks  : TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sSortRanksB : TSortRank10_vector(35 downto 0);
   signal sSortRanksO : TSortRank10_vector(35 downto 0);
@@ -155,7 +146,6 @@ begin
       d            => d(NCHAN-1 downto 0),
       oMuons       => sMuons,
       oTracks      => sTracks,
-      oEmpty       => sEmpty,
       oSortRanks   => sSortRanks,
       oValid       => sValid_muons,
       oCaloIdxBits => sCaloIndexBits
@@ -219,7 +209,7 @@ begin
         q => sInputDisable
     );
 
-  disable_inputs : process (sEmpty, sEnergies_tmp, sInputDisable)
+  disable_inputs : process (sTracks, sEnergies_tmp, sInputDisable)
   begin
       if sInputDisable(0)(0) = '1' then -- disable energies
           for i in sEnergies_fin'range loop
@@ -231,35 +221,71 @@ begin
 
       ---- Disabling BMTF ----
       if sInputDisable(0)(1) = '1' then -- disable BMTF
-          sEmptyB <= (others => '1');
+        for i in sTracksB'range loop
+          for j in sTracksB(0)'range loop
+            sTracksB(i)(j).empty <= '1';
+            sTracksB(i)(j).eta <= sTracks(BMTF_LOW+i)(j).eta;
+            sTracksB(i)(j).phi <= sTracks(BMTF_LOW+i)(j).phi;
+            sTracksB(i)(j).bmtfAddress <= sTracks(BMTF_LOW+i)(j).bmtfAddress;
+            sTracksB(i)(j).qual <= sTracks(BMTF_LOW+i)(j).qual;
+          end loop;
+        end loop;
       else
-          sEmptyB <= sEmpty((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
+        sTracksB <= sTracks(BMTF_HIGH downto BMTF_LOW);
       end if;
 
       ---- Disable OMTF ----
       if sInputDisable(0)(2) = '1' then -- disable OMTF pos
-          sEmptyO_plus <= (others => '1');
+        for i in 5 downto 0 loop
+          for j in sTracksO(0)'range loop
+            sTracksO(i)(j).empty <= '1';
+            sTracksO(i)(j).eta <= sTracks(OMTF_POS_LOW+i)(j).eta;
+            sTracksO(i)(j).phi <= sTracks(OMTF_POS_LOW+i)(j).phi;
+            sTracksO(i)(j).qual <= sTracks(OMTF_POS_LOW+i)(j).qual;
+          end loop;
+        end loop;
       else
-          sEmptyO_plus <= sEmpty((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
+        sTracksO(5 downto 0) <= sTracks(OMTF_POS_HIGH downto OMTF_POS_LOW);
       end if;
 
       if sInputDisable(0)(3) = '1' then -- disable OMTF neg
-          sEmptyO_minus <= (others => '1');
+        for i in 5 downto 0 loop
+          for j in sTracksO(0)'range loop
+            sTracksO(i+6)(j).empty <= '1';
+            sTracksO(i+6)(j).eta <= sTracks(OMTF_NEG_LOW+i)(j).eta;
+            sTracksO(i+6)(j).phi <= sTracks(OMTF_NEG_LOW+i)(j).phi;
+            sTracksO(i+6)(j).qual <= sTracks(OMTF_NEG_LOW+i)(j).qual;
+          end loop;
+        end loop;
       else
-          sEmptyO_minus <= sEmpty((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN);
+        sTracksO(11 downto 6) <= sTracks(OMTF_NEG_HIGH downto OMTF_NEG_LOW);
       end if;
 
       ---- Disable EMTF ----
       if sInputDisable(0)(4) = '1' then -- disable EMTF pos
-          sEmptyE_plus <= (others => '1');
+        for i in 5 downto 0 loop
+          for j in sTracksE(0)'range loop
+            sTracksE(i)(j).empty <= '1';
+            sTracksE(i)(j).eta <= sTracks(EMTF_POS_LOW+i)(j).eta;
+            sTracksE(i)(j).phi <= sTracks(EMTF_POS_LOW+i)(j).phi;
+            sTracksE(i)(j).qual <= sTracks(EMTF_POS_LOW+i)(j).qual;
+          end loop;
+        end loop;
       else
-          sEmptyE_plus <= sEmpty((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
+        sTracksE <= sTracks(EMTF_NEG_HIGH downto EMTF_NEG_LOW) & sTracks(EMTF_POS_HIGH downto EMTF_POS_LOW);
       end if;
 
       if sInputDisable(0)(5) = '1' then -- disable EMTF neg
-          sEmptyE_minus <= (others => '1');
+        for i in 5 downto 0 loop
+          for j in sTracksE(0)'range loop
+            sTracksE(i+6)(j).empty <= '1';
+            sTracksE(i+6)(j).eta <= sTracks(EMTF_NEG_LOW+i)(j).eta;
+            sTracksE(i+6)(j).phi <= sTracks(EMTF_NEG_LOW+i)(j).phi;
+            sTracksE(i+6)(j).qual <= sTracks(EMTF_NEG_LOW+i)(j).qual;
+          end loop;
+        end loop;
       else
-          sEmptyE_minus <= sEmpty((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN);
+        sTracksE <= sTracks(EMTF_NEG_HIGH downto EMTF_NEG_LOW) & sTracks(EMTF_POS_HIGH downto EMTF_POS_LOW);
       end if;
   end process disable_inputs;
 
@@ -267,9 +293,6 @@ begin
   sMuonsO <= sMuons((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sMuons((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
   sMuonsE <= sMuons((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN) & sMuons((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
 
-  sTracksB <= sTracks(BMTF_HIGH downto BMTF_LOW);
-  sTracksO <= sTracks(OMTF_NEG_HIGH downto OMTF_NEG_LOW) & sTracks(OMTF_POS_HIGH downto OMTF_POS_LOW);
-  sTracksE <= sTracks(EMTF_NEG_HIGH downto EMTF_NEG_LOW) & sTracks(EMTF_POS_HIGH downto EMTF_POS_LOW);
 
   sIndexBitsB <= sIndexBits((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
   sIndexBitsO <= sIndexBits((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sIndexBits((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
@@ -278,9 +301,6 @@ begin
   sCaloIndexBitsB <= sCaloIndexBits((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
   sCaloIndexBitsO <= sCaloIndexBits((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sCaloIndexBits((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
   sCaloIndexBitsE <= sCaloIndexBits((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN) & sCaloIndexBits((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
-
-  sEmptyO <= sEmptyO_minus & sEmptyO_plus;
-  sEmptyE <= sEmptyE_minus & sEmptyE_plus;
 
   sSortRanksB <= sSortRanks((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
   sSortRanksO <= sSortRanks((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sSortRanks((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
@@ -309,9 +329,6 @@ begin
       iCaloIdxBitsB     => sCaloIndexBitsB,
       iCaloIdxBitsO     => sCaloIndexBitsO,
       iCaloIdxBitsE     => sCaloIndexBitsE,
-      iEmptyB           => sEmptyB,
-      iEmptyO           => sEmptyO,
-      iEmptyE           => sEmptyE,
 
       iEnergies => sEnergies_fin,
 
