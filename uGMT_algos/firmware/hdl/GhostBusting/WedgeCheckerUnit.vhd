@@ -38,8 +38,6 @@ architecture Behavioral of WedgeCheckerUnit is
   signal  sCancel2             : muon_cancel_vec(wedge2'range);
   signal  sIntermediateCancel1 : muon_cancel_vec(wedge1'range);
   signal  sIntermediateCancel2 : muon_cancel_vec(wedge2'range);
-  signal  sGhost1              : muon_cancel_vec(wedge1'range);
-  signal  sGhost2              : muon_cancel_vec(wedge2'range);
 
   signal wedge1_reg : TGMTMuTracks3;
   signal wedge2_reg : TGMTMuTracks3;
@@ -70,22 +68,22 @@ begin
            qual1   => wedge1(i).qual,
            mu2     => wedge2(j).bmtfAddress,
            qual2   => wedge2(j).qual,
-           ghost1  => sGhost1(i)(j),
-           ghost2  => sGhost2(j)(i),
+           ghost1  => sIntermediateCancel1(i)(j),
+           ghost2  => sIntermediateCancel2(j)(i),
            clk     => clk
            );
       end generate gen_bmtf_addr_based;
 
       -- TODO: MISSING!
       gen_omtf_addr_based : if CANCEL_OUT_TYPE = string'("OMTF_ADDRESSES") generate
-        sGhost1(j)(i) <= '0';
-        sGhost2(j)(i) <= '0';
+        sIntermediateCancel1(j)(i) <= '0';
+        sIntermediateCancel2(j)(i) <= '0';
       end generate gen_omtf_addr_based;
 
       -- TODO: MISSING!
       gen_emtf_addr_based : if CANCEL_OUT_TYPE = string'("EMTF_ADDRESSES") generate
-        sGhost1(j)(i) <= '0';
-        sGhost2(j)(i) <= '0';
+        sIntermediateCancel1(j)(i) <= '0';
+        sIntermediateCancel2(j)(i) <= '0';
       end generate gen_emtf_addr_based;
 
       gen_coord_based : if CANCEL_OUT_TYPE = string'("COORDINATE") generate
@@ -105,14 +103,14 @@ begin
           eta2    => wedge2(j).eta,
           phi2    => wedge2(j).phi,
           qual2   => wedge2(j).qual,
-          ghost1  => sGhost1(i)(j),
-          ghost2  => sGhost2(j)(i),
+          ghost1  => sIntermediateCancel1(i)(j),
+          ghost2  => sIntermediateCancel2(j)(i),
           clk     => clk
           );
       end generate gen_coord_based;
-      -- If the other muon is a ghost we won't cancel even if it's requested.
-      sIntermediateCancel1(i)(j) <= wedge1_reg(i).empty and (not sGhost2(i)(j));
-      sIntermediateCancel2(j)(i) <= wedge2_reg(j).empty and (not sGhost1(j)(i));
+      -- If the other muon is empty we won't cancel even if it's requested.
+      sCancel1(i)(j) <= sIntermediateCancel1(i)(j) and (not wedge2_reg(j).empty);
+      sCancel2(j)(i) <= sIntermediateCancel2(j)(i) and (not wedge1_reg(i).empty);
     end generate g2;
   end generate g1;
 
@@ -126,7 +124,7 @@ begin
 
   -- The empty bit will be regarded as cancel bit from here.
   g3 : for i in ghosts1'range generate
-    ghosts1(i) <= (not wedge1_reg(i).empty) or sCancel1(i)(0) or sCancel1(i)(1) or sCancel1(i)(2);
-    ghosts2(i) <= (not wedge2_reg(i).empty) or sCancel2(i)(0) or sCancel2(i)(1) or sCancel2(i)(2);
+    ghosts1(i) <= wedge1_reg(i).empty or sCancel1(i)(0) or sCancel1(i)(1) or sCancel1(i)(2);
+    ghosts2(i) <= wedge2_reg(i).empty or sCancel2(i)(0) or sCancel2(i)(1) or sCancel2(i)(2);
   end generate g3;
 end Behavioral;
