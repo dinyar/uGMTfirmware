@@ -121,6 +121,17 @@ architecture behavioral of SortAndCancelUnit is
   signal sCancelEO_E_minus     : std_logic_vector(17 downto 0);
   signal sCancelEO_O_plus      : std_logic_vector(17 downto 0);
   signal sCancelEO_O_minus     : std_logic_vector(17 downto 0);
+  signal sCancelBO_O_plus_reg  : std_logic_vector(17 downto 0);
+  signal sCancelBO_O_minus_reg : std_logic_vector(17 downto 0);
+  signal sCancelEO_E_plus_reg  : std_logic_vector(17 downto 0);
+  signal sCancelEO_E_minus_reg : std_logic_vector(17 downto 0);
+  signal sCancelEO_O_plus_reg  : std_logic_vector(17 downto 0);
+  signal sCancelEO_O_minus_reg : std_logic_vector(17 downto 0);
+  signal sCancelB_reg          : std_logic_vector(35 downto 0);
+  signal sCancelO_plus_reg     : std_logic_vector(17 downto 0);
+  signal sCancelO_minus_reg    : std_logic_vector(17 downto 0);
+  signal sCancelE_plus_reg     : std_logic_vector(17 downto 0);
+  signal sCancelE_minus_reg    : std_logic_vector(17 downto 0);
 
   signal sSortedMuonsB     : TGMTMu_vector(7 downto 0);
   signal sSortedIdxBitsB   : TIndexBits_vector(7 downto 0);
@@ -456,10 +467,27 @@ begin
       );
 
   sCancelBO_B <= sCancelBO_B_plus or sCancelBO_B_minus;
-
+  -- Register cancel-out bits and pair vector here.
+  -- type   : sequential
+  -- inputs : clk, sinit, sCancelBO, sCancelFO, sCancelB, sCancelO, sCancelF,
+  -- sPairVecB, sPairVecE
+  -- outputs: sCancelBO_reg, sCancelEO_reg, sCancelB_reg, sCancelO_reg,
+  -- sCancelE_reg, sPairVecB_reg, sPairVecE_reg
   register_cobits_pairs : process (clk)
   begin  -- process register_cobits
     if clk'event and clk = '1' then     -- rising clock edge
+      sCancelBO_O_plus_reg  <= sCancelBO_O_plus;
+      sCancelBO_O_minus_reg <= sCancelBO_O_minus;
+      sCancelEO_E_plus_reg  <= sCancelEO_E_plus;
+      sCancelEO_E_minus_reg <= sCancelEO_E_minus;
+      sCancelEO_O_plus_reg  <= sCancelEO_O_plus;
+      sCancelEO_O_minus_reg <= sCancelEO_O_minus;
+      sCancelB_reg          <= sCancelB;
+      sCancelO_plus_reg     <= sCancelO_plus;
+      sCancelO_minus_reg    <= sCancelO_minus;
+      sCancelE_plus_reg     <= sCancelE_plus;
+      sCancelE_minus_reg    <= sCancelE_minus;
+
       -- For RPC merging
       sMQMatrixB_reg <= sMQMatrixB;
       sMQMatrixE_reg <= sMQMatrixF;
@@ -560,7 +588,7 @@ begin
 
   reg_pairs : process (clk)
   begin  -- process reg_pairs
-    if clk'event and clk = '1' then -- rising clock edge
+    if clk'event and clk = '0' then     -- falling clock edge
       sSortedSortRanksB_reg <= sSortedSortRanksB;
       sSortedSortRanksO_reg <= sSortedSortRanksO_minus & sSortedSortRanksO_plus;
       sSortedSortRanksE_reg <= sSortedSortRanksE_minus & sSortedSortRanksE_plus;
@@ -713,7 +741,7 @@ begin
 
   final_mu_reg : process (clk)
   begin  -- process final_mu_reg
-    if clk'event and clk = '1' then -- rising clock edge
+    if clk'event and clk = '0' then     -- falling clock edge
       sFinalMuons_reg <= sFinalMuons;
     end if;
   end process final_mu_reg;

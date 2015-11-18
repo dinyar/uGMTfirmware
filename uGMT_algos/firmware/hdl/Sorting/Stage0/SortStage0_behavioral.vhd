@@ -42,14 +42,17 @@ architecture behavioral of SortStage0 is
   signal GEMatrix, GEMatrix_reg : TGEMatrix36;
 
   signal sIdxBits       : TIndexBits_vector(35 downto 0);
+  signal sIdxBits_reg   : TIndexBits_vector(35 downto 0);
   signal sIdxBits_store : TIndexBits_vector(35 downto 0);
 
   signal sDisable : std_logic_vector(35 downto 0);
 
   signal sSortRanks       : TSortRank10_vector(35 downto 0);
+  signal sSortRanks_reg   : TSortRank10_vector(35 downto 0);
   signal sSortRanks_store : TSortRank10_vector(35 downto 0);
 
   signal sSelBits     : TSelBits_1_of_36_vec (0 to 7);
+  signal sSelBits_reg : TSelBits_1_of_36_vec (0 to 7);
 
 begin  -- architecture behavioral
   sIdxBits   <= iIdxBits;
@@ -99,13 +102,23 @@ begin  -- architecture behavioral
 
   sDisable <= iCancel_A or iCancel_B or iCancel_C;
 
+  reg_count_wins : process (clk)
+  begin  -- process reg_count_wins
+    if clk'event and clk = '1' then     -- rising clock edge
+      sSelBits_reg   <= sSelBits;
+      sMuons_reg     <= sMuons_store;
+      sSortRanks_reg <= sSortRanks_store;
+      sIdxBits_reg   <= sIdxBits_store;
+    end if;
+  end process reg_count_wins;
+
   mux : entity work.SortStage0_Mux
     port map (
-      iSelBits   => sSelBits,
-      iMuons     => sMuons_store,
-      iSortRanks => sSortRanks_store,
+      iSelBits   => sSelBits_reg,
+      iMuons     => sMuons_reg,
+      iSortRanks => sSortRanks_reg,
       iEmpty     => sDisable,
-      iIdxBits   => sIdxBits_store,
+      iIdxBits   => sIdxBits_reg,
       oMuons     => oMuons,
       oSortRanks => oSortRanks,
       oEmpty     => oEmpty,
