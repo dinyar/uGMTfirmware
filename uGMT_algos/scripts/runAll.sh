@@ -1,5 +1,5 @@
 #!/bin/bash
-export XILINXD_LICENSE_FILE='2112@lxlic01,2112@lxlic02,2112@lxlic03'
+export XILINXD_LICENSE_FILE='2112@lxlicen01,2112@lxlicen02,2112@lxlicen03'
 # Set up CACTUS environment
 export LD_LIBRARY_PATH=/opt/cactus/lib:$LD_LIBRARY_PATH
 export PATH=/opt/cactus/bin:/opt/cactus/bin/uhal/tools:$PATH

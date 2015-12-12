@@ -1,7 +1,7 @@
 #!/bin/bash
 export MODELSIM_ROOT='/opt/mentor/modeltech/'
 ## license server
-export MGLS_LICENSE_FILE='1717@lxlic01:1717@lxlic02:1717@lxlic03'
+export MGLS_LICENSE_FILE='1717@lxlicen01,1717@lxlicen02,1717@lxlicen03;1717@lnxmics1;1717@lxlicen08'
 PATH=$PATH:/opt/mentor/modeltech/linux_x86_64
 export PATH
 
