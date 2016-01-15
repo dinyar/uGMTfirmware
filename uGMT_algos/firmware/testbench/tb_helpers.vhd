@@ -304,10 +304,11 @@ package body tb_helpers is
   procedure ReadTrack (
     variable L     : inout line;
     variable track : out   TGMTMuTracks3) is
-    variable LO                  : line;
-    variable eta1, eta2, eta3    : integer;
-    variable phi1, phi2, phi3    : integer;
-    variable qual1, qual2, qual3 : integer;
+    variable LO                     : line;
+    variable eta1, eta2, eta3       : integer;
+    variable phi1, phi2, phi3       : integer;
+    variable qual1, qual2, qual3    : integer;
+    variable empty1, empty2, empty3 : bit;
 
     variable dummy : string(1 to 5);
   begin  -- ReadTrack
@@ -319,7 +320,8 @@ package body tb_helpers is
     track(0).phi  := to_signed(phi1, 8);
     read(L, qual1);
     track(0).qual := to_unsigned(qual1, 4);
-    track(0).empty := '0';
+    read(L, empty1);
+    track(0).empty := to_stdulogic(empty1);
 
     read(L, eta2);
     track(1).eta  := to_signed(eta2, 9);
@@ -327,7 +329,8 @@ package body tb_helpers is
     track(1).phi  := to_signed(phi2, 8);
     read(L, qual2);
     track(1).qual := to_unsigned(qual2, 4);
-    track(1).empty := '0';
+    read(L, empty2);
+    track(1).empty := to_stdulogic(empty2);
 
     read(L, eta3);
     track(2).eta  := to_signed(eta3, 9);
@@ -335,7 +338,8 @@ package body tb_helpers is
     track(2).phi  := to_signed(phi3, 8);
     read(L, qual3);
     track(2).qual := to_unsigned(qual3, 4);
-    track(2).empty := '0';
+    read(L, empty3);
+    track(2).empty := to_stdulogic(empty3);
 
   end ReadTrack;
 
@@ -425,7 +429,7 @@ package body tb_helpers is
       elsif L.all(1 to 3) = "EVT" then
         -- TODO: Parse this maybe?
         next;
-    --   elsif L.all(1 to 4) = "BTRK" or L.all(1 to 4) = "OTRK" or L.all(1 to 4) = "FTRK" then
+    --   elsif L.all(1 to 4) = "BTRK" or L.all(1 to 4) = "OTRK" or L.all(1 to 4) = "ETRK" then
       elsif L.all(2 to 4) = "TRK" then
         ReadTrack(L, event.expectedTracks(wedgeNo));
         wedgeNo    := wedgeNo+1;
@@ -747,7 +751,7 @@ package body tb_helpers is
     variable emtf_id    : string(1 to 4) := "EMTF";
     variable bmtfTrk_id : string(1 to 4) := "BTRK";
     variable omtfTrk_id : string(1 to 4) := "OTRK";
-    variable emtfTrk_id : string(1 to 4) := "FTRK";
+    variable emtfTrk_id : string(1 to 4) := "ETRK";
   begin  -- DumpMuEvent
     if event.iEvent /= -1 then
       write(L1, string'("++++++++++++++++++++ Dump of event "));
@@ -1449,7 +1453,7 @@ package body tb_helpers is
     variable idFin    : string(1 to 4) := "FINM";
     variable idIntB   : string(1 to 4) := "IMBM";
     variable idIntO   : string(1 to 4) := "IMOM";
-    variable idIntE   : string(1 to 4) := "IMFM";
+    variable idIntE   : string(1 to 4) := "IMEM";
   begin
     if (iEvent.iEvent >= 0) then
       tmpError := 0;
