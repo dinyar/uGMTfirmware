@@ -431,7 +431,7 @@ begin
       oCancel => sCancelO_minus,
       clk     => clk
       );
-  cou_f_plus : entity work.CancelOutUnit_Single
+  cou_e_plus : entity work.CancelOutUnit_Single
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_EMTF,
       DATA_FILE        => CANCEL_OUT_DATA_FILE_EMTF_POS,
@@ -448,7 +448,7 @@ begin
       oCancel => sCancelE_plus,
       clk     => clk
       );
-  cou_f_minus : entity work.CancelOutUnit_Single
+  cou_e_minus : entity work.CancelOutUnit_Single
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_EMTF,
       DATA_FILE        => CANCEL_OUT_DATA_FILE_EMTF_NEG,
