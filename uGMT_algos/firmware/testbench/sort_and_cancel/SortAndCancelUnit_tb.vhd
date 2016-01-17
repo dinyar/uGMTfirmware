@@ -22,8 +22,8 @@ architecture behavior of testbench is
   constant div40           : integer   := 2;
   constant half_period_240 : time      := 25000 ps / div240;
   constant half_period_40  : time      := 6*half_period_240;
-  signal   clk240          : std_logic := '0';
-  signal   clk40           : std_logic := '0';
+  signal   clk240          : std_logic := '1';
+  signal   clk40           : std_logic := '1';
   signal   rst             : std_logic := '0';
   signal   rst_loc         : std_logic_vector(17 downto 0) := (others => '0');
 
@@ -290,8 +290,7 @@ begin
         writeline (FO, LO);
       end if;
 
-
-      wait for 25 ns;
+      wait for 2*half_period_40;
       iEvent := iEvent+1;
     end loop;
     write(LO, string'("!!!!! Number of events with errors: "));
