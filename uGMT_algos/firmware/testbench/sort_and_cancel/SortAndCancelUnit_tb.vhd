@@ -290,8 +290,7 @@ begin
         writeline (FO, LO);
       end if;
 
-
-      wait for 25 ns;
+      wait for 2*half_period_40;
       iEvent := iEvent+1;
     end loop;
     write(LO, string'("!!!!! Number of events with errors: "));

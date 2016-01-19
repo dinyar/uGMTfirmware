@@ -56,9 +56,11 @@ begin
         end if;
       --  If one muon in 0+ and one muon in 0- (0+ and 0- are physically the same wheel)
       elsif (mu1.detectorSide /= mu2.detectorSide) and
-            (mu1.wheelNo = 0 and mu2.wheelNo = 0) then
+            (mu1.wheelNo = 1 and mu2.wheelNo = 1) then
           if (mu1.stationAddresses(station) = X"8" and mu2.stationAddresses(station) = X"A") or
-             (mu1.stationAddresses(station) = X"9" and mu2.stationAddresses(station) = X"B") then
+             (mu1.stationAddresses(station) = X"9" and mu2.stationAddresses(station) = X"B") or
+             (mu1.stationAddresses(station) = X"C" and mu2.stationAddresses(station) = X"8") or
+             (mu1.stationAddresses(station) = X"D" and mu2.stationAddresses(station) = X"9")then
              matchedStation := true;
           end if;
       end if;
