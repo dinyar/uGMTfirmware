@@ -13,7 +13,6 @@ entity compute_complete_sums is
         iCaloIdxBitsE  : in  TCaloIndexBit_vector(35 downto 0);
         iMuIdxBits     : in  TIndexBits_vector(7 downto 0);
         oEnergies      : out TCaloArea_vector(7 downto 0);
-        oCaloIdxBits   : out TCaloIndexBit_vector(7 downto 0); -- Debugging output
 
         clk            : in  std_logic;
         sinit          : in  std_logic);
@@ -60,7 +59,5 @@ begin
       oEnergies(i) <= sEnergies_reg(to_integer(sCaloIdxBits(i).eta))((to_integer(sCaloIdxBits(i).phi)) mod sEnergies_reg(0)'length);
     end loop;  -- i
   end process extract_strip_energies;
-
-  oCaloIdxBits <= sCaloIdxBits;
 
 end Behavioral;

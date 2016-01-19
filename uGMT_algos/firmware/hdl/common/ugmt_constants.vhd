@@ -118,6 +118,9 @@ package ugmt_constants is
   --
   -- out
   --
+  constant IDX_OUT_HIGH : natural := 42;
+  constant IDX_OUT_LOW  : natural := 36;
+
   constant VALIDSIGN_OUT : natural := 35;
   constant SIGN_OUT      : natural := 34;
 

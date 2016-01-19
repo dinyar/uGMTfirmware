@@ -89,6 +89,9 @@ architecture rtl of mp7_payload is
   signal oMuons     : TGMTMu_vector(7 downto 0);
   signal oMuons_reg : TGMTMu_vector(7 downto 0);
 
+  signal sMuIdxBits     : TIndexBits_vector (7 downto 0);
+  signal sMuIdxBits_reg : TIndexBits_vector (7 downto 0);
+
   signal sIntermediateMuonsB         : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsO         : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsE         : TGMTMu_vector(7 downto 0);
@@ -337,7 +340,8 @@ begin
       oIntermediateSortRanksB => open,
       oIntermediateSortRanksO => open,
       oIntermediateSortRanksE => open,
-      oFinalEnergies          => open,
+
+      oMuIdxBits => sMuIdxBits,
 
       oMuons => oMuons,
       oIso   => sIso,
@@ -368,7 +372,8 @@ begin
   gmt_out_reg : process (clk_payload)
   begin  -- process gmt_out_reg
     if clk_payload'event and clk_payload = '1' then  -- rising clock edge
-      oMuons_reg <= oMuons;
+      oMuons_reg     <= oMuons;
+      sMuIdxBits_reg <= sMuIdxBits_reg;
 
       sIntermediateMuonsO_reg     <= sIntermediateMuonsO;
       sIntermediateMuonsB_reg     <= sIntermediateMuonsB;
@@ -405,8 +410,9 @@ begin
       clk40                => clk_payload,
       rst                  => rst_payload,
       iValid               => sValid_buffer(sValid_buffer'high),
-      sMuons               => oMuons_reg,
-      sIso                 => sIso,
+      iMuons               => oMuons_reg,
+      iMuIdxBits           => sMuIdxBits_reg,
+      iIso                 => sIso,
       iIntermediateMuonsB  => sIntermediateMuonsB_reg,
       iIntermediateMuonsO  => sIntermediateMuonsO_reg,
       iIntermediateMuonsE  => sIntermediateMuonsE_reg,
