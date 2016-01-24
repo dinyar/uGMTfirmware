@@ -50,7 +50,7 @@ architecture behavioral of HalfSortStage0 is
   signal sSortRanks_reg   : TSortRank10_vector(17 downto 0);
   signal sSortRanks_store : TSortRank10_vector(17 downto 0);
 
-  signal sDisable     : std_logic_vector(17 downto 0);
+  signal sDisable : std_logic_vector(17 downto 0);
 
   signal sSelBits     : TSelBits_1_of_18_vec (0 to 3);
   signal sSelBits_reg : TSelBits_1_of_18_vec (0 to 3);

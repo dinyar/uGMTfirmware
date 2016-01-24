@@ -55,12 +55,13 @@ entity SortAndCancelUnit is
     oMuons   : out TGMTMu_vector(7 downto 0);
 
     -- Clock and control
-    clk     : in  std_logic;
-    clk_ipb : in  std_logic;
-    sinit   : in  std_logic;
-    rst_loc : in  std_logic_vector(N_REGION - 1 downto 0);
-    ipb_in  : in  ipb_wbus;
-    ipb_out : out ipb_rbus
+    mu_ctr_rst : in  std_logic;
+    clk        : in  std_logic;
+    clk_ipb    : in  std_logic;
+    sinit      : in  std_logic;
+    rst_loc    : in  std_logic_vector(N_REGION - 1 downto 0);
+    ipb_in     : in  ipb_wbus;
+    ipb_out    : out ipb_rbus
     );
 end;
 
@@ -251,6 +252,21 @@ architecture behavioral of SortAndCancelUnit is
   constant MU_INTERMEDIATE_DELAY : natural := 1;  -- Delay to sync
                                                   -- intermediates with
                                                   -- final muons.
+
+  -- For muon counters
+  -- TODO: Possibly delay this signal by 2 BX more? Would be nice to have it synced with inputs.
+  signal muon_counter_reset_reg : std_logic;
+
+  -- One counter per local sorter (BMTF, OMTF+/-, EMTF +/-)
+  type TEmtpyBits_vector is array (4 downto 0) of std_logic_vector(7 downto 0);
+  signal sSortedEmptyBits     : TEmtpyBits_vector;
+  signal sSortedEmptyBits_reg : TEmtpyBits_vector;
+
+  type TLocalMuonCounter is array (4 downto 0) of unsigned(3 downto 0);
+  type TMuonCounter is array (4 downto 0) of unsigned(31 downto 0);
+  signal sMuonCounters       : TMuonCounter;
+  signal sMuonCounters_store : ipb_reg_v(NCHAN-1 downto 0);
+
 begin
 
   -- IPbus address decode
@@ -568,6 +584,58 @@ begin
       oEmpty     => sSortedEmptyE_minus,
       clk        => clk,
       sinit      => sinit);
+
+  sSortedEmptyBits(0) <= sSortedEmptyB;
+  sSortedEmptyBits(1) <= "1111" & sSortedEmptyO_plus;
+  sSortedEmptyBits(2) <= "1111" & sSortedEmptyO_minus;
+  sSortedEmptyBits(3) <= "1111" & sSortedEmptyE_plus;
+  sSortedEmptyBits(4) <= "1111" & sSortedEmptyE_minus;
+
+  -- TODO: Add muon counters here
+  count_mus : process(clk)
+    variable muonCount : TLocalMuonCounter;
+  begin
+    if clk'event and clk = '1' then  -- rising clock edge
+      muon_counter_reset_reg <= mu_ctr_rst;
+
+      sSortedEmptyBits_reg <= sSortedEmptyBits;
+
+      -- Counting how many non-empty muons we have.
+      for i in sSortedEmptyBits_reg'range loop
+        muonCount(i) := (others => '0');
+        for j in sSortedEmptyBits_reg(i)'range loop
+          if sSortedEmptyBits_reg(i)(j) = '0' then
+            muonCount(i) := muonCount(i)+to_unsigned(1, muonCount(i)'length);
+          end if;
+        end loop;
+
+        -- Add above sum to register.
+        if muon_counter_reset_reg = '1' then
+          -- Reset muon counter after storing its contents in register.
+          sMuonCounters(i)_store <= std_logic_vector(sMuonCounters(i));
+          sMuonCounters(i) <= resize(muonCount(i), sMuonCounters(i)'length);
+        else
+          sMuonCounters(i) <= sMuonCounters(i) + resize(muonCount(i), sMuonCounters(i)'length);
+        end if;
+      end loop;
+    end if;
+  end process;
+
+  -- TODO: Replace '4' with named constant
+  gen_ipb_registers : for i in 4 downto 0 generate
+    muon_counter : entity work.ipbus_reg_status
+      generic map(
+        N_REG => 1
+        )
+      port map(
+        ipbus_in  => ipbw(N_SLV_MUON_COUNTER_0+i),
+        ipbus_out => ipbr(N_SLV_MUON_COUNTER_0+i),
+        clk       => clk_ipb,
+        reset     => rst,
+        d         => sMuonCounters_store(i downto i),
+        q         => open
+        );
+  end generate gen_ipb_registers;
 
   gen_pair_finding_unit : if rpc_merging generate
     -- Find pairs based on MQ matrix between RPC and TF muons.
