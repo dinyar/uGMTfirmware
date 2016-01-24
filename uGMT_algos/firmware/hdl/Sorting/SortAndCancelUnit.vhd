@@ -257,13 +257,14 @@ architecture behavioral of SortAndCancelUnit is
   -- TODO: Possibly delay this signal by 2 BX more? Would be nice to have it synced with inputs.
   signal muon_counter_reset_reg : std_logic;
 
+  constant NUM_LOCAL_SORTERS : natural := 4; -- Number of local sorters.
   -- One counter per local sorter (BMTF, OMTF+/-, EMTF +/-)
-  type TEmtpyBits_vector is array (4 downto 0) of std_logic_vector(7 downto 0);
+  type TEmtpyBits_vector is array (NUM_LOCAL_SORTERS downto 0) of std_logic_vector(7 downto 0);
   signal sSortedEmptyBits     : TEmtpyBits_vector;
   signal sSortedEmptyBits_reg : TEmtpyBits_vector;
 
-  type TLocalMuonCounter is array (4 downto 0) of unsigned(3 downto 0);
-  type TMuonCounter is array (4 downto 0) of unsigned(31 downto 0);
+  type TLocalMuonCounter is array (NUM_LOCAL_SORTERS downto 0) of unsigned(3 downto 0);
+  type TMuonCounter is array (NUM_LOCAL_SORTERS downto 0) of unsigned(31 downto 0);
   signal sMuonCounters       : TMuonCounter;
   signal sMuonCounters_store : ipb_reg_v(NCHAN-1 downto 0);
 
@@ -621,8 +622,7 @@ begin
     end if;
   end process;
 
-  -- TODO: Replace '4' with named constant
-  gen_ipb_registers : for i in 4 downto 0 generate
+  gen_ipb_registers : for i in NUM_LOCAL_SORTERS downto 0 generate
     muon_counter : entity work.ipbus_reg_status
       generic map(
         N_REG => 1
