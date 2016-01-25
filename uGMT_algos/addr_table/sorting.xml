@@ -8,8 +8,9 @@
   <node id="cou_omtf_neg" address="0x60000" module="file://cancel_out_half_sorters.xml" description="LUTs containing match qualities for matching within the OMTF region on negative side."/>
   <node id="cou_emtf_pos" address="0x70000" module="file://cancel_out_half_sorters.xml" description="LUTs containing match qualities for matching within the EMTF region on positive side."/>
   <node id="cou_emtf_neg" address="0x80000" module="file://cancel_out_half_sorters.xml" description="LUTs containing match qualities for matching within the EMTF region on negative side."/>
-  <node id="muon_counter_0" address="0x90000" description="" fwinfo="endpoint;width=0" />
-  <node id="muon_counter_1" address="0x90001" description="" fwinfo="endpoint;width=0" />
-  <node id="muon_counter_2" address="0x90002" description="" fwinfo="endpoint;width=0" />
-  <node id="muon_counter_3" address="0x90003" description="" fwinfo="endpoint;width=0" />
+  <node id="muon_counter_0" address="0x90000" description="Counter for barrel sorter output" fwinfo="endpoint;width=0" />
+  <node id="muon_counter_1" address="0x90001" description="Counter for positive overlap sorter output" fwinfo="endpoint;width=0" />
+  <node id="muon_counter_2" address="0x90002" description="Counter for negative overlap sorter output" fwinfo="endpoint;width=0" />
+  <node id="muon_counter_3" address="0x90003" description="Counter for positive endcap sorter output" fwinfo="endpoint;width=0" />
+  <node id="muon_counter_4" address="0x90004" description="Counter for negative endcap sorter output" fwinfo="endpoint;width=0" />
 </node>
