@@ -17,7 +17,7 @@ package ipbus_decode_isolation_mem_relative is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_isolation_mem_relative(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Mon Oct 12 17:59:56 2015 
+-- START automatically  generated VHDL the Mon Jan 25 01:18:39 2016 
   constant N_SLV_REL_ISO_0: integer := 0;
   constant N_SLV_REL_ISO_1: integer := 1;
   constant N_SLV_REL_ISO_2: integer := 2;
@@ -38,7 +38,7 @@ package body ipbus_decode_isolation_mem_relative is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Mon Oct 12 17:59:56 2015 
+-- START automatically  generated VHDL the Mon Jan 25 01:18:39 2016 
     if    std_match(addr, "---------------000--------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_REL_ISO_0, IPBUS_SEL_WIDTH)); -- rel_iso_0 / base 0x00000000 / mask 0x0001c000
     elsif std_match(addr, "---------------001--------------") then
