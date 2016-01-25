@@ -17,7 +17,7 @@ package ipbus_decode_sorting is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_sorting(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Mon Oct 12 17:59:56 2015 
+-- START automatically  generated VHDL the Mon Jan 25 01:44:51 2016 
   constant N_SLV_COU_BO_POS: integer := 0;
   constant N_SLV_COU_BO_NEG: integer := 1;
   constant N_SLV_COU_EO_POS: integer := 2;
@@ -27,7 +27,12 @@ package ipbus_decode_sorting is
   constant N_SLV_COU_OMTF_NEG: integer := 6;
   constant N_SLV_COU_EMTF_POS: integer := 7;
   constant N_SLV_COU_EMTF_NEG: integer := 8;
-  constant N_SLAVES: integer := 9;
+  constant N_SLV_MUON_COUNTER_0: integer := 9;
+  constant N_SLV_MUON_COUNTER_1: integer := 10;
+  constant N_SLV_MUON_COUNTER_2: integer := 11;
+  constant N_SLV_MUON_COUNTER_3: integer := 12;
+  constant N_SLV_MUON_COUNTER_4: integer := 13;
+  constant N_SLAVES: integer := 14;
 -- END automatically generated VHDL
 
     
@@ -39,7 +44,7 @@ package body ipbus_decode_sorting is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Mon Oct 12 17:59:56 2015 
+-- START automatically  generated VHDL the Mon Jan 25 01:44:51 2016 
     if    std_match(addr, "------------0000----------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_COU_BO_POS, IPBUS_SEL_WIDTH)); -- cou_bo_pos / base 0x00000000 / mask 0x000f0000
     elsif std_match(addr, "------------0001----------------") then
@@ -58,6 +63,16 @@ package body ipbus_decode_sorting is
       sel := ipbus_sel_t(to_unsigned(N_SLV_COU_EMTF_POS, IPBUS_SEL_WIDTH)); -- cou_emtf_pos / base 0x00070000 / mask 0x000f0000
     elsif std_match(addr, "------------1000----------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_COU_EMTF_NEG, IPBUS_SEL_WIDTH)); -- cou_emtf_neg / base 0x00080000 / mask 0x000f0000
+    elsif std_match(addr, "------------1001-------------000") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_MUON_COUNTER_0, IPBUS_SEL_WIDTH)); -- muon_counter_0 / base 0x00090000 / mask 0x000f0007
+    elsif std_match(addr, "------------1001-------------001") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_MUON_COUNTER_1, IPBUS_SEL_WIDTH)); -- muon_counter_1 / base 0x00090001 / mask 0x000f0007
+    elsif std_match(addr, "------------1001-------------010") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_MUON_COUNTER_2, IPBUS_SEL_WIDTH)); -- muon_counter_2 / base 0x00090002 / mask 0x000f0007
+    elsif std_match(addr, "------------1001-------------011") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_MUON_COUNTER_3, IPBUS_SEL_WIDTH)); -- muon_counter_3 / base 0x00090003 / mask 0x000f0007
+    elsif std_match(addr, "------------1001-------------100") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_MUON_COUNTER_4, IPBUS_SEL_WIDTH)); -- muon_counter_4 / base 0x00090004 / mask 0x000f0007
 -- END automatically generated VHDL
 
     else
