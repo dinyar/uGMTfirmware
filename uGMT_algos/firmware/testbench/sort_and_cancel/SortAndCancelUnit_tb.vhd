@@ -84,6 +84,7 @@ begin
       oIdxBits                => oIdxBits,
       oMuPt                   => oMuPt,
       oMuons                  => oMuons,
+      mu_ctr_rst              => '0', 
       clk                     => clk40,
       clk_ipb                 => clk240,
       sinit                   => rst,

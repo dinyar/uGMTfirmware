@@ -19,6 +19,7 @@ vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/boards/mp7/base_fw/mp7xe_69
 vcom -check_synthesis ../../hdl/Sorting/SorterUnit.vhd
 vcom -check_synthesis ../../hdl/MatchAndMerge/*
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_dpram_dist.vhd
+vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_reg_status.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_cancel_out_*.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_BMTF.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_spatialCoords.vhd

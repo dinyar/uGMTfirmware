@@ -342,7 +342,7 @@ begin
       oMuons => oMuons,
       oIso   => sIso,
 
-      mu_ctr_rst   => sMuCtrReset,
+      mu_ctr_rst   => sMuCtrReset(4),
       clk          => clk_payload,
       clk_ipb      => clk,
       sinit        => rst_payload,
