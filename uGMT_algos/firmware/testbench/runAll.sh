@@ -12,11 +12,11 @@ else
 	rm -f results/*
 fi
 cd serializer
-./runSim.sh #&> /dev/null
+./runSim.sh &> /dev/null
 cd ../sort_and_cancel
-./runSim.sh #&> /dev/null
+./runSim.sh &> /dev/null
 cd ../ugmt_serdes
-./runSim.sh #&> /dev/null
+./runSim.sh &> /dev/null
 cd ..
 
 python ../../scripts/check_results.py

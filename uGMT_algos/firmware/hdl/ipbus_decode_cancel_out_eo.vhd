@@ -17,7 +17,7 @@ package ipbus_decode_cancel_out_eo is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_cancel_out_eo(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Mon Jan 25 01:18:38 2016 
+-- START automatically  generated VHDL the Mon Oct 12 17:59:55 2015 
   constant N_SLV_CANCEL_OUT_EO_0: integer := 0;
   constant N_SLV_CANCEL_OUT_EO_1: integer := 1;
   constant N_SLV_CANCEL_OUT_EO_2: integer := 2;
@@ -36,7 +36,7 @@ package body ipbus_decode_cancel_out_eo is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Mon Jan 25 01:18:38 2016 
+-- START automatically  generated VHDL the Mon Oct 12 17:59:55 2015 
     if    std_match(addr, "----------------000-------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_EO_0, IPBUS_SEL_WIDTH)); -- cancel_out_eo_0 / base 0x00000000 / mask 0x0000e000
     elsif std_match(addr, "----------------001-------------") then

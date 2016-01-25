@@ -15,7 +15,7 @@ def get_addresses(pattern_type):
     '''
     Gets the download URLs through the github-API.
     '''
-    fobj = urllib.urlopen('https://api.github.com/repos/thomreis/uGMTScripts/contents/ugmt_patterns/data/patterns/{tp}'.format(tp=pattern_type))
+    fobj = urllib.urlopen('https://api.github.com/repos/jlingema/uGMTScripts/contents/ugmt_patterns/data/patterns/{tp}'.format(tp=pattern_type))
     return [x['download_url'] for x in json.loads(fobj.read())]
 
 
