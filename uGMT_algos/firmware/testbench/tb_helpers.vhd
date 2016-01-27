@@ -327,7 +327,7 @@ package body tb_helpers is
     track(0).phi  := to_signed(phi1, 8);
     read(L, qual1);
     track(0).qual := to_unsigned(qual1, 4);
-    if tfId = "BTRK" then
+    if tfId(1 to 4) = "BTRK" then
       read(L, sel1);
       -- TODO: Add support for 4 track segments
       read(L, detSide1);
@@ -353,7 +353,7 @@ package body tb_helpers is
     track(1).phi  := to_signed(phi2, 8);
     read(L, qual2);
     track(1).qual := to_unsigned(qual2, 4);
-    if tfId = "BTRK" then
+    if tfId(1 to 4) = "BTRK" then
       read(L, sel2);
       -- TODO: Add support for 4 track segments
       read(L, detSide2);
@@ -378,7 +378,7 @@ package body tb_helpers is
     track(2).phi  := to_signed(phi3, 8);
     read(L, qual3);
     track(2).qual := to_unsigned(qual3, 4);
-    if tfId = "BTRK" then
+    if tfId(1 to 4) = "BTRK" then
       read(L, sel3);
       -- TODO: Add support for 4 track segments
       read(L, detSide3);
