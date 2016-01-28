@@ -68,7 +68,7 @@ package GMTTypes is
 
   type TBMTFTrackAddress is record
     detectorSide : std_logic_vector(0 downto 0); -- Side of detector
-    wheelNo      : unsigned(1 downto 0);  -- Not clear yet if signed or unsigned
+    wheelNo      : unsigned(1 downto 0);  -- 0, 1, or 2
 
     addressStation0  : unsigned(1 downto 0); -- 1 or 2. 3 for empty
     stationAddresses : TBMTFSectorAddresses; -- 8 to D; 0 to 5. F for empty
