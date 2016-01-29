@@ -438,7 +438,11 @@ package body GMTTypes is
     oMuon_flat(VALIDSIGN_OUT)                            := iMuon.sign_valid;
     oMuon_flat(ISO_OUT_HIGH downto ISO_OUT_LOW)          := iIso;
     oMuon_flat(ETA_OUT_HIGH downto ETA_OUT_LOW)          := std_logic_vector(iMuon.eta);
-    oMuon_flat(QUAL_OUT_HIGH downto QUAL_OUT_LOW)        := std_logic_vector(iMuon.qual);
+    if iMuon.halo = '0' then
+      oMuon_flat(QUAL_OUT_HIGH downto QUAL_OUT_LOW)      := std_logic_vector(iMuon.qual);
+    else
+      oMuon_flat(QUAL_OUT_HIGH downto QUAL_OUT_LOW)      := "1111";
+    end if;
     oMuon_flat(PT_OUT_HIGH downto PT_OUT_LOW)            := std_logic_vector(iMuon.pt);
     oMuon_flat(PHI_OUT_HIGH downto PHI_OUT_LOW)          := std_logic_vector(iMuon.phi);
     return oMuon_flat;
