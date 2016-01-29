@@ -15,7 +15,8 @@ use work.ugmt_constants.all;
 
 entity deserialize_mu_quad is
   generic (
-    INIT_PHI_OFFSET : ipb_reg_v(0 to 3)
+    INIT_PHI_OFFSET : ipb_reg_v(0 to 3);
+    QUAD            : natural
     );
   port (
     clk_ipb            : in  std_logic;
@@ -298,7 +299,15 @@ begin
   sMuons_flat     <= unroll_link_muons(sMuons_event(NCHAN-1 downto 0));
   sGlobalPhi_flat <= unroll_global_phi(sGlobalPhi_event(NCHAN-1 downto 0));
   unpack_muons : for i in sMuonsIn'range generate
-    sMuonsIn(i) <= unpack_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
+    check_bmtf : if (((4*QUAD)+i)-36 >= BMTF_LOW) and (((4*QUAD)+i)-36 <= BMTF_HIGH) generate
+      sMuonsIn(i) <= unpack_bmtf_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
+    end if;
+    check_omtf : if (((4*QUAD)+i)-36 >= OMTF_LOW) and (((4*QUAD)+i)-36 <= OMTF_HIGH) generate
+      sMuonsIn(i) <= unpack_omtf_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
+    end if;
+    check_emtf : if (((4*QUAD)+i)-36 >= EMTF_LOW) and (((4*QUAD)+i)-36 <= EMTF_HIGH) generate
+      sMuonsIn(i) <= unpack_emtf_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
+    end if;
   end generate unpack_muons;
   convert_muons : for i in sMuonsIn'range generate
     oMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i));

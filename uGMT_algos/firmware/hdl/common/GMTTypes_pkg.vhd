@@ -17,9 +17,11 @@ package GMTTypes is
     sign       : std_logic;                     -- charge bit (1= plus)
     sign_valid : std_logic;                     -- charge bit valid indicator
     eta        : std_logic_vector(8 downto 0);  -- 9 bit eta
+    fine_eta   : std_logic;                     -- BMTF eta was measured fine/coarse
     qual       : std_logic_vector(3 downto 0);  -- 4 bit quality
     pt         : std_logic_vector(8 downto 0);  -- 9 bit pt
     phi        : std_logic_vector(9 downto 0);  -- 10 bit phi
+    halo       : std_logic;                     -- EMTF muon travelled parallel to beamline
   end record;
 
   type    TGMTMuIn_vector is array (integer range <>) of TGMTMuIn;
@@ -33,9 +35,11 @@ package GMTTypes is
     sign       : std_logic;                     -- charge bit (1= plus)
     sign_valid : std_logic;                     -- charge bit valid indicator
     eta        : signed(8 downto 0);            -- 9 bit eta
+    fine_eta   : std_logic;                     -- BMTF eta was measured fine/coarse
     qual       : unsigned(3 downto 0);          -- 4 bit quality
     pt         : unsigned(8 downto 0);          -- 9 bit pt
     phi        : unsigned(9 downto 0);          -- 10 bit phi
+    halo       : std_logic;                     -- EMTF muon travelled parallel to beamline
   end record;
 
   type TGMTMu_vector is array (integer range <>) of TGMTMu;
@@ -267,8 +271,12 @@ package GMTTypes is
   function add_offset_to_local_phi(signal iLocalPhi : std_logic_vector(7 downto 0);
                        signal iOffset   : unsigned(9 downto 0)) return signed;
 
-  function unpack_mu_from_flat(signal iMuon_flat : TFlatMuon;
-                               signal iPhi       : unsigned(9 downto 0)) return TGMTMuIn;
+  function unpack_bmtf_mu_from_flat(signal iMuon_flat : TFlatMuon;
+                                    signal iPhi       : unsigned(9 downto 0)) return TGMTMuIn;
+  function unpack_omtf_mu_from_flat(signal iMuon_flat : TFlatMuon;
+                                    signal iPhi       : unsigned(9 downto 0)) return TGMTMuIn;
+  function unpack_emtf_mu_from_flat(signal iMuon_flat : TFlatMuon;
+                                    signal iPhi       : unsigned(9 downto 0)) return TGMTMuIn;
 
   function pack_mu_to_flat(signal iMuon : TGMTMu;
                            signal iIso  : TIsoBits) return TFlatMuon;
@@ -363,7 +371,7 @@ package body GMTTypes is
     return oGlobalPhi_flat;
   end;
 
-  function unpack_mu_from_flat (
+  function unpack_bmtf_mu_from_flat (
     signal iMuon_flat : TFlatMuon;
     signal iPhi       : unsigned(9 downto 0))
     return TGMTMuIn is
@@ -372,9 +380,46 @@ package body GMTTypes is
     oMuon.sign        := iMuon_flat(SIGN_IN);
     oMuon.sign_valid  := iMuon_flat(VALIDSIGN_IN);
     oMuon.eta         := iMuon_flat(ETA_IN_HIGH downto ETA_IN_LOW);
+    oMuon.fine_eta    := iMuon_flat(HALO_FINE_IN);
     oMuon.qual        := iMuon_flat(QUAL_IN_HIGH downto QUAL_IN_LOW);
     oMuon.pt          := iMuon_flat(PT_IN_HIGH downto PT_IN_LOW);
     oMuon.phi         := std_logic_vector(iPhi);
+    oMuon.halo        := '0';  -- Track-finders other than EMTF never see halo muons.
+    return oMuon;
+  end;
+
+
+  function unpack_omtf_mu_from_flat (
+    signal iMuon_flat : TFlatMuon;
+    signal iPhi       : unsigned(9 downto 0))
+    return TGMTMuIn is
+    variable oMuon : TGMTMuIn;
+  begin
+    oMuon.sign        := iMuon_flat(SIGN_IN);
+    oMuon.sign_valid  := iMuon_flat(VALIDSIGN_IN);
+    oMuon.eta         := iMuon_flat(ETA_IN_HIGH downto ETA_IN_LOW);
+    oMuon.fine_eta    := '1';  -- Track-finders other than BMTF always have fine eta.
+    oMuon.qual        := iMuon_flat(QUAL_IN_HIGH downto QUAL_IN_LOW);
+    oMuon.pt          := iMuon_flat(PT_IN_HIGH downto PT_IN_LOW);
+    oMuon.phi         := std_logic_vector(iPhi);
+    oMuon.halo        := '0';  -- Track-finders other than EMTF never see halo muons.
+    return oMuon;
+  end;
+
+  function unpack_emtf_mu_from_flat (
+    signal iMuon_flat : TFlatMuon;
+    signal iPhi       : unsigned(9 downto 0))
+    return TGMTMuIn is
+    variable oMuon : TGMTMuIn;
+  begin
+    oMuon.sign        := iMuon_flat(SIGN_IN);
+    oMuon.sign_valid  := iMuon_flat(VALIDSIGN_IN);
+    oMuon.eta         := iMuon_flat(ETA_IN_HIGH downto ETA_IN_LOW);
+    oMuon.fine_eta    := '1';  -- Track-finders other than BMTF always have fine eta.
+    oMuon.qual        := iMuon_flat(QUAL_IN_HIGH downto QUAL_IN_LOW);
+    oMuon.pt          := iMuon_flat(PT_IN_HIGH downto PT_IN_LOW);
+    oMuon.phi         := std_logic_vector(iPhi);
+    oMuon.halo        := iMuon_flat(HALO_FINE_IN);
     return oMuon;
   end;
 
@@ -410,9 +455,11 @@ package body GMTTypes is
     oMuon.sign       := iMuonIn.sign;
     oMuon.sign_valid := iMuonIn.sign_valid;
     oMuon.eta        := signed(iMuonIn.eta);
+    oMuon.fine_eta   := iMuonIn.fine_eta;
     oMuon.qual       := unsigned(iMuonIn.qual);
     oMuon.pt         := unsigned(iMuonIn.pt);
     oMuon.phi        := unsigned(iMuonIn.phi);
+    oMuon.halo       := iMuonIn.halo;
     return oMuon;
   end gmt_mu_from_in_mu;
 
