@@ -91,6 +91,8 @@ package ugmt_constants is
   constant ETA_IN_LOW  : natural := 13;
   constant ETA_IN_HIGH : natural := 21;
 
+  constant HALO_FINE_IN : natural := 22;
+
   constant PHI_IN_LOW  : natural := 23;
   constant PHI_IN_HIGH : natural := 30;
 
