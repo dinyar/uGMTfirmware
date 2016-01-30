@@ -301,13 +301,13 @@ begin
   unpack_muons : for i in sMuonsIn'range generate
     check_bmtf : if (((4*QUAD)+i)-36 >= BMTF_LOW) and (((4*QUAD)+i)-36 <= BMTF_HIGH) generate
       sMuonsIn(i) <= unpack_bmtf_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
-    end if;
-    check_omtf : if (((4*QUAD)+i)-36 >= OMTF_LOW) and (((4*QUAD)+i)-36 <= OMTF_HIGH) generate
+    end generate check_bmtf;
+    check_omtf : if ((((4*QUAD)+i)-36 >= OMTF_NEG_LOW) and (((4*QUAD)+i)-36 <= OMTF_NEG_HIGH) or (((4*QUAD)+i)-36 >= OMTF_POS_LOW) and (((4*QUAD)+i)-36 <= OMTF_POS_HIGH)) generate
       sMuonsIn(i) <= unpack_omtf_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
-    end if;
-    check_emtf : if (((4*QUAD)+i)-36 >= EMTF_LOW) and (((4*QUAD)+i)-36 <= EMTF_HIGH) generate
+    end generate check_omtf;
+    check_emtf : if ((((4*QUAD)+i)-36 >= EMTF_NEG_LOW) and (((4*QUAD)+i)-36 <= EMTF_NEG_HIGH) or (((4*QUAD)+i)-36 >= EMTF_POS_LOW) and (((4*QUAD)+i)-36 <= EMTF_POS_HIGH)) generate
       sMuonsIn(i) <= unpack_emtf_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
-    end if;
+    end generate check_emtf;
   end generate unpack_muons;
   convert_muons : for i in sMuonsIn'range generate
     oMuons(i) <= gmt_mu_from_in_mu(sMuonsIn(i));

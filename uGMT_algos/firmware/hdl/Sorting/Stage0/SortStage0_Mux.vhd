@@ -62,7 +62,7 @@ begin
         when "000000000000000000000000000000000100" => oMuons(iplace) <= iMuons(33);
         when "000000000000000000000000000000000010" => oMuons(iplace) <= iMuons(34);
         when "000000000000000000000000000000000001" => oMuons(iplace) <= iMuons(35);
-        when others                                 => oMuons(iplace) <= ('0', '0', "000000000", "0000", "000000000", "0000000000");
+        when others                                 => oMuons(iplace) <= ('0', '0', "000000000", '0', "0000", "000000000", "0000000000", '0');
       end case;
       case iSelBits(iplace) is
         when "100000000000000000000000000000000000" => oSortRanks(iplace) <= iSortRanks(0);
@@ -185,4 +185,3 @@ begin
   end process mux;
 
 end Behavioral;
-
