@@ -6,6 +6,8 @@
 CACTUSREPOPATH=/home/scratch/ugmt_firmware/mp7fw_current
 #################################################
 
+rm -rf serializer_tb
+
 vlib serializer_tb
 vmap work serializer_tb
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_types.vhd
@@ -17,4 +19,3 @@ vcom -check_synthesis ../tb_helpers.vhd
 vcom -check_synthesis serializer_tb.vhd
 
 vmake work > Makefile
-

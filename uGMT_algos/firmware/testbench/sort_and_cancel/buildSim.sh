@@ -6,6 +6,8 @@
 CACTUSREPOPATH=/home/scratch/ugmt_firmware/mp7fw_current
 #################################################
 
+rm -rf sortAndCancel_tb
+
 vlib sortAndCancel_tb
 vmap work sortAndCancel_tb
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_types.vhd
