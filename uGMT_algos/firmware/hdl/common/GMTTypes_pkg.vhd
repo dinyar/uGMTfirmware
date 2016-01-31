@@ -439,7 +439,7 @@ package body GMTTypes is
     oMuon_flat(ISO_OUT_HIGH downto ISO_OUT_LOW)          := iIso;
     oMuon_flat(ETA_OUT_HIGH downto ETA_OUT_LOW)          := std_logic_vector(iMuon.eta);
     if iMuon.halo = '0' then
-      oMuon_flat(QUAL_OUT_HIGH downto QUAL_OUT_LOW)      := std_logic_vector(iMuon.qual);
+      oMuon_flat(QUAL_OUT_HIGH downto QUAL_OUT_LOW)      := std_logic_vector(iMuon.qual)(3 downto 2) & "00";
     else
       oMuon_flat(QUAL_OUT_HIGH downto QUAL_OUT_LOW)      := "1111";
     end if;
