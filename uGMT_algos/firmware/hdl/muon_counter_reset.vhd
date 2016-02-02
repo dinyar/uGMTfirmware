@@ -94,7 +94,8 @@ begin
         orbit_ctr          := 0;
       elsif ttc_command = TTC_BCMD_OC0 then
         -- Received OC0 at BX 2000. Need to wait for BC0.
-        receivedOC0 <= '1';
+        receivedOC0        <= '1';
+        lumi_section_ended <= '0';
       elsif orbit_ctr = LS_LENGTH_IN_ORBITS then
         -- Reached end of lumi section. Resetting muon counters.
         lumi_section_ended <= '1';
@@ -102,7 +103,7 @@ begin
       elsif ttc_command = TTC_BCMD_BC0 then
         if receivedOC0 = '1' then
           -- End of orbit and OC0 received. Going to reset everything.
-          lumi_section_ended <= '1';
+          lumi_section_ended <= '0';
           receivedOC0        <= '0';
           orbit_ctr          := 0;
         else
@@ -130,7 +131,7 @@ begin
 
   count_lumi_sections : entity work.ipbus_permanent_counter
     port map(
-      clk          => clk_ipb,
+      clk          => clk40,
       reset        => sLumiSectionReset,
       ipbus_in     => ipbw(N_SLV_LUMI_SECTION_CNT),
       ipbus_out    => ipbr(N_SLV_LUMI_SECTION_CNT),
