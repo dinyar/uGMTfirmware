@@ -10,7 +10,7 @@ def get_addresses(lut_type):
     '''
     Gets the download URLs through the github-API.
     '''
-    fobj = urllib.urlopen('https://api.github.com/repos/jlingema/uGMTScripts/contents/lut_tests/lut_configuration/data/{tp}'.format(tp=lut_type))
+    fobj = urllib.urlopen('https://api.github.com/repos/thomreis/uGMTScripts/contents/lut_tests/lut_configuration/data/{tp}'.format(tp=lut_type))
     return [x['download_url'] for x in json.loads(fobj.read())]
 
 
