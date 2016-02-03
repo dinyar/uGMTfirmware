@@ -72,7 +72,7 @@ begin
     for i in event_buffer'range loop
       event_buffer(i).iEvent := -1;
       for iMu in event_buffer(i).muons'range loop
-        event_buffer(i).muons(iMu) := ('0', '0', "000000000", "0000", "000000000", "0000000000");
+        event_buffer(i).muons(iMu) := ('0', '0', "000000000", '0', "0000", "000000000", "0000000000", '0');
         event_buffer(i).iso(iMu)   := "00";
       end loop;  -- iMu
     end loop;  -- i
