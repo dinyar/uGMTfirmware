@@ -14,7 +14,7 @@ def encode_error(testbench_name, names):
 
 def main():
     error = 0
-    testbench_names = ["serializer", "ugmt_serdes"]
+    testbench_names = ["serializer", "SortAndCancel", "ugmt_serdes"]
     file_counter = 0
     for root, folders, fnames in os.walk('results'):
         for fname in fnames:
