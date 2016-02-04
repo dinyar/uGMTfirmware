@@ -42,12 +42,13 @@ entity GMT is
     oMuons : out TGMTMu_vector(7 downto 0);
     oIso   : out TIsoBits_vector(7 downto 0);
 
-    clk     : in  std_logic;
-    clk_ipb : in  std_logic;
-    sinit   : in  std_logic;
-    rst_loc : in  std_logic_vector(N_REGION - 1 downto 0);
-    ipb_in  : in  ipb_wbus;
-    ipb_out : out ipb_rbus
+    mu_ctr_rst : in  std_logic;
+    clk                : in  std_logic;
+    clk_ipb            : in  std_logic;
+    sinit              : in  std_logic;
+    rst_loc            : in  std_logic_vector(N_REGION - 1 downto 0);
+    ipb_in             : in  ipb_wbus;
+    ipb_out            : out ipb_rbus
     );
 end GMT;
 
@@ -163,6 +164,7 @@ begin
       oIdxBits                => sMuIdxBits,
       oMuPt                   => sFinalMuPt,
       oMuons                  => sMuons_sorted,
+      mu_ctr_rst              => mu_ctr_rst,
       clk                     => clk,
       clk_ipb                 => clk_ipb,
       sinit                   => sinit,

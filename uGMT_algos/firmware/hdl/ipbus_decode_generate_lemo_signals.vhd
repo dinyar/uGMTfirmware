@@ -17,7 +17,7 @@ package ipbus_decode_generate_lemo_signals is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_generate_lemo_signals(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Mon Oct 12 17:59:56 2015 
+-- START automatically  generated VHDL the Mon Jan 25 01:44:51 2016 
   constant N_SLV_PRESCALE: integer := 0;
   constant N_SLAVES: integer := 1;
 -- END automatically generated VHDL
@@ -31,7 +31,7 @@ package body ipbus_decode_generate_lemo_signals is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Mon Oct 12 17:59:56 2015 
+-- START automatically  generated VHDL the Mon Jan 25 01:44:51 2016 
     if    std_match(addr, "--------------------------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_PRESCALE, IPBUS_SEL_WIDTH)); -- prescale / base 0x00000000 / mask 0x00000000
 -- END automatically generated VHDL

@@ -6,6 +6,8 @@
 CACTUSREPOPATH=/home/scratch/ugmt_firmware/mp7fw_current
 #################################################
 
+rm -rf sortAndCancel_tb
+
 vlib sortAndCancel_tb
 vmap work sortAndCancel_tb
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_types.vhd
@@ -19,6 +21,7 @@ vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/boards/mp7/base_fw/mp7xe_69
 vcom -check_synthesis ../../hdl/Sorting/SorterUnit.vhd
 vcom -check_synthesis ../../hdl/MatchAndMerge/*
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_dpram_dist.vhd
+vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_reg_status.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_cancel_out_*.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_BMTF.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_spatialCoords.vhd

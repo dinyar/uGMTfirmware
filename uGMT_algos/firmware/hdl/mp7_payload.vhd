@@ -346,12 +346,13 @@ begin
       oMuons => oMuons,
       oIso   => sIso,
 
-      clk     => clk_payload,
-      clk_ipb => clk,
-      sinit   => rst_payload,
-      rst_loc => rst_loc,
-      ipb_in  => ipbw(N_SLV_UGMT),
-      ipb_out => ipbr(N_SLV_UGMT)
+      mu_ctr_rst   => sMuCtrReset(4),
+      clk          => clk_payload,
+      clk_ipb      => clk,
+      sinit        => rst_payload,
+      rst_loc      => rst_loc,
+      ipb_in       => ipbw(N_SLV_UGMT),
+      ipb_out      => ipbr(N_SLV_UGMT)
       );
 
   generate_lemo_signals : entity work.generate_lemo_signals

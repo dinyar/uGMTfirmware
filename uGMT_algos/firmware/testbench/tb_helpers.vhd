@@ -287,6 +287,10 @@ package body tb_helpers is
       read(L, iso);
       isoBit := std_logic_vector(to_unsigned(iso, 2));
     end if;
+
+    -- TODO: Handle halo bit once this has been added to testbench.
+    muon.halo := '0';
+
   end ReadInputMuon;
 
   procedure ReadInputMuon (
@@ -304,14 +308,22 @@ package body tb_helpers is
   procedure ReadTrack (
     variable L     : inout line;
     variable track : out   TGMTMuTracks3) is
-    variable LO                  : line;
-    variable eta1, eta2, eta3    : integer;
-    variable phi1, phi2, phi3    : integer;
-    variable qual1, qual2, qual3 : integer;
+    variable LO                              : line;
+    variable eta1, eta2, eta3                : integer;
+    variable phi1, phi2, phi3                : integer;
+    variable qual1, qual2, qual3             : integer;
+    variable sel1, sel2, sel3                : bit;
+    variable detSide1, detSide2, detSide3    : integer;
+    variable wheel1, wheel2, wheel3          : integer;
+    variable station11, station12, station13 : integer;
+    variable station21, station22, station23 : integer;
+    variable station31, station32, station33 : integer;
+    variable station41, station42, station43 : integer;
+    variable empty1, empty2, empty3          : bit;
 
-    variable dummy : string(1 to 5);
+    variable tfID : string(1 to 5);
   begin  -- ReadTrack
-    read(L, dummy);
+    read(L, tfID);
 
     read(L, eta1);
     track(0).eta  := to_signed(eta1, 9);
@@ -319,7 +331,25 @@ package body tb_helpers is
     track(0).phi  := to_signed(phi1, 8);
     read(L, qual1);
     track(0).qual := to_unsigned(qual1, 4);
-    track(0).empty := '0';
+    if tfId(1 to 4) = "BTRK" then
+      read(L, sel1);
+      -- TODO: Add support for 4 track segments
+      read(L, detSide1);
+      track(0).bmtfAddress.detectorSide := std_logic_vector(to_unsigned(detSide1, 1));
+      read(L, wheel1);
+      track(0).bmtfAddress.wheelNo := to_unsigned(wheel1, 2);
+      read(L, station11);
+      track(0).bmtfAddress.addressStation0 := to_unsigned(station11, 2);
+      read(L, station21);
+      track(0).bmtfAddress.stationAddresses(0) := to_unsigned(station21, 4);
+      read(L, station31);
+      track(0).bmtfAddress.stationAddresses(1) := to_unsigned(station31, 4);
+      read(L, station41);
+      track(0).bmtfAddress.stationAddresses(2) := to_unsigned(station41, 4);
+    end if;
+
+    read(L, empty1);
+    track(0).empty := to_stdulogic(empty1);
 
     read(L, eta2);
     track(1).eta  := to_signed(eta2, 9);
@@ -327,7 +357,24 @@ package body tb_helpers is
     track(1).phi  := to_signed(phi2, 8);
     read(L, qual2);
     track(1).qual := to_unsigned(qual2, 4);
-    track(1).empty := '0';
+    if tfId(1 to 4) = "BTRK" then
+      read(L, sel2);
+      -- TODO: Add support for 4 track segments
+      read(L, detSide2);
+      track(1).bmtfAddress.detectorSide := std_logic_vector(to_unsigned(detSide2, 1));
+      read(L, wheel2);
+      track(1).bmtfAddress.wheelNo := to_unsigned(wheel2, 2);
+      read(L, station12);
+      track(1).bmtfAddress.addressStation0 := to_unsigned(station12, 2);
+      read(L, station22);
+      track(1).bmtfAddress.stationAddresses(0) := to_unsigned(station22, 4);
+      read(L, station32);
+      track(1).bmtfAddress.stationAddresses(1) := to_unsigned(station32, 4);
+      read(L, station42);
+      track(1).bmtfAddress.stationAddresses(2) := to_unsigned(station42, 4);
+    end if;
+    read(L, empty2);
+    track(1).empty := to_stdulogic(empty2);
 
     read(L, eta3);
     track(2).eta  := to_signed(eta3, 9);
@@ -335,7 +382,24 @@ package body tb_helpers is
     track(2).phi  := to_signed(phi3, 8);
     read(L, qual3);
     track(2).qual := to_unsigned(qual3, 4);
-    track(2).empty := '0';
+    if tfId(1 to 4) = "BTRK" then
+      read(L, sel3);
+      -- TODO: Add support for 4 track segments
+      read(L, detSide3);
+      track(2).bmtfAddress.detectorSide := std_logic_vector(to_unsigned(detSide3, 1));
+      read(L, wheel3);
+      track(2).bmtfAddress.wheelNo := to_unsigned(wheel3, 2);
+      read(L, station13);
+      track(2).bmtfAddress.addressStation0 := to_unsigned(station13, 2);
+      read(L, station23);
+      track(2).bmtfAddress.stationAddresses(0) := to_unsigned(station23, 4);
+      read(L, station33);
+      track(2).bmtfAddress.stationAddresses(1) := to_unsigned(station33, 4);
+      read(L, station43);
+      track(2).bmtfAddress.stationAddresses(2) := to_unsigned(station43, 4);
+    end if;
+    read(L, empty3);
+    track(2).empty := to_stdulogic(empty3);
 
   end ReadTrack;
 
@@ -425,7 +489,6 @@ package body tb_helpers is
       elsif L.all(1 to 3) = "EVT" then
         -- TODO: Parse this maybe?
         next;
-    --   elsif L.all(1 to 4) = "BTRK" or L.all(1 to 4) = "OTRK" or L.all(1 to 4) = "FTRK" then
       elsif L.all(2 to 4) = "TRK" then
         ReadTrack(L, event.expectedTracks(wedgeNo));
         wedgeNo    := wedgeNo+1;
@@ -747,7 +810,7 @@ package body tb_helpers is
     variable emtf_id    : string(1 to 4) := "EMTF";
     variable bmtfTrk_id : string(1 to 4) := "BTRK";
     variable omtfTrk_id : string(1 to 4) := "OTRK";
-    variable emtfTrk_id : string(1 to 4) := "FTRK";
+    variable emtfTrk_id : string(1 to 4) := "ETRK";
   begin  -- DumpMuEvent
     if event.iEvent /= -1 then
       write(L1, string'("++++++++++++++++++++ Dump of event "));
@@ -1449,7 +1512,7 @@ package body tb_helpers is
     variable idFin    : string(1 to 4) := "FINM";
     variable idIntB   : string(1 to 4) := "IMBM";
     variable idIntO   : string(1 to 4) := "IMOM";
-    variable idIntE   : string(1 to 4) := "IMFM";
+    variable idIntE   : string(1 to 4) := "IMEM";
   begin
     if (iEvent.iEvent >= 0) then
       tmpError := 0;

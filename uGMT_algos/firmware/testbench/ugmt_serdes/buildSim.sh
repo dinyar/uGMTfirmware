@@ -6,6 +6,8 @@
 CACTUSREPOPATH=/home/scratch/ugmt_firmware/mp7fw_current
 #################################################
 
+rm -rf ugmt_serdes
+
 vlib ugmt_serdes
 vmap work ugmt_serdes
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_types.vhd

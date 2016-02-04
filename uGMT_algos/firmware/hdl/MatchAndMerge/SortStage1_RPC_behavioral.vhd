@@ -121,7 +121,7 @@ architecture behavioral of SortStage1_RPC is
         when "00000000000000000000000000000100" => oMuons(iplace) <= iMuons(29);
         when "00000000000000000000000000000010" => oMuons(iplace) <= iMuons(30);
         when "00000000000000000000000000000001" => oMuons(iplace) <= iMuons(31);
-        when others                             => oMuons(iplace) <= ('0', '0', "000000000", "0000", "000000000", "0000000000");
+        when others                             => oMuons(iplace) <= ('0', '0', "000000000", '0', "0000", "000000000", "0000000000", '0');
       end case;
 
       case vSelBits(iplace) is
