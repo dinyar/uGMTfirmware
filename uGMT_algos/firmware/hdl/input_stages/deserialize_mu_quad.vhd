@@ -113,6 +113,8 @@ begin
         -- TODO: Might not need to zero the data as it will be set invalid later anyway.
         in_buf(in_buf'high)(i).data  <= (31 downto 0 => '0');
         in_buf(in_buf'high)(i).valid <= '0';
+        in_buf(in_buf'high)(i).strobe <= '0';
+        in_buf(in_buf'high)(i).start <= '0';
       end if;
 
       vValid_frame(i) := d(i).valid;
