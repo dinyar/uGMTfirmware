@@ -278,8 +278,9 @@ package GMTTypes is
   function unpack_emtf_mu_from_flat(signal iMuon_flat : TFlatMuon;
                                     signal iPhi       : unsigned(9 downto 0)) return TGMTMuIn;
 
-  function pack_mu_to_flat(signal iMuon : TGMTMu;
-                           signal iIso  : TIsoBits) return TFlatMuon;
+  function pack_mu_to_flat(signal iMuon      : TGMTMu;
+                           signal iMuIdxBits : TIndexBits;
+                           signal iIso       : TIsoBits) return TFlatMuon;
 end;
 
 
@@ -428,12 +429,14 @@ package body GMTTypes is
   -----------------------------------------------------------------------------
 
   function pack_mu_to_flat (
-    signal iMuon : TGMTMu;
-    signal iIso  : TIsoBits)
+    signal iMuon      : TGMTMu;
+    signal iMuIdxBits : TIndexBits;
+    signal iIso       : TIsoBits)
     return TFlatMuon is
     variable oMuon_flat : TFlatMuon;
   begin  -- pack_mu_to_flat
-    oMuon_flat(oMuon_flat'high downto VALIDSIGN_OUT+1) := (others => '0');
+    oMuon_flat(oMuon_flat'high downto IDX_OUT_HIGH+1) := (others => '0');
+    oMuon_flat(IDX_OUT_HIGH downto IDX_OUT_LOW)          := std_logic_vector(iMuIdxBits);
     oMuon_flat(SIGN_OUT)                                 := iMuon.sign;
     oMuon_flat(VALIDSIGN_OUT)                            := iMuon.sign_valid;
     oMuon_flat(ISO_OUT_HIGH downto ISO_OUT_LOW)          := iIso;

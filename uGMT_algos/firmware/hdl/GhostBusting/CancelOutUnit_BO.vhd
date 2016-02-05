@@ -65,6 +65,12 @@ begin
   -- |__||____________________...
   -- |  ||____________________...
   --
+  -- ATTENTION: Care needs to be taken regarding the numbering of wedges/sectors:
+  --    0     1     2     3     4     5     (OMTF)
+  -- |_____|_____|_____|_____|_____|_____|
+  -- |  |  |  |  |  |  |  |  |  |  |  |  |
+  --  1  2  3  4  5  6  7  8  9  10 11 0    (BMTF)
+  --
   -- => Cancel out between one OMTF wedge and 2+2 BMTF wedges (due to
   -- crossings in phi as well as in eta.
   --

@@ -11,21 +11,21 @@ use work.mp7_brd_decl.all;
 
 entity GMT is
   port (
-    iMuonsB           : in TGMTMu_vector(35 downto 0);
-    iMuonsO           : in TGMTMu_vector(35 downto 0);
-    iMuonsE           : in TGMTMu_vector(35 downto 0);
-    iTracksB          : in TGMTMuTracks_vector(11 downto 0);
-    iTracksO          : in TGMTMuTracks_vector(11 downto 0);
-    iTracksE          : in TGMTMuTracks_vector(11 downto 0);
-    iSortRanksB       : in TSortRank10_vector(35 downto 0);
-    iSortRanksO       : in TSortRank10_vector(35 downto 0);
-    iSortRanksE       : in TSortRank10_vector(35 downto 0);
-    iIdxBitsB         : in TIndexBits_vector(35 downto 0);
-    iIdxBitsO         : in TIndexBits_vector(35 downto 0);
-    iIdxBitsE         : in TIndexBits_vector(35 downto 0);
-    iCaloIdxBitsB     : in TCaloIndexBit_vector(35 downto 0);
-    iCaloIdxBitsO     : in TCaloIndexBit_vector(35 downto 0);
-    iCaloIdxBitsE     : in TCaloIndexBit_vector(35 downto 0);
+    iMuonsB       : in TGMTMu_vector(35 downto 0);
+    iMuonsO       : in TGMTMu_vector(35 downto 0);
+    iMuonsE       : in TGMTMu_vector(35 downto 0);
+    iTracksB      : in TGMTMuTracks_vector(11 downto 0);
+    iTracksO      : in TGMTMuTracks_vector(11 downto 0);
+    iTracksE      : in TGMTMuTracks_vector(11 downto 0);
+    iSortRanksB   : in TSortRank10_vector(35 downto 0);
+    iSortRanksO   : in TSortRank10_vector(35 downto 0);
+    iSortRanksE   : in TSortRank10_vector(35 downto 0);
+    iIdxBitsB     : in TIndexBits_vector(35 downto 0);
+    iIdxBitsO     : in TIndexBits_vector(35 downto 0);
+    iIdxBitsE     : in TIndexBits_vector(35 downto 0);
+    iCaloIdxBitsB : in TCaloIndexBit_vector(35 downto 0);
+    iCaloIdxBitsO : in TCaloIndexBit_vector(35 downto 0);
+    iCaloIdxBitsE : in TCaloIndexBit_vector(35 downto 0);
 
     iEnergies : in TCaloRegionEtaSlice_vector(31 downto 0);
     -- The outer two slices will be set to '0'. XST should optimize logic
@@ -37,8 +37,6 @@ entity GMT is
     oIntermediateSortRanksB : out TSortRank10_vector(7 downto 0);
     oIntermediateSortRanksO : out TSortRank10_vector(7 downto 0);
     oIntermediateSortRanksE : out TSortRank10_vector(7 downto 0);
-    oFinalCaloIdxBits       : out TCaloIndexBit_vector(7 downto 0);
-    oFinalEnergies          : out TCaloArea_vector(7 downto 0);
     oMuIdxBits              : out TIndexBits_vector (7 downto 0);
 
     oMuons : out TGMTMu_vector(7 downto 0);
@@ -81,16 +79,12 @@ architecture Behavioral of GMT is
   signal sIdxBitsRPCf   : TIndexBits_vector(3 downto 0);
 
   -- For intermediates
-  signal sFinalEnergies : TCaloArea_vector(7 downto 0);
-
   signal sIntermediateMuonsB     : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsO     : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsE     : TGMTMu_vector(7 downto 0);
   signal sIntermediateSortRanksB : TSortRank10_vector(7 downto 0);
   signal sIntermediateSortRanksO : TSortRank10_vector(7 downto 0);
   signal sIntermediateSortRanksE : TSortRank10_vector(7 downto 0);
-  signal sSelectedCaloIdxBits    : TCaloIndexBit_vector(7 downto 0);
-  signal sFinalMuIdxBits         : TIndexBits_vector(7 downto 0);
 
 begin
 
@@ -113,25 +107,21 @@ begin
   -----------------------------------------------------------------------------
   assign_iso : entity work.IsoAssignmentUnit
     port map (
-      iEnergies            => iEnergies,
-      iMuonsB              => iMuonsB,
-      iMuonsO              => iMuonsO,
-      iMuonsE              => iMuonsE,
-      iCaloIdxBitsB        => iCaloIdxBitsB,
-      iCaloIdxBitsO        => iCaloIdxBitsO,
-      iCaloIdxBitsE        => iCaloIdxBitsE,
-      iMuIdxBits           => sMuIdxBits,
-      iFinalMuPt           => sFinalMuPt,
-      oIsoBits             => sIsoBits,
-      oFinalEnergies       => sFinalEnergies,
-      oFinalCaloIdxBits    => sSelectedCaloIdxBits,
-      oMuIdxBits           => sFinalMuIdxBits,
-      oFinalMuPt           => open,
-      clk                  => clk,
-      clk_ipb              => clk_ipb,
-      sinit                => sinit,
-      ipb_in               => ipbw(N_SLV_ISOLATION),
-      ipb_out              => ipbr(N_SLV_ISOLATION)
+      iEnergies     => iEnergies,
+      iMuonsB       => iMuonsB,
+      iMuonsO       => iMuonsO,
+      iMuonsE       => iMuonsE,
+      iCaloIdxBitsB => iCaloIdxBitsB,
+      iCaloIdxBitsO => iCaloIdxBitsO,
+      iCaloIdxBitsE => iCaloIdxBitsE,
+      iMuIdxBits    => sMuIdxBits,
+      iFinalMuPt    => sFinalMuPt,
+      oIsoBits      => sIsoBits,
+      clk           => clk,
+      clk_ipb       => clk_ipb,
+      sinit         => sinit,
+      ipb_in        => ipbw(N_SLV_ISOLATION),
+      ipb_out       => ipbr(N_SLV_ISOLATION)
       );
 
   -----------------------------------------------------------------------------
@@ -190,9 +180,13 @@ begin
   oIntermediateSortRanksO <= sIntermediateSortRanksO;
   oIntermediateSortRanksE <= sIntermediateSortRanksE;
 
-  oFinalCaloIdxBits    <= sSelectedCaloIdxBits;
-  oFinalEnergies       <= sFinalEnergies;
-  oMuIdxBits           <= sFinalMuIdxBits;
+  -- Synchronize idx bits to final muons.
+  final_mu_reg : process (clk)
+  begin  -- process final_mu_reg
+    if clk'event and clk = '0' then     -- falling clock edge
+      oMuIdxBits <= sMuIdxBits;
+    end if;
+  end process final_mu_reg;
 
   oMuons <= sMuons_sorted;
   oIso   <= sIsoBits;
