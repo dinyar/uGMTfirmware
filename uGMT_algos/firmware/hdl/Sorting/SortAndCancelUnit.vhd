@@ -631,8 +631,8 @@ begin
         N_REG => 1
         )
       port map(
-        ipbus_in  => ipbw(N_SLV_MUON_COUNTER_0+i),
-        ipbus_out => ipbr(N_SLV_MUON_COUNTER_0+i),
+        ipbus_in  => ipbw(N_SLV_MUON_COUNTER_BMTF+i),
+        ipbus_out => ipbr(N_SLV_MUON_COUNTER_BMTF+i),
         clk       => clk_ipb,
         reset     => sinit,
         d         => sMuonCounters_store(i downto i),
