@@ -28,7 +28,7 @@ architecture Behavioral of serializer_stage is
   signal sSel    : integer range 0 to 5;
 
   signal sIntermediateMuons : TGMTMu_vector(23 downto 0);
-  signal sFakeIdxBits       : TIndexBits := "0000000"
+  signal sFakeIdxBits       : TIndexBits := "0000000";
   signal sFakeIso           : TIsoBits   := "00";
 begin
 

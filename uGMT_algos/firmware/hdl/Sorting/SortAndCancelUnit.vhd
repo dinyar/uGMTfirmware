@@ -185,7 +185,7 @@ architecture behavioral of SortAndCancelUnit is
   signal sFinalMuons     : TGMTMu_vector(7 downto 0);
   signal sFinalMuons_reg : TGMTMu_vector(7 downto 0);
 
-  signal oIdxBits : TIndexBits_vector(7 downto 0);
+  signal sIdxBits : TIndexBits_vector(7 downto 0);
 
   -- RPC merging stuff
   signal iMuonsRPCf_reg    : TGMTMuRPC_vector(3 downto 0);
