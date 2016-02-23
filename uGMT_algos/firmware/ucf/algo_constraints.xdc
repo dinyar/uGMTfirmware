@@ -20,30 +20,16 @@ add_cells_to_pblock [get_pblocks payload_16] [get_cells -quiet [list {payload/mu
 add_cells_to_pblock [get_pblocks payload_17] [get_cells -quiet [list {payload/muon_input_stage/deserialize_loop[8].deserialize}]]
 add_cells_to_pblock [get_pblocks payload_17] [get_cells -quiet [list {payload/muon_input_stage/deserialize_loop[8].extrapolate}]]
 
-create_pblock deser_x1y0
 add_cells_to_pblock [get_pblocks payload_8] [get_cells -quiet [list {payload/energy_input_stage/deserialize_loop[6].deserialize}]]
-resize_pblock [get_pblocks deser_x1y0] -add {SLICE_X162Y0:SLICE_X179Y49}
-create_pblock deser_x1y1
 add_cells_to_pblock [get_pblocks payload_7] [get_cells -quiet [list {payload/energy_input_stage/deserialize_loop[5].deserialize}]]
-resize_pblock [get_pblocks deser_x1y1] -add {SLICE_X162Y50:SLICE_X179Y99}
-create_pblock deser_x1y2
 add_cells_to_pblock [get_pblocks payload_6] [get_cells -quiet [list {payload/energy_input_stage/deserialize_loop[4].deserialize}]]
-resize_pblock [get_pblocks deser_x1y2] -add {SLICE_X162Y100:SLICE_X179Y149}
-create_pblock deser_x1y3
 add_cells_to_pblock [get_pblocks payload_5] [get_cells -quiet [list {payload/energy_input_stage/deserialize_loop[3].deserialize}]]
-resize_pblock [get_pblocks deser_x1y3] -add {SLICE_X162Y150:SLICE_X179Y199}
-create_pblock deser_x1y4
 add_cells_to_pblock [get_pblocks payload_4] [get_cells -quiet [list {payload/energy_input_stage/deserialize_loop[2].deserialize}]]
-resize_pblock [get_pblocks deser_x1y4] -add {SLICE_X162Y200:SLICE_X179Y249}
-create_pblock deser_x1y5
 add_cells_to_pblock [get_pblocks payload_3] [get_cells -quiet [list {payload/energy_input_stage/deserialize_loop[1].deserialize}]]
-resize_pblock [get_pblocks deser_x1y5] -add {SLICE_X162Y250:SLICE_X179Y299}
-create_pblock deser_x1y6
 add_cells_to_pblock [get_pblocks payload_2] [get_cells -quiet [list {payload/energy_input_stage/deserialize_loop[0].deserialize}]]
-resize_pblock [get_pblocks deser_x1y6] -add {SLICE_X162Y300:SLICE_X179Y349}
 
 create_pblock ser_x1y8
-resize_pblock [get_pblocks ser_x1y8] -add {SLICE_X152Y300:SLICE_X179Y449}
+resize_pblock [get_pblocks ser_x1y8] -add {SLICE_X152Y50:SLICE_X179Y449}
 add_cells_to_pblock [get_pblocks ser_x1y8] [get_cells -quiet [list payload/serialize]]
 
 # Algo area constraints
