@@ -15,7 +15,8 @@ package ugmt_constants is
   constant NUM_MU_CHANS                : integer := 36;  -- Number of channels for input muons.
   constant NUM_CALO_CHANS              : integer := 28;  -- Number of channels for energy sums.
   constant NUM_IN_CHANS                : integer := NUM_MU_CHANS+NUM_CALO_CHANS;  -- Number of input channels
-  constant NUM_OUT_CHANS               : integer := 4;  -- Number of channels to GT.
+  constant OUTPUT_MULTIPLIER           : integer := 6;  -- Number of sets of output channels to uGT
+  constant NUM_OUT_CHANS               : integer := 4;  -- Number of channels to uGT.
   constant NUM_INTERM_MU_OUT_CHANS     : integer := 8;  -- Number of channels
                                         -- used for intermediate
                                         -- muons.
