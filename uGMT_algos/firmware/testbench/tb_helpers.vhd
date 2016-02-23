@@ -290,7 +290,7 @@ package body tb_helpers is
       read(L, iso);
       isoBit  := std_logic_vector(to_unsigned(iso, 2));
       read(L, index);
-      idxBits := std_logic_vector(to_unsigned(index, 6));
+      idxBits := to_unsigned(index, 7);
     end if;
 
     -- TODO: Handle halo bit once this has been added to testbench.
