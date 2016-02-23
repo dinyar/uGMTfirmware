@@ -1,12 +1,12 @@
 <node description="Sorting and cancel-out algorithm LUTs" fwinfo="endpoint">
-  <node id="cou_bo_pos" address="0x0" module="file://cancel_out_bo.xml" description="LUTs containing match qualities for BMTF-OMTF matching on positive side."/>
-  <node id="cou_bo_neg" address="0x10000" module="file://cancel_out_bo.xml" description="LUTs containing match qualities for BMTF-OMTF matching on negative side."/>
-  <node id="cou_eo_pos" address="0x20000" module="file://cancel_out_eo.xml" description="LUTs containing match qualities for EMTF-OMTF matching on positive side."/>
-  <node id="cou_eo_neg" address="0x30000" module="file://cancel_out_eo.xml" description="LUTs containing match qualities for EMTF-OMTF matching on negative side."/>
-  <node id="cou_omtf_pos" address="0x40000" module="file://cancel_out_half_sorters.xml" description="LUTs containing match qualities for matching within the OMTF region on positive side."/>
-  <node id="cou_omtf_neg" address="0x50000" module="file://cancel_out_half_sorters.xml" description="LUTs containing match qualities for matching within the OMTF region on negative side."/>
-  <node id="cou_emtf_pos" address="0x60000" module="file://cancel_out_half_sorters.xml" description="LUTs containing match qualities for matching within the EMTF region on positive side."/>
-  <node id="cou_emtf_neg" address="0x70000" module="file://cancel_out_half_sorters.xml" description="LUTs containing match qualities for matching within the EMTF region on negative side."/>
+  <node id="cou_bo_pos" address="0x0" module="file://cancel_out_bo.xml" description="LUTs containing match qualities for BMTF-OMTF matching on positive side." parameters="content=BOPosMatchQual" />
+  <node id="cou_bo_neg" address="0x10000" module="file://cancel_out_bo.xml" description="LUTs containing match qualities for BMTF-OMTF matching on negative side." parameters="content=BONegMatchQual" />
+  <node id="cou_eo_pos" address="0x20000" module="file://cancel_out_eo.xml" description="LUTs containing match qualities for EMTF-OMTF matching on positive side." parameters="content=EOPosMatchQual" />
+  <node id="cou_eo_neg" address="0x30000" module="file://cancel_out_eo.xml" description="LUTs containing match qualities for EMTF-OMTF matching on negative side." parameters="content=EONegMatchQual" />
+  <node id="cou_omtf_pos" address="0x40000" module="file://cancel_out_half_sorters.xml" description="LUTs containing match qualities for matching within the OMTF region on positive side." parameters="content=OmtfPosSingleMatchQual" />
+  <node id="cou_omtf_neg" address="0x50000" module="file://cancel_out_half_sorters.xml" description="LUTs containing match qualities for matching within the OMTF region on negative side." parameters="content=OmtfNegSingleMatchQual" />
+  <node id="cou_emtf_pos" address="0x60000" module="file://cancel_out_half_sorters.xml" description="LUTs containing match qualities for matching within the EMTF region on positive side." parameters="content=EmtfPosSingleMatchQual" />
+  <node id="cou_emtf_neg" address="0x70000" module="file://cancel_out_half_sorters.xml" description="LUTs containing match qualities for matching within the EMTF region on negative side." parameters="content=EmtfNegSingleMatchQual" />
   <node id="muon_counter_BMTF" address="0x80000" description="Counter for barrel sorter output" fwinfo="endpoint;width=0" />
   <node id="muon_counter_OMTFp" address="0x80001" description="Counter for positive overlap sorter output" fwinfo="endpoint;width=0" />
   <node id="muon_counter_OMTFn" address="0x80002" description="Counter for negative overlap sorter output" fwinfo="endpoint;width=0" />
