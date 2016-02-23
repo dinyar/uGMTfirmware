@@ -1106,7 +1106,7 @@ package body tb_helpers is
     variable idEmu : string(1 to 4) := "EMUL";
   begin  -- CheckMuon
     error := 0;
-    if iMu.phi /= iEmuMu.phi or iMu.eta /= iEmuMu.eta or iMu.pt /= iEmuMu.pt or iMu.sign /= iEmuMu.sign or iMu.sign_valid /= iEmuMu.sign_valid or iMu.qual /= iEmuMu.qual then
+    if iMu.phi /= iEmuMu.phi or iMu.eta /= iEmuMu.eta or iMu.pt /= iEmuMu.pt or iMu.sign /= iEmuMu.sign or iMu.sign_valid /= iEmuMu.sign_valid or iMu.qual(3 downto 2) /= iEmuMu.qual(3 downto 2) then
       error := 1;
 
       write(LO, string'("!!!!!! Error in "));
