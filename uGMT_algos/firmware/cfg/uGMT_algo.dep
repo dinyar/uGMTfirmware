@@ -89,7 +89,6 @@ src ipbus_decode_cancel_out_bo.vhd
 src ipbus_decode_cancel_out_eo_wedge.vhd
 src ipbus_decode_cancel_out_eo.vhd
 src ipbus_decode_cancel_out_half_sorters.vhd
-src ipbus_decode_cancel_out_bmtf.vhd
 src ipbus_decode_cancel_out_mems.vhd
 src ipbus_decode_sorting.vhd
 src ipbus_decode_uGMT.vhd
