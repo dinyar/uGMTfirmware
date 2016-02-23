@@ -55,10 +55,10 @@ begin
   serialize_intermediate_muons : for i in NUM_MUONS_LINK-1 downto 0 generate
     split_muons : for j in NUM_INTERM_MU_OUT_CHANS-1 downto 0 generate
       -- Intermediate muons don't have isolation applied and no idx bit available, so forcing those to all '0'.
-      sOutBuf(2*i)(j+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).data    <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIdxBits, sFakeIso)(31 downto 0);
-      sOutBuf(2*i)(j+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid   <= iValid;
-      sOutBuf(2*i+1)(j+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).data  <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIdxBits, sFakeIso)(63 downto 32);
-      sOutBuf(2*i+1)(j+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid <= iValid;
+      sOutBuf(2*i)(j+NUM_OUT_CHANS).data    <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIdxBits, sFakeIso)(31 downto 0);
+      sOutBuf(2*i)(j+NUM_OUT_CHANS).valid   <= iValid;
+      sOutBuf(2*i+1)(j+NUM_OUT_CHANS).data  <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIdxBits, sFakeIso)(63 downto 32);
+      sOutBuf(2*i+1)(j+NUM_OUT_CHANS).valid <= iValid;
     end generate split_muons;
   end generate serialize_intermediate_muons;
 
