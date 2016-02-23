@@ -16,11 +16,11 @@ entity serializer_stage is
         iIntermediateMuonsB  : in  TGMTMu_vector(7 downto 0);
         iIntermediateMuonsO  : in  TGMTMu_vector(7 downto 0);
         iIntermediateMuonsE  : in  TGMTMu_vector(7 downto 0);
-        q                    : out ldata ((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0));
+        q                    : out ldata (((OUTPUT_MULTIPLIER*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS)-1 downto 0));
 end serializer_stage;
 
 architecture Behavioral of serializer_stage is
-  type TTransceiverBufferOut is array (2*2*NUM_MUONS_LINK-1 downto 0) of ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS+NUM_INTERM_SRT_OUT_CHANS+NUM_INTERM_ENERGY_OUT_CHANS+NUM_EXTRAP_COORDS_OUT_CHANS)-1 downto 0);
+  type TTransceiverBufferOut is array (2*2*NUM_MUONS_LINK-1 downto 0) of ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0);
   signal sOutBuf : TTransceiverBufferOut;
 
   -- Offsetting the beginning of sending to align with 40 MHz clock and make
@@ -55,10 +55,10 @@ begin
   serialize_intermediate_muons : for i in NUM_MUONS_LINK-1 downto 0 generate
     split_muons : for j in NUM_INTERM_MU_OUT_CHANS-1 downto 0 generate
       -- Intermediate muons don't have isolation applied and no idx bit available, so forcing those to all '0'.
-      sOutBuf(2*i)(j+NUM_OUT_CHANS).data    <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIdxBits, sFakeIso)(31 downto 0);
-      sOutBuf(2*i)(j+NUM_OUT_CHANS).valid   <= iValid;
-      sOutBuf(2*i+1)(j+NUM_OUT_CHANS).data  <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIdxBits, sFakeIso)(63 downto 32);
-      sOutBuf(2*i+1)(j+NUM_OUT_CHANS).valid <= iValid;
+      sOutBuf(2*i)(j+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).data    <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIdxBits, sFakeIso)(31 downto 0);
+      sOutBuf(2*i)(j+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid   <= iValid;
+      sOutBuf(2*i+1)(j+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).data  <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIdxBits, sFakeIso)(63 downto 32);
+      sOutBuf(2*i+1)(j+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid <= iValid;
     end generate split_muons;
   end generate serialize_intermediate_muons;
 
@@ -72,23 +72,25 @@ begin
   serialization : process (clk240)
   begin  -- process serialization
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      for i in 0 to NUM_OUT_CHANS-1 loop
-        q(i).strobe <= '1';
-        if sSel = 0 then
-          q(i).valid <= sOutBuf(sSel)(i).valid;
-        else
-          q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
-        end if;
-        q(i).data <= sOutBuf(sSel)(i).data;
-      end loop;  -- i
+      for m in 1 to OUTPUT_MULTIPLIER loop
+        for i in 0 to NUM_OUT_CHANS-1 loop
+          q((m*NUM_OUT_CHANS)+i).strobe <= '1';
+          if sSel = 0 then
+            q((m*NUM_OUT_CHANS)+i).valid <= sOutBuf(sSel)(i).valid;
+          else
+            q((m*NUM_OUT_CHANS)+i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
+          end if;
+          q((m*NUM_OUT_CHANS)+i).data <= sOutBuf(sSel)(i).data;
+        end loop;  -- i
+      end loop;  -- m
       for i in NUM_OUT_CHANS to NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS - 1 loop
-        q(i).strobe <= '1';
+        q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).strobe <= '1';
         if sSel = 0 then
-          q(i).valid <= sOutBuf(sSel)(i).valid;
-          q(i).data <= sOutBuf(sSel)(i).data;
+          q(i).valid <= sOutBuf(sSel)(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid;
+          q(i).data <= sOutBuf(sSel)(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).data;
         else
-          q(i).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).data;
-          q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
+          q(i).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).data;
+          q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid;
         end if;
       end loop;  -- i
 
