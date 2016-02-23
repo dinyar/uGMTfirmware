@@ -42,7 +42,6 @@ vcom -check_synthesis ../tb_helpers.vhd
 vcom -check_synthesis SortAndCancelUnit_tb.vhd
 vmake work > Makefile
 
-ln -s ../../hdl/ipbus_slaves/BmtfSingleMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/OmtfPosSingleMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/OmtfNegSingleMatchQual.mif .
 ln -s ../../hdl/ipbus_slaves/EmtfPosSingleMatchQual.mif .

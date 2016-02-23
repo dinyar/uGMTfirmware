@@ -1,5 +1,4 @@
 ?toolset=="Vivado"? src ../ucf/algo_constraints.xdc
-addrtab -t cancel_out_bmtf.xml
 addrtab -t cancel_out_bo_wedge.xml
 addrtab -t cancel_out_bo.xml
 addrtab -t cancel_out_eo_wedge.xml
