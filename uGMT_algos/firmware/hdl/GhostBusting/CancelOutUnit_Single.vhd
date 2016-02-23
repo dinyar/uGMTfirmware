@@ -10,7 +10,6 @@ use IEEE.numeric_std.all;
 
 use work.mp7_data_types.all;
 use work.ipbus.all;
-use work.ipbus_decode_cancel_out_bmtf.all;
 use work.ipbus_decode_cancel_out_half_sorters.all;
 
 use work.GMTTypes.all;
