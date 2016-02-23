@@ -378,7 +378,7 @@ begin
   begin  -- process gmt_out_reg
     if clk_payload'event and clk_payload = '1' then  -- rising clock edge
       oMuons_reg     <= oMuons;
-      sMuIdxBits_reg <= sMuIdxBits_reg;
+      sMuIdxBits_reg <= sMuIdxBits;
 
       sIntermediateMuonsO_reg     <= sIntermediateMuonsO;
       sIntermediateMuonsB_reg     <= sIntermediateMuonsB;

@@ -17,7 +17,7 @@ package ipbus_decode_spy_buffer_control is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_spy_buffer_control(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Tue Feb  9 13:17:22 2016 
+-- START automatically  generated VHDL the Tue Feb 23 01:26:45 2016 
   constant N_SLV_SPY_BUFFER_0: integer := 0;
   constant N_SLV_SPY_BUFFER_1: integer := 1;
   constant N_SLV_SPY_BUFFER_2: integer := 2;
@@ -34,7 +34,7 @@ package body ipbus_decode_spy_buffer_control is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Tue Feb  9 13:17:22 2016 
+-- START automatically  generated VHDL the Tue Feb 23 01:26:45 2016 
     if    std_match(addr, "------------------00------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_SPY_BUFFER_0, IPBUS_SEL_WIDTH)); -- spy_buffer_0 / base 0x00000000 / mask 0x00003000
     elsif std_match(addr, "------------------01------------") then
