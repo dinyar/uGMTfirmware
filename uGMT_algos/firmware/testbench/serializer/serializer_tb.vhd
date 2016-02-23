@@ -29,6 +29,7 @@ architecture behavior of testbench is
   signal iValid              : std_logic := '0';
   signal iMuons              : TGMTMu_vector(7 downto 0);
   signal iIso                : TIsoBits_vector(7 downto 0);
+  signal iMuIdxBits          : TIndexBits_vector(7 downto 0);
   signal iIntermediateMuonsB : TGMTMu_vector(7 downto 0);
   signal iIntermediateMuonsO : TGMTMu_vector(7 downto 0);
   signal iIntermediateMuonsE : TGMTMu_vector(7 downto 0);
@@ -44,7 +45,7 @@ begin
       iValid              => iValid,
       iMuons              => iMuons,
       iIso                => iIso,
-      iMuIdxBits          => (others => (others => '0')),
+      iMuIdxBits          => iMuIdxBits,
       iIntermediateMuonsB => iIntermediateMuonsB,
       iIntermediateMuonsO => iIntermediateMuonsO,
       iIntermediateMuonsE => iIntermediateMuonsE,
@@ -93,15 +94,16 @@ begin
         iValid              <= '1';
         iMuons              <= event_buffer(1).muons;
         iIso                <= event_buffer(1).iso;
+        iMuIdxBits          <= event_buffer(1).idxBits;
         iIntermediateMuonsB <= event.intMuons_bmtf;
         iIntermediateMuonsO <= event.intMuons_omtf;
         iIntermediateMuonsE <= event.intMuons_emtf;
 
         event_buffer(0) := event;
-
       else
-        iMuons <= event_buffer(1).muons;
-        iIso   <= event_buffer(1).iso;
+        iMuons          <= event_buffer(1).muons;
+        iIso            <= event_buffer(1).iso;
+        iMuIdxBits      <= event_buffer(1).idxBits;
         remainingEvents := remainingEvents-1;
       end if;
 
