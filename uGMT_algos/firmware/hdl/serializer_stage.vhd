@@ -72,7 +72,7 @@ begin
   serialization : process (clk240)
   begin  -- process serialization
     if clk240'event and clk240 = '1' then  -- rising clock edge
-      for m in 1 to OUTPUT_MULTIPLIER loop
+      for m in 0 to OUTPUT_MULTIPLIER-1 loop
         for i in 0 to NUM_OUT_CHANS-1 loop
           q((m*NUM_OUT_CHANS)+i).strobe <= '1';
           if sSel = 0 then
@@ -83,14 +83,14 @@ begin
           q((m*NUM_OUT_CHANS)+i).data <= sOutBuf(sSel)(i).data;
         end loop;  -- i
       end loop;  -- m
-      for i in NUM_OUT_CHANS to NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS - 1 loop
+      for i in 0 to NUM_INTERM_MU_OUT_CHANS - 1 loop
         q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).strobe <= '1';
         if sSel = 0 then
-          q(i).valid <= sOutBuf(sSel)(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid;
-          q(i).data <= sOutBuf(sSel)(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).data;
+          q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid <= sOutBuf(sSel)(i+NUM_OUT_CHANS).valid;
+          q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).data <= sOutBuf(sSel)(i+NUM_OUT_CHANS).data;
         else
-          q(i).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).data;
-          q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid;
+          q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+NUM_OUT_CHANS).data;
+          q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+NUM_OUT_CHANS).valid;
         end if;
       end loop;  -- i
 

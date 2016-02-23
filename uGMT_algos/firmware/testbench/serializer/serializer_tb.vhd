@@ -33,7 +33,7 @@ architecture behavior of testbench is
   signal iIntermediateMuonsB : TGMTMu_vector(7 downto 0);
   signal iIntermediateMuonsO : TGMTMu_vector(7 downto 0);
   signal iIntermediateMuonsE : TGMTMu_vector(7 downto 0);
-  signal oQ                  : ldata(N_SERIALIZER_CHAN-1 downto 0);
+  signal oQ                  : ldata((OUTPUT_MULTIPLIER*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS-1 downto 0);
 
 begin
 
