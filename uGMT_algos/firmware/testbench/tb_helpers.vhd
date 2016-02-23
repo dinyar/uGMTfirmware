@@ -38,6 +38,7 @@ package tb_helpers is
     iEvent            : integer;
     muons             : TGMTMu_vector(7 downto 0);
     iso               : TIsoBits_vector(7 downto 0);
+    idxBits           : TIndexBits_vector(7 downto 0);
     intMuons_bmtf     : TGMTMu_vector(7 downto 0);
     intMuons_omtf     : TGMTMu_vector(7 downto 0);
     intMuons_emtf     : TGMTMu_vector(7 downto 0);
@@ -249,7 +250,8 @@ package body tb_helpers is
     variable muon     : out   TGMTMu;
     variable sortRank : out   TSortRank10;
     variable emptyBit : out   std_logic;
-    variable isoBit   : out   TIsoBits
+    variable isoBit   : out   TIsoBits;
+    variable idxBits  : out   TIndexBits
     ) is
     variable cable_no    : integer;
     variable sign, vsign : bit;
@@ -260,6 +262,7 @@ package body tb_helpers is
     variable rank        : integer;
     variable empty       : bit;
     variable iso         : integer;
+    variable index       : integer;
 
     variable dummy : string(1 to 5);
   begin  -- ReadInputMuon
@@ -285,7 +288,9 @@ package body tb_helpers is
 
     if id = string'("OUT") then
       read(L, iso);
-      isoBit := std_logic_vector(to_unsigned(iso, 2));
+      isoBit  := std_logic_vector(to_unsigned(iso, 2));
+      read(L, index);
+      idxBits := std_logic_vector(to_unsigned(index, 6));
     end if;
 
     -- TODO: Handle halo bit once this has been added to testbench.
@@ -299,10 +304,11 @@ package body tb_helpers is
     variable sortRank : out   TSortRank10;
     variable emptyBit : out   std_logic
     ) is
-    variable dummyIso : TIsoBits;
-    variable dummyid  : string(1 to 3) := "XXX";
+    variable dummyIso     : TIsoBits;
+    variable dummyid      : string(1 to 3) := "XXX";
+    variable dummyIdxBits : TIndexBits;
   begin  -- ReadInputMuon
-    ReadInputMuon(L, dummyid, muon, sortRank, emptyBit, dummyIso);
+    ReadInputMuon(L, dummyid, muon, sortRank, emptyBit, dummyIso, dummyIdxBits);
   end ReadInputMuon;
 
   procedure ReadTrack (
@@ -512,6 +518,7 @@ package body tb_helpers is
     variable L             : line;
     variable dummySortRank : TSortRank10;
     variable dummyEmpty    : std_logic;
+    variable dummyIdxBits  : TIndexBits;
     variable muNo          : integer := 0;
     variable muFinNo       : integer := 0;
     variable muIntBNo      : integer := 0;
@@ -532,8 +539,7 @@ package body tb_helpers is
         -- TODO: Parse this maybe?
         next;
       elsif L.all(1 to 3) = "OUT" then
-        -- TODO: Read Iso bits.
-        ReadInputMuon(L, L.all(1 to 3), event.muons(muFinNo), dummySortRank, dummyEmpty, event.iso(muFinNo));
+        ReadInputMuon(L, L.all(1 to 3), event.muons(muFinNo), dummySortRank, dummyEmpty, event.iso(muFinNo), event.idxBits(muFinNo));
         muFinNo := muFinNo+1;
         muNo    := muNo+1;
       elsif L.all(1 to 4) = "BIMD" then
@@ -548,7 +554,7 @@ package body tb_helpers is
         ReadInputMuon(L, event.intMuons_emtf(muIntENo), event.intSortRanks_emtf(muIntENo), dummyEmpty);
         muIntENo := muIntENo+1;
         muNo     := muNo+1;
-    elsif L.all(1 to 3) = "OFR" then
+      elsif L.all(1 to 3) = "OFR" then
         ReadInputFrame(L, event.expectedOutput(frameNo));
         frameNo := frameNo+1;
       end if;
@@ -610,6 +616,7 @@ package body tb_helpers is
     variable dummySrtRnk   : TSortRank10;
     variable dummyEmptyBit : std_logic;
     variable dummyIsoBits  : TIsoBits;
+    variable dummyIdxBits  : TIndexBits;
     variable finMuNo       : integer := 0;
     variable intMuBNo      : integer := 0;
     variable intMuONo      : integer := 0;
@@ -656,7 +663,7 @@ package body tb_helpers is
         wedgeEmtfNo := wedgeEmtfNo+1;
         wedgeNo     := wedgeNo+1;
       elsif L.all(1 to 3) = "OUT" then
-        ReadInputMuon(L, finId, event.expectedMuons(finMuNo), dummySrtRnk, dummyEmptyBit, event.expectedIsoBits(finMuNo));
+        ReadInputMuon(L, finId, event.expectedMuons(finMuNo), dummySrtRnk, dummyEmptyBit, event.expectedIsoBits(finMuNo), dummyIdxBits);
         finMuNo := finMuNo+1;
       elsif L.all(1 to 4) = "BIMD" then
         ReadInputMuon(L, event.expectedIntMuB(intMuBNo), event.expectedSrtRnksB(intMuBNo), dummyEmptyBit);
