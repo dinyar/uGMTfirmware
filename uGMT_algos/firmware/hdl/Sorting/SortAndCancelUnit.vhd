@@ -71,6 +71,8 @@ architecture behavioral of SortAndCancelUnit is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
+  signal ipbw_dummy : ipb_wbus;
+
   signal sMuonsO_plus  : TGMTMu_vector(17 downto 0);
   signal sMuonsO_minus : TGMTMu_vector(17 downto 0);
   signal sMuonsE_plus  : TGMTMu_vector(17 downto 0);
@@ -411,8 +413,8 @@ begin
     port map (
       clk_ipb => clk_ipb,
       rst     => rst_loc(COU_BMTF),
-      ipb_in  => ipbw(N_SLV_COU_BMTF),
-      ipb_out => ipbr(N_SLV_COU_BMTF),
+      ipb_in  => ipbw_dummy,
+      ipb_out => open,
       iWedges => iTracksB,
       oCancel => sCancelB,
       clk     => clk
