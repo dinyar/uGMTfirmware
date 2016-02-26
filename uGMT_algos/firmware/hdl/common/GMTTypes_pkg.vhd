@@ -337,7 +337,7 @@ package body GMTTypes is
 
   function track_address_from_bmtf_mus (
     signal iMuon_flat : TFlatMuon;
-    signal iEmpty     : std_logic
+    signal iEmpty     : std_logic)
     return TGMTMuTrackInfo is
     variable vBmtfAddress : TBMTFTrackAddress;
     variable oTrack       : TGMTMuTrackInfo;
@@ -357,47 +357,43 @@ package body GMTTypes is
   end;
 
   function track_address_from_omtf_mus (
-    signal iMuon_flat : TFlatMuon_vector;
-    signal iEmpty     : std_logic_vector(NUM_MUONS_IN-1 downto 0))
-    return TGMTMuTracks3 is
+    signal iMuon_flat : TFlatMuon;
+    signal iEmpty     : std_logic)
+    return TGMTMuTrackInfo is
     variable vBmtfAddress : TBMTFTrackAddress;
-    variable oWedges      : TGMTMuTracks3;
+    variable oTrack       : TGMTMuTrackInfo;
   begin
-    for i in oWedges'range loop
-      vBmtfAddress.addressStation0 := (others => '0');
+    vBmtfAddress.addressStation0 := (others => '0');
 
-      vBmtfAddress.stationAddresses(0) := (others => '0');
-      vBmtfAddress.stationAddresses(1) := (others => '0');
-      vBmtfAddress.stationAddresses(2) := (others => '0');
+    vBmtfAddress.stationAddresses(0) := (others => '0');
+    vBmtfAddress.stationAddresses(1) := (others => '0');
+    vBmtfAddress.stationAddresses(2) := (others => '0');
 
-      vBmtfAddress.detectorSide := (others => '0');
-      vBmtfAddress.wheelNo      := (others => '0');
+    vBmtfAddress.detectorSide := (others => '0');
+    vBmtfAddress.wheelNo      := (others => '0');
 
-      oWedges(i) := track_address_from_in_mus(iMuon_flat(i), iEmpty(i), vBmtfAddress, iMuon_flat(i)(HALO_FINE_IN));
-    end loop;  -- i
+    oTrack := track_address_from_in_mus(iMuon_flat, iEmpty, vBmtfAddress, iMuon_flat(HALO_FINE_IN));
 
     return oWedges;
   end;
 
   function track_address_from_emtf_mus (
-    signal iMuon_flat : TFlatMuon_vector;
-    signal iEmpty     : std_logic_vector(NUM_MUONS_IN-1 downto 0))
-    return TGMTMuTracks3 is
+    signal iMuon_flat : TFlatMuon;
+    signal iEmpty     : std_logic)
+    return TGMTMuTrackInfo is
     variable vBmtfAddress : TBMTFTrackAddress;
-    variable oWedges      : TGMTMuTracks3;
+    variable oTrack       : TGMTMuTrackInfo;
   begin
-    for i in oWedges'range loop
-      vBmtfAddress.addressStation0 := (others => '0');
+    vBmtfAddress.addressStation0 := (others => '0');
 
-      vBmtfAddress.stationAddresses(0) := (others => '0');
-      vBmtfAddress.stationAddresses(1) := (others => '0');
-      vBmtfAddress.stationAddresses(2) := (others => '0');
+    vBmtfAddress.stationAddresses(0) := (others => '0');
+    vBmtfAddress.stationAddresses(1) := (others => '0');
+    vBmtfAddress.stationAddresses(2) := (others => '0');
 
-      vBmtfAddress.detectorSide := (others => '0');
-      vBmtfAddress.wheelNo      := (others => '0');
+    vBmtfAddress.detectorSide := (others => '0');
+    vBmtfAddress.wheelNo      := (others => '0');
 
-      oWedges(i) := track_address_from_in_mus(iMuon_flat(i), iEmpty(i), vBmtfAddress, iMuon_flat(i)(HALO_FINE_IN));
-    end loop;  -- i
+    oTrack := track_address_from_in_mus(iMuon_flat, iEmpty, vBmtfAddress, iMuon_flat(HALO_FINE_IN));
 
     return oWedges;
   end;
