@@ -11,8 +11,11 @@ use work.ugmt_constants.all;
 
 entity GhostCheckerUnit_spatialCoords is
   generic (
+    USE_ETA_FINE_1   : boolean := false;
+    USE_ETA_FINE_2   : boolean := false;
     DATA_FILE        : string;
-    LOCAL_PHI_OFFSET : signed(8 downto 0)
+    LOCAL_PHI_OFFSET : signed(8 downto 0);
+    COU_INPUT_SIZE   : natural
     );
   port (
     clk_ipb : in  std_logic;
@@ -42,7 +45,7 @@ architecture Behavioral of GhostCheckerUnit_spatialCoords is
   signal deltaPhi_reg : signed(8 downto 0);
   signal deltaEtaRed  : unsigned(3 downto 0);
   signal deltaPhiRed  : unsigned(2 downto 0);
-  signal lutInput     : std_logic_vector(6 downto 0);
+  signal lutInput     : std_logic_vector(COU_INPUT_SIZE-1 downto 0);
   signal match        : std_logic_vector(0 downto 0);
 begin
   ipbusWe <= ipb_in.ipb_write and ipb_in.ipb_strobe;
@@ -54,12 +57,24 @@ begin
 
   deltaEtaRed <= resize(unsigned(deltaEta), 4);
   deltaPhiRed <= resize(unsigned(deltaPhi), 3);
-  lutInput    <= std_logic_vector(deltaEtaRed) & std_logic_vector(deltaPhiRed);
+
+  construct_lut_input : process (deltaEtaRed, deltaPhiRed, etaFine1, etaFine2)
+  begin  -- construct_lut_input
+    if USE_ETA_FINE_1 = true and USE_ETA_FINE_2 = true then
+      lutInput <= etaFine1 & etaFine2 & std_logic_vector(deltaEtaRed) & std_logic_vector(deltaPhiRed);
+    elsif USE_ETA_FINE_1 = true then
+      lutInput <= etaFine1 & std_logic_vector(deltaEtaRed) & std_logic_vector(deltaPhiRed);
+    elsif USE_ETA_FINE_2 = true then
+      lutInput <= etaFine2 & std_logic_vector(deltaEtaRed) & std_logic_vector(deltaPhiRed);
+    else
+      lutInput <= std_logic_vector(deltaEtaRed) & std_logic_vector(deltaPhiRed);
+    end if;
+  end process construct_lut_input;
 
   match_qual_calc : entity work.ipbus_dpram_dist
       generic map (
         DATA_FILE  => DATA_FILE,
-        ADDR_WIDTH => COU_MEM_ADDR_WIDTH,
+        ADDR_WIDTH => COU_INPUT_SIZE,
         WORD_WIDTH => COU_MEM_WORD_SIZE
         )
       port map (

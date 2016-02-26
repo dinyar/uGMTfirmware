@@ -90,7 +90,8 @@ begin
         x : entity work.GhostCheckerUnit_spatialCoords
         generic map (
           DATA_FILE        => DATA_FILE,
-          LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
+          LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET,
+          COU_INPUT_SIZE   => COU_MEM_ADDR_WIDTH
           )
         port map (
           clk_ipb => clk_ipb,
@@ -108,6 +109,35 @@ begin
           clk     => clk
           );
       end generate gen_coord_based;
+
+      -- Need to be able to tell if a muon can have eta fine bit set.
+      gen_coord_w_eta_fine : if CANCEL_OUT_TYPE = string'("COORDINATE_HALF_ETA_FINE") generate
+        x : entity work.GhostCheckerUnit_spatialCoords
+        generic map (
+          USE_ETA_FINE_2   => false, -- OMTF, doesn't use an eta fine bit.
+          USE_ETA_FINE_2   => true,  -- BMTF uses an eta fine bit.
+          DATA_FILE        => DATA_FILE,
+          LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET,
+          COU_INPUT_SIZE   => COU_HALF_ETA_FINE_MEM_ADDR_WIDTH
+          )
+        port map (
+          clk_ipb  => clk_ipb,
+          rst      => rst,
+          ipb_in   => ipbw(3*i +j),
+          ipb_out  => ipbr(3*i +j),
+          etaFine1 => wedge1(i).etaFine,
+          eta1     => wedge1(i).eta,
+          phi1     => wedge1(i).phi,
+          qual1    => wedge1(i).qual,
+          etaFine2 => wedge2(j).etaFine,
+          eta2     => wedge2(j).eta,
+          phi2     => wedge2(j).phi,
+          qual2    => wedge2(j).qual,
+          ghost1   => sIntermediateCancel1(i)(j),
+          ghost2   => sIntermediateCancel2(j)(i),
+          clk      => clk
+          );
+      end generate gen_coord_w_eta_fine;
       -- If the other muon is empty we won't cancel even if it's requested.
       sCancel1(i)(j) <= sIntermediateCancel1(i)(j) and (not wedge2_reg(j).empty);
       sCancel2(j)(i) <= sIntermediateCancel2(j)(i) and (not wedge1_reg(i).empty);

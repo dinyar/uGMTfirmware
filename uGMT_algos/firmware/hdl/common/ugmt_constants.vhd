@@ -172,43 +172,44 @@ package ugmt_constants is
 
   type ContentFileAssignment_vector is array (0 to 3) of string(1 to 21);
   -- Barrel
-  constant ETA_BMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"));
-  constant PHI_BMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("BPhiExtrapolation.mif"), string'("BPhiExtrapolation.mif"), string'("BPhiExtrapolation.mif"), string'("BPhiExtrapolation.mif"));
+  constant ETA_BMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"), string'("BEtaExtrapolation.mif"));
+  constant PHI_BMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("BPhiExtrapolation.mif"), string'("BPhiExtrapolation.mif"), string'("BPhiExtrapolation.mif"), string'("BPhiExtrapolation.mif"));
   -- OMTF
-  constant ETA_OMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"));
-  constant PHI_OMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"));
+  constant ETA_OMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"));
+  constant PHI_OMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"));
   -- OMTF/EMTF shared
   constant ETA_OMTF_EMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"));
   constant PHI_OMTF_EMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"));
   constant ETA_EMTF_OMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("EEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"), string'("OEtaExtrapolation.mif"));
   constant PHI_EMTF_OMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("EPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"), string'("OPhiExtrapolation.mif"));
   -- Endcap
-  constant ETA_EMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("EEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"));
-  constant PHI_EMTF_EXTRAP_CONT_ASSIGN     : ContentFileAssignment_vector := (string'("EPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"));
+  constant ETA_EMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("EEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"), string'("EEtaExtrapolation.mif"));
+  constant PHI_EMTF_EXTRAP_CONT_ASSIGN : ContentFileAssignment_vector := (string'("EPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"), string'("EPhiExtrapolation.mif"));
 
   type ContentFileQuadAssignment_vector is array (natural range <>) of ContentFileAssignment_vector;
   constant ETA_EXTRAP_CONT_ASSIGN : ContentFileQuadAssignment_vector(0 to 8) := (ETA_EMTF_EXTRAP_CONT_ASSIGN, ETA_EMTF_OMTF_EXTRAP_CONT_ASSIGN, ETA_OMTF_EXTRAP_CONT_ASSIGN, ETA_BMTF_EXTRAP_CONT_ASSIGN, ETA_BMTF_EXTRAP_CONT_ASSIGN, ETA_BMTF_EXTRAP_CONT_ASSIGN, ETA_OMTF_EXTRAP_CONT_ASSIGN, ETA_OMTF_EMTF_EXTRAP_CONT_ASSIGN, ETA_EMTF_EXTRAP_CONT_ASSIGN);
   constant PHI_EXTRAP_CONT_ASSIGN : ContentFileQuadAssignment_vector(0 to 8) := (PHI_EMTF_EXTRAP_CONT_ASSIGN, PHI_EMTF_OMTF_EXTRAP_CONT_ASSIGN, PHI_OMTF_EXTRAP_CONT_ASSIGN, PHI_BMTF_EXTRAP_CONT_ASSIGN, PHI_BMTF_EXTRAP_CONT_ASSIGN, PHI_BMTF_EXTRAP_CONT_ASSIGN, PHI_OMTF_EXTRAP_CONT_ASSIGN, PHI_OMTF_EMTF_EXTRAP_CONT_ASSIGN, PHI_EMTF_EXTRAP_CONT_ASSIGN);
 
   constant ETA_IDX_MEM_ADDR_WIDTH : natural := 9;
-  constant ETA_IDX_MEM_WORD_SIZE : natural := 5;
+  constant ETA_IDX_MEM_WORD_SIZE  : natural := 5;
   constant PHI_IDX_MEM_ADDR_WIDTH : natural := 10;
-  constant PHI_IDX_MEM_WORD_SIZE : natural := 6;
+  constant PHI_IDX_MEM_WORD_SIZE  : natural := 6;
 
-  constant EXTRAPOLATION_ADDR_WIDTH : natural := 12;
+  constant EXTRAPOLATION_ADDR_WIDTH    : natural := 12;
   constant ETA_EXTRAPOLATION_WORD_SIZE : natural := 4;
   constant PHI_EXTRAPOLATION_WORD_SIZE : natural := 3;
 
   constant REL_ISO_ADDR_WIDTH : natural := 14;
-  constant REL_ISO_WORD_SIZE : natural := 1;
+  constant REL_ISO_WORD_SIZE  : natural := 1;
   constant ABS_ISO_ADDR_WIDTH : natural := 5;
-  constant ABS_ISO_WORD_SIZE : natural := 1;
+  constant ABS_ISO_WORD_SIZE  : natural := 1;
 
-  constant COU_MEM_ADDR_WIDTH : natural := 7;
-  constant COU_MEM_WORD_SIZE : natural := 1;
+  constant COU_MEM_ADDR_WIDTH               : natural := 7;
+  constant COU_HALF_ETA_FINE_MEM_ADDR_WIDTH : natural := 7;
+  constant COU_MEM_WORD_SIZE                : natural := 1;
 
   constant SORT_RANK_MEM_ADDR_WIDTH : natural := 13;
-  constant SORT_RANK_MEM_WORD_SIZE : natural := 10;
+  constant SORT_RANK_MEM_WORD_SIZE  : natural := 10;
 
   -----------------------------------------------------------------------------
   -- Phi offset initialization vector
@@ -236,7 +237,7 @@ package ugmt_constants is
   constant CANCEL_OUT_TYPE_BMTF : string := string'("BMTF_ADDRESSES");
   constant CANCEL_OUT_TYPE_OMTF : string := string'("COORDINATE");
   constant CANCEL_OUT_TYPE_EMTF : string := string'("COORDINATE");
-  constant CANCEL_OUT_TYPE_BO   : string := string'("COORDINATE");
+  constant CANCEL_OUT_TYPE_BO   : string := string'("COORDINATE_HALF_ETA_FINE");
   constant CANCEL_OUT_TYPE_EO   : string := string'("COORDINATE");
 
   -----------------------------------------------------------------------------
