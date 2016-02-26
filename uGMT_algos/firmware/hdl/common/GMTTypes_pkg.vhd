@@ -335,30 +335,28 @@ package body GMTTypes is
     return oTrack;
   end;
 
-  function track_addresses_from_bmtf_mus (
-    signal iMuon_flat : TFlatMuon_vector;
-    signal iEmpty     : std_logic_vector(NUM_MUONS_IN-1 downto 0))
-    return TGMTMuTracks3 is
+  function track_address_from_bmtf_mus (
+    signal iMuon_flat : TFlatMuon;
+    signal iEmpty     : std_logic
+    return TGMTMuTrackInfo is
     variable vBmtfAddress : TBMTFTrackAddress;
-    variable oWedges      : TGMTMuTracks3;
+    variable oTrack       : TGMTMuTrackInfo;
   begin
-    for i in oWedges'range loop
-      vBmtfAddress.addressStation0 := unsigned(iMuon_flat(i)(BMTF_ADDRESS_STATION_1_IN_HIGH downto BMTF_ADDRESS_STATION_1_IN_LOW));
-      
-      vBmtfAddress.stationAddresses(0) := unsigned(iMuon_flat(i)(BMTF_ADDRESS_STATION_2_IN_HIGH downto BMTF_ADDRESS_STATION_2_IN_LOW));
-      vBmtfAddress.stationAddresses(1) := unsigned(iMuon_flat(i)(BMTF_ADDRESS_STATION_3_IN_HIGH downto BMTF_ADDRESS_STATION_3_IN_LOW));
-      vBmtfAddress.stationAddresses(2) := unsigned(iMuon_flat(i)(BMTF_ADDRESS_STATION_4_IN_HIGH downto BMTF_ADDRESS_STATION_4_IN_LOW));
-      
-      vBmtfAddress.detectorSide := iMuon_flat(i)(BMTF_DETECTOR_SIDE_HIGH downto BMTF_DETECTOR_SIDE_LOW);
-      vBmtfAddress.wheelNo      := unsigned(iMuon_flat(i)(BMTF_WHEEL_NO_IN_HIGH downto BMTF_WHEEL_NO_IN_LOW));
+    vBmtfAddress.addressStation0 := unsigned(iMuon_flat(BMTF_ADDRESS_STATION_1_IN_HIGH downto BMTF_ADDRESS_STATION_1_IN_LOW));
 
-      oWedges(i) := track_address_from_in_mus(iMuon_flat(i), iEmpty(i), vBmtfAddress, iMuon_flat(i)(HALO_FINE_IN));
-    end loop;  -- i
+    vBmtfAddress.stationAddresses(0) := unsigned(iMuon_flat(BMTF_ADDRESS_STATION_2_IN_HIGH downto BMTF_ADDRESS_STATION_2_IN_LOW));
+    vBmtfAddress.stationAddresses(1) := unsigned(iMuon_flat(BMTF_ADDRESS_STATION_3_IN_HIGH downto BMTF_ADDRESS_STATION_3_IN_LOW));
+    vBmtfAddress.stationAddresses(2) := unsigned(iMuon_flat(BMTF_ADDRESS_STATION_4_IN_HIGH downto BMTF_ADDRESS_STATION_4_IN_LOW));
+
+    vBmtfAddress.detectorSide := iMuon_flat(BMTF_DETECTOR_SIDE_HIGH downto BMTF_DETECTOR_SIDE_LOW);
+    vBmtfAddress.wheelNo      := unsigned(iMuon_flat(BMTF_WHEEL_NO_IN_HIGH downto BMTF_WHEEL_NO_IN_LOW));
+
+    oTrack := track_address_from_in_mus(iMuon_flat, iEmpty, vBmtfAddress, iMuon_flat(HALO_FINE_IN));
 
     return oWedges;
   end;
 
-  function track_addresses_from_omtf_mus (
+  function track_address_from_omtf_mus (
     signal iMuon_flat : TFlatMuon_vector;
     signal iEmpty     : std_logic_vector(NUM_MUONS_IN-1 downto 0))
     return TGMTMuTracks3 is
@@ -367,11 +365,11 @@ package body GMTTypes is
   begin
     for i in oWedges'range loop
       vBmtfAddress.addressStation0 := (others => '0');
-      
+
       vBmtfAddress.stationAddresses(0) := (others => '0');
       vBmtfAddress.stationAddresses(1) := (others => '0');
       vBmtfAddress.stationAddresses(2) := (others => '0');
-      
+
       vBmtfAddress.detectorSide := (others => '0');
       vBmtfAddress.wheelNo      := (others => '0');
 
@@ -381,7 +379,7 @@ package body GMTTypes is
     return oWedges;
   end;
 
-  function track_addresses_from_emtf_mus (
+  function track_address_from_emtf_mus (
     signal iMuon_flat : TFlatMuon_vector;
     signal iEmpty     : std_logic_vector(NUM_MUONS_IN-1 downto 0))
     return TGMTMuTracks3 is
