@@ -7,6 +7,7 @@ use work.ipbus.all;
 use work.ipbus_decode_cancel_out_mems.all;
 
 use work.GMTTypes.all;
+use work.ugmt_constants.all;
 
 entity WedgeCheckerUnit is
   generic (
@@ -114,7 +115,7 @@ begin
       gen_coord_w_eta_fine : if CANCEL_OUT_TYPE = string'("COORDINATE_HALF_ETA_FINE") generate
         x : entity work.GhostCheckerUnit_spatialCoords
         generic map (
-          USE_ETA_FINE_2   => false, -- OMTF, doesn't use an eta fine bit.
+          USE_ETA_FINE_1   => false, -- OMTF, doesn't use an eta fine bit.
           USE_ETA_FINE_2   => true,  -- BMTF uses an eta fine bit.
           DATA_FILE        => DATA_FILE,
           LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET,

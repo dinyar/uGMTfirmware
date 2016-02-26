@@ -18,19 +18,21 @@ entity GhostCheckerUnit_spatialCoords is
     COU_INPUT_SIZE   : natural
     );
   port (
-    clk_ipb : in  std_logic;
-    rst     : in  std_logic;
-    ipb_in  : in  ipb_wbus;
-    ipb_out : out ipb_rbus;
-    eta1    : in  signed(8 downto 0);
-    phi1    : in  signed(7 downto 0);
-    qual1   : in  unsigned(3 downto 0);
-    eta2    : in  signed(8 downto 0);
-    phi2    : in  signed(7 downto 0);
-    qual2   : in  unsigned(3 downto 0);
-    ghost1  : out std_logic;
-    ghost2  : out std_logic;
-    clk     : in  std_logic
+    clk_ipb  : in  std_logic;
+    rst      : in  std_logic;
+    ipb_in   : in  ipb_wbus;
+    ipb_out  : out ipb_rbus;
+    etaFine1 : in  std_logic := '1'; -- Per default we assume best eta.
+    eta1     : in  signed(8 downto 0);
+    phi1     : in  signed(7 downto 0);
+    qual1    : in  unsigned(3 downto 0);
+    etaFine2 : in  std_logic := '1'; -- Per default we assume best eta.
+    eta2     : in  signed(8 downto 0);
+    phi2     : in  signed(7 downto 0);
+    qual2    : in  unsigned(3 downto 0);
+    ghost1   : out std_logic;
+    ghost2   : out std_logic;
+    clk      : in  std_logic
     );
 end GhostCheckerUnit_spatialCoords;
 
