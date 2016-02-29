@@ -21,12 +21,11 @@ entity GhostCheckerUnit_BMTF is
 end GhostCheckerUnit_BMTF;
 
 architecture Behavioral of GhostCheckerUnit_BMTF is
+  signal match        : std_logic_vector(0 downto 0);
 begin
 
   P : process(mu1, mu2, qual1, qual2)
-    variable matchedStation : boolean := false;  -- whether a track segement was shared between two tracks
   begin
-    matchedStation := false;
 
     for station in 0 to 2 loop
       -- If candidates are in same wheel on same side
@@ -39,7 +38,7 @@ begin
            (mu1.stationAddresses(station) = X"1" and mu2.stationAddresses(station) = X"3") or
            (mu1.stationAddresses(station) = X"4" and mu2.stationAddresses(station) = X"0") or
            (mu1.stationAddresses(station) = X"5" and mu2.stationAddresses(station) = X"1") then
-          matchedStation := true;
+          match <= true;
         end if;
       -- If candidates are in same side and candidate 2 is one wheel in front of candidate 1.
       elsif (mu1.detectorSide = mu2.detectorSide) and
@@ -49,7 +48,7 @@ begin
            (mu1.stationAddresses(station) = X"1" and mu2.stationAddresses(station) = X"B") or
            (mu1.stationAddresses(station) = X"4" and mu2.stationAddresses(station) = X"8") or
            (mu1.stationAddresses(station) = X"5" and mu2.stationAddresses(station) = X"9") then
-          matchedStation := true;
+          match <= true;
         end if;
       -- If candidates are in same side and candidate 2 is one wheel behind candidate 1.
       elsif (mu1.detectorSide = mu2.detectorSide) and
@@ -59,7 +58,7 @@ begin
            (mu1.stationAddresses(station) = X"9" and mu2.stationAddresses(station) = X"3") or
            (mu1.stationAddresses(station) = X"C" and mu2.stationAddresses(station) = X"0") or
            (mu1.stationAddresses(station) = X"D" and mu2.stationAddresses(station) = X"1") then
-          matchedStation := true;
+          match <= true;
         end if;
       --  If one muon in 0+ and one muon in 0- (0+ and 0- are physically the same wheel)
       elsif (mu1.detectorSide /= mu2.detectorSide) and
@@ -68,8 +67,10 @@ begin
              (mu1.stationAddresses(station) = X"9" and mu2.stationAddresses(station) = X"B") or
              (mu1.stationAddresses(station) = X"C" and mu2.stationAddresses(station) = X"8") or
              (mu1.stationAddresses(station) = X"D" and mu2.stationAddresses(station) = X"9")then
-             matchedStation := true;
+             match <= true;
           end if;
+        else
+          match <= '0'
       end if;
     end loop;
   end process;
