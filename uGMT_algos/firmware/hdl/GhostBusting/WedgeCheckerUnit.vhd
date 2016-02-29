@@ -71,8 +71,10 @@ begin
         port map (
           mu1     => wedge1(i).bmtfAddress,
           qual1   => wedge1(i).qual,
+          pt1     => wedge1(i).pt,
           mu2     => wedge2(j).bmtfAddress,
           qual2   => wedge2(j).qual,
+          pt2     => wedge2(i).pt,
           ghost1  => sIntermediateCancel1(i)(j),
           ghost2  => sIntermediateCancel2(j)(i),
           clk     => clk

@@ -148,4 +148,5 @@ begin
       end if;
     end process check_ghosts;
   end generate;
+  
 end Behavioral;
