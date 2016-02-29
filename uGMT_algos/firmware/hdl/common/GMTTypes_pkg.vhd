@@ -267,12 +267,12 @@ package GMTTypes is
   function unpack_calo_idx_bits(signal iCaloIdxBits   : TCaloIndexBits_link) return TCaloIndexBit_vector;
   function apply_global_phi_wraparound(iPhi           : signed(10 downto 0)) return unsigned;
 
-  function track_addresses_from_bmtf_mus(signal iMuon_flat : TFlatMuon_vector;
-                                       signal iEmpty     : TEmpty_link) return TGMTMuTracks_vector;
-  function track_addresses_from_omtf_mus(signal iMuon_flat : TFlatMuon_vector;
-                                       signal iEmpty     : TEmpty_link) return TGMTMuTracks_vector;
-  function track_addresses_from_emtf_mus(signal iMuon_flat : TFlatMuon_vector;
-                                       signal iEmpty     : TEmpty_link) return TGMTMuTracks_vector;
+  function track_address_from_bmtf_mus(signal iMuon_flat : TFlatMuon;
+                                       signal iEmpty     : std_logic) return TGMTMuTrackInfo;
+  function track_address_from_omtf_mus(signal iMuon_flat : TFlatMuon;
+                                       signal iEmpty     : std_logic) return TGMTMuTrackInfo;
+  function track_address_from_emtf_mus(signal iMuon_flat : TFlatMuon;
+                                       signal iEmpty     : std_logic) return TGMTMuTrackInfo;
 
   function add_offset_to_local_phi(signal iLocalPhi : std_logic_vector(7 downto 0);
                        signal iOffset   : unsigned(9 downto 0)) return signed;
@@ -355,7 +355,7 @@ package body GMTTypes is
 
     oTrack := track_address_from_in_mus(iMuon_flat, iEmpty, vBmtfAddress, iMuon_flat(HALO_FINE_IN));
 
-    return oWedges;
+    return oTrack;
   end;
 
   function track_address_from_omtf_mus (
@@ -376,7 +376,7 @@ package body GMTTypes is
 
     oTrack := track_address_from_in_mus(iMuon_flat, iEmpty, vBmtfAddress, iMuon_flat(HALO_FINE_IN));
 
-    return oWedges;
+    return oTrack;
   end;
 
   function track_address_from_emtf_mus (
@@ -397,7 +397,7 @@ package body GMTTypes is
 
     oTrack := track_address_from_in_mus(iMuon_flat, iEmpty, vBmtfAddress, iMuon_flat(HALO_FINE_IN));
 
-    return oWedges;
+    return oTrack;
   end;
 
 
@@ -436,8 +436,8 @@ package body GMTTypes is
   function unpack_mu_from_flat (
     signal iMuon_flat : TFlatMuon;
     signal iPhi       : unsigned(9 downto 0);
-    signal etaFine    : std_logic;
-    signal haloMuon   : std_logic)
+    constant etaFine    : std_logic;
+    constant haloMuon   : std_logic)
     return TGMTMuIn is
     variable oMuon : TGMTMuIn;
   begin
@@ -456,9 +456,10 @@ package body GMTTypes is
     signal iMuon_flat : TFlatMuon;
     signal iPhi       : unsigned(9 downto 0))
     return TGMTMuIn is
-    variable oMuon : TGMTMuIn;
+    constant dummyHalo : std_logic := '0';
+    variable oMuon     : TGMTMuIn;
   begin
-    return unpack_mu_from_flat(iMuon_flat, iPhi, iMuon_flat(HALO_FINE_IN), '0');
+    return unpack_mu_from_flat(iMuon_flat, iPhi, iMuon_flat(HALO_FINE_IN), dummyHalo);
   end;
 
 
@@ -466,18 +467,21 @@ package body GMTTypes is
     signal iMuon_flat : TFlatMuon;
     signal iPhi       : unsigned(9 downto 0))
     return TGMTMuIn is
-    variable oMuon : TGMTMuIn;
+    constant dummyFine : std_logic := '1';
+    constant dummyHalo : std_logic := '0';
+    variable oMuon     : TGMTMuIn;
   begin
-    return unpack_mu_from_flat(iMuon_flat, iPhi, '1', '0');
+    return unpack_mu_from_flat(iMuon_flat, iPhi, dummyFine, dummyHalo);
   end;
 
   function unpack_emtf_mu_from_flat (
     signal iMuon_flat : TFlatMuon;
     signal iPhi       : unsigned(9 downto 0))
     return TGMTMuIn is
+    constant dummyFine : std_logic := '1';
     variable oMuon : TGMTMuIn;
   begin
-    return unpack_mu_from_flat(iMuon_flat, iPhi, '1', iMuon_flat(HALO_FINE_IN));
+    return unpack_mu_from_flat(iMuon_flat, iPhi, dummyFine, iMuon_flat(HALO_FINE_IN));
   end;
 
   -----------------------------------------------------------------------------

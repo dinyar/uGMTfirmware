@@ -317,13 +317,13 @@ begin
   loop_tracks : for i in oTracks'range generate
     unpack_track_addresses : for j in oTracks(i)'range generate
       check_bmtf : if (((4*QUAD)+(3*i+j))-36 >= BMTF_LOW) and (((4*QUAD)+(3*i+j))-36 <= BMTF_HIGH) generate
-        oTracks <= track_address_from_bmtf_mus(sMuons_flat(3*i+j), sEmpty_link(3*i+j));
+        oTracks(i)(j) <= track_address_from_bmtf_mus(sMuons_flat(3*i+j), sEmpty_link(i)(j));
       end generate;
       check_omtf : if ((((4*QUAD+3*i+j)-36 >= OMTF_NEG_LOW) and ((4*QUAD+3*i+j)-36 <= OMTF_NEG_HIGH)) or (((4*QUAD+3*i+j)-36 >= OMTF_POS_LOW) and ((4*QUAD+3*i+j)-36 <= OMTF_POS_HIGH))) generate
-        oTracks <= track_address_from_omtf_mus(sMuons_flat(3*i+j), sEmpty_link(3*i+j));
+        oTracks(i)(j) <= track_address_from_omtf_mus(sMuons_flat(3*i+j), sEmpty_link(i)(j));
       end generate;
       check_emtf : if ((((4*QUAD+3*i+j)-36 >= EMTF_NEG_LOW) and ((4*QUAD+3*i+j)-36 <= EMTF_NEG_HIGH)) or (((4*QUAD+3*i+j)-36 >= EMTF_POS_LOW) and ((4*QUAD+3*i+j)-36 <= EMTF_POS_HIGH))) generate
-        oTracks <= track_address_from_emtf_mus(sMuons_flat(3*i+j), sEmpty_link(3*i+j));
+        oTracks(i)(j) <= track_address_from_emtf_mus(sMuons_flat(3*i+j), sEmpty_link(i)(j));
       end generate;
     end generate;
   end generate;
