@@ -10,9 +10,10 @@ use work.GMTTypes.all;
 
 entity CancelOutUnit_BO is
   generic (
-    CANCEL_OUT_TYPE  : string := string'("COORDINATE"); -- which type of cancel-out should be used.
-    DATA_FILE        : string;
-    LOCAL_PHI_OFFSET : signed(8 downto 0)
+    MUON_SELECTION_ALGO : string; -- how to select the winning muon
+    CANCEL_OUT_TYPE     : string := string'("COORDINATE"); -- which type of cancel-out should be used.
+    DATA_FILE           : string;
+    LOCAL_PHI_OFFSET    : signed(8 downto 0)
     );
   port (
     clk_ipb   : in  std_logic;
@@ -80,9 +81,10 @@ begin
   g1 : for i in 0 to 5 generate
     x0 : entity work.CancelOutUnit_BO_WedgeComp
     generic map (
-      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE,
-      DATA_FILE        => DATA_FILE,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
+      MUON_SELECTION_ALGO => MUON_SELECTION_ALGO,
+      CANCEL_OUT_TYPE     => CANCEL_OUT_TYPE,
+      DATA_FILE           => DATA_FILE,
+      LOCAL_PHI_OFFSET    => LOCAL_PHI_OFFSET
       )
     port map (
       clk_ipb    => clk_ipb,

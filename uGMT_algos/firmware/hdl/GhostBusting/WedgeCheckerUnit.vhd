@@ -11,9 +11,10 @@ use work.ugmt_constants.all;
 
 entity WedgeCheckerUnit is
   generic (
-    CANCEL_OUT_TYPE  : string := string'("COORDINATE"); -- which type of cancel-out should be used.
-    DATA_FILE        : string;
-    LOCAL_PHI_OFFSET : signed(8 downto 0)
+    MUON_SELECTION_ALGO : string := string'("QUALITY"); -- how to select the winning muon
+    CANCEL_OUT_TYPE     : string := string'("COORDINATE"); -- which type of cancel-out should be used.
+    DATA_FILE           : string;
+    LOCAL_PHI_OFFSET    : signed(8 downto 0)
     );
   port (
     clk_ipb : in  std_logic;
@@ -64,15 +65,18 @@ begin
     g2 : for j in wedge2'range generate
       gen_bmtf_addr_based : if CANCEL_OUT_TYPE = string'("BMTF_ADDRESSES") generate
         x : entity work.GhostCheckerUnit_BMTF
-         port map (
-           mu1     => wedge1(i).bmtfAddress,
-           qual1   => wedge1(i).qual,
-           mu2     => wedge2(j).bmtfAddress,
-           qual2   => wedge2(j).qual,
-           ghost1  => sIntermediateCancel1(i)(j),
-           ghost2  => sIntermediateCancel2(j)(i),
-           clk     => clk
-           );
+        generic map (
+          MUON_SELECTION_ALGO => MUON_SELECTION_ALGO
+          )
+        port map (
+          mu1     => wedge1(i).bmtfAddress,
+          qual1   => wedge1(i).qual,
+          mu2     => wedge2(j).bmtfAddress,
+          qual2   => wedge2(j).qual,
+          ghost1  => sIntermediateCancel1(i)(j),
+          ghost2  => sIntermediateCancel2(j)(i),
+          clk     => clk
+          );
       end generate gen_bmtf_addr_based;
 
       -- TODO: MISSING!
@@ -90,9 +94,10 @@ begin
       gen_coord_based : if CANCEL_OUT_TYPE = string'("COORDINATE") generate
         x : entity work.GhostCheckerUnit_spatialCoords
         generic map (
-          DATA_FILE        => DATA_FILE,
-          LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET,
-          COU_INPUT_SIZE   => COU_MEM_ADDR_WIDTH
+          MUON_SELECTION_ALGO => MUON_SELECTION_ALGO,
+          DATA_FILE           => DATA_FILE,
+          LOCAL_PHI_OFFSET    => LOCAL_PHI_OFFSET,
+          COU_INPUT_SIZE      => COU_MEM_ADDR_WIDTH
           )
         port map (
           clk_ipb => clk_ipb,
@@ -102,9 +107,11 @@ begin
           eta1    => wedge1(i).eta,
           phi1    => wedge1(i).phi,
           qual1   => wedge1(i).qual,
+          pt1     => wedge1(i).pt,
           eta2    => wedge2(j).eta,
           phi2    => wedge2(j).phi,
           qual2   => wedge2(j).qual,
+          pt2     => wedge2(j).pt,
           ghost1  => sIntermediateCancel1(i)(j),
           ghost2  => sIntermediateCancel2(j)(i),
           clk     => clk
@@ -115,11 +122,12 @@ begin
       gen_coord_w_eta_fine : if CANCEL_OUT_TYPE = string'("COORDINATE_HALF_ETA_FINE") generate
         x : entity work.GhostCheckerUnit_spatialCoords
         generic map (
-          USE_ETA_FINE_1   => false, -- OMTF, doesn't use an eta fine bit.
-          USE_ETA_FINE_2   => true,  -- BMTF uses an eta fine bit.
-          DATA_FILE        => DATA_FILE,
-          LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET,
-          COU_INPUT_SIZE   => COU_HALF_ETA_FINE_MEM_ADDR_WIDTH
+          MUON_SELECTION_ALGO => MUON_SELECTION_ALGO,
+          USE_ETA_FINE_1      => false, -- OMTF, doesn't use an eta fine bit.
+          USE_ETA_FINE_2      => true,  -- BMTF uses an eta fine bit.
+          DATA_FILE           => DATA_FILE,
+          LOCAL_PHI_OFFSET    => LOCAL_PHI_OFFSET,
+          COU_INPUT_SIZE      => COU_HALF_ETA_FINE_MEM_ADDR_WIDTH
           )
         port map (
           clk_ipb  => clk_ipb,
@@ -130,10 +138,12 @@ begin
           eta1     => wedge1(i).eta,
           phi1     => wedge1(i).phi,
           qual1    => wedge1(i).qual,
+          pt1      => wedge1(j).pt,
           etaFine2 => wedge2(j).etaFine,
           eta2     => wedge2(j).eta,
           phi2     => wedge2(j).phi,
           qual2    => wedge2(j).qual,
+          pt2      => wedge2(j).pt,
           ghost1   => sIntermediateCancel1(i)(j),
           ghost2   => sIntermediateCancel2(j)(i),
           clk      => clk

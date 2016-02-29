@@ -84,6 +84,7 @@ package GMTTypes is
     phi         : signed(7 downto 0);
     bmtfAddress : TBMTFTrackAddress;
 
+    pt    : unsigned(8 downto 0);
     qual  : unsigned(3 downto 0);
     empty : std_logic;
   end record;
@@ -330,6 +331,7 @@ package body GMTTypes is
       -- TODO: Missing EMTF and OMTF addresses here. Should be optimized away
       -- by tools when not used downstream.
 
+      oTrack.pt    := unsigned(iMuon_flat(PT_IN_HIGH downto PT_IN_LOW));
       oTrack.qual  := unsigned(iMuon_flat(QUAL_IN_HIGH downto QUAL_IN_LOW));
       oTrack.empty := iEmpty;
     return oTrack;

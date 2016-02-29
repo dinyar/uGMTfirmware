@@ -241,6 +241,16 @@ package ugmt_constants is
   constant CANCEL_OUT_TYPE_EO   : string := string'("COORDINATE");
 
   -----------------------------------------------------------------------------
+  -- Cancel-out selector
+  -----------------------------------------------------------------------------
+
+  constant MUON_SELECTION_ALGO_BMTF : string := string'("QUALITY");
+  constant MUON_SELECTION_ALGO_OMTF : string := string'("QUALITY");
+  constant MUON_SELECTION_ALGO_EMTF : string := string'("QUALITY");
+  constant MUON_SELECTION_ALGO_BO   : string := string'("MIXED");
+  constant MUON_SELECTION_ALGO_EO   : string := string'("MIXED");
+
+  -----------------------------------------------------------------------------
   -- Cancel-out unit mapping to chip regions
   -----------------------------------------------------------------------------
 

@@ -334,10 +334,11 @@ begin
   -- 2+2 other mu
   cou_bo_plus : entity work.CancelOutUnit_BO
     generic map (
-        CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BO,
-        DATA_FILE        => CANCEL_OUT_DATA_FILE_BO_POS,
-        LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_BMTF
-        )
+      MUON_SELECTION_ALGO => MUON_SELECTION_ALGO_BO,
+      CANCEL_OUT_TYPE     => CANCEL_OUT_TYPE_BO,
+      DATA_FILE           => CANCEL_OUT_DATA_FILE_BO_POS,
+      LOCAL_PHI_OFFSET    => LOCAL_PHI_OFFSET_BMTF
+      )
     port map (
       clk_ipb     => clk_ipb,
       rst         => rst_loc(COU_BO_POS),
@@ -351,9 +352,10 @@ begin
       );
   cou_bo_minus : entity work.CancelOutUnit_BO
     generic map (
-      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BO,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_BO_NEG,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_BMTF
+      MUON_SELECTION_ALGO => MUON_SELECTION_ALGO_BO,
+      CANCEL_OUT_TYPE     => CANCEL_OUT_TYPE_BO,
+      DATA_FILE           => CANCEL_OUT_DATA_FILE_BO_NEG,
+      LOCAL_PHI_OFFSET    => LOCAL_PHI_OFFSET_BMTF
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -369,9 +371,10 @@ begin
 
   cou_eo_plus : entity work.CancelOutUnit_EO
     generic map (
-      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_EO,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_EO_POS,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OMTF_EMTF
+      MUON_SELECTION_ALGO => MUON_SELECTION_ALGO_EO,
+      CANCEL_OUT_TYPE     => CANCEL_OUT_TYPE_EO,
+      DATA_FILE           => CANCEL_OUT_DATA_FILE_EO_POS,
+      LOCAL_PHI_OFFSET    => LOCAL_PHI_OFFSET_OMTF_EMTF
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -386,9 +389,10 @@ begin
       );
   cou_eo_minus : entity work.CancelOutUnit_EO
     generic map (
-      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_EO,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_EO_NEG,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OMTF_EMTF
+      MUON_SELECTION_ALGO => MUON_SELECTION_ALGO_EO,
+      CANCEL_OUT_TYPE     => CANCEL_OUT_TYPE_EO,
+      DATA_FILE           => CANCEL_OUT_DATA_FILE_EO_NEG,
+      LOCAL_PHI_OFFSET    => LOCAL_PHI_OFFSET_OMTF_EMTF
       )
     port map (
       clk_ipb     => clk_ipb,
@@ -404,11 +408,12 @@ begin
 
   cou_b : entity work.CancelOutUnit_Single
     generic map (
-      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_BMTF,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_BMTF,
-      num_wedges       => 12,
-      num_tracks       => 3,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_BMTF
+      MUON_SELECTION_ALGO => MUON_SELECTION_ALGO_BMTF,
+      CANCEL_OUT_TYPE     => CANCEL_OUT_TYPE_BMTF,
+      DATA_FILE           => CANCEL_OUT_DATA_FILE_BMTF,
+      num_wedges          => 12,
+      num_tracks          => 3,
+      LOCAL_PHI_OFFSET    => LOCAL_PHI_OFFSET_BMTF
       )
     port map (
       clk_ipb => clk_ipb,
@@ -421,11 +426,12 @@ begin
       );
   cou_o_plus : entity work.CancelOutUnit_Single
     generic map (
-      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_OMTF,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_OMTF_POS,
-      num_wedges       => 6,
-      num_tracks       => 3,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OMTF_EMTF
+      MUON_SELECTION_ALGO => MUON_SELECTION_ALGO_OMTF,
+      CANCEL_OUT_TYPE     => CANCEL_OUT_TYPE_OMTF,
+      DATA_FILE           => CANCEL_OUT_DATA_FILE_OMTF_POS,
+      num_wedges          => 6,
+      num_tracks          => 3,
+      LOCAL_PHI_OFFSET    => LOCAL_PHI_OFFSET_OMTF_EMTF
       )
     port map (
       clk_ipb => clk_ipb,
@@ -438,11 +444,12 @@ begin
       );
   cou_o_minus : entity work.CancelOutUnit_Single
     generic map (
-      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_OMTF,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_OMTF_NEG,
-      num_wedges       => 6,
-      num_tracks       => 3,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OMTF_EMTF
+      MUON_SELECTION_ALGO => MUON_SELECTION_ALGO_OMTF,
+      CANCEL_OUT_TYPE     => CANCEL_OUT_TYPE_OMTF,
+      DATA_FILE           => CANCEL_OUT_DATA_FILE_OMTF_NEG,
+      num_wedges          => 6,
+      num_tracks          => 3,
+      LOCAL_PHI_OFFSET    => LOCAL_PHI_OFFSET_OMTF_EMTF
       )
     port map (
       clk_ipb => clk_ipb,
@@ -455,11 +462,12 @@ begin
       );
   cou_e_plus : entity work.CancelOutUnit_Single
     generic map (
-      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_EMTF,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_EMTF_POS,
-      num_wedges       => 6,
-      num_tracks       => 3,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OMTF_EMTF
+      MUON_SELECTION_ALGO => MUON_SELECTION_ALGO_EMTF,
+      CANCEL_OUT_TYPE     => CANCEL_OUT_TYPE_EMTF,
+      DATA_FILE           => CANCEL_OUT_DATA_FILE_EMTF_POS,
+      num_wedges          => 6,
+      num_tracks          => 3,
+      LOCAL_PHI_OFFSET    => LOCAL_PHI_OFFSET_OMTF_EMTF
       )
     port map (
       clk_ipb => clk_ipb,
@@ -472,11 +480,12 @@ begin
       );
   cou_e_minus : entity work.CancelOutUnit_Single
     generic map (
-      CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE_EMTF,
-      DATA_FILE        => CANCEL_OUT_DATA_FILE_EMTF_NEG,
-      num_wedges       => 6,
-      num_tracks       => 3,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET_OMTF_EMTF
+      MUON_SELECTION_ALGO => MUON_SELECTION_ALGO_EMTF,
+      CANCEL_OUT_TYPE     => CANCEL_OUT_TYPE_EMTF,
+      DATA_FILE           => CANCEL_OUT_DATA_FILE_EMTF_NEG,
+      num_wedges          => 6,
+      num_tracks          => 3,
+      LOCAL_PHI_OFFSET    => LOCAL_PHI_OFFSET_OMTF_EMTF
       )
     port map (
       clk_ipb => clk_ipb,
