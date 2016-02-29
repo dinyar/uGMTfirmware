@@ -38,7 +38,7 @@ begin
            (mu1.stationAddresses(station) = X"1" and mu2.stationAddresses(station) = X"3") or
            (mu1.stationAddresses(station) = X"4" and mu2.stationAddresses(station) = X"0") or
            (mu1.stationAddresses(station) = X"5" and mu2.stationAddresses(station) = X"1") then
-          match <= true;
+          match <= "1";
         end if;
       -- If candidates are in same side and candidate 2 is one wheel in front of candidate 1.
       elsif (mu1.detectorSide = mu2.detectorSide) and
@@ -48,7 +48,7 @@ begin
            (mu1.stationAddresses(station) = X"1" and mu2.stationAddresses(station) = X"B") or
            (mu1.stationAddresses(station) = X"4" and mu2.stationAddresses(station) = X"8") or
            (mu1.stationAddresses(station) = X"5" and mu2.stationAddresses(station) = X"9") then
-          match <= true;
+          match <= "1";
         end if;
       -- If candidates are in same side and candidate 2 is one wheel behind candidate 1.
       elsif (mu1.detectorSide = mu2.detectorSide) and
@@ -58,7 +58,7 @@ begin
            (mu1.stationAddresses(station) = X"9" and mu2.stationAddresses(station) = X"3") or
            (mu1.stationAddresses(station) = X"C" and mu2.stationAddresses(station) = X"0") or
            (mu1.stationAddresses(station) = X"D" and mu2.stationAddresses(station) = X"1") then
-          match <= true;
+          match <= "1";
         end if;
       --  If one muon in 0+ and one muon in 0- (0+ and 0- are physically the same wheel)
       elsif (mu1.detectorSide /= mu2.detectorSide) and
@@ -67,22 +67,18 @@ begin
              (mu1.stationAddresses(station) = X"9" and mu2.stationAddresses(station) = X"B") or
              (mu1.stationAddresses(station) = X"C" and mu2.stationAddresses(station) = X"8") or
              (mu1.stationAddresses(station) = X"D" and mu2.stationAddresses(station) = X"9")then
-             match <= true;
+             match <= "1";
           end if;
         else
-          match <= '0'
+          match <= "0";
       end if;
     end loop;
   end process;
 
   select_on_qual : if MUON_SELECTION_ALGO = string'("QUALITY") generate
-    check_ghosts : process (match, qual1, qual2, deltaPhi, deltaEta)
+    check_ghosts : process (match, qual1, qual2)
     begin  -- process check_ghosts
-      -- If the muons are 'far enough' apart we don't check the LUT output.
-      if (deltaPhi(7 downto 3) /= (4 downto 0 => '0')) or (deltaEta(8 downto 4) /= (4 downto 0 => '0')) then
-        ghost1 <= '0';
-        ghost2 <= '0';
-      elsif match = "1" then
+      if match = "1" then
         if qual1 > qual2 then
           ghost1 <= '0';
           ghost2 <= '1';
@@ -98,13 +94,9 @@ begin
   end generate;
 
   select_on_mixed : if MUON_SELECTION_ALGO = string'("MIXED") generate
-    check_ghosts : process (match, qual1, qual2, pt1, pt2, deltaPhi, deltaEta)
+    check_ghosts : process (match, qual1, qual2, pt1, pt2)
     begin  -- process check_ghosts
-      -- If the muons are 'far enough' apart we don't check the LUT output.
-      if (deltaPhi(7 downto 3) /= (4 downto 0 => '0')) or (deltaEta(8 downto 4) /= (4 downto 0 => '0')) then
-        ghost1 <= '0';
-        ghost2 <= '0';
-      elsif match = "1" then
+      if match = "1" then
         if qual1(3 downto 2) > qual2(3 downto 2) then
           ghost1 <= '0';
           ghost2 <= '1';

@@ -46,8 +46,6 @@ architecture Behavioral of GhostCheckerUnit_spatialCoords is
 
   signal deltaEta     : signed(9 downto 0);
   signal deltaPhi     : signed(8 downto 0);
-  signal deltaEta_reg : signed(9 downto 0);
-  signal deltaPhi_reg : signed(8 downto 0);
   signal deltaEtaRed  : unsigned(3 downto 0);
   signal deltaPhiRed  : unsigned(2 downto 0);
   signal lutInput     : std_logic_vector(COU_INPUT_SIZE-1 downto 0);
@@ -91,14 +89,6 @@ begin
         addr    => lutInput
         );
 
-  reg_deltas : process (clk)
-  begin  -- reg_deltas
-    if clk'event and clk = '0' then  -- falling clock edge
-      deltaPhi_reg <= deltaPhi;
-      deltaEta_reg <= deltaEta;
-    end if;
-  end process reg_deltas;
-
   select_on_qual : if MUON_SELECTION_ALGO = string'("QUALITY") generate
     check_ghosts : process (match, qual1, qual2, deltaPhi, deltaEta)
     begin  -- process check_ghosts
@@ -119,6 +109,7 @@ begin
         ghost2 <= '0';
       end if;
     end process check_ghosts;
+
   end generate;
 
   select_on_mixed : if MUON_SELECTION_ALGO = string'("MIXED") generate
