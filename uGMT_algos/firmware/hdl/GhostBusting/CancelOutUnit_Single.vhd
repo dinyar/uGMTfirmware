@@ -70,10 +70,10 @@ begin
         rst     => rst,
         ipb_in  => ipbw(i),
         ipb_out => ipbr(i),
-        wedge1  => iWedges(i),
-        wedge2  => iWedges((i+1) mod iWedges'length),
-        ghosts1 => sCancel1(num_tracks*(i+1)-1 downto num_tracks*i),
-        ghosts2 => sCancel2(((num_tracks*(i+2)-1) mod (num_tracks*num_wedges)) downto ((num_tracks*(i+1)) mod (num_tracks*num_wedges))),
+        wedge1  => iWedges((i+1) mod iWedges'length),
+        wedge2  => iWedges(i),
+        ghosts1 => sCancel1(((num_tracks*(i+2)-1) mod (num_tracks*num_wedges)) downto ((num_tracks*(i+1)) mod (num_tracks*num_wedges))),
+        ghosts2 => sCancel2(num_tracks*(i+1)-1 downto num_tracks*i),
         clk     => clk);
   end generate g1;
 
