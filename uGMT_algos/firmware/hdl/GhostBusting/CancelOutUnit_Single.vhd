@@ -63,7 +63,7 @@ begin
     generic map (
       CANCEL_OUT_TYPE  => CANCEL_OUT_TYPE,
       DATA_FILE        => DATA_FILE,
-      LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET
+      LOCAL_PHI_OFFSET => -LOCAL_PHI_OFFSET
       )
       port map (
         clk_ipb => clk_ipb,
