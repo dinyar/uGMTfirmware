@@ -33,7 +33,7 @@ architecture behavior of testbench is
   signal iIntermediateMuonsB : TGMTMu_vector(7 downto 0);
   signal iIntermediateMuonsO : TGMTMu_vector(7 downto 0);
   signal iIntermediateMuonsE : TGMTMu_vector(7 downto 0);
-  signal oQ                  : ldata((OUTPUT_MULTIPLIER*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS-1 downto 0);
+  signal oQ                  : ldata(71 downto 0);
 
 begin
 
@@ -49,7 +49,7 @@ begin
       iIntermediateMuonsB => iIntermediateMuonsB,
       iIntermediateMuonsO => iIntermediateMuonsO,
       iIntermediateMuonsE => iIntermediateMuonsE,
-      q                   => oQ);
+      q                   => oQ((OUTPUT_MULTIPLIER*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS-1 downto 0));
 
   -- Clocks
   clk240 <= not clk240 after half_period_240;
@@ -109,7 +109,7 @@ begin
 
       for cnt in 0 to 5 loop
         wait for 2*half_period_240;
-        vOutput(cnt)(N_SERIALIZER_CHAN-1 downto 0) := oQ((OUTPUT_MULTIPLIER*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS-1 downto (OUTPUT_MULTIPLIER*NUM_OUT_CHANS)) & oQ(NUM_OUT_CHANS-1 downto 0);
+        vOutput(cnt) := oQ;
       end loop;  -- cnt
 
       event_buffer(SERIALIZER_LATENCY-1 downto 1) := event_buffer(SERIALIZER_LATENCY-2 downto 0);
