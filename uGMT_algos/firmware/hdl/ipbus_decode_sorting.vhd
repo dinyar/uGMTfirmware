@@ -17,7 +17,7 @@ package ipbus_decode_sorting is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_sorting(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Tue Feb 23 01:26:44 2016 
+-- START automatically  generated VHDL the Thu Mar  3 03:05:20 2016 
   constant N_SLV_COU_BO_POS: integer := 0;
   constant N_SLV_COU_BO_NEG: integer := 1;
   constant N_SLV_COU_EO_POS: integer := 2;
@@ -43,7 +43,7 @@ package body ipbus_decode_sorting is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Tue Feb 23 01:26:44 2016 
+-- START automatically  generated VHDL the Thu Mar  3 03:05:20 2016 
     if    std_match(addr, "------------0000----------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_COU_BO_POS, IPBUS_SEL_WIDTH)); -- cou_bo_pos / base 0x00000000 / mask 0x000f0000
     elsif std_match(addr, "------------0001----------------") then
