@@ -28,6 +28,7 @@ entity deserialize_mu_quad is
     clk240             : in  std_logic;
     clk40              : in  std_logic;
     d                  : in  ldata(3 downto 0);
+    iDisable           : in  std_logic_vector(3 downto 0);
     oMuons             : out TGMTMu_vector(4*NUM_MUONS_IN-1 downto 0);
     oTracks            : out TGMTMuTracks_vector(3 downto 0);
     oSortRanks         : out TSortRank10_vector(4*NUM_MUONS_IN-1 downto 0);
@@ -193,7 +194,8 @@ begin
             if in_buf(iFrame)(iChan).data(PT_IN_HIGH downto PT_IN_LOW) = (PT_IN_HIGH downto PT_IN_LOW => '0') then
               sEmpty_link(iChan)(iFrame/2) <= '1';
             else
-              sEmpty_link(iChan)(iFrame/2) <= '0';
+              -- If the empty bit hasn't been anyway set we'll set it to the entry in the disable register.
+              sEmpty_link(iChan)(iFrame/2) <= iDisable(iChan);
               muonCount(iChan)             := muonCount(iChan)+to_unsigned(1, muonCount(iChan)'length);
             end if;
 

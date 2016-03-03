@@ -26,6 +26,7 @@ entity muon_input is
     clk240       : in  std_logic;
     clk40        : in  std_logic;
     d            : in  ldata (NCHAN-1 downto 0);
+    iDisable     : in  std_logic_vector(NUM_MU_CHANS-1 downto 0);
     oMuons       : out TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
     oTracks      : out TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
     oSortRanks   : out TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
@@ -76,6 +77,7 @@ begin
         clk240             => clk240,
         clk40              => clk40,
         d                  => d(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
+        iDisable           => iDisable(i*4+3 downto i*4),
         oMuons             => oMuons(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oTracks            => oTracks(i*4+3 downto i*4),
         oSortRanks         => oSortRanks(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),

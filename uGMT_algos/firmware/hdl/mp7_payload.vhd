@@ -57,7 +57,10 @@ architecture rtl of mp7_payload is
   signal sMuCtrReset : std_logic_vector(N_REGION - 1 downto 0);
 
   -- Register to disable/enable inputs
-  signal sInputDisable : ipb_reg_v(0 downto 0);
+  signal sBmtfDisable : ipb_reg_v(0 downto 0);
+  signal sOmtfDisable : ipb_reg_v(0 downto 0);
+  signal sEmtfDisable : ipb_reg_v(0 downto 0);
+  signal sCaloDisable : ipb_reg_v(0 downto 0);
 
   signal sEnergies     : TCaloRegionEtaSlice_vector(27 downto 0);  -- All energies from Calo trigger.
   signal sEnergies_tmp : TCaloRegionEtaSlice_vector(31 downto 0);
@@ -128,6 +131,51 @@ begin
       mu_ctr_rst   => sMuCtrReset
     );
 
+  disable_bmtf_inputs_reg : entity work.ipbus_reg_v
+    generic map(
+      N_REG => 1
+    )
+    port map(
+      clk => clk,
+      reset => rst,
+      ipbus_in => ipbw(N_SLV_BMTF_DISABLE_REG),
+      ipbus_out => ipbr(N_SLV_BMTF_DISABLE_REG),
+      q => sBmtfDisable
+    );
+  disable_omtf_inputs_reg : entity work.ipbus_reg_v
+    generic map(
+      N_REG => 1
+    )
+    port map(
+      clk => clk,
+      reset => rst,
+      ipbus_in => ipbw(N_SLV_OMTF_DISABLE_REG),
+      ipbus_out => ipbr(N_SLV_OMTF_DISABLE_REG),
+      q => sOmtfDisable
+    );
+  disable_emtf_inputs_reg : entity work.ipbus_reg_v
+    generic map(
+      N_REG => 1
+    )
+    port map(
+      clk => clk,
+      reset => rst,
+      ipbus_in => ipbw(N_SLV_EMTF_DISABLE_REG),
+      ipbus_out => ipbr(N_SLV_EMTF_DISABLE_REG),
+      q => sEmtfDisable
+    );
+  disable_calo_inputs_reg : entity work.ipbus_reg_v
+    generic map(
+      N_REG => 1
+    )
+    port map(
+      clk => clk,
+      reset => rst,
+      ipbus_in => ipbw(N_SLV_CALO_DISABLE_REG),
+      ipbus_out => ipbr(N_SLV_CALO_DISABLE_REG),
+      q => sCaloDisable
+    );
+
   -----------------------------------------------------------------------------
   -- Begin 240 MHz domain.
   -----------------------------------------------------------------------------
@@ -146,6 +194,7 @@ begin
       clk240       => clk_p,
       clk40        => clk_payload,
       d            => d(NCHAN-1 downto 0),
+      iDisable     => sEmtfDisable(11 downto 6) & sOmtfDisable(11 downto 6) & sBmtfDisable & sOmtfDisable(5 downto 0) & sEmtfDisable(5 downto 0);
       oMuons       => sMuons,
       oTracks      => sTracks,
       oSortRanks   => sSortRanks,
@@ -166,6 +215,7 @@ begin
       clk240    => clk_p,
       clk40     => clk_payload,
       d         => d(NCHAN-1 downto 0),
+      iDisable  => sCaloDisable(NUM_CALO_CHANS-1 downto 0),
       oEnergies => sEnergies,
       oValid    => sValid_energies
       );
@@ -189,7 +239,6 @@ begin
     end if;
   end process delay_valid_bit;
 
-
   gmt_index_comp : process (clk_payload)
   begin  -- process gmt_index_comp
     if clk_payload'event and clk_payload = '1' then  -- rising clock edge
@@ -199,106 +248,13 @@ begin
     end if;
   end process gmt_index_comp;
 
-  disable_inputs_reg : entity work.ipbus_reg_v
-    generic map(
-        N_REG => 1
-    )
-    port map(
-        clk => clk,
-        reset => rst,
-        ipbus_in => ipbw(N_SLV_INPUT_DISABLE_REG),
-        ipbus_out => ipbr(N_SLV_INPUT_DISABLE_REG),
-        q => sInputDisable
-    );
-
-  disable_inputs : process (sTracks, sEnergies_tmp, sInputDisable)
-  begin
-      if sInputDisable(0)(0) = '1' then -- disable energies
-          for i in sEnergies_fin'range loop
-              sEnergies_fin(i) <= (others => "00000");
-          end loop;
-      else
-          sEnergies_fin <= sEnergies_tmp;
-      end if;
-
-      ---- Disabling BMTF ----
-      if sInputDisable(0)(1) = '1' then -- disable BMTF
-        for i in sTracksB'range loop
-          for j in sTracksB(0)'range loop
-            sTracksB(i)(j).empty <= '1';
-            sTracksB(i)(j).eta <= sTracks(BMTF_LOW+i)(j).eta;
-            sTracksB(i)(j).phi <= sTracks(BMTF_LOW+i)(j).phi;
-            sTracksB(i)(j).bmtfAddress <= sTracks(BMTF_LOW+i)(j).bmtfAddress;
-            sTracksB(i)(j).qual <= sTracks(BMTF_LOW+i)(j).qual;
-          end loop;
-        end loop;
-      else
-        sTracksB <= sTracks(BMTF_HIGH downto BMTF_LOW);
-      end if;
-
-      ---- Disable OMTF ----
-      if sInputDisable(0)(2) = '1' then -- disable OMTF pos
-        for i in 5 downto 0 loop
-          for j in sTracksO(0)'range loop
-            sTracksO(i)(j).empty <= '1';
-            sTracksO(i)(j).eta         <= sTracks(OMTF_POS_LOW+i)(j).eta;
-            sTracksO(i)(j).phi         <= sTracks(OMTF_POS_LOW+i)(j).phi;
-            sTracksO(i)(j).bmtfAddress <= sTracks(OMTF_POS_LOW+i)(j).bmtfAddress;
-            sTracksO(i)(j).qual        <= sTracks(OMTF_POS_LOW+i)(j).qual;
-          end loop;
-        end loop;
-      else
-        sTracksO(5 downto 0) <= sTracks(OMTF_POS_HIGH downto OMTF_POS_LOW);
-      end if;
-
-      if sInputDisable(0)(3) = '1' then -- disable OMTF neg
-        for i in 5 downto 0 loop
-          for j in sTracksO(0)'range loop
-            sTracksO(i+6)(j).empty <= '1';
-            sTracksO(i+6)(j).eta         <= sTracks(OMTF_NEG_LOW+i)(j).eta;
-            sTracksO(i+6)(j).phi         <= sTracks(OMTF_NEG_LOW+i)(j).phi;
-            sTracksO(i+6)(j).bmtfAddress <= sTracks(OMTF_NEG_LOW+i)(j).bmtfAddress;
-            sTracksO(i+6)(j).qual        <= sTracks(OMTF_NEG_LOW+i)(j).qual;
-          end loop;
-        end loop;
-      else
-        sTracksO(11 downto 6) <= sTracks(OMTF_NEG_HIGH downto OMTF_NEG_LOW);
-      end if;
-
-      ---- Disable EMTF ----
-      if sInputDisable(0)(4) = '1' then -- disable EMTF pos
-        for i in 5 downto 0 loop
-          for j in sTracksE(0)'range loop
-            sTracksE(i)(j).empty <= '1';
-            sTracksE(i)(j).eta         <= sTracks(EMTF_POS_LOW+i)(j).eta;
-            sTracksE(i)(j).phi         <= sTracks(EMTF_POS_LOW+i)(j).phi;
-            sTracksE(i)(j).bmtfAddress <= sTracks(EMTF_POS_LOW+i)(j).bmtfAddress;
-            sTracksE(i)(j).qual        <= sTracks(EMTF_POS_LOW+i)(j).qual;
-          end loop;
-        end loop;
-      else
-        sTracksE <= sTracks(EMTF_NEG_HIGH downto EMTF_NEG_LOW) & sTracks(EMTF_POS_HIGH downto EMTF_POS_LOW);
-      end if;
-
-      if sInputDisable(0)(5) = '1' then -- disable EMTF neg
-        for i in 5 downto 0 loop
-          for j in sTracksE(0)'range loop
-            sTracksE(i+6)(j).empty <= '1';
-            sTracksE(i+6)(j).eta         <= sTracks(EMTF_NEG_LOW+i)(j).eta;
-            sTracksE(i+6)(j).phi         <= sTracks(EMTF_NEG_LOW+i)(j).phi;
-            sTracksE(i+6)(j).bmtfAddress <= sTracks(EMTF_NEG_LOW+i)(j).bmtfAddress;
-            sTracksE(i+6)(j).qual        <= sTracks(EMTF_NEG_LOW+i)(j).qual;
-          end loop;
-        end loop;
-      else
-        sTracksE <= sTracks(EMTF_NEG_HIGH downto EMTF_NEG_LOW) & sTracks(EMTF_POS_HIGH downto EMTF_POS_LOW);
-      end if;
-  end process disable_inputs;
-
   sMuonsB <= sMuons((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
   sMuonsO <= sMuons((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sMuons((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
   sMuonsE <= sMuons((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN) & sMuons((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
 
+  sTracksB <= sTracks(BMTF_HIGH downto BMTF_LOW);
+  sTracksO <= sTracks(OMTF_NEG_HIGH downto OMTF_NEG_LOW) & sTracks(OMTF_POS_HIGH downto OMTF_POS_LOW);
+  sTracksE <= sTracks(EMTF_NEG_HIGH downto EMTF_NEG_LOW) & sTracks(EMTF_POS_HIGH downto EMTF_POS_LOW);
 
   sIndexBitsB <= sIndexBits((BMTF_HIGH+1)*3-1 downto BMTF_LOW*NUM_MUONS_IN);
   sIndexBitsO <= sIndexBits((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sIndexBits((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
@@ -312,11 +268,11 @@ begin
   sSortRanksO <= sSortRanks((OMTF_NEG_HIGH+1)*3-1 downto OMTF_NEG_LOW*NUM_MUONS_IN) & sSortRanks((OMTF_POS_HIGH+1)*3-1 downto OMTF_POS_LOW*NUM_MUONS_IN);
   sSortRanksE <= sSortRanks((EMTF_NEG_HIGH+1)*3-1 downto EMTF_NEG_LOW*NUM_MUONS_IN) & sSortRanks((EMTF_POS_HIGH+1)*3-1 downto EMTF_POS_LOW*NUM_MUONS_IN);
 
-  sEnergies_tmp(sEnergies_tmp'high-4 downto 0) <= sEnergies;
-  sEnergies_tmp(sEnergies_tmp'high-3)          <= (others => "00000");
-  sEnergies_tmp(sEnergies_tmp'high-2)          <= (others => "00000");
-  sEnergies_tmp(sEnergies_tmp'high-1)          <= (others => "00000");
-  sEnergies_tmp(sEnergies_tmp'high)            <= (others => "00000");
+  sEnergies_fin(sEnergies_fin'high-4 downto 0) <= sEnergies;
+  sEnergies_fin(sEnergies_fin'high-3)          <= (others => "00000");
+  sEnergies_fin(sEnergies_fin'high-2)          <= (others => "00000");
+  sEnergies_fin(sEnergies_fin'high-1)          <= (others => "00000");
+  sEnergies_fin(sEnergies_fin'high)            <= (others => "00000");
 
   uGMT : entity work.GMT
     port map (

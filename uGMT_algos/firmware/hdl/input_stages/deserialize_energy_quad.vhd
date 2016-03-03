@@ -23,6 +23,7 @@ entity deserialize_energy_quad is
     clk240    : in  std_logic;
     clk40     : in  std_logic;
     d         : in  ldata(3 downto 0);
+    iDisable  : in  std_logic_vector(3 downto 0);
     oEnergies : out TCaloRegionEtaSlice_vector(NCHAN-1 downto 0);
     oValid    : out std_logic
     );
@@ -61,7 +62,7 @@ begin  -- Behavioral
     variable vValid_frame : std_logic_vector(NCHAN-1 downto 0);
   begin  -- process check_valid
     for i in d'range loop
-      if d(i).valid = '1' then
+      if d(i).valid = '1' and iDisable(i) = '0' then
         in_buf(in_buf'high)(i) <= d(i);
       else
         in_buf(in_buf'high)(i).data  <= (31 downto 0 => '0');

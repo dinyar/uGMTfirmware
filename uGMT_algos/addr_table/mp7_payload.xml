@@ -4,13 +4,81 @@
   <node id="muon_input" module="file://muon_input.xml" address="0x0" description="LUTs used for muons in 240 MHz domain."/>
   <node id="energy_input" module="file://energy_input.xml" address="0x2000000" description="LUTs used for energy values in 240 MHz domain."/>
   <node id="uGMT" module="file://uGMT.xml" address="0x4000000" description="The core uGMT algorithms."/>
-  <node id="input_disable_reg" address="0x8000000" description="Register to disable inputs ('1' is disabled)." fwinfo="endpoint;width=0">
-      <node id="energy_sum" mask="0x1" />
-      <node id="BMTF" mask="0x2" />
-      <node id="OMTF_positive" mask="0x4" />
-      <node id="OMTF_negative" mask="0x8" />
-      <node id="EMTF_positive" mask="0x10" />
-      <node id="EMTF_negative" mask="0x20" />
+  <node id="bmtf_disable_reg" address="0x8000000" description="Register to disable BMTF inputs ('1' is disabled)." fwinfo="endpoint;width=0">
+      <node id="BMTF1" mask="0x1" />
+      <node id="BMTF2" mask="0x2" />
+      <node id="BMTF3" mask="0x4" />
+      <node id="BMTF4" mask="0x8" />
+      <node id="BMTF5" mask="0x10" />
+      <node id="BMTF6" mask="0x20" />
+      <node id="BMTF7" mask="0x40" />
+      <node id="BMTF8" mask="0x80" />
+      <node id="BMTF9" mask="0x100" />
+      <node id="BMTF10" mask="0x200" />
+      <node id="BMTF11" mask="0x400" />
+      <node id="BMTF12" mask="0x800" />
+  </node>
+  <node id="omtf_disable_reg" address="0x8000001" description="Register to disable OMTF inputs ('1' is disabled)." fwinfo="endpoint;width=0">
+      <node id="OMTFp1" mask="0x1" />
+      <node id="OMTFp2" mask="0x2" />
+      <node id="OMTFp3" mask="0x4" />
+      <node id="OMTFp4" mask="0x8" />
+      <node id="OMTFp5" mask="0x10" />
+      <node id="OMTFp6" mask="0x20" />
+      <node id="OMTFn1" mask="0x40" />
+      <node id="OMTFn2" mask="0x80" />
+      <node id="OMTFn3" mask="0x100" />
+      <node id="OMTFn4" mask="0x200" />
+      <node id="OMTFn5" mask="0x400" />
+      <node id="OMTFn6" mask="0x800" />
+  </node>
+  <node id="emtf_disable_reg" address="0x8000002" description="Register to disable EMTF inputs ('1' is disabled)." fwinfo="endpoint;width=0">
+      <node id="EMTFp1" mask="0x1" />
+      <node id="EMTFp2" mask="0x2" />
+      <node id="EMTFp3" mask="0x4" />
+      <node id="EMTFp4" mask="0x8" />
+      <node id="EMTFp5" mask="0x10" />
+      <node id="EMTFp6" mask="0x20" />
+      <node id="EMTFn1" mask="0x40" />
+      <node id="EMTFn2" mask="0x80" />
+      <node id="EMTFn3" mask="0x100" />
+      <node id="EMTFn4" mask="0x200" />
+      <node id="EMTFn5" mask="0x400" />
+      <node id="EMTFn6" mask="0x800" />
+  </node>
+  <node id="calo_disable_reg" address="0x8000003" description="Register to disable calo inputs ('1' is disabled)." fwinfo="endpoint;width=0">
+      <node id="CALO1" mask="0x1" />
+      <node id="CALO2" mask="0x2" />
+      <node id="CALO3" mask="0x4" />
+      <node id="CALO4" mask="0x8" />
+      <node id="CALO5" mask="0x10" />
+      <node id="CALO6" mask="0x20" />
+      <node id="CALO7" mask="0x40" />
+      <node id="CALO8" mask="0x80" />
+      <node id="CALO9" mask="0x100" />
+      <node id="CALO10" mask="0x200" />
+      <node id="CALO11" mask="0x400" />
+      <node id="CALO12" mask="0x800" />
+      <node id="CALO13" mask="0x1000" />
+      <node id="CALO14" mask="0x2000" />
+      <node id="CALO15" mask="0x4000" />
+      <node id="CALO16" mask="0x8000" />
+      <node id="CALO17" mask="0x10000" />
+      <node id="CALO18" mask="0x20000" />
+      <node id="CALO19" mask="0x40000" />
+      <node id="CALO20" mask="0x80000" />
+      <node id="CALO21" mask="0x100000" />
+      <node id="CALO22" mask="0x200000" />
+      <node id="CALO23" mask="0x400000" />
+      <node id="CALO24" mask="0x800000" />
+      <node id="CALO25" mask="0x1000000" />
+      <node id="CALO26" mask="0x2000000" />
+      <node id="CALO27" mask="0x4000000" />
+      <node id="CALO28" mask="0x8000000" />
+      <node id="CALO29" mask="0x10000000" />
+      <node id="CALO30" mask="0x20000000" />
+      <node id="CALO31" mask="0x40000000" />
+      <node id="CALO32" mask="0x80000000" />
   </node>
   <node id="generate_lemo_signals" module="file://generate_lemo_signals.xml" address="0x8000100" description="Contains register to set prescale for pseudo-triggers."/>
   <node id="muon_counter_reset" module="file://muon_counter_reset.xml" address="0x8000200" description="Registers to take manual control of muon counter reset signal."/>
