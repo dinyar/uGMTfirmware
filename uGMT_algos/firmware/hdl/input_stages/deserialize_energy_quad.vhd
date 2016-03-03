@@ -58,7 +58,7 @@ begin  -- Behavioral
       ipb_from_slaves => ipbr
     );
 
-  check_valid : process (d)
+  check_valid : process (d, iDisable)
     variable vValid_frame : std_logic_vector(NCHAN-1 downto 0);
   begin  -- process check_valid
     for i in d'range loop

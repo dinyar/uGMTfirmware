@@ -62,6 +62,8 @@ architecture rtl of mp7_payload is
   signal sEmtfDisable : ipb_reg_v(0 downto 0);
   signal sCaloDisable : ipb_reg_v(0 downto 0);
 
+  signal sMuonDisable : std_logic_vector(35 downto 0);
+
   signal sEnergies     : TCaloRegionEtaSlice_vector(27 downto 0);  -- All energies from Calo trigger.
   signal sEnergies_tmp : TCaloRegionEtaSlice_vector(31 downto 0);
   signal sEnergies_fin : TCaloRegionEtaSlice_vector(31 downto 0);
@@ -176,6 +178,8 @@ begin
       q => sCaloDisable
     );
 
+  sMuonDisable <= sEmtfDisable(0)(11 downto 6) & sOmtfDisable(0)(11 downto 6) & sBmtfDisable(0)(11 downto 0) & sOmtfDisable(0)(5 downto 0) & sEmtfDisable(0)(5 downto 0);
+
   -----------------------------------------------------------------------------
   -- Begin 240 MHz domain.
   -----------------------------------------------------------------------------
@@ -194,7 +198,7 @@ begin
       clk240       => clk_p,
       clk40        => clk_payload,
       d            => d(NCHAN-1 downto 0),
-      iDisable     => sEmtfDisable(11 downto 6) & sOmtfDisable(11 downto 6) & sBmtfDisable & sOmtfDisable(5 downto 0) & sEmtfDisable(5 downto 0);
+      iDisable     => sMuonDisable, 
       oMuons       => sMuons,
       oTracks      => sTracks,
       oSortRanks   => sSortRanks,
@@ -215,7 +219,7 @@ begin
       clk240    => clk_p,
       clk40     => clk_payload,
       d         => d(NCHAN-1 downto 0),
-      iDisable  => sCaloDisable(NUM_CALO_CHANS-1 downto 0),
+      iDisable  => sCaloDisable(0)(NUM_CALO_CHANS-1 downto 0),
       oEnergies => sEnergies,
       oValid    => sValid_energies
       );
