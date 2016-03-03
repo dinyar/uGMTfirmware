@@ -592,20 +592,20 @@
   <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="210" y1="1183.26" x2="270.394" y2="1183.26"/>
   <g>
     <g>
-      <rect style="fill: #ffffff" x="-610" y="540.572" width="20" height="60"/>
-      <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="-610" y="540.572" width="20" height="60"/>
+      <rect style="fill: #ffffff" x="-610" y="430" width="20" height="60"/>
+      <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="-610" y="430" width="20" height="60"/>
     </g>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-610" y1="550.572" x2="-590" y2="550.572"/>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-610" y1="560.572" x2="-590" y2="560.572"/>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-610" y1="570.572" x2="-590" y2="570.572"/>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-610" y1="580.572" x2="-590" y2="580.572"/>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-610" y1="590.572" x2="-590" y2="590.572"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-610" y1="440" x2="-590" y2="440"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-610" y1="450" x2="-590" y2="450"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-610" y1="460" x2="-590" y2="460"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-610" y1="470" x2="-590" y2="470"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-610" y1="480" x2="-590" y2="480"/>
   </g>
-  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-590" y1="570.572" x2="-610" y2="570.572"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-590" y1="460" x2="-610" y2="460"/>
   <g>
-    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" d="M -704,570.572 A 6,6 0 0 0 -710,576.572"/>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-590" y1="570.572" x2="-704" y2="570.572"/>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-710" y1="576.572" x2="-710" y2="630.572"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" d="M -704,460 A 6,6 0 0 0 -710,466"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-590" y1="460" x2="-704" y2="460"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-710" y1="466" x2="-710" y2="520"/>
   </g>
   <g>
     <g>
@@ -633,11 +633,11 @@
   </g>
   <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-590.006" y1="140.37" x2="-610.006" y2="140.37"/>
   <g>
-    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" d="M -180,0 A 0,0 0 1 0 -180,0"/>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-530" y1="470.572" x2="-530" y2="470.572"/>
-    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" d="M -704,470.572 A 6,6 0 0 0 -710,476.572"/>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-530" y1="470.572" x2="-704" y2="470.572"/>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-710" y1="476.572" x2="-710" y2="550.572"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" d="M -440,388.707 A 0.707107,0.707107 0 0 0 -440.707,388"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-440" y1="390" x2="-440" y2="388.707"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" d="M -704,388 A 6,6 0 0 0 -710,394"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-440.707" y1="388" x2="-704" y2="388"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-710" y1="394" x2="-710" y2="550"/>
   </g>
   <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-610.006,140.37 -710,140.37 -710,170.572 "/>
   <g>
@@ -645,17 +645,17 @@
     <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-810" y1="903.828" x2="-716" y2="903.828"/>
     <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-710" y1="897.828" x2="-710" y2="150.572"/>
   </g>
-  <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-690" y="490.572">
-    <tspan x="-690" y="490.572">sign</tspan>
+  <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-700" y="400">
+    <tspan x="-700" y="400">sign</tspan>
   </text>
-  <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-630" y="630.572">
-    <tspan x="-630" y="630.572">deltaPhi</tspan>
+  <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-604" y="508">
+    <tspan x="-604" y="508">deltaPhi</tspan>
   </text>
   <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-630" y="190.572">
     <tspan x="-630" y="190.572">deltaEta</tspan>
   </text>
-  <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-690.006" y="260.37">
-    <tspan x="-690.006" y="260.37">eta</tspan>
+  <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-696" y="252">
+    <tspan x="-696" y="252">eta</tspan>
   </text>
   <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-980" y="1140">
     <tspan x="-980" y="1140">data valid</tspan>
@@ -758,9 +758,9 @@
   <g>
     <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" d="M -556,783.828 A 6,6 0 0 0 -550,777.828"/>
     <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-590" y1="783.828" x2="-556" y2="783.828"/>
-    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" d="M -544,620.572 A 6,6 0 0 0 -550,626.572"/>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-550" y1="777.828" x2="-550" y2="626.572"/>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-544" y1="620.572" x2="-530" y2="620.572"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" d="M -544,510 A 6,6 0 0 0 -550,516"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-550" y1="777.828" x2="-550" y2="516"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-544" y1="510" x2="-530" y2="510"/>
   </g>
   <g>
     <rect style="fill: #ffffff" x="-510.006" y="170.37" width="40" height="40"/>
@@ -809,8 +809,8 @@
     <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-608.996" y1="331.372" x2="-598.996" y2="351.372"/>
     <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-588.996" y1="331.372" x2="-598.996" y2="351.372"/>
   </g>
-  <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-688.996" y="371.372">
-    <tspan x="-688.996" y="371.372">pT</tspan>
+  <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-696" y="364">
+    <tspan x="-696" y="364">pT</tspan>
   </text>
   <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-588.996" y1="351.372" x2="-388.996" y2="351.372"/>
   <g>
@@ -822,55 +822,50 @@
     <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-368.996" y1="331.372" x2="-378.996" y2="351.372"/>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="-530" y="510.572" width="40" height="40"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="-530" y="510.572" width="40" height="40"/>
-    <text font-size="13.0274" style="fill: #000000;text-anchor:middle;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-510" y="535.28">
-      <tspan x="-510" y="535.28">+</tspan>
+    <rect style="fill: #ffffff" x="-530" y="400" width="40" height="40"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="-530" y="400" width="40" height="40"/>
+    <text font-size="13.0274" style="fill: #000000;text-anchor:middle;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-510" y="424.708">
+      <tspan x="-510" y="424.708">+</tspan>
     </text>
   </g>
-  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-590,570.572 -570,570.572 -570,520.572 -530,520.572 "/>
+  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-590,460 -570,460 -570,410 -530,410 "/>
   <g>
-    <rect style="fill: #ffffff" x="-530" y="590.572" width="40" height="40"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="-530" y="590.572" width="40" height="40"/>
-    <text font-size="13.0274" style="fill: #000000;text-anchor:middle;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-510" y="615.28">
-      <tspan x="-510" y="615.28">-</tspan>
+    <rect style="fill: #ffffff" x="-530" y="480" width="40" height="40"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="-530" y="480" width="40" height="40"/>
+    <text font-size="13.0274" style="fill: #000000;text-anchor:middle;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-510" y="504.708">
+      <tspan x="-510" y="504.708">-</tspan>
     </text>
   </g>
-  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-590,570.572 -570,570.572 -570,600.572 -530,600.572 "/>
-  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-550,650.572 -550,650.572 -550,540.572 -530,540.572 "/>
+  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-590,460 -570,460 -570,490 -530,490 "/>
+  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-550,650.572 -550,650.572 -550,430 -530,430 "/>
   <g>
-    <polygon style="fill: #ffffff" points="-450,610.572 -450,530.572 -430,550.572 -430,590.572 "/>
-    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-450,610.572 -450,530.572 -430,550.572 -430,590.572 "/>
+    <polygon style="fill: #ffffff" points="-450,500 -450,420 -430,440 -430,480 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-450,500 -450,420 -430,440 -430,480 "/>
   </g>
   <g>
     <g>
-      <rect style="fill: #ffffff" x="-390" y="550.572" width="20" height="40"/>
-      <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="-390" y="550.572" width="20" height="40"/>
+      <rect style="fill: #ffffff" x="-390" y="440" width="20" height="40"/>
+      <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="-390" y="440" width="20" height="40"/>
     </g>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-390" y1="550.572" x2="-380" y2="570.572"/>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-370" y1="550.572" x2="-380" y2="570.572"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-390" y1="440" x2="-380" y2="460"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-370" y1="440" x2="-380" y2="460"/>
   </g>
-  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-490,530.572 -470,530.572 -470,550.572 -450,550.572 "/>
-  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-490,610.572 -470,610.572 -470,590.572 -450,590.572 "/>
-  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-530,470.572 -530,470.572 -440,470.572 -440,540.572 "/>
-  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-430" y1="570.572" x2="-390" y2="570.572"/>
+  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-490,420 -470,420 -470,440 -450,440 "/>
+  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-490,500 -470,500 -470,480 -450,480 "/>
+  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-680,388 -680,388 -440,388 -440,430 "/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-430" y1="460" x2="-390" y2="460"/>
   <g>
     <g>
-      <rect style="fill: #ffffff" x="-390" y="430.572" width="20" height="40"/>
-      <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="-390" y="430.572" width="20" height="40"/>
+      <rect style="fill: #ffffff" x="-380" y="540" width="20" height="40"/>
+      <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="-380" y="540" width="20" height="40"/>
     </g>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-390" y1="430.572" x2="-380" y2="450.572"/>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-370" y1="430.572" x2="-380" y2="450.572"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-380" y1="540" x2="-370" y2="560"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-360" y1="540" x2="-370" y2="560"/>
   </g>
-  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-550" y1="450.572" x2="-390" y2="450.572"/>
-  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-550,550.572 -550,550.572 -550,450.572 -530,450.572 "/>
-  <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-550" y="450.572">
-    <tspan x="-550" y="450.572">global phi</tspan>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="-550" y1="560" x2="-380" y2="560"/>
+  <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="-544" y="576">
+    <tspan x="-544" y="576">global phi</tspan>
   </text>
-  <g>
-    <polygon style="fill: #ffffff" points="-270,550.572 -270,470.572 -250,490.572 -250,530.572 "/>
-    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-270,550.572 -270,470.572 -250,490.572 -250,530.572 "/>
-  </g>
   <g>
     <polygon style="fill: #ffffff" points="-268,252 -268,172 -248,192 -248,232 "/>
     <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-268,252 -268,172 -248,192 -248,232 "/>
@@ -893,8 +888,8 @@
   </g>
   <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-370,190.8 -369,190.8 -269,190.8 -268,190.8 "/>
   <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-370,240 -369,240 -269,240 -268,240 "/>
-  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-370,450.572 -320,450.572 -320,490.572 -270,490.572 "/>
-  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-370,570.572 -320,570.572 -320,530.572 -270,530.572 "/>
+  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-360,560 -315,560 -315,532 -270,532 "/>
+  <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-370,460 -320,460 -320,488 -268,488 "/>
   <g>
     <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" d="M -260,347.372 A 6,6 0 0 0 -266,341.372"/>
     <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000" x1="-290" y1="341.372" x2="-266" y2="341.372"/>
@@ -995,10 +990,10 @@
     </text>
   </g>
   <g>
-    <rect style="fill: #90ee90" x="316" y="81" width="43" height="239"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2.35099e-37; stroke: #90ee90" x="316" y="81" width="43" height="239"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="337.5" y="204.4">
-      <tspan x="337.5" y="204.4"></tspan>
+    <rect style="fill: #90ee90" x="316" y="81" width="43.2" height="239"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2.35099e-37; stroke: #90ee90" x="316" y="81" width="43.2" height="239"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="337.6" y="204.4">
+      <tspan x="337.6" y="204.4"></tspan>
     </text>
   </g>
   <g>
@@ -1467,4 +1462,8 @@
   <text font-size="14.1563" style="fill: #000000;text-anchor:start;font-family:Source Sans Pro;font-style:normal;font-weight:normal" x="800" y="230">
     <tspan x="800" y="230">sCaloIdxBits</tspan>
   </text>
+  <g>
+    <polygon style="fill: #ffffff" points="-270,550.572 -270,470.572 -250,490.572 -250,530.572 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="-270,550.572 -270,470.572 -250,490.572 -250,530.572 "/>
+  </g>
 </svg>
