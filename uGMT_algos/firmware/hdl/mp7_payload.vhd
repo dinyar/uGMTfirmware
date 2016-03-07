@@ -62,7 +62,7 @@ architecture rtl of mp7_payload is
   signal sEmtfDisable : ipb_reg_v(0 downto 0);
   signal sCaloDisable : ipb_reg_v(0 downto 0);
 
-  signal sMuonDisable : std_logic_vector(35 downto 0);
+  signal sMuonDisable : std_logic_vector(NUM_MU_CHANS-1 downto 0);
 
   signal sEnergies     : TCaloRegionEtaSlice_vector(27 downto 0);  -- All energies from Calo trigger.
   signal sEnergies_tmp : TCaloRegionEtaSlice_vector(31 downto 0);
@@ -198,7 +198,7 @@ begin
       clk240       => clk_p,
       clk40        => clk_payload,
       d            => d(NCHAN-1 downto 0),
-      iDisable     => sMuonDisable, 
+      iDisable     => sMuonDisable,
       oMuons       => sMuons,
       oTracks      => sTracks,
       oSortRanks   => sSortRanks,

@@ -108,14 +108,14 @@ begin
     variable vValid_frame : std_logic_vector(NCHAN-1 downto 0);
   begin  -- process check_valid
     for i in d'range loop
-      if d(i).valid = '1' then
+      if d(i).valid = '1' and iDisable(i) = '0' then
         in_buf(in_buf'high)(i) <= d(i);
       else
         -- TODO: Might not need to zero the data as it will be set invalid later anyway.
-        in_buf(in_buf'high)(i).data  <= (31 downto 0 => '0');
-        in_buf(in_buf'high)(i).valid <= '0';
+        in_buf(in_buf'high)(i).data   <= (31 downto 0 => '0');
+        in_buf(in_buf'high)(i).valid  <= '0';
         in_buf(in_buf'high)(i).strobe <= '0';
-        in_buf(in_buf'high)(i).start <= '0';
+        in_buf(in_buf'high)(i).start  <= '0';
       end if;
 
       vValid_frame(i) := d(i).valid;
@@ -194,8 +194,7 @@ begin
             if in_buf(iFrame)(iChan).data(PT_IN_HIGH downto PT_IN_LOW) = (PT_IN_HIGH downto PT_IN_LOW => '0') then
               sEmpty_link(iChan)(iFrame/2) <= '1';
             else
-              -- If the empty bit hasn't been anyway set we'll set it to the entry in the disable register.
-              sEmpty_link(iChan)(iFrame/2) <= iDisable(iChan);
+              sEmpty_link(iChan)(iFrame/2) <= '0';
               muonCount(iChan)             := muonCount(iChan)+to_unsigned(1, muonCount(iChan)'length);
             end if;
 
