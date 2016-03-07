@@ -95,9 +95,7 @@ end process shift_buffers;
       -- Store valid bit.
       oValid <= combine_or(sValid_buf);
       for chan in d'range loop
-        for frame in 5 downto 0 loop
-          oEnergies(chan) <= calo_etaslice_from_flat(sLinkData(chan));
-        end loop;  -- frame
+        oEnergies(chan) <= calo_etaslice_from_flat(sLinkData(chan));
 
         -- Check for errors
         if in_buf(0)(chan).valid = '1' then
