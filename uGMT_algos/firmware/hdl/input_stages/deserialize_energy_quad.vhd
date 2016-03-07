@@ -81,13 +81,7 @@ begin  -- Behavioral
       sValid_buf(sValid_buf'high-1 downto 0) <= sValid_buf(sValid_buf'high downto 1);
       in_buf(in_buf'high-1 downto 0)         <= in_buf(in_buf'high downto 1);
     end if;
-end process shift_buffers;
-
-  unroll_links : for chan in NCHAN-1 downto 0 generate
-    unroll_bx : for bx in 5 downto 0 generate
-      sLinkData(chan)(30*(bx)+29 downto 30*(bx)) <= in_buf(bx)(chan).data(29 downto 0);
-    end generate unroll_bx;
-  end generate unroll_links;
+  end process shift_buffers;
 
   gmt_in_reg : process (clk40)
   begin  -- process gmt_in_reg
@@ -95,7 +89,9 @@ end process shift_buffers;
       -- Store valid bit.
       oValid <= combine_or(sValid_buf);
       for chan in d'range loop
-        oEnergies(chan) <= calo_etaslice_from_flat(sLinkData(chan));
+        for frame in 2*NUM_MUONS_LINK-1 downto 0 loop
+          sLinkData(chan)(30*(frame)+29 downto 30*(frame)) <= in_buf(frame)(chan).data(29 downto 0);
+        end loop;
 
         -- Check for errors
         if in_buf(0)(chan).valid = '1' then
@@ -122,6 +118,10 @@ end process shift_buffers;
       end loop;  -- chan
     end if;
   end process gmt_in_reg;
+
+  extract_energies : for chan in NCHAN-1 downto 0 generate
+    oEnergies(chan) <= calo_etaslice_from_flat(sLinkData(chan));
+  end generate extract_energies;
 
   gen_error_counter : for i in NCHAN-1 downto 0 generate
     bc0_reg : entity work.ipbus_counter

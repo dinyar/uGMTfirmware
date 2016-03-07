@@ -308,7 +308,7 @@ begin
     check_omtf : if (((4*(QUAD-9)+i/3) >= OMTF_NEG_LOW) and ((4*(QUAD-9)+i/3) <= OMTF_NEG_HIGH)) or (((4*(QUAD-9)+i/3) >= OMTF_POS_LOW) and ((4*(QUAD-9)+i/3) <= OMTF_POS_HIGH)) generate
       sMuonsIn(i) <= unpack_omtf_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
     end generate check_omtf;
-    check_emtf : if (((4*(QUAD-9)+(i/3)) >= EMTF_NEG_LOW) and ((4*(QUAD-9)+(i/3)) <= EMTF_NEG_HIGH)) or (((4*(QUAD-9)+(i/3)) >= EMTF_POS_LOW) and ((4*(QUAD-9)+(i/3)) <= EMTF_POS_HIGH)) generate
+    check_emtf : if (((4*(QUAD-9)+i/3) >= EMTF_NEG_LOW) and ((4*(QUAD-9)+i/3) <= EMTF_NEG_HIGH)) or (((4*(QUAD-9)+i/3) >= EMTF_POS_LOW) and ((4*(QUAD-9)+i/3) <= EMTF_POS_HIGH)) generate
       sMuonsIn(i) <= unpack_emtf_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
     end generate check_emtf;
   end generate unpack_muons;
