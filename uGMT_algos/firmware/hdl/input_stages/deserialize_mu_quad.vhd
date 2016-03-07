@@ -302,13 +302,13 @@ begin
   sMuons_flat     <= unroll_link_muons(sMuons_event(NCHAN-1 downto 0));
   sGlobalPhi_flat <= unroll_global_phi(sGlobalPhi_event(NCHAN-1 downto 0));
   unpack_muons : for i in sMuonsIn'range generate
-    check_bmtf : if (((4*QUAD)+i)-36 >= BMTF_LOW) and (((4*QUAD)+i)-36 <= BMTF_HIGH) generate
+    check_bmtf : if (((4*(QUAD-9)*3+i) >= BMTF_HIGH) and ((4*(QUAD-9)*3+i) <= BMTF_LOW)) generate
       sMuonsIn(i) <= unpack_bmtf_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
     end generate check_bmtf;
-    check_omtf : if (((((4*QUAD)+i)-36 >= OMTF_NEG_LOW) and (((4*QUAD)+i)-36 <= OMTF_NEG_HIGH)) or ((((4*QUAD)+i)-36 >= OMTF_POS_LOW) and (((4*QUAD)+i)-36 <= OMTF_POS_HIGH))) generate
+    check_omtf : if (((4*(QUAD-9)*3+i) >= OMTF_NEG_LOW) and ((4*(QUAD-9)*3+i) <= OMTF_NEG_LOW)) or (((4*(QUAD-9)*3+i) >= OMTF_POS_LOW) and ((4*(QUAD-9)*3+i) <= OMTF_POS_LOW)) generate
       sMuonsIn(i) <= unpack_omtf_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
     end generate check_omtf;
-    check_emtf : if (((((4*QUAD)+i)-36 >= EMTF_NEG_LOW) and (((4*QUAD)+i)-36 <= EMTF_NEG_HIGH)) or ((((4*QUAD)+i)-36 >= EMTF_POS_LOW) and (((4*QUAD)+i)-36 <= EMTF_POS_HIGH))) generate
+    check_emtf : if (((4*(QUAD-9)*3+i) >= EMTF_NEG_LOW) and ((4*(QUAD-9)*3+i) <= EMTF_NEG_LOW)) or (((4*(QUAD-9)*3+i) >= EMTF_POS_LOW) and ((4*(QUAD-9)*3+i) <= EMTF_POS_LOW)) generate
       sMuonsIn(i) <= unpack_emtf_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
     end generate check_emtf;
   end generate unpack_muons;
@@ -317,13 +317,13 @@ begin
   end generate convert_muons;
   loop_tracks : for i in oTracks'range generate
     unpack_track_addresses : for j in oTracks(i)'range generate
-      check_bmtf : if (((4*QUAD)+(3*i+j))-36 >= BMTF_LOW) and (((4*QUAD)+(3*i+j))-36 <= BMTF_HIGH) generate
+      check_bmtf : if (((4*QUAD)+(3*i))-36 >= BMTF_LOW) and (((4*QUAD)+(3*i))-36 <= BMTF_HIGH) generate
         oTracks(i)(j) <= track_address_from_bmtf_mus(sMuons_flat(3*i+j), sEmpty_link(i)(j));
       end generate;
-      check_omtf : if ((((4*QUAD+3*i+j)-36 >= OMTF_NEG_LOW) and ((4*QUAD+3*i+j)-36 <= OMTF_NEG_HIGH)) or (((4*QUAD+3*i+j)-36 >= OMTF_POS_LOW) and ((4*QUAD+3*i+j)-36 <= OMTF_POS_HIGH))) generate
+      check_omtf : if ((((4*QUAD+3*i)-36 >= OMTF_NEG_LOW) and ((4*QUAD+3*i)-36 <= OMTF_NEG_HIGH)) or (((4*QUAD+3*i)-36 >= OMTF_POS_LOW) and ((4*QUAD+3*i)-36 <= OMTF_POS_HIGH))) generate
         oTracks(i)(j) <= track_address_from_omtf_mus(sMuons_flat(3*i+j), sEmpty_link(i)(j));
       end generate;
-      check_emtf : if ((((4*QUAD+3*i+j)-36 >= EMTF_NEG_LOW) and ((4*QUAD+3*i+j)-36 <= EMTF_NEG_HIGH)) or (((4*QUAD+3*i+j)-36 >= EMTF_POS_LOW) and ((4*QUAD+3*i+j)-36 <= EMTF_POS_HIGH))) generate
+      check_emtf : if ((((4*QUAD+3*i)-36 >= EMTF_NEG_LOW) and ((4*QUAD+3*i)-36 <= EMTF_NEG_HIGH)) or (((4*QUAD+3*i)-36 >= EMTF_POS_LOW) and ((4*QUAD+3*i)-36 <= EMTF_POS_HIGH))) generate
         oTracks(i)(j) <= track_address_from_emtf_mus(sMuons_flat(3*i+j), sEmpty_link(i)(j));
       end generate;
     end generate;
