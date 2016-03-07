@@ -104,7 +104,7 @@ begin
       ipb_from_slaves => ipbr
       );
 
-  check_valid : process (d)
+  check_valid : process (d, iDisable)
     variable vValid_frame : std_logic_vector(NCHAN-1 downto 0);
   begin  -- process check_valid
     for i in d'range loop
@@ -302,13 +302,13 @@ begin
   sMuons_flat     <= unroll_link_muons(sMuons_event(NCHAN-1 downto 0));
   sGlobalPhi_flat <= unroll_global_phi(sGlobalPhi_event(NCHAN-1 downto 0));
   unpack_muons : for i in sMuonsIn'range generate
-    check_bmtf : if (((4*(QUAD-9)+i/3) >= BMTF_HIGH) and ((4*(QUAD-9)+i/3) <= BMTF_LOW)) generate
+    check_bmtf : if ((4*(QUAD-9)+i/3) >= BMTF_LOW) and ((4*(QUAD-9)+i/3) <= BMTF_HIGH) generate
       sMuonsIn(i) <= unpack_bmtf_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
     end generate check_bmtf;
-    check_omtf : if (((4*(QUAD-9)+i/3) >= OMTF_NEG_LOW) and ((4*(QUAD-9)+i/3) <= OMTF_NEG_LOW)) or (((4*(QUAD-9)+i/3) >= OMTF_POS_LOW) and ((4*(QUAD-9)+i/3) <= OMTF_POS_LOW)) generate
+    check_omtf : if (((4*(QUAD-9)+i/3) >= OMTF_NEG_LOW) and ((4*(QUAD-9)+i/3) <= OMTF_NEG_HIGH)) or (((4*(QUAD-9)+i/3) >= OMTF_POS_LOW) and ((4*(QUAD-9)+i/3) <= OMTF_POS_HIGH)) generate
       sMuonsIn(i) <= unpack_omtf_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
     end generate check_omtf;
-    check_emtf : if (((4*(QUAD-9)+i/3) >= EMTF_NEG_LOW) and ((4*(QUAD-9)+i/3) <= EMTF_NEG_LOW)) or (((4*(QUAD-9)+i/3) >= EMTF_POS_LOW) and ((4*(QUAD-9)+i/3) <= EMTF_POS_LOW)) generate
+    check_emtf : if (((4*(QUAD-9)+(i/3)) >= EMTF_NEG_LOW) and ((4*(QUAD-9)+(i/3)) <= EMTF_NEG_HIGH)) or (((4*(QUAD-9)+(i/3)) >= EMTF_POS_LOW) and ((4*(QUAD-9)+(i/3)) <= EMTF_POS_HIGH)) generate
       sMuonsIn(i) <= unpack_emtf_mu_from_flat(sMuons_flat(i), sGlobalPhi_flat(i));
     end generate check_emtf;
   end generate unpack_muons;
