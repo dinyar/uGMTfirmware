@@ -24,24 +24,24 @@ package top_decl is
 	constant DAQ_N_CAP_CTRLS: integer := 4; -- Number of capture controls per trigger mode
 
 	constant REGION_CONF: region_conf_array_t := (
-		(gth_10g, none, 3, 10), -- 0 / 118
-		(gth_10g, none, 3, 10), -- 1 / 117*
-		(gth_10g, none, 3, 10), -- 2 / 116
-		(gth_10g, none, 4, 11), -- 3 / 115
-		(gth_10g, none, 4, 11), -- 4 / 114*
-		(gth_10g, none, 4, 11), -- 5 / 113
-		(gth_10g, none, 5, 12), -- 6 / 112
-		(gth_10g, none, 5, 12), -- 7 / 111*
-		(gth_10g, none, 5, 12), -- 8 / 110
-		(gth_10g, none, 0, 7), -- 9 / 210
-		(gth_10g, none, 0, 7), -- 10 / 211*
-		(gth_10g, none, 0, 7), -- 11 / 212
-		(gth_10g, none, 1, 8), -- 12 / 213
-		(gth_10g, none, 1, 8), -- 13 / 214*
-		(gth_10g, none, 1, 8), -- 14 / 215
-		(gth_10g, none, 2, 9), -- 15 / 216
-		(gth_10g, none, 2, 9), -- 16 / 217*
-		(gth_10g, none, 2, 9) -- 17 / 218
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 3, 10), -- 0 / 118
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 3, 10), -- 1 / 117*
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 3, 10), -- 2 / 116
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 4, 11), -- 3 / 115
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 4, 11), -- 4 / 114*
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 4, 11), -- 5 / 113
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 5, 12), -- 6 / 112
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 5, 12), -- 7 / 111*
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 5, 12), -- 8 / 110
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 0, 7), -- 9 / 210
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 0, 7), -- 10 / 211*
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 0, 7), -- 11 / 212
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 1, 8), -- 12 / 213
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 1, 8), -- 13 / 214*
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 1, 8), -- 14 / 215
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 2, 9), -- 15 / 216
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 2, 9), -- 16 / 217*
+		(gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 2, 9) -- 17 / 218
 	);
 
 end top_decl;
