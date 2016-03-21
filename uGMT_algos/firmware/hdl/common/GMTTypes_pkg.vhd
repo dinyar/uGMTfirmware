@@ -45,25 +45,6 @@ package GMTTypes is
   type TGMTMu_vector is array (integer range <>) of TGMTMu;
 
   -----------------------------------------------------------------------------
-  -- GMT muon as above, but from RPC system
-  -----------------------------------------------------------------------------
-  type TGMTMuRPC is record
-    sysign    : std_logic_vector(1 downto 0);  -- charge bit(1= plus)
-    -- Values as in the legacy system.
-    eta_comp  : signed(5 downto 0);            -- 6 bit eta
-    qual_comp : unsigned(2 downto 0);          -- 3 bit quality
-    pt_comp   : unsigned(4 downto 0);          -- 5 bit pT
-    phi_comp  : unsigned(7 downto 0);          -- 8 bit phi
-    -- Values converted to new (linear) scale.
-    eta       : signed(8 downto 0);            -- 9 bit eta
-    qual      : unsigned(3 downto 0);          -- 4 bit quality
-    pt        : unsigned(9 downto 0);          -- 10 bit pt
-    phi       : unsigned(9 downto 0);          -- 10 bit phi
-  end record;
-
-  type TGMTMuRPC_vector is array (integer range <>) of TGMTMuRPC;
-
-  -----------------------------------------------------------------------------
   -- Information used for ghostbusting (track addresses and/or spatial
   -- coordinates.
   -----------------------------------------------------------------------------
@@ -147,34 +128,15 @@ package GMTTypes is
   subtype TSelBits_1_of_36 is std_logic_vector(0 to 35);  -- Select bits for
                                                           -- first sorter unit
   type    TSelBits_1_of_36_vec is array (integer range <>) of TSelBits_1_of_36;
-  subtype TSelBits_1_of_32 is std_logic_vector(0 to 31);  -- Select bits for
-                                                          -- second sorter unit
-                                                          -- when using RPCs
-  type    TSelBits_1_of_32_vec is array (integer range <>) of TSelBits_1_of_32;
   subtype TSelBits_1_of_24 is std_logic_vector(0 to 23);  -- Select bits for
                                                           -- second sorter unit
   type    TSelBits_1_of_24_vec is array (integer range <>) of TSelBits_1_of_24;
   subtype TSelBits_1_of_18 is std_logic_vector(0 to 17);  -- Select bits for
                                                           -- half sorter unit.
   type    TSelBits_1_of_18_vec is array (integer range <>) of TSelBits_1_of_18;
-  subtype TSelBits_1_of_16 is std_logic_vector(0 to 15);  -- Select bits for
-                                                          -- matching unit.
-  type    TSelBits_1_of_16_vec is array (integer range <>) of TSelBits_1_of_16;
-
-  subtype TPairIndex is unsigned(7 downto 0);
-  -- Vector which holds indices of TF muons to be merged with Nth RPC muon.
-  type    TPairVector is array (integer range <>) of TPairIndex;
-
-  -- Match Quality Matrix:
-  subtype TMatchQual is unsigned(3 downto 0);
-  type    TMQMatrix is array (integer range 0 to 3, integer range 0 to 71) of TMatchQual;
-  type    TMQMatrix_vec is array (integer range<>) of TMQMatrix;
 
   subtype TCancelBits is std_logic_vector(7 downto 0);
   type    TCancelBits_vec is array (integer range <>) of TCancelBits;
-
-  -- Stuff for muon merging.
-  type TRowColIndex_vector is array (integer range <>) of unsigned(6 downto 0);
 
   -- Vector for muons pTs.
   type TMuonPT_vector is array (integer range <>) of unsigned(8 downto 0);
@@ -212,7 +174,7 @@ package GMTTypes is
   -----------------------------------------------------------------------------
   -- Vectors to store cancel bits
   -----------------------------------------------------------------------------
-  type   TCancelWedge is array (integer range <>) of std_logic_vector(2 downto 0);
+  type TCancelWedge is array (integer range <>) of std_logic_vector(2 downto 0);
 
   -----------------------------------------------------------------------------
   -- Types for Transceivers

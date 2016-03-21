@@ -47,7 +47,6 @@ vcom -check_synthesis ../../hdl/input_stages/gen_idx_bits.vhd
 vcom -check_synthesis ../../hdl/input_stages/energy_input.vhd
 vcom -check_synthesis ../../hdl/input_stages/muon_input.vhd
 vcom -check_synthesis ../../hdl/Sorting/SorterUnit.vhd
-vcom -check_synthesis ../../hdl/MatchAndMerge/*
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_BMTF.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_spatialCoords.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/WedgeCheckerUnit.vhd

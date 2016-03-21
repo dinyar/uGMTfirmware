@@ -68,16 +68,6 @@ architecture Behavioral of GMT is
   signal sFinalMuPt    : TMuonPT_vector(7 downto 0);
   signal sMuons_sorted : TGMTMu_vector(7 downto 0);
 
-  -- For RPC merging.
-  signal sMuonsRPCb     : TGMTMuRPC_vector(3 downto 0);
-  signal sMuonsRPCf     : TGMTMuRPC_vector(3 downto 0);
-  signal sSortRanksRPCb : TSortRank10_vector(3 downto 0);
-  signal sSortRanksRPCf : TSortRank10_vector(3 downto 0);
-  signal sEmptyRPCb     : std_logic_vector(3 downto 0);
-  signal sEmptyRPCf     : std_logic_vector(3 downto 0);
-  signal sIdxBitsRPCb   : TIndexBits_vector(3 downto 0);
-  signal sIdxBitsRPCf   : TIndexBits_vector(3 downto 0);
-
   -- For intermediates
   signal sIntermediateMuonsB     : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsO     : TGMTMu_vector(7 downto 0);
@@ -129,22 +119,10 @@ begin
   -----------------------------------------------------------------------------
 
   sort_and_cancel : entity work.SortAndCancelUnit
-    generic map (
-      rpc_merging => false)
     port map (
       iMuonsB => iMuonsB,
       iMuonsO => iMuonsO,
       iMuonsE => iMuonsE,
-
-      -- For RPC merging.
-      iMuonsRPCb     => sMuonsRPCb,
-      iMuonsRPCf     => sMuonsRPCf,
-      iSortRanksRPCb => sSortRanksRPCb,
-      iSortRanksRPCf => sSortRanksRPCf,
-      iEmptyRPCb     => sEmptyRPCb,
-      iEmptyRPCf     => sEmptyRPCf,
-      iIdxBitsRPCb   => sIdxBitsRPCb,
-      iIdxBitsRPCf   => sIdxBitsRPCf,
 
       iTracksB                => iTracksB,
       iTracksO                => iTracksO,

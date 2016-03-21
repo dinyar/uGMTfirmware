@@ -47,14 +47,6 @@ src GhostBusting/CancelOutUnit_Single.vhd
 src GhostBusting/WedgeCheckerUnit.vhd
 src GhostBusting/GhostCheckerUnit_spatialCoords.vhd
 src GhostBusting/GhostCheckerUnit_BMTF.vhd
-src MatchAndMerge/FindMaxMatchQualities.vhd
-src MatchAndMerge/MatchingUnit.vhd
-src MatchAndMerge/MatchPairs.vhd
-src MatchAndMerge/MatchQualityUnit.vhd
-src MatchAndMerge/MergerUnit.vhd
-src MatchAndMerge/MuonMerger.vhd
-src MatchAndMerge/PairFindingUnit.vhd
-src MatchAndMerge/SortStage1_RPC_behavioral.vhd
 src Sorting/Stage0/HalfSortStage0.vhd
 src Sorting/Stage0/SortStage0_behavioral.vhd
 src Sorting/Stage0/SortStage0_countWins.vhd

@@ -14,23 +14,10 @@ use work.ugmt_constants.all;
 use work.mp7_brd_decl.all;
 
 entity SortAndCancelUnit is
-  generic (
-    rpc_merging : boolean := false      -- whether RPC merging should be done.
-    );
   port (
     iMuonsB : in TGMTMu_vector(35 downto 0);
     iMuonsO : in TGMTMu_vector(35 downto 0);
     iMuonsE : in TGMTMu_vector(35 downto 0);
-
-    -- For RPC merging.
-    iMuonsRPCb     : in TGMTMuRPC_vector(3 downto 0);
-    iMuonsRPCf     : in TGMTMuRPC_vector(3 downto 0);
-    iSortRanksRPCb : in TSortRank10_vector(3 downto 0);
-    iSortRanksRPCf : in TSortRank10_vector(3 downto 0);
-    iEmptyRPCb     : in std_logic_vector(3 downto 0);
-    iEmptyRPCf     : in std_logic_vector(3 downto 0);
-    iIdxBitsRPCb   : in TIndexBits_vector(3 downto 0);
-    iIdxBitsRPCf   : in TIndexBits_vector(3 downto 0);
 
     iTracksB : in TGMTMuTracks_vector(11 downto 0);
     iTracksO : in TGMTMuTracks_vector(11 downto 0);
@@ -189,75 +176,6 @@ architecture behavioral of SortAndCancelUnit is
 
   signal sIdxBits : TIndexBits_vector(7 downto 0);
 
-  -- RPC merging stuff
-  signal iMuonsRPCf_reg    : TGMTMuRPC_vector(3 downto 0);
-  signal iMuonsRPCf_store  : TGMTMuRPC_vector(3 downto 0);
-  signal iMuonsRPCf_store2 : TGMTMuRPC_vector(3 downto 0);
-  signal iMuonsRPCb_reg    : TGMTMuRPC_vector(3 downto 0);
-  signal iMuonsRPCb_store  : TGMTMuRPC_vector(3 downto 0);
-  signal iMuonsRPCb_store2 : TGMTMuRPC_vector(3 downto 0);
-
-  signal sMQMatrixF             : TMQMatrix;
-  signal sMQMatrixE_reg         : TMQMatrix;
-  signal sPairVecE              : TPairVector(3 downto 0);
-  signal sPairVecE_reg          : TPairVector(3 downto 0);
-  signal sMatchedMuonsE         : TGMTMu_vector(3 downto 0);
-  signal sCancelE_matched       : std_logic_vector(7 downto 0);
-  signal sCancelO_matched_A     : std_logic_vector(7 downto 0);
-  signal sMatchedMuonsE_reg     : TGMTMu_vector(3 downto 0);
-  signal sCancelE_matched_reg   : std_logic_vector(7 downto 0);
-  signal sCancelO_matched_A_reg : std_logic_vector(7 downto 0);
-  signal sSortRanksMergedE      : TSortRank10_vector(3 downto 0);
-  signal sEmptyMergedE          : std_logic_vector(3 downto 0);
-  signal sIdxBitsMergedE        : TIndexBits_vector(3 downto 0);
-  signal sMergedMuonsE          : TGMTMu_vector(3 downto 0);
-  signal sSortRanksMergedE_reg  : TSortRank10_vector(3 downto 0);
-  signal sEmptyMergedE_reg      : std_logic_vector(3 downto 0);
-  signal sIdxBitsMergedE_reg    : TIndexBits_vector(3 downto 0);
-  signal sMergedMuonsE_reg      : TGMTMu_vector(3 downto 0);
-  signal sMQMatrixB             : TMQMatrix;
-  signal sMQMatrixB_reg         : TMQMatrix;
-  signal sPairVecB              : TPairVector(3 downto 0);
-  signal sPairVecB_reg          : TPairVector(3 downto 0);
-  signal sMatchedMuonsB         : TGMTMu_vector(3 downto 0);
-  signal sCancelB_matched       : std_logic_vector(7 downto 0);
-  signal sCancelO_matched_B     : std_logic_vector(7 downto 0);
-  signal sMatchedMuonsB_reg     : TGMTMu_vector(3 downto 0);
-  signal sCancelB_matched_reg   : std_logic_vector(7 downto 0);
-  signal sCancelO_matched_B_reg : std_logic_vector(7 downto 0);
-  signal sSortRanksMergedB      : TSortRank10_vector(3 downto 0);
-  signal sEmptyMergedB          : std_logic_vector(3 downto 0);
-  signal sIdxBitsMergedB        : TIndexBits_vector(3 downto 0);
-  signal sMergedMuonsB          : TGMTMu_vector(3 downto 0);
-  signal sSortRanksMergedB_reg  : TSortRank10_vector(3 downto 0);
-  signal sEmptyMergedB_reg      : std_logic_vector(3 downto 0);
-  signal sIdxBitsMergedB_reg    : TIndexBits_vector(3 downto 0);
-  signal sMergedMuonsB_reg      : TGMTMu_vector(3 downto 0);
-
-  signal sMatchedSortRanksB_reg : TSortRank10_vector(3 downto 0);
-  signal sMatchedSortRanksB     : TSortRank10_vector(3 downto 0);
-  signal sMatchedEmptyB_reg     : std_logic_vector(3 downto 0);
-  signal sMatchedEmptyB         : std_logic_vector(3 downto 0);
-  signal sMatchedIdxBitsB_reg   : TIndexBits_vector(3 downto 0);
-  signal sMatchedIdxBitsB       : TIndexBits_vector(3 downto 0);
-  signal sSortRanksRPCb_reg     : TSortRank10_vector(3 downto 0);
-  signal sEmptyRPCb_reg         : std_logic_vector(3 downto 0);
-  signal sIdxBitsRPCb_reg       : TIndexBits_vector(3 downto 0);
-  signal sMatchedSortRanksE_reg : TSortRank10_vector(3 downto 0);
-  signal sMatchedSortRanksE     : TSortRank10_vector(3 downto 0);
-  signal sMatchedEmptyE_reg     : std_logic_vector(3 downto 0);
-  signal sMatchedEmptyE         : std_logic_vector(3 downto 0);
-  signal sMatchedIdxBitsE_reg   : TIndexBits_vector(3 downto 0);
-  signal sMatchedIdxBitsE       : TIndexBits_vector(3 downto 0);
-  signal sSortRanksRPCf_reg     : TSortRank10_vector(3 downto 0);
-  signal sEmptyRPCf_reg         : std_logic_vector(3 downto 0);
-  signal sIdxBitsRPCf_reg       : TIndexBits_vector(3 downto 0);
-
-  -- For intermediates
-  constant MU_INTERMEDIATE_DELAY : natural := 1;  -- Delay to sync
-                                                  -- intermediates with
-                                                  -- final muons.
-
   -- For muon counters
   -- TODO: Possibly delay this signal by 2 BX more? Would be nice to have it synced with inputs.
   signal muon_counter_reset_reg : std_logic;
@@ -305,29 +223,6 @@ begin
   sIdxBitsO_minus   <= iIdxBitsO(35 downto 18);
   sIdxBitsE_plus    <= iIdxBitsE(17 downto 0);
   sIdxBitsE_minus   <= iIdxBitsE(35 downto 18);
-
-  -- Calculate match quality between RPC and TF muons.
-  generate_mq_unit : if rpc_merging generate
-    mq_emtf : entity work.MatchQualityUnit
-      port map (
-        iMuonsRPC      => iMuonsRPCf,
-        iMuonsBmtfEmtf => iMuonsE,
-        iMuonsOmtf     => iMuonsO,
-        oMQMatrix      => sMQMatrixF,
-        clk            => clk,
-        sinit          => sinit
-        );
-
-    mq_bmtf : entity work.MatchQualityUnit
-      port map (
-        iMuonsRPC    => iMuonsRPCb,
-        iMuonsBmtfEmtf => iMuonsB,
-        iMuonsOmtf    => iMuonsO,
-        oMQMatrix    => sMQMatrixB,
-        clk          => clk,
-        sinit        => sinit
-        );
-  end generate generate_mq_unit;
 
   -- Send all muons into CU units
   -- one unit for each wedge -> each unit needs to compare 2 OMTF mu with
@@ -489,12 +384,7 @@ begin
       );
 
   sCancelBO_B <= sCancelBO_B_plus or sCancelBO_B_minus;
-  -- Register cancel-out bits and pair vector here.
-  -- type   : sequential
-  -- inputs : clk, sinit, sCancelBO, sCancelFO, sCancelB, sCancelO, sCancelF,
-  -- sPairVecB, sPairVecE
-  -- outputs: sCancelBO_reg, sCancelEO_reg, sCancelB_reg, sCancelO_reg,
-  -- sCancelE_reg, sPairVecB_reg, sPairVecE_reg
+
   register_cobits_pairs : process (clk)
   begin  -- process register_cobits
     if clk'event and clk = '1' then     -- rising clock edge
@@ -510,12 +400,6 @@ begin
       sCancelE_plus_reg     <= sCancelE_plus;
       sCancelE_minus_reg    <= sCancelE_minus;
 
-      -- For RPC merging
-      sMQMatrixB_reg <= sMQMatrixB;
-      sMQMatrixE_reg <= sMQMatrixF;
-
-      iMuonsRPCf_store <= iMuonsRPCf;
-      iMuonsRPCb_store <= iMuonsRPCb;
     end if;
   end process register_cobits_pairs;
 
@@ -642,23 +526,6 @@ begin
         );
   end generate gen_ipb_registers;
 
-  gen_pair_finding_unit : if rpc_merging generate
-    -- Find pairs based on MQ matrix between RPC and TF muons.
-    pair_finding_emtf : entity work.PairFindingUnit
-      port map (
-        iMQMatrix => sMQMatrixE_reg,
-        oPairs    => sPairVecE,
-        clk       => clk,
-        sinit     => sinit);
-
-    pair_finding_bmtf : entity work.PairFindingUnit
-      port map (
-        iMQMatrix => sMQMatrixB_reg,
-        oPairs    => sPairVecB,
-        clk       => clk,
-        sinit     => sinit);
-  end generate gen_pair_finding_unit;
-
   reg_pairs : process (clk)
   begin  -- process reg_pairs
     if clk'event and clk = '0' then     -- falling clock edge
@@ -677,140 +544,23 @@ begin
     end if;
   end process reg_pairs;
 
-  gen_matching_unit : if rpc_merging generate
-    -- For RPC merging
-    match_emtf : entity work.MatchingUnit
-      port map (
-        iSortRanksBmtfEmtf => sSortRanksE_store,
-        iEmptyBmtfEmtf     => sEmptyE_store,
-        iIdxBitsBmtfEmtf   => sIdxBitsE_store,
-        iMuonsBmtfEmtf     => sMuonsE_store,
-        iSortRanksOmtf     => sSortRanksO_store,
-        iEmptyOmtf         => sEmptyO_store,
-        iIdxBitsOmtf       => sIdxBitsO_store,
-        iMuonsOmtf         => sMuonsO_store,
-        iPairVec           => sPairVecE_reg,
-        oSortRanks         => sMatchedSortRanksE,
-        oEmpty             => sMatchedEmptyE,
-        oIdxBits           => sMatchedIdxBitsE,
-        oMuons             => sMatchedMuonsE,
-        oCancelBmtfEmtf    => sCancelE_matched,
-        oCancelOmtf        => sCancelO_matched_A,
-        clk                => clk,
-        sinit              => sinit);
-
-    match_bmtf : entity work.MatchingUnit
-      port map (
-        iSortRanksBmtfEmtf => sSortRanksB_store,
-        iEmptyBmtfEmtf     => sEmptyB_store,
-        iIdxBitsBmtfEmtf   => sIdxBitsB_store,
-        iMuonsBmtfEmtf     => sMuonsB_store,
-        iSortRanksOmtf     => sSortRanksO_store,
-        iEmptyOmtf         => sEmptyO_store,
-        iIdxBitsOmtf       => sIdxBitsO_store,
-        iMuonsOmtf         => sMuonsO_store,
-        iPairVec           => sPairVecB_reg,
-        oSortRanks         => sMatchedSortRanksB,
-        oEmpty             => sMatchedEmptyB,
-        oIdxBits           => sMatchedIdxBitsB,
-        oMuons             => sMatchedMuonsB,
-        oCancelBmtfEmtf    => sCancelB_matched,
-        oCancelOmtf        => sCancelO_matched_B,
-        clk                => clk,
-        sinit              => sinit);
-  end generate gen_matching_unit;
-
-  gen_merger_unit : if rpc_merging generate
-    -- For RPC merging
-    merger_emtf : entity work.MergerUnit
-      port map (
-        iMuonsTF      => sMatchedMuonsE_reg,
-        iSortRanksTF  => sMatchedSortRanksE_reg,
-        iEmptyTF      => sMatchedEmptyE_reg,
-        iIdxBitsTF    => sMatchedIdxBitsE_reg,
-        iMuonsRPC     => iMuonsRPCf_reg,
-        iSortRanksRPC => sSortRanksRPCf_reg,
-        iEmptyRPC     => sEmptyRPCf_reg,
-        iIdxBitsRPC   => sIdxBitsRPCf_reg,
-        oSortRanks    => sSortRanksMergedE,
-        oEmpty        => sEmptyMergedE,
-        oIdxBits      => sIdxBitsMergedE,
-        oMuons        => sMergedMuonsE,
-        clk           => clk,
-        sinit         => sinit);
-
-    merger_bmtf : entity work.MergerUnit
-      port map (
-        iMuonsTF      => sMatchedMuonsB_reg,
-        iSortRanksTF  => sMatchedSortRanksB_reg,
-        iEmptyTF      => sMatchedEmptyB_reg,
-        iIdxBitsTF    => sMatchedIdxBitsB_reg,
-        iMuonsRPC     => iMuonsRPCb_reg,
-        iSortRanksRPC => sSortRanksRPCb_reg,
-        iEmptyRPC     => sEmptyRPCb_reg,
-        iIdxBitsRPC   => sIdxBitsRPCb_reg,
-        oSortRanks    => sSortRanksMergedB,
-        oEmpty        => sEmptyMergedB,
-        oIdxBits      => sIdxBitsMergedB,
-        oMuons        => sMergedMuonsB,
-        clk           => clk,
-        sinit         => sinit);
-  end generate gen_merger_unit;
-
-  -- Sort final muons together.
-  gen_sorting_with_merged_muons : if rpc_merging generate
-    sort_final : entity work.SortStage1_RPC
-      port map (
-        iSortRanksB       => sSortedSortRanksB_reg,
-        iEmptyB           => sSortedEmptyB_reg,
-        iIdxBitsB         => sSortedIdxBitsB_reg,
-        iMuonsB           => sSortedMuonsB_reg,
-        iSortRanksO       => sSortedSortRanksO_reg,
-        iEmptyO           => sSortedEmptyO_reg,
-        iIdxBitsO         => sSortedIdxBitsO_reg,
-        iMuonsO           => sSortedMuonsO_reg,
-        iSortRanksE       => sSortedSortRanksE_reg,
-        iEmptyE           => sSortedEmptyE_reg,
-        iIdxBitsE         => sSortedIdxBitsE_reg,
-        iMuonsE           => sSortedMuonsE_reg,
-        iSortRanksMergedB => sSortRanksMergedB_reg,
-        iEmptyMergedB     => sEmptyMergedB_reg,
-        iIdxBitsMergedB   => sIdxBitsMergedB_reg,
-        iMuonsMergedB     => sMergedMuonsB_reg,
-        iSortRanksMergedE => sSortRanksMergedE_reg,
-        iEmptyMergedE     => sEmptyMergedE_reg,
-        iIdxBitsMergedE   => sIdxBitsMergedE_reg,
-        iMuonsMergedE     => sMergedMuonsE_reg,
-        iCancelB          => sCancelB_matched_reg,
-        iCancelO_A        => sCancelO_matched_A_reg,
-        iCancelO_B        => sCancelO_matched_B_reg,
-        iCancelE          => sCancelE_matched_reg,
-        oIdxBits          => oIdxBits,  -- Goes out to IsoAU.
-        oMuons            => sFinalMuons,
-        clk               => clk,
-        sinit             => sinit);
-  end generate gen_sorting_with_merged_muons;
-
-  gen_sorting_without_merged_muons : if not rpc_merging generate
-    sort_final : entity work.SortStage1
-      port map (
-        iSortRanksB => sSortedSortRanksB_reg,
-        iEmptyB     => sSortedEmptyB_reg,
-        iIdxBitsB   => sSortedIdxBitsB_reg,
-        iMuonsB     => sSortedMuonsB_reg,
-        iSortRanksO => sSortedSortRanksO_reg,
-        iEmptyO     => sSortedEmptyO_reg,
-        iIdxBitsO   => sSortedIdxBitsO_reg,
-        iMuonsO     => sSortedMuonsO_reg,
-        iSortRanksE => sSortedSortRanksE_reg,
-        iEmptyE     => sSortedEmptyE_reg,
-        iIdxBitsE   => sSortedIdxBitsE_reg,
-        iMuonsE     => sSortedMuonsE_reg,
-        oIdxBits    => sIdxBits,        -- Goes out to IsoAU.
-        oMuons      => sFinalMuons
-        );
-
-  end generate gen_sorting_without_merged_muons;
+  sort_final : entity work.SortStage1
+    port map (
+      iSortRanksB => sSortedSortRanksB_reg,
+      iEmptyB     => sSortedEmptyB_reg,
+      iIdxBitsB   => sSortedIdxBitsB_reg,
+      iMuonsB     => sSortedMuonsB_reg,
+      iSortRanksO => sSortedSortRanksO_reg,
+      iEmptyO     => sSortedEmptyO_reg,
+      iIdxBitsO   => sSortedIdxBitsO_reg,
+      iMuonsO     => sSortedMuonsO_reg,
+      iSortRanksE => sSortedSortRanksE_reg,
+      iEmptyE     => sSortedEmptyE_reg,
+      iIdxBitsE   => sSortedIdxBitsE_reg,
+      iMuonsE     => sSortedMuonsE_reg,
+      oIdxBits    => sIdxBits,        -- Goes out to IsoAU.
+      oMuons      => sFinalMuons
+      );
 
   final_mu_reg : process (clk)
   begin  -- process final_mu_reg
