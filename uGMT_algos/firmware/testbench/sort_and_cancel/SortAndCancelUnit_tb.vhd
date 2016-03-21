@@ -30,8 +30,6 @@ architecture behavior of testbench is
   signal iMuonsB             : TGMTMu_vector(35 downto 0);
   signal iMuonsO             : TGMTMu_vector(35 downto 0);
   signal iMuonsE             : TGMTMu_vector(35 downto 0);
-  signal iMuonsRPCb          : TGMTMuRPC_vector(3 downto 0);
-  signal iMuonsRPCf          : TGMTMuRPC_vector(3 downto 0);
   signal iTracksB            : TGMTMuTracks_vector(11 downto 0);
   signal iTracksO            : TGMTMuTracks_vector(11 downto 0);
   signal iTracksE            : TGMTMuTracks_vector(11 downto 0);
@@ -58,14 +56,6 @@ begin
       iMuonsB                 => iMuonsB,
       iMuonsO                 => iMuonsO,
       iMuonsE                 => iMuonsE,
-      iMuonsRPCb              => iMuonsRPCb,
-      iMuonsRPCf              => iMuonsRPCf,
-      iSortRanksRPCb          => (others => "0000000000"),
-      iSortRanksRPCf          => (others => "0000000000"),
-      iEmptyRPCb              => (others => '0'),
-      iEmptyRPCf              => (others => '0'),
-      iIdxBitsRPCb            => (others => "0000000"),
-      iIdxBitsRPCf            => (others => "0000000"),
       iTracksB                => iTracksB,
       iTracksO                => iTracksO,
       iTracksE                => iTracksE,
@@ -84,7 +74,7 @@ begin
       oIdxBits                => oIdxBits,
       oMuPt                   => oMuPt,
       oMuons                  => oMuons,
-      mu_ctr_rst              => '0', 
+      mu_ctr_rst              => '0',
       clk                     => clk40,
       clk_ipb                 => clk240,
       sinit                   => rst,
