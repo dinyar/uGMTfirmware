@@ -1,10 +1,10 @@
 <node description="LUTs for the relative computation of isolation." fwinfo="endpoint">
-    <node id="rel_iso_0" address="0x0" size="0x4000" mode="block" description="Absolute isolation assigned to 1st muon." fwinfo="endpoint;width=14" />
-    <node id="rel_iso_1" address="0x4000" size="0x4000" mode="block" description="Absolute isolation assigned to 2nd muon." fwinfo="endpoint;width=14" />
-    <node id="rel_iso_2" address="0x8000" size="0x4000" mode="block" description="Absolute isolation assigned to 3rd muon." fwinfo="endpoint;width=14" />
-    <node id="rel_iso_3" address="0xC000" size="0x4000" mode="block" description="Absolute isolation assigned to 4th muon." fwinfo="endpoint;width=14" />
-    <node id="rel_iso_4" address="0x10000" size="0x4000" mode="block" description="Absolute isolation assigned to 5th muon." fwinfo="endpoint;width=14" />
-    <node id="rel_iso_5" address="0x14000" size="0x4000" mode="block" description="Absolute isolation assigned to 6th muon." fwinfo="endpoint;width=14" />
-    <node id="rel_iso_6" address="0x18000" size="0x4000" mode="block" description="Absolute isolation assigned to 7th muon." fwinfo="endpoint;width=14" />
-    <node id="rel_iso_7" address="0x1C000" size="0x4000" mode="block" description="Absolute isolation assigned to 8th muon." fwinfo="endpoint;width=14" />
+    <node id="rel_iso_mem_0" address="0x0" size="0x4000" mode="block" description="Absolute isolation assigned to 1st muon." fwinfo="endpoint;width=14" class="MuLUTNode" />
+    <node id="rel_iso_mem_1" address="0x4000" size="0x4000" mode="block" description="Absolute isolation assigned to 2nd muon." fwinfo="endpoint;width=14" class="MuLUTNode" />
+    <node id="rel_iso_mem_2" address="0x8000" size="0x4000" mode="block" description="Absolute isolation assigned to 3rd muon." fwinfo="endpoint;width=14" class="MuLUTNode" />
+    <node id="rel_iso_mem_3" address="0xC000" size="0x4000" mode="block" description="Absolute isolation assigned to 4th muon." fwinfo="endpoint;width=14" class="MuLUTNode" />
+    <node id="rel_iso_mem_4" address="0x10000" size="0x4000" mode="block" description="Absolute isolation assigned to 5th muon." fwinfo="endpoint;width=14" class="MuLUTNode" />
+    <node id="rel_iso_mem_5" address="0x14000" size="0x4000" mode="block" description="Absolute isolation assigned to 6th muon." fwinfo="endpoint;width=14" class="MuLUTNode" />
+    <node id="rel_iso_mem_6" address="0x18000" size="0x4000" mode="block" description="Absolute isolation assigned to 7th muon." fwinfo="endpoint;width=14" class="MuLUTNode" />
+    <node id="rel_iso_mem_7" address="0x1C000" size="0x4000" mode="block" description="Absolute isolation assigned to 8th muon." fwinfo="endpoint;width=14" class="MuLUTNode" />
 </node>

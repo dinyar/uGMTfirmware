@@ -1,11 +1,11 @@
 <!-- TODO: More sensibly implemented as register? -->
 <node description="LUTs for the absolute computation of isolation." fwinfo="endpoint">
-    <node id="abs_iso_0" address="0x0" size="0x20" mode="block" description="Absolute isolation assigned to 1st muon." fwinfo="endpoint;width=5" />
-    <node id="abs_iso_1" address="0x20" size="0x20" mode="block" description="Absolute isolation assigned to 2nd muon." fwinfo="endpoint;width=5" />
-    <node id="abs_iso_2" address="0x40" size="0x20" mode="block" description="Absolute isolation assigned to 3rd muon." fwinfo="endpoint;width=5" />
-    <node id="abs_iso_3" address="0x60" size="0x20" mode="block" description="Absolute isolation assigned to 4th muon." fwinfo="endpoint;width=5" />
-    <node id="abs_iso_4" address="0x80" size="0x20" mode="block" description="Absolute isolation assigned to 5th muon." fwinfo="endpoint;width=5" />
-    <node id="abs_iso_5" address="0xA0" size="0x20" mode="block" description="Absolute isolation assigned to 6th muon." fwinfo="endpoint;width=5" />
-    <node id="abs_iso_6" address="0xC0" size="0x20" mode="block" description="Absolute isolation assigned to 7th muon." fwinfo="endpoint;width=5" />
-    <node id="abs_iso_7" address="0xE0" size="0x20" mode="block" description="Absolute isolation assigned to 8th muon." fwinfo="endpoint;width=5" />
+    <node id="abs_iso_mem_0" address="0x0" size="0x20" mode="block" description="Absolute isolation assigned to 1st muon." fwinfo="endpoint;width=5" class="MuLUTNode" />
+    <node id="abs_iso_mem_1" address="0x20" size="0x20" mode="block" description="Absolute isolation assigned to 2nd muon." fwinfo="endpoint;width=5" class="MuLUTNode" />
+    <node id="abs_iso_mem_2" address="0x40" size="0x20" mode="block" description="Absolute isolation assigned to 3rd muon." fwinfo="endpoint;width=5" class="MuLUTNode" />
+    <node id="abs_iso_mem_3" address="0x60" size="0x20" mode="block" description="Absolute isolation assigned to 4th muon." fwinfo="endpoint;width=5" class="MuLUTNode" />
+    <node id="abs_iso_mem_4" address="0x80" size="0x20" mode="block" description="Absolute isolation assigned to 5th muon." fwinfo="endpoint;width=5" class="MuLUTNode" />
+    <node id="abs_iso_mem_5" address="0xA0" size="0x20" mode="block" description="Absolute isolation assigned to 6th muon." fwinfo="endpoint;width=5" class="MuLUTNode" />
+    <node id="abs_iso_mem_6" address="0xC0" size="0x20" mode="block" description="Absolute isolation assigned to 7th muon." fwinfo="endpoint;width=5" class="MuLUTNode" />
+    <node id="abs_iso_mem_7" address="0xE0" size="0x20" mode="block" description="Absolute isolation assigned to 8th muon." fwinfo="endpoint;width=5" class="MuLUTNode" />
 </node>
