@@ -1,17 +1,17 @@
 <node description="LUTs for extrapolation and calo index bit generation at 120 MHz." fwinfo="endpoint">
-	<node id="eta_extrapolation_mem_0" address="0x0" size="0x2000" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=13" />
-    <node id="eta_extrapolation_mem_1" address="0x2000" size="0x2000" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=13" />
-    <node id="eta_extrapolation_mem_2" address="0x4000" size="0x2000" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=13" />
-    <node id="eta_extrapolation_mem_3" address="0x6000" size="0x2000" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=13" />
-	<node id="phi_extrapolation_mem_0" address="0x8000" size="0x4000" mode="block" description="Phi extrapolation LUT." fwinfo="endpoint;width=14" />
-    <node id="phi_extrapolation_mem_1" address="0xC000" size="0x4000" mode="block" description="Phi extrapolation LUT." fwinfo="endpoint;width=14" />
-    <node id="phi_extrapolation_mem_2" address="0x10000" size="0x4000" mode="block" description="Phi extrapolation LUT." fwinfo="endpoint;width=14" />
-    <node id="phi_extrapolation_mem_3" address="0x14000" size="0x4000" mode="block" description="Phi extrapolation LUT." fwinfo="endpoint;width=14" />
-	<node id="eta_idx_bits_mem_0" address="0x18000" size="0x200" mode="block" description="Eta index bit LUT." fwinfo="endpoint;width=9" />
+    <node id="eta_extrapolation_mem_0" address="0x0" size="0x1000" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=12" />
+    <node id="eta_extrapolation_mem_1" address="0x2000" size="0x1000" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=12" />
+    <node id="eta_extrapolation_mem_2" address="0x4000" size="0x1000" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=12" />
+    <node id="eta_extrapolation_mem_3" address="0x6000" size="0x1000" mode="block" description="Eta extrapolation LUT." fwinfo="endpoint;width=12" />
+    <node id="phi_extrapolation_mem_0" address="0x8000" size="0x1000" mode="block" description="Phi extrapolation LUT." fwinfo="endpoint;width=12" />
+    <node id="phi_extrapolation_mem_1" address="0xC000" size="0x1000" mode="block" description="Phi extrapolation LUT." fwinfo="endpoint;width=12" />
+    <node id="phi_extrapolation_mem_2" address="0x10000" size="0x1000" mode="block" description="Phi extrapolation LUT." fwinfo="endpoint;width=12" />
+    <node id="phi_extrapolation_mem_3" address="0x14000" size="0x1000" mode="block" description="Phi extrapolation LUT." fwinfo="endpoint;width=12" />
+    <node id="eta_idx_bits_mem_0" address="0x18000" size="0x200" mode="block" description="Eta index bit LUT." fwinfo="endpoint;width=9" />
     <node id="eta_idx_bits_mem_1" address="0x18200" size="0x200" mode="block" description="Eta index bit LUT." fwinfo="endpoint;width=9" />
     <node id="eta_idx_bits_mem_2" address="0x18400" size="0x200" mode="block" description="Eta index bit LUT." fwinfo="endpoint;width=9" />
     <node id="eta_idx_bits_mem_3" address="0x18600" size="0x200" mode="block" description="Eta index bit LUT." fwinfo="endpoint;width=9" />
-	<node id="phi_idx_bits_mem_0" address="0x18800" size="0x400" mode="block" description="Phi index bit LUT." fwinfo="endpoint;width=10" />
+    <node id="phi_idx_bits_mem_0" address="0x18800" size="0x400" mode="block" description="Phi index bit LUT." fwinfo="endpoint;width=10" />
     <node id="phi_idx_bits_mem_1" address="0x18C00" size="0x400" mode="block" description="Phi index bit LUT." fwinfo="endpoint;width=10" />
     <node id="phi_idx_bits_mem_2" address="0x19000" size="0x400" mode="block" description="Phi index bit LUT." fwinfo="endpoint;width=10" />
     <node id="phi_idx_bits_mem_3" address="0x19400" size="0x400" mode="block" description="Phi index bit LUT." fwinfo="endpoint;width=10" />
