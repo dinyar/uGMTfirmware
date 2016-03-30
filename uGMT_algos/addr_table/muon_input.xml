@@ -1,4 +1,4 @@
-<node description="LUTs and registers in input domain for uGMT" fwinfo="endpoint">
+<node description="LUTs and registers in input domain for uGMT" fwinfo="endpoint" parameters="content=quad_luts" >
     <node id="mu_quad_0" address="0x0" module="file://mu_quad_deserialization.xml" description="Contains sort rank LUT and phi offset register and well as error counters for positive EMTF inputs." />
     <node id="mu_quad_1" address="0x10000" module="file://mu_quad_deserialization.xml" description="Contains sort rank LUT and phi offset register and well as error counters for positive EMTF and OMTF inputs." />
     <node id="mu_quad_2" address="0x20000" module="file://mu_quad_deserialization.xml" description="Contains sort rank LUT and phi offset register and well as error counters for positive OMTF inputs." />
