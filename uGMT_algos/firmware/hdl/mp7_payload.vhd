@@ -48,6 +48,7 @@ architecture rtl of mp7_payload is
   -- Valid bits delayed less than algo latency due to one register before and
   -- requirement to be 1 bx early in serializer.
   signal   sValid_buffer        : std_logic_vector(GMT_ALGO_LATENCY-3 downto 0);
+  signal   sValid_final         : std_logic;
   signal   sValid_muons         : std_logic;
   signal   sValid_muons_reg     : std_logic;
   signal   sValid_energies      : std_logic;
@@ -228,8 +229,6 @@ begin
   -- End 240 MHz domain.
   -----------------------------------------------------------------------------
 
-  sValid_buffer(0) <= sValid_muons_reg or sValid_energies_reg;
-
   -----------------------------------------------------------------------------
   -- Begin 40 MHz domain.
   -----------------------------------------------------------------------------
@@ -237,11 +236,12 @@ begin
   delay_valid_bit : process(clk_payload)
   begin  -- process delay_valid_bit
     if clk_payload'event and clk_payload = '1' then  -- rising clock edge
-      sValid_muons_reg                           <= sValid_muons;
-      sValid_energies_reg                        <= sValid_energies;
+      sValid_buffer(0)                           <= sValid_muons;
       sValid_buffer(sValid_buffer'high downto 1) <= sValid_buffer(sValid_buffer'high-1 downto 0);
     end if;
   end process delay_valid_bit;
+
+  sValid_final <= sValid_buffer(sValid_buffer'high) or sValid_energies;
 
   gmt_index_comp : process (clk_payload)
   begin  -- process gmt_index_comp
@@ -328,7 +328,7 @@ begin
       rst      => rst_payload,
       iMuons   => oMuons,
       iBGOs    => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
-      iValid   => sValid_buffer(0),
+      iValid   => sValid_final,
       oTrigger => sTrigger,
       gpio     => gpio,
       gpio_en  => gpio_en
@@ -340,9 +340,9 @@ begin
       oMuons_reg     <= oMuons;
       sMuIdxBits_reg <= sMuIdxBits;
 
-      sIntermediateMuonsO_reg     <= sIntermediateMuonsO;
-      sIntermediateMuonsB_reg     <= sIntermediateMuonsB;
-      sIntermediateMuonsE_reg     <= sIntermediateMuonsE;
+      sIntermediateMuonsO_reg <= sIntermediateMuonsO;
+      sIntermediateMuonsB_reg <= sIntermediateMuonsB;
+      sIntermediateMuonsE_reg <= sIntermediateMuonsE;
 
       sTrigger_reg <= sTrigger;
     end if;
@@ -374,7 +374,7 @@ begin
       clk240               => clk_p,
       clk40                => clk_payload,
       rst                  => rst_payload,
-      iValid               => sValid_buffer(sValid_buffer'high),
+      iValid               => sValid_final,
       iMuons               => oMuons_reg,
       iMuIdxBits           => sMuIdxBits_reg,
       iIso                 => sIso,
