@@ -17,7 +17,7 @@ package ipbus_decode_sorting is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_sorting(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Thu Mar  3 03:05:20 2016 
+-- START automatically  generated VHDL the Tue Apr  5 16:04:09 2016 
   constant N_SLV_COU_BO_POS: integer := 0;
   constant N_SLV_COU_BO_NEG: integer := 1;
   constant N_SLV_COU_EO_POS: integer := 2;
@@ -31,7 +31,8 @@ package ipbus_decode_sorting is
   constant N_SLV_MUON_COUNTER_OMTFN: integer := 10;
   constant N_SLV_MUON_COUNTER_EMTFP: integer := 11;
   constant N_SLV_MUON_COUNTER_EMTFN: integer := 12;
-  constant N_SLAVES: integer := 13;
+  constant N_SLV_MUON_COUNTER_OUTPUT: integer := 13;
+  constant N_SLAVES: integer := 14;
 -- END automatically generated VHDL
 
     
@@ -43,7 +44,7 @@ package body ipbus_decode_sorting is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Thu Mar  3 03:05:20 2016 
+-- START automatically  generated VHDL the Tue Apr  5 16:04:09 2016 
     if    std_match(addr, "------------0000----------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_COU_BO_POS, IPBUS_SEL_WIDTH)); -- cou_bo_pos / base 0x00000000 / mask 0x000f0000
     elsif std_match(addr, "------------0001----------------") then
@@ -70,6 +71,8 @@ package body ipbus_decode_sorting is
       sel := ipbus_sel_t(to_unsigned(N_SLV_MUON_COUNTER_EMTFP, IPBUS_SEL_WIDTH)); -- muon_counter_EMTFp / base 0x00080003 / mask 0x000f0007
     elsif std_match(addr, "------------1000-------------100") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_MUON_COUNTER_EMTFN, IPBUS_SEL_WIDTH)); -- muon_counter_EMTFn / base 0x00080004 / mask 0x000f0007
+    elsif std_match(addr, "------------1000-------------101") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_MUON_COUNTER_OUTPUT, IPBUS_SEL_WIDTH)); -- muon_counter_output / base 0x00080005 / mask 0x000f0007
 -- END automatically generated VHDL
 
     else
