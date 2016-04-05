@@ -10,11 +10,11 @@ usage="
 
 if [ ! $# -eq 4 ];
 then
-	echo "ERROR: Expected 4 arguments."
-	echo
-	echo "########### Usage: ###########"
-	echo "$usage"
-	exit
+    echo "ERROR: Expected 4 arguments."
+    echo
+    echo "########### Usage: ###########"
+    echo "$usage"
+    exit
 fi
 
 tag=$1
@@ -29,7 +29,7 @@ uGMTalgosPath=$scriptsPath"/../"
 mp7path=$mp7fwPath"/"$tag
 if [ ! -d $mp7path ];
 then
-	mkdir -p $mp7path
+    mkdir -p $mp7path
 fi
 
 # Check out mp7fw
@@ -37,18 +37,18 @@ pushd $mp7path
 wget --no-check-certificate https://svnweb.cern.ch/trac/cactus/browser/trunk/cactusupgrades/scripts/firmware/ProjectManager.py\?format\=txt -O ProjectManager.py
 if [ -f ProjectManager.py.1 ];
 then
-	mv ProjectManager.py.1 ProjectManager.py
+    mv ProjectManager.py.1 ProjectManager.py
 fi
 chmod a+x ProjectManager.py
 if [ "$2" == "stable" ];
 then
-	unstableSelector="stable/"
+    unstableSelector="stable/"
 elif [ "$2" == "unstable" ];
 then
-	unstableSelector="unstable/"
+    unstableSelector="unstable/"
 else
-	echo "Error, indicate whether checking out a stable or unstable tag."
-	exit
+    echo "Error, indicate whether checking out a stable or unstable tag."
+    exit
 fi
 
 checkoutString="create tags/mp7/"$unstableSelector"firmware/"$tag
@@ -57,12 +57,12 @@ checkoutCommand="$checkoutString -u $username --board mp7"
 
 if [ "$?" == 0 ];
 then
-	echo "Done with mp7fw checkout. Fetching project.. "
+    echo "Done with mp7fw checkout. Fetching project.. "
 else
-	cd ..
-	rm -rf $tag
-	echo "Error, couldn't check out mp7fw."
-	exit
+    cd ..
+    rm -rf $tag
+    echo "Error, couldn't check out mp7fw."
+    exit
 fi
 ./ProjectManager.py fetch projects/ugmt
 ./ProjectManager.py vivado projects/ugmt
@@ -84,15 +84,16 @@ ln -s $uGMTalgosPath/* .
 
 popd
 
-cd ugmt 
+cd ugmt
 ln -s $scriptsPath/runAll.sh .
+ln -s $scriptsPath/checkTiming.py .
 
 pushd $scriptsPath
 echo "Retrieving LUT content files.."
 python get_luts.py binary --outpath ../firmware/hdl/ipbus_slaves/
 
 echo "#############################################################################"
-echo "To create the project execute 'make project' in 
+echo "To create the project execute 'make project' in
 $mp7currPath/ugmt ."
 echo "#############################################################################"
 
