@@ -163,6 +163,7 @@ architecture behavioral of SortAndCancelUnit is
   signal sEmptyB_store2     : std_logic_vector(7 downto 0);
   signal sEmptyO_store2     : std_logic_vector(7 downto 0);
   signal sEmptyE_store2     : std_logic_vector(7 downto 0);
+  signal sFinalEmpty        : std_logic_vector(7 downto 0);
 
   signal sIdxBitsB_store2 : TIndexBits_vector(7 downto 0);
   signal sIdxBitsO_store2 : TIndexBits_vector(7 downto 0);
@@ -180,16 +181,16 @@ architecture behavioral of SortAndCancelUnit is
   -- TODO: Possibly delay this signal by 2 BX more? Would be nice to have it synced with inputs.
   signal muon_counter_reset_reg : std_logic;
 
-  constant NUM_LOCAL_SORTERS : natural := 5; -- Number of local sorters.
-  -- One counter per local sorter (BMTF, OMTF+/-, EMTF +/-)
-  type TEmtpyBits_vector is array (NUM_LOCAL_SORTERS-1 downto 0) of std_logic_vector(7 downto 0);
+  constant NUM_SORTERS : natural := 6; -- Number of sorters.
+  -- One counter per sorter (BMTF, OMTF+/-, EMTF +/-, final)
+  type TEmtpyBits_vector is array (NUM_SORTERS-1 downto 0) of std_logic_vector(7 downto 0);
   signal sSortedEmptyBits     : TEmtpyBits_vector;
   signal sSortedEmptyBits_reg : TEmtpyBits_vector;
 
-  type TLocalMuonCounter is array (NUM_LOCAL_SORTERS-1 downto 0) of unsigned(3 downto 0);
-  type TMuonCounter is array (NUM_LOCAL_SORTERS-1 downto 0) of unsigned(31 downto 0);
+  type TLocalMuonCounter is array (NUM_SORTERS-1 downto 0) of unsigned(3 downto 0);
+  type TMuonCounter is array (NUM_SORTERS-1 downto 0) of unsigned(31 downto 0);
   signal sMuonCounters       : TMuonCounter;
-  signal sMuonCounters_store : ipb_reg_v(NUM_LOCAL_SORTERS-1 downto 0);
+  signal sMuonCounters_store : ipb_reg_v(NUM_SORTERS-1 downto 0);
 
 begin
 
@@ -481,51 +482,6 @@ begin
   sSortedEmptyBits(3) <= "1111" & sSortedEmptyE_plus;
   sSortedEmptyBits(4) <= "1111" & sSortedEmptyE_minus;
 
-  -- TODO: Add muon counters here
-  count_mus : process(clk)
-    variable muonCount : TLocalMuonCounter;
-  begin
-    if clk'event and clk = '1' then  -- rising clock edge
-      muon_counter_reset_reg <= mu_ctr_rst;
-
-      sSortedEmptyBits_reg <= sSortedEmptyBits;
-
-      -- Counting how many non-empty muons we have.
-      for i in sSortedEmptyBits_reg'range loop
-        muonCount(i) := (others => '0');
-        for j in sSortedEmptyBits_reg(i)'range loop
-          if sSortedEmptyBits_reg(i)(j) = '0' then
-            muonCount(i) := muonCount(i)+to_unsigned(1, muonCount(i)'length);
-          end if;
-        end loop;
-
-        -- Add above sum to register.
-        if muon_counter_reset_reg = '1' then
-          -- Reset muon counter after storing its contents in register.
-          sMuonCounters_store(i) <= std_logic_vector(sMuonCounters(i));
-          sMuonCounters(i) <= resize(muonCount(i), sMuonCounters(i)'length);
-        else
-          sMuonCounters(i) <= sMuonCounters(i) + resize(muonCount(i), sMuonCounters(i)'length);
-        end if;
-      end loop;
-    end if;
-  end process;
-
-  gen_ipb_registers : for i in NUM_LOCAL_SORTERS-1 downto 0 generate
-    muon_counter : entity work.ipbus_reg_status
-      generic map(
-        N_REG => 1
-        )
-      port map(
-        ipbus_in  => ipbw(N_SLV_MUON_COUNTER_BMTF+i),
-        ipbus_out => ipbr(N_SLV_MUON_COUNTER_BMTF+i),
-        clk       => clk_ipb,
-        reset     => sinit,
-        d         => sMuonCounters_store(i downto i),
-        q         => open
-        );
-  end generate gen_ipb_registers;
-
   reg_pairs : process (clk)
   begin  -- process reg_pairs
     if clk'event and clk = '0' then     -- falling clock edge
@@ -559,8 +515,55 @@ begin
       iIdxBitsE   => sSortedIdxBitsE_reg,
       iMuonsE     => sSortedMuonsE_reg,
       oIdxBits    => sIdxBits,        -- Goes out to IsoAU.
-      oMuons      => sFinalMuons
+      oMuons      => sFinalMuons,
+      oEmpty      => sFinalEmpty
       );
+
+  sSortedEmptyBits(5) <= sFinalEmpty;
+
+  count_mus : process(clk)
+    variable muonCount : TLocalMuonCounter;
+  begin
+    if clk'event and clk = '1' then  -- rising clock edge
+      muon_counter_reset_reg <= mu_ctr_rst;
+
+      sSortedEmptyBits_reg <= sSortedEmptyBits;
+
+      -- Counting how many non-empty muons we have.
+      for i in sSortedEmptyBits_reg'range loop
+        muonCount(i) := (others => '0');
+        for j in sSortedEmptyBits_reg(i)'range loop
+          if sSortedEmptyBits_reg(i)(j) = '0' then
+            muonCount(i) := muonCount(i)+to_unsigned(1, muonCount(i)'length);
+          end if;
+        end loop;
+
+        -- Add above sum to register.
+        if muon_counter_reset_reg = '1' then
+          -- Reset muon counter after storing its contents in register.
+          sMuonCounters_store(i) <= std_logic_vector(sMuonCounters(i));
+          sMuonCounters(i) <= resize(muonCount(i), sMuonCounters(i)'length);
+        else
+          sMuonCounters(i) <= sMuonCounters(i) + resize(muonCount(i), sMuonCounters(i)'length);
+        end if;
+      end loop;
+    end if;
+  end process;
+
+  gen_ipb_registers : for i in NUM_SORTERS-1 downto 0 generate
+    muon_counter : entity work.ipbus_reg_status
+      generic map(
+        N_REG => 1
+        )
+      port map(
+        ipbus_in  => ipbw(N_SLV_MUON_COUNTER_BMTF+i),
+        ipbus_out => ipbr(N_SLV_MUON_COUNTER_BMTF+i),
+        clk       => clk_ipb,
+        reset     => sinit,
+        d         => sMuonCounters_store(i downto i),
+        q         => open
+        );
+  end generate gen_ipb_registers;
 
   final_mu_reg : process (clk)
   begin  -- process final_mu_reg

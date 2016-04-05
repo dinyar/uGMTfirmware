@@ -12,4 +12,5 @@
   <node id="muon_counter_OMTFn" address="0x80002" description="Counter for negative overlap sorter output" fwinfo="endpoint;width=0" />
   <node id="muon_counter_EMTFp" address="0x80003" description="Counter for positive endcap sorter output" fwinfo="endpoint;width=0" />
   <node id="muon_counter_EMTFn" address="0x80004" description="Counter for negative endcap sorter output" fwinfo="endpoint;width=0" />
+  <node id="muon_counter_output" address="0x80005" description="Counter for final sorter output" fwinfo="endpoint;width=0" />
 </node>

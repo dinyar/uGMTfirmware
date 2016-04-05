@@ -26,7 +26,8 @@ entity SortStage1 is
     iMuonsE     : in TGMTMu_vector(7 downto 0);
 
     oIdxBits : out TIndexBits_vector(7 downto 0);  -- Sent to IsoAU.
-    oMuons   : out TGMTMu_vector(7 downto 0)
+    oMuons   : out TGMTMu_vector(7 downto 0);
+    oEmpty   : out std_logic_vector(7 downto 0)
     );
 end entity SortStage1;
 
@@ -128,7 +129,33 @@ begin  -- architecture behavioral
         when "000000000000000000000001" => oMuons(iplace) <= sMuons(23);
         when others                     => oMuons(iplace) <= ('0', '0', "000000000", '0', "0000", "000000000", "0000000000", '0');
       end case;
-
+      case sSelBits(iplace) is
+        when "100000000000000000000000" => oEmpty(iplace) <= sEmpty(0);
+        when "010000000000000000000000" => oEmpty(iplace) <= sEmpty(1);
+        when "001000000000000000000000" => oEmpty(iplace) <= sEmpty(2);
+        when "000100000000000000000000" => oEmpty(iplace) <= sEmpty(3);
+        when "000010000000000000000000" => oEmpty(iplace) <= sEmpty(4);
+        when "000001000000000000000000" => oEmpty(iplace) <= sEmpty(5);
+        when "000000100000000000000000" => oEmpty(iplace) <= sEmpty(6);
+        when "000000010000000000000000" => oEmpty(iplace) <= sEmpty(7);
+        when "000000001000000000000000" => oEmpty(iplace) <= sEmpty(8);
+        when "000000000100000000000000" => oEmpty(iplace) <= sEmpty(9);
+        when "000000000010000000000000" => oEmpty(iplace) <= sEmpty(10);
+        when "000000000001000000000000" => oEmpty(iplace) <= sEmpty(11);
+        when "000000000000100000000000" => oEmpty(iplace) <= sEmpty(12);
+        when "000000000000010000000000" => oEmpty(iplace) <= sEmpty(13);
+        when "000000000000001000000000" => oEmpty(iplace) <= sEmpty(14);
+        when "000000000000000100000000" => oEmpty(iplace) <= sEmpty(15);
+        when "000000000000000010000000" => oEmpty(iplace) <= sEmpty(16);
+        when "000000000000000001000000" => oEmpty(iplace) <= sEmpty(17);
+        when "000000000000000000100000" => oEmpty(iplace) <= sEmpty(18);
+        when "000000000000000000010000" => oEmpty(iplace) <= sEmpty(19);
+        when "000000000000000000001000" => oEmpty(iplace) <= sEmpty(20);
+        when "000000000000000000000100" => oEmpty(iplace) <= sEmpty(21);
+        when "000000000000000000000010" => oEmpty(iplace) <= sEmpty(22);
+        when "000000000000000000000001" => oEmpty(iplace) <= sEmpty(23);
+        when others                     => oEmpty(iplace) <= '1';
+      end case;
       case sSelBits(iplace) is
         when "100000000000000000000000" => oIdxBits(iplace) <= sIdxBits(0);
         when "010000000000000000000000" => oIdxBits(iplace) <= sIdxBits(1);
