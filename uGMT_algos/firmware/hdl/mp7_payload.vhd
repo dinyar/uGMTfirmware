@@ -48,9 +48,11 @@ architecture rtl of mp7_payload is
   -- Valid bits delayed less than algo latency due to one register before and
   -- requirement to be 1 bx early in serializer.
   signal   sValid_buffer        : std_logic_vector(GMT_ALGO_LATENCY-3 downto 0);
+  signal   sValid_final         : std_logic;
   signal   sValid_muons         : std_logic;
   signal   sValid_muons_reg     : std_logic;
   signal   sValid_energies      : std_logic;
+  signal   sValid_energies_reg  : std_logic;
 
   -- Muon counter reset signal
   signal sMuCtrReset : std_logic_vector(N_REGION - 1 downto 0);
@@ -239,6 +241,8 @@ begin
     end if;
   end process delay_valid_bit;
 
+  sValid_final <= sValid_buffer(sValid_buffer'high) or sValid_energies;
+
   gmt_index_comp : process (clk_payload)
   begin  -- process gmt_index_comp
     if clk_payload'event and clk_payload = '1' then  -- rising clock edge
@@ -324,7 +328,7 @@ begin
       rst      => rst_payload,
       iMuons   => oMuons,
       iBGOs    => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
-      iValid   => sValid_buffer(sValid_buffer'high),
+      iValid   => sValid_final,
       oTrigger => sTrigger,
       gpio     => gpio,
       gpio_en  => gpio_en
@@ -370,8 +374,7 @@ begin
       clk240               => clk_p,
       clk40                => clk_payload,
       rst                  => rst_payload,
-      iValidMuons          => sValid_buffer(sValid_buffer'high),
-      iValidEnergies       => sValid_energies,
+      iValid               => sValid_final,
       iMuons               => oMuons_reg,
       iMuIdxBits           => sMuIdxBits_reg,
       iIso                 => sIso,
