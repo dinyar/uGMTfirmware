@@ -83,7 +83,7 @@ begin
     file F                   : text open read_mode  is "ugmt_testfile.dat";
     file FO                  : text open write_mode is "../results/ugmt_serdes_tb.results";
     variable L, LO           : line;
-    constant uGMT_LATENCY    : integer := 6;
+    constant uGMT_LATENCY    : integer := 7;
     variable event           : TGMTEvent;
     variable event_buffer    : TGMTEvent_vec(uGMT_LATENCY-1 downto 0);
     variable iEvent          : integer := 0;
@@ -118,6 +118,7 @@ begin
       if not endfile(F) then
         ReadEvent(F, iEvent, event);
 
+        vOutput(4 downto 0) := vOutput(vOutput downto vOutput'high-4);
         -- Filling uGMT
         for cnt in 0 to 5 loop
           iD_buffer_calo(0)                            <= event.iD(cnt)(35 downto 0);
@@ -127,12 +128,13 @@ begin
           iD(35 downto 0)  <= iD_buffer_calo(iD_buffer_calo'high);
 
           wait for 2*half_period_240;
-          vOutput(cnt) := oQ;
+          vOutput(cnt+5) := oQ;
         end loop;  -- cnt
 
         event_buffer(0) := event;
 
       else
+        vOutput(4 downto 0) := vOutput(vOutput downto vOutput'high-4);
         for cnt in 0 to 5 loop
           iD_buffer_calo(iD_buffer_calo'high downto 1) <= iD_buffer_calo(iD_buffer_calo'high-1 downto 0);
           iD(35 downto 0)                              <= iD_buffer_calo(iD_buffer_calo'high);
@@ -143,7 +145,7 @@ begin
           end loop;  -- i
           wait for 2*half_period_240;
 
-          vOutput(cnt) := oQ;
+          vOutput(cnt+5) := oQ;
 
         end loop;  -- cnt
 
@@ -152,7 +154,7 @@ begin
 
       event_buffer(uGMT_LATENCY-1 downto 1) := event_buffer(uGMT_LATENCY-2 downto 0);
 
-      ValidateGMTOutput(vOutput, event_buffer(uGMT_LATENCY-1), FO, tmpError);
+      ValidateGMTOutput(vOutput(5 downto 0), event_buffer(uGMT_LATENCY-1), FO, tmpError);
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then

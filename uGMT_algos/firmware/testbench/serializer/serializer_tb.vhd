@@ -60,7 +60,7 @@ begin
     file F                      : text open read_mode is "ugmt_testfile.dat";
     file FO                     : text open write_mode is "../results/serializer_tb.results";
     variable L, LO              : line;
-    constant SERIALIZER_LATENCY : integer := 3;
+    constant SERIALIZER_LATENCY : integer := 4;
     variable event              : TGMTOutEvent;
     variable event_buffer       : TGMTOutEvent_vec(SERIALIZER_LATENCY-1 downto 0);
     variable iEvent             : integer := 0;
@@ -108,14 +108,15 @@ begin
         remainingEvents := remainingEvents-1;
       end if;
 
+      vOutput(4 downto 0) := vOutput(vOutput downto vOutput'high-4);
       for cnt in 0 to 5 loop
         wait for 2*half_period_240;
-        vOutput(cnt) := oQ;
+        vOutput(cnt+5) := oQ;
       end loop;  -- cnt
 
       event_buffer(SERIALIZER_LATENCY-1 downto 1) := event_buffer(SERIALIZER_LATENCY-2 downto 0);
 
-      ValidateSerializerOutput(vOutput, event_buffer(SERIALIZER_LATENCY-1), FO, tmpError);
+      ValidateSerializerOutput(vOutput(5 downto 0), event_buffer(SERIALIZER_LATENCY-1), FO, tmpError);
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
