@@ -75,27 +75,18 @@ begin
       for m in 0 to OUTPUT_MULTIPLIER-1 loop
         for i in 0 to NUM_OUT_CHANS-1 loop
           q((m*NUM_OUT_CHANS)+i).strobe <= '1';
-          if sSel = 0 then
-            q((m*NUM_OUT_CHANS)+i).valid <= sOutBuf(sSel)(i).valid;
-          else
-            q((m*NUM_OUT_CHANS)+i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
-          end if;
+          q((m*NUM_OUT_CHANS)+i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
           q((m*NUM_OUT_CHANS)+i).data <= sOutBuf(sSel)(i).data;
         end loop;  -- i
       end loop;  -- m
       for i in 0 to NUM_INTERM_MU_OUT_CHANS - 1 loop
         q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).strobe <= '1';
-        if sSel = 0 then
-          q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid <= sOutBuf(sSel)(i+NUM_OUT_CHANS).valid;
-          q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).data <= sOutBuf(sSel)(i+NUM_OUT_CHANS).data;
-        else
-          q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+NUM_OUT_CHANS).data;
-          q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+NUM_OUT_CHANS).valid;
-        end if;
+        q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+NUM_OUT_CHANS).data;
+        q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+NUM_OUT_CHANS).valid;
       end loop;  -- i
 
       if rst = '1' then
-        sSel <= 1;
+        sSel <= 0;
       elsif sSel < 5 then
         sSel <= sSel+1;
       else
