@@ -12,7 +12,8 @@ package tb_helpers is
   constant N_SERIALIZER_CHAN : integer := NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS;
   constant NINCHAN           : integer := 72;
   constant NOUTCHAN          : integer := NUM_OUT_CHANS;
-  type     TTransceiverBuffer is array (2*2*NUM_MUONS_IN-1 downto 0) of ldata(NINCHAN-1 downto 0);
+  type     TTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NINCHAN-1 downto 0);
+  type     TExtendedTransceiverBuffer is array (2*2*NUM_MUONS_IN-1 downto 0) of ldata(NINCHAN-1 downto 0);
 
   type TGMTEvent is record
     iEvent         : integer;

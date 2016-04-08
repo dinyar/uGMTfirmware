@@ -67,7 +67,7 @@ begin
     variable tmpError           : integer;
     variable cntError           : integer := 0;
     variable remainingEvents    : integer := SERIALIZER_LATENCY-2;
-    variable vOutput            : TTransceiverBuffer;
+    variable vOutput            : TExtendedTransceiverBuffer;
 
   begin  -- process tb
 
@@ -108,7 +108,7 @@ begin
         remainingEvents := remainingEvents-1;
       end if;
 
-      vOutput(4 downto 0) := vOutput(vOutput downto vOutput'high-4);
+      vOutput(4 downto 0) := vOutput(vOutput'high downto vOutput'high-4);
       for cnt in 0 to 5 loop
         wait for 2*half_period_240;
         vOutput(cnt+5) := oQ;

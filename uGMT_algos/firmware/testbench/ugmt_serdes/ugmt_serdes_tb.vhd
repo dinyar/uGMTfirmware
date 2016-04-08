@@ -90,7 +90,7 @@ begin
     variable tmpError        : integer;
     variable cntError        : integer := 0;
     variable remainingEvents : integer := uGMT_LATENCY-2;
-    variable vOutput         : TTransceiverBuffer;
+    variable vOutput         : TExtendedTransceiverBuffer;
 
   begin  -- process tb
     -- Reset event buffer
