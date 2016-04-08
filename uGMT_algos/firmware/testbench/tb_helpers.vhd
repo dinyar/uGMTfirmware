@@ -13,7 +13,7 @@ package tb_helpers is
   constant NINCHAN           : integer := 72;
   constant NOUTCHAN          : integer := NUM_OUT_CHANS;
   type     TTransceiverBuffer is array (2*NUM_MUONS_IN-1 downto 0) of ldata(NINCHAN-1 downto 0);
-  type     TExtendedTransceiverBuffer is array (2*2*NUM_MUONS_IN-1 downto 0) of ldata(NINCHAN-1 downto 0);
+  type     TExtendedTransceiverBuffer is array (2*2*NUM_MUONS_IN-2 downto 0) of ldata(NINCHAN-1 downto 0);
 
   type TGMTEvent is record
     iEvent         : integer;

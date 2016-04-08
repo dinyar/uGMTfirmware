@@ -68,6 +68,7 @@ begin
     variable cntError           : integer := 0;
     variable remainingEvents    : integer := SERIALIZER_LATENCY-2;
     variable vOutput            : TExtendedTransceiverBuffer;
+    variable vValidOutput       : TTransceiverBuffer;
 
   begin  -- process tb
 
@@ -116,7 +117,8 @@ begin
 
       event_buffer(SERIALIZER_LATENCY-1 downto 1) := event_buffer(SERIALIZER_LATENCY-2 downto 0);
 
-      ValidateSerializerOutput(vOutput(5 downto 0), event_buffer(SERIALIZER_LATENCY-1), FO, tmpError);
+      vValidOutput := TTransceiverBuffer(vOutput(5 downto 0));
+      ValidateSerializerOutput(vValidOutput, event_buffer(SERIALIZER_LATENCY-1), FO, tmpError);
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
@@ -133,7 +135,7 @@ begin
         writeline (FO, LO);
         write(LO, string'("### Dumping sim output :"));
         writeline (FO, LO);
-        DumpFrames(vOutput, FO);
+        DumpFrames(vValidOutput, FO);
         write(LO, string'(""));
         writeline (FO, LO);
         write(LO, string'(""));

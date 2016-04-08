@@ -91,6 +91,7 @@ begin
     variable cntError        : integer := 0;
     variable remainingEvents : integer := uGMT_LATENCY-2;
     variable vOutput         : TExtendedTransceiverBuffer;
+    variable vValidOutput    : TTransceiverBuffer;
 
   begin  -- process tb
     -- Reset event buffer
@@ -154,7 +155,8 @@ begin
 
       event_buffer(uGMT_LATENCY-1 downto 1) := event_buffer(uGMT_LATENCY-2 downto 0);
 
-      ValidateGMTOutput(vOutput(5 downto 0), event_buffer(uGMT_LATENCY-1), FO, tmpError);
+      vValidOutput := TTransceiverBuffer(vOutput(2*NUM_MUONS_IN-1 downto 0));
+      ValidateGMTOutput(vValidOutput, event_buffer(uGMT_LATENCY-1), FO, tmpError);
       cntError := cntError+tmpError;
 
       if verbose or (tmpError > 0) then
@@ -171,7 +173,7 @@ begin
         writeline (FO, LO);
         write(LO, string'("### Dumping sim output :"));
         writeline (FO, LO);
-        DumpFrames(vOutput, FO);
+        DumpFrames(vValidOutput, FO);
         write(LO, string'(""));
         writeline (FO, LO);
         write(LO, string'(""));
