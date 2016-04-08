@@ -9,7 +9,8 @@ entity serializer_stage is
   port (clk240               : in  std_logic;
         clk40                : in  std_logic;
         rst                  : in  std_logic;
-        iValid               : in  std_logic;
+        iValidMuons          : in  std_logic;
+        iValidEnergies       : in  std_logic;
         iMuons               : in  TGMTMu_vector (NUM_OUT_CHANS*NUM_MUONS_OUT-1 downto 0);
         iIso                 : in  TIsoBits_vector(NUM_OUT_CHANS*NUM_MUONS_OUT-1 downto 0);
         iMuIdxBits           : in  TIndexBits_vector (7 downto 0);
@@ -21,7 +22,9 @@ end serializer_stage;
 
 architecture Behavioral of serializer_stage is
   type TTransceiverBufferOut is array (2*2*NUM_MUONS_LINK-1 downto 0) of ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0);
-  signal sOutBuf : TTransceiverBufferOut;
+  signal sOutBuf            : TTransceiverBufferOut;
+  signal sValidMuons_reg    : std_logic;
+  signal sValidEnergies_reg : std_logic;
 
   -- Offsetting the beginning of sending to align with 40 MHz clock and make
   -- sending a bit faster.
@@ -39,15 +42,11 @@ begin
       muon_check : if i < NUM_MUONS_OUT generate
         -- First two clocks are always filled with '0'.
         sOutBuf(2*MU_ASSIGNMENT(i))(j).data    <= pack_mu_to_flat(iMuons(i+2*j), iMuIdxBits(i+2*j), iIso(i+2*j))(31 downto 0);
-        sOutBuf(2*MU_ASSIGNMENT(i))(j).valid   <= iValid;
         sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).data  <= pack_mu_to_flat(iMuons(i+2*j), iMuIdxBits(i+2*j), iIso(i+2*j))(63 downto 32);
-        sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).valid <= iValid;
       end generate muon_check;
       empty_check : if i = NUM_MUONS_OUT generate
         sOutBuf(2*MU_ASSIGNMENT(i))(j).data    <= (31 downto 0 => '0');
-        sOutBuf(2*MU_ASSIGNMENT(i))(j).valid   <= iValid;
         sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).data  <= (31 downto 0 => '0');
-        sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).valid <= iValid;
       end generate empty_check;
     end generate split_muons;
   end generate serialize_muons;
@@ -56,9 +55,7 @@ begin
     split_muons : for j in NUM_INTERM_MU_OUT_CHANS-1 downto 0 generate
       -- Intermediate muons don't have isolation applied and no idx bit available, so forcing those to all '0'.
       sOutBuf(2*i)(j+NUM_OUT_CHANS).data    <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIdxBits, sFakeIso)(31 downto 0);
-      sOutBuf(2*i)(j+NUM_OUT_CHANS).valid   <= iValid;
       sOutBuf(2*i+1)(j+NUM_OUT_CHANS).data  <= pack_mu_to_flat(sIntermediateMuons(i+3*j), sFakeIdxBits, sFakeIso)(63 downto 32);
-      sOutBuf(2*i+1)(j+NUM_OUT_CHANS).valid <= iValid;
     end generate split_muons;
   end generate serialize_intermediate_muons;
 
@@ -66,6 +63,8 @@ begin
   begin  -- process shift_intermediates_rising
     if clk40'event and clk40 = '1' then  -- rising clock edge
       sOutBuf(sOutBuf'high downto BUFFER_INTERMEDIATES_POS_LOW) <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW-1 downto 0);
+      sValidMuons_reg    <= iValidMuons;
+      sValidEnergies_reg <= iValidEnergies;
     end if;
   end process shift_intermediates_rising;
 
@@ -75,14 +74,14 @@ begin
       for m in 0 to OUTPUT_MULTIPLIER-1 loop
         for i in 0 to NUM_OUT_CHANS-1 loop
           q((m*NUM_OUT_CHANS)+i).strobe <= '1';
-          q((m*NUM_OUT_CHANS)+i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
+          q((m*NUM_OUT_CHANS)+i).valid <= sValidMuons_reg or sValidEnergies_reg;
           q((m*NUM_OUT_CHANS)+i).data <= sOutBuf(sSel)(i).data;
         end loop;  -- i
       end loop;  -- m
       for i in 0 to NUM_INTERM_MU_OUT_CHANS - 1 loop
         q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).strobe <= '1';
         q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+NUM_OUT_CHANS).data;
-        q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+NUM_OUT_CHANS).valid;
+        q(i+(OUTPUT_MULTIPLIER*NUM_OUT_CHANS)).valid <= sValidMuons_reg or sValidEnergies_reg;
       end loop;  -- i
 
       if rst = '1' then
