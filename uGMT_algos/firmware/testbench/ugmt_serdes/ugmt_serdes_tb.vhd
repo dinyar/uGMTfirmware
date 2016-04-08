@@ -118,7 +118,7 @@ begin
       if not endfile(F) then
         ReadEvent(F, iEvent, event);
 
-        vOutput(4 downto 0) := vOutput(vOutput downto vOutput'high-4);
+        vOutput(4 downto 0) := vOutput(vOutput'high downto vOutput'high-4);
         -- Filling uGMT
         for cnt in 0 to 5 loop
           iD_buffer_calo(0)                            <= event.iD(cnt)(35 downto 0);
@@ -134,7 +134,7 @@ begin
         event_buffer(0) := event;
 
       else
-        vOutput(4 downto 0) := vOutput(vOutput downto vOutput'high-4);
+        vOutput(4 downto 0) := vOutput(vOutput'high downto vOutput'high-4);
         for cnt in 0 to 5 loop
           iD_buffer_calo(iD_buffer_calo'high downto 1) <= iD_buffer_calo(iD_buffer_calo'high-1 downto 0);
           iD(35 downto 0)                              <= iD_buffer_calo(iD_buffer_calo'high);
