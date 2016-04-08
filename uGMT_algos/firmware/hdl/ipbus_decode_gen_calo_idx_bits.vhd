@@ -17,7 +17,7 @@ package ipbus_decode_gen_calo_idx_bits is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_gen_calo_idx_bits(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Thu Mar  3 03:05:20 2016 
+-- START automatically  generated VHDL the Tue Apr  5 16:04:09 2016 
   constant N_SLV_ETA_EXTRAPOLATION_MEM_0: integer := 0;
   constant N_SLV_ETA_EXTRAPOLATION_MEM_1: integer := 1;
   constant N_SLV_ETA_EXTRAPOLATION_MEM_2: integer := 2;
@@ -46,23 +46,23 @@ package body ipbus_decode_gen_calo_idx_bits is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Thu Mar  3 03:05:20 2016 
-    if    std_match(addr, "---------------0000-------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_ETA_EXTRAPOLATION_MEM_0, IPBUS_SEL_WIDTH)); -- eta_extrapolation_mem_0 / base 0x00000000 / mask 0x0001e000
-    elsif std_match(addr, "---------------0001-------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_ETA_EXTRAPOLATION_MEM_1, IPBUS_SEL_WIDTH)); -- eta_extrapolation_mem_1 / base 0x00002000 / mask 0x0001e000
-    elsif std_match(addr, "---------------0010-------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_ETA_EXTRAPOLATION_MEM_2, IPBUS_SEL_WIDTH)); -- eta_extrapolation_mem_2 / base 0x00004000 / mask 0x0001e000
-    elsif std_match(addr, "---------------0011-------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_ETA_EXTRAPOLATION_MEM_3, IPBUS_SEL_WIDTH)); -- eta_extrapolation_mem_3 / base 0x00006000 / mask 0x0001e000
-    elsif std_match(addr, "---------------010--------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_PHI_EXTRAPOLATION_MEM_0, IPBUS_SEL_WIDTH)); -- phi_extrapolation_mem_0 / base 0x00008000 / mask 0x0001c000
-    elsif std_match(addr, "---------------011--------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_PHI_EXTRAPOLATION_MEM_1, IPBUS_SEL_WIDTH)); -- phi_extrapolation_mem_1 / base 0x0000c000 / mask 0x0001c000
-    elsif std_match(addr, "---------------100--------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_PHI_EXTRAPOLATION_MEM_2, IPBUS_SEL_WIDTH)); -- phi_extrapolation_mem_2 / base 0x00010000 / mask 0x0001c000
-    elsif std_match(addr, "---------------101--------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_PHI_EXTRAPOLATION_MEM_3, IPBUS_SEL_WIDTH)); -- phi_extrapolation_mem_3 / base 0x00014000 / mask 0x0001c000
+-- START automatically  generated VHDL the Tue Apr  5 16:04:09 2016 
+    if    std_match(addr, "---------------00000------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_ETA_EXTRAPOLATION_MEM_0, IPBUS_SEL_WIDTH)); -- eta_extrapolation_mem_0 / base 0x00000000 / mask 0x0001f000
+    elsif std_match(addr, "---------------00010------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_ETA_EXTRAPOLATION_MEM_1, IPBUS_SEL_WIDTH)); -- eta_extrapolation_mem_1 / base 0x00002000 / mask 0x0001f000
+    elsif std_match(addr, "---------------00100------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_ETA_EXTRAPOLATION_MEM_2, IPBUS_SEL_WIDTH)); -- eta_extrapolation_mem_2 / base 0x00004000 / mask 0x0001f000
+    elsif std_match(addr, "---------------00110------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_ETA_EXTRAPOLATION_MEM_3, IPBUS_SEL_WIDTH)); -- eta_extrapolation_mem_3 / base 0x00006000 / mask 0x0001f000
+    elsif std_match(addr, "---------------01000------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_PHI_EXTRAPOLATION_MEM_0, IPBUS_SEL_WIDTH)); -- phi_extrapolation_mem_0 / base 0x00008000 / mask 0x0001f000
+    elsif std_match(addr, "---------------01100------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_PHI_EXTRAPOLATION_MEM_1, IPBUS_SEL_WIDTH)); -- phi_extrapolation_mem_1 / base 0x0000c000 / mask 0x0001f000
+    elsif std_match(addr, "---------------10000------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_PHI_EXTRAPOLATION_MEM_2, IPBUS_SEL_WIDTH)); -- phi_extrapolation_mem_2 / base 0x00010000 / mask 0x0001f000
+    elsif std_match(addr, "---------------10100------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_PHI_EXTRAPOLATION_MEM_3, IPBUS_SEL_WIDTH)); -- phi_extrapolation_mem_3 / base 0x00014000 / mask 0x0001f000
     elsif std_match(addr, "---------------11000000---------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_ETA_IDX_BITS_MEM_0, IPBUS_SEL_WIDTH)); -- eta_idx_bits_mem_0 / base 0x00018000 / mask 0x0001fe00
     elsif std_match(addr, "---------------11000001---------") then
