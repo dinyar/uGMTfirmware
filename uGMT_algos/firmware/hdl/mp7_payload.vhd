@@ -41,6 +41,13 @@ architecture rtl of mp7_payload is
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
+  type TBGoBuffer is array(natural range <>) of ttc_stuff_array(N_REGION - 1 downto 0);
+  -- Currently our master latency is ~39 BX. Making sure we can absorb a significant latency increase.
+  signal sBGoDelay        : unsigned(5 downto 0); -- Pointer to position in BGo buffer.
+  signal sBGoBuffer       : TBGoBuffer(2**6-1 downto 0);
+  signal sDelayedCtrs     : ttc_stuff_array(N_REGION - 1 downto 0);
+  signal sDelayedCtrsBctr : ttc_stuff_array(N_REGION - 1 downto 0); -- Signal that will be used for the error counters.
+
   signal sTrigger     : std_logic := '0';
   signal sTrigger_reg : std_logic := '0';
 
@@ -114,14 +121,36 @@ begin
     generic map(
       NSLV      => N_SLAVES,
       SEL_WIDTH => IPBUS_SEL_WIDTH
-      )
+    )
     port map(
       ipb_in          => ipb_in,
       ipb_out         => ipb_out,
       sel             => ipbus_sel_mp7_payload(ipb_in.ipb_addr),
       ipb_to_slaves   => ipbw,
       ipb_from_slaves => ipbr
-      );
+    );
+
+  bgo_delay : entity work.ipbus_reg_v
+    generic map(
+      N_REG => 1
+    )
+    port map(
+      clk => clk,
+      reset => rst,
+      ipbus_in => ipbw(N_SLV_BGO_DELAY_REG),
+      ipbus_out => ipbr(N_SLV_BGO_DELAY_REG),
+      q => sBGoDelay
+    );
+
+  delay_bgos : process(clk_payload)
+  begin  -- process delay_bgos
+    if clk_payload'event and clk_payload = '1' then  -- rising clock edge
+      sBGoBuffer(0)                        <= ctrs;
+      sBGoBuffer(sBGoBuffer'high downto 1) <= sBGoBuffer(sBGoBuffer'high-1 downto 0);
+      sDelayedCtrs                         <= sBGoBuffer(to_integer(sBGoDelay)-5); -- Removing delays incured during signal generation.
+      sDelayedCtrsBctr                     <= sBGoBuffer(to_integer(sBGoDelay)-2); -- sMuCtrReset is generated after 3 BX, synching to that.
+    end if;
+  end process delay_bgos;
 
   muon_counter_reset_gen : entity work.muon_counter_reset
     port map (
@@ -129,7 +158,7 @@ begin
       rst          => rst_payload,
       ipb_in       => ipbw(N_SLV_MUON_COUNTER_RESET),
       ipb_out      => ipbr(N_SLV_MUON_COUNTER_RESET),
-      ttc_command  => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
+      ttc_command  => sDelayedCtrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
       clk40        => clk_payload,
       mu_ctr_rst   => sMuCtrReset
     );
@@ -194,7 +223,7 @@ begin
       rst          => rst_loc,
       ipb_in       => ipbw(N_SLV_MUON_INPUT),
       ipb_out      => ipbr(N_SLV_MUON_INPUT),
-      ctrs         => ctrs,
+      ctrs         => sDelayedCtrsBctr,
       mu_ctr_rst   => sMuCtrReset,
       clk240       => clk_p,
       clk40        => clk_payload,
@@ -216,7 +245,7 @@ begin
       rst       => rst_loc,
       ipb_in    => ipbw(N_SLV_ENERGY_INPUT),
       ipb_out   => ipbr(N_SLV_ENERGY_INPUT),
-      ctrs      => ctrs,
+      ctrs      => sDelayedCtrs,
       clk240    => clk_p,
       clk40     => clk_payload,
       d         => d(NCHAN-1 downto 0),
@@ -327,7 +356,7 @@ begin
       clk      => clk_payload,
       rst      => rst_payload,
       iMuons   => oMuons,
-      iBGOs    => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
+      iBGOs    => sDelayedCtrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
       iValid   => sValid_final,
       oTrigger => sTrigger,
       gpio     => gpio,
