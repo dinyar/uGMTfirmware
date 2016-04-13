@@ -5,6 +5,8 @@ use work.ipbus_reg_types.all;
 
 package ugmt_constants is
 
+  constant BGO_DELAY : natural := 39;
+
   -- Start and end positions for buffers for outputs.
   constant BUFFER_OUT_MU_POS_HIGH        : natural := 5;
   constant BUFFER_OUT_MU_POS_LOW         : natural := 0;

@@ -135,16 +135,17 @@ begin
       ipb_from_slaves => ipbr
     );
 
-  bgo_delay : entity work.ipbus_reg_v
+  bgo_delay_reg : entity work.ipbus_reg_setable
     generic map(
-      N_REG => 1
+      N_REG => 1,
+      INIT  => std_logic_vector(to_unsigned(BGO_DELAY, 32))
     )
     port map(
-      clk => clk,
-      reset => rst,
-      ipbus_in => ipbw(N_SLV_BGO_DELAY_REG),
+      clk       => clk,
+      reset     => rst,
+      ipbus_in  => ipbw(N_SLV_BGO_DELAY_REG),
       ipbus_out => ipbr(N_SLV_BGO_DELAY_REG),
-      q => sBGoDelay_reg_v
+      q         => sBGoDelay_reg_v
     );
 
   sBGoDelay <= unsigned(std_logic_vector(sBGoDelay_reg_v(0)(5 downto 0)));
