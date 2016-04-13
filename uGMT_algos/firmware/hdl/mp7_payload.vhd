@@ -38,6 +38,13 @@ end mp7_payload;
 
 architecture rtl of mp7_payload is
 
+  function MAX (LEFT, RIGHT: INTEGER) return INTEGER is
+  begin
+    if LEFT > RIGHT then return LEFT;
+    else return RIGHT;
+    end if;
+  end MAX;
+
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
 
@@ -45,7 +52,7 @@ architecture rtl of mp7_payload is
   -- Currently our master latency is ~39 BX. Making sure we can absorb a significant latency increase.
   signal sBGoDelay_reg_v   : ipb_reg_v(0 downto 0);
   signal sBGoDelay        : unsigned(5 downto 0); -- Pointer to position in BGo buffer.
-  signal sBGoBuffer       : TBGoBuffer(2**6+2 downto 0); -- Accomodating additional delay for error counter reset.
+  signal sBGoBuffer       : TBGoBuffer(2**6-1 downto 0);
   signal sDelayedCtrs     : ttc_stuff_array(N_REGION - 1 downto 0);
   signal sDelayedCtrsBctr : ttc_stuff_array(N_REGION - 1 downto 0); -- Signal that will be used for the error counters.
 
@@ -147,8 +154,8 @@ begin
     if clk_payload'event and clk_payload = '1' then  -- rising clock edge
       sBGoBuffer(0)                        <= ctrs;
       sBGoBuffer(sBGoBuffer'high downto 1) <= sBGoBuffer(sBGoBuffer'high-1 downto 0);
-      sDelayedCtrs                         <= sBGoBuffer(to_integer(sBGoDelay));
-      sDelayedCtrsBctr                     <= sBGoBuffer(to_integer(sBGoDelay)+3); -- sMuCtrReset is generated after 3 BX, synching to that.
+      sDelayedCtrs                         <= sBGoBuffer(MAX(0, to_integer(sBGoDelay)-5)); -- Absorbing delays incured during signal generation.
+      sDelayedCtrsBctr                     <= sBGoBuffer(MAX(3, to_integer(sBGoDelay)-2)); -- sMuCtrReset is generated after 3 BX, synching to that.
     end if;
   end process delay_bgos;
 
