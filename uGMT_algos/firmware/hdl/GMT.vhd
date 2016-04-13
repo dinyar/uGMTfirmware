@@ -43,12 +43,12 @@ entity GMT is
     oIso   : out TIsoBits_vector(7 downto 0);
 
     mu_ctr_rst : in  std_logic;
-    clk                : in  std_logic;
-    clk_ipb            : in  std_logic;
-    sinit              : in  std_logic;
-    rst_loc            : in  std_logic_vector(N_REGION - 1 downto 0);
-    ipb_in             : in  ipb_wbus;
-    ipb_out            : out ipb_rbus
+    clk        : in  std_logic;
+    clk_ipb    : in  std_logic;
+    sinit      : in  std_logic;
+    rst_loc    : in  std_logic_vector(N_REGION - 1 downto 0);
+    ipb_in     : in  ipb_wbus;
+    ipb_out    : out ipb_rbus
     );
 end GMT;
 
@@ -61,6 +61,10 @@ architecture Behavioral of GMT is
   -- IPbus
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
+
+  -- Delay for counter reset.
+  -- Delaying by the
+  signal sMuCtrReset_reg : std_logic;
 
   -- Core uGMT algos
   signal sIsoBits      : TIsoBits_vector(7 downto 0);
@@ -117,6 +121,13 @@ begin
   -----------------------------------------------------------------------------
   -- sorters & COUs
   -----------------------------------------------------------------------------
+  -- Synchronize counter reset to sorter output.
+  ctr_reset_reg : process (clk)
+  begin  -- process ctr_reset_reg
+    if clk'event and clk = '0' then     -- falling clock edge
+      sMuCtrReset_reg <= mu_ctr_rst;
+    end if;
+  end process ctr_reset_reg;
 
   sort_and_cancel : entity work.SortAndCancelUnit
     port map (
@@ -142,7 +153,7 @@ begin
       oIdxBits                => sMuIdxBits,
       oMuPt                   => sFinalMuPt,
       oMuons                  => sMuons_sorted,
-      mu_ctr_rst              => mu_ctr_rst,
+      mu_ctr_rst              => sMuCtrReset_reg,
       clk                     => clk,
       clk_ipb                 => clk_ipb,
       sinit                   => sinit,

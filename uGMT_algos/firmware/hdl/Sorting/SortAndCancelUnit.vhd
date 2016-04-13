@@ -178,8 +178,8 @@ architecture behavioral of SortAndCancelUnit is
   signal sIdxBits : TIndexBits_vector(7 downto 0);
 
   -- For muon counters
-  -- TODO: Possibly delay this signal by 2 BX more? Would be nice to have it synced with inputs.
-  signal muon_counter_reset_reg : std_logic;
+  signal muon_counter_reset_reg   : std_logic;
+  signal final_muon_counter_reset : std_logic;
 
   constant NUM_SORTERS : natural := 6; -- Number of sorters.
   -- One counter per sorter (BMTF, OMTF+/-, EMTF +/-, final)
@@ -525,7 +525,8 @@ begin
     variable muonCount : TLocalMuonCounter;
   begin
     if clk'event and clk = '1' then  -- rising clock edge
-      muon_counter_reset_reg <= mu_ctr_rst;
+      muon_counter_reset_reg   <= mu_ctr_rst;
+      final_muon_counter_reset <= muon_counter_reset_reg;
 
       sSortedEmptyBits_reg <= sSortedEmptyBits;
 
@@ -539,8 +540,12 @@ begin
         end loop;
 
         -- Add above sum to register.
-        if muon_counter_reset_reg = '1' then
+        if (muon_counter_reset_reg = '1') and (i < 5) then
           -- Reset muon counter after storing its contents in register.
+          sMuonCounters_store(i) <= std_logic_vector(sMuonCounters(i));
+          sMuonCounters(i) <= resize(muonCount(i), sMuonCounters(i)'length);
+        elsif (final_muon_counter_reset = '1') and (i = 5) then
+          -- Reset muon counter for final muons one BX later to account for sorter latency.
           sMuonCounters_store(i) <= std_logic_vector(sMuonCounters(i));
           sMuonCounters(i) <= resize(muonCount(i), sMuonCounters(i)'length);
         else
@@ -569,6 +574,13 @@ begin
   begin  -- process final_mu_reg
     if clk'event and clk = '0' then     -- falling clock edge
       sFinalMuons_reg <= sFinalMuons;
+
+      oIntermediateMuonsB     <= sSortedMuonsB_reg;
+      oIntermediateMuonsO     <= sSortedMuonsO_reg;
+      oIntermediateMuonsE     <= sSortedMuonsE_reg;
+      oIntermediateSortRanksB <= sSortedSortRanksB_reg;
+      oIntermediateSortRanksO <= sSortedSortRanksO_reg;
+      oIntermediateSortRanksE <= sSortedSortRanksE_reg;
     end if;
   end process final_mu_reg;
 
@@ -579,11 +591,5 @@ begin
   oMuons   <= sFinalMuons_reg;
   oIdxBits <= sIdxBits;
 
-  oIntermediateMuonsB     <= sSortedMuonsB_reg;
-  oIntermediateMuonsO     <= sSortedMuonsO_reg;
-  oIntermediateMuonsE     <= sSortedMuonsE_reg;
-  oIntermediateSortRanksB <= sSortedSortRanksB_reg;
-  oIntermediateSortRanksO <= sSortedSortRanksO_reg;
-  oIntermediateSortRanksE <= sSortedSortRanksE_reg;
 
 end architecture behavioral;

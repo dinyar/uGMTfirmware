@@ -80,6 +80,9 @@
       <node id="CALO31" mask="0x40000000" />
       <node id="CALO32" mask="0x80000000" />
   </node>
+  <node id="bgo_delay_reg" address="0x8000004" description="Register to set delay (in bunch crossings) for BGo signals." fwinfo="endpoint;width=0">
+      <node id="bgo_delay" mask="0x3f" />
+  </node>
   <node id="generate_lemo_signals" module="file://generate_lemo_signals.xml" address="0x8000100" description="Contains register to set prescale for pseudo-triggers."/>
   <node id="muon_counter_reset" module="file://muon_counter_reset.xml" address="0x8000200" description="Registers to take manual control of muon counter reset signal."/>
   <node id="spy_buffer_control" module="file://spy_buffer_control.xml" address="0x8004000" description="Spy buffers for output channels."/>

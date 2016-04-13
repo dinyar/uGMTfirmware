@@ -22,7 +22,7 @@ entity muon_input is
     ipb_in       : in  ipb_wbus;
     ipb_out      : out ipb_rbus;
     ctrs         : in  ttc_stuff_array(N_REGION - 1 downto 0);
-    mu_ctr_rst   : in std_logic_vector(N_REGION - 1 downto 0);
+    mu_ctr_rst   : in  std_logic_vector(N_REGION - 1 downto 0);
     clk240       : in  std_logic;
     clk40        : in  std_logic;
     d            : in  ldata (NCHAN-1 downto 0);
