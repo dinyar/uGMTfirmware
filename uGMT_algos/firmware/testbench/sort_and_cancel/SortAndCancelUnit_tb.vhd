@@ -99,7 +99,7 @@ begin
     constant SORTER_LATENCY              : integer                        := 5;
     variable event_buffer                : TGMTMuEvent_vec(SORTER_LATENCY-1 downto 0);
     -- Delay is one more than in sorter unit due to the delay in the serializer.
-    constant INTERMEDIATE_DELAY          : integer                        := 3;
+    constant INTERMEDIATE_DELAY          : integer                        := 2;
     variable vIntermediateB_buffer       : TIntermediateMu_buf(INTERMEDIATE_DELAY-1 downto 0);
     variable vIntermediateO_buffer       : TIntermediateMu_buf(INTERMEDIATE_DELAY-1 downto 0);
     variable vIntermediateE_buffer       : TIntermediateMu_buf(INTERMEDIATE_DELAY-1 downto 0);
