@@ -17,7 +17,7 @@ package ipbus_decode_isolation_assignment is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_isolation_assignment(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Tue Apr  5 16:04:09 2016 
+-- START automatically  generated VHDL the Wed Apr 13 14:47:31 2016 
   constant N_SLV_ABS_ISO: integer := 0;
   constant N_SLV_REL_ISO: integer := 1;
   constant N_SLAVES: integer := 2;
@@ -32,7 +32,7 @@ package body ipbus_decode_isolation_assignment is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Tue Apr  5 16:04:09 2016 
+-- START automatically  generated VHDL the Wed Apr 13 14:47:31 2016 
     if    std_match(addr, "--------------0-----------------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_ABS_ISO, IPBUS_SEL_WIDTH)); -- abs_iso / base 0x00000000 / mask 0x00020000
     elsif std_match(addr, "--------------1-----------------") then

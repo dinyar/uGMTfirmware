@@ -99,7 +99,7 @@ begin  -- architecture behavioral
   -----------------------------------------------------------------------------
   count_wins24(GEMatrix, sEmpty, sSelBits);
 
-  mux : process (sSelBits, sMuons, sIdxBits)
+  mux : process (sSelBits, sMuons, sEmpty, sIdxBits)
   begin  -- process mux
     for iplace in 0 to 7 loop
       case sSelBits(iplace) is
