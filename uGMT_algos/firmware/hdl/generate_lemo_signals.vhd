@@ -68,7 +68,7 @@ begin  -- architecture behavioral
   gen_bctr_signal : process (clk)
   begin  -- process gen_bctr_signal
     if clk'event and clk = '1' then  -- rising clock edge
-      if iBctr = to_unsigned(3555, iBctr'length) then
+      if unsigned(iBctr) = to_unsigned(3555, iBctr'length) then
         gpio(1) <= '1';
       else
         gpio(1) <= '0';
