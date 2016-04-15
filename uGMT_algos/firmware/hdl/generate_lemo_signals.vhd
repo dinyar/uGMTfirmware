@@ -58,15 +58,15 @@ begin  -- architecture behavioral
 
   gpio_en(2 downto 0) <= "111";
 
-  send_bc0 : process (clk)
-  begin  -- process send_bc0
+  send_valid : process (clk)
+  begin  -- process send_valid
     if clk'event and clk = '1' then  -- rising clock edge
       gpio(2) <= iValid;
     end if;
-  end process send_bc0;
+  end process send_valid;
 
-  send_bc0 : process (clk)
-  begin  -- process send_bc0
+  gen_bctr_signal : process (clk)
+  begin  -- process gen_bctr_signal
     if clk'event and clk = '1' then  -- rising clock edge
       if iBctr = to_unsigned(3555, iBctr'length) then
         gpio(1) <= '1';
@@ -74,7 +74,7 @@ begin  -- architecture behavioral
         gpio(1) <= '0';
       end if;
     end if;
-  end process send_bc0;
+  end process gen_bctr_signal;
 
   prescale_register : entity work.ipbus_reg_setable
     generic map(
