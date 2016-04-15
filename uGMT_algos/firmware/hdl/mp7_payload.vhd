@@ -361,7 +361,7 @@ begin
       clk      => clk_payload,
       rst      => rst_payload,
       iMuons   => oMuons,
-      iBGOs    => sDelayedCtrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
+      iBctr    => sDelayedCtrsBctr(4).bctr,  -- Using ctrs from one of the two central clock regions
       iValid   => sValid_muons,
       oTrigger => sTrigger,
       gpio     => gpio,

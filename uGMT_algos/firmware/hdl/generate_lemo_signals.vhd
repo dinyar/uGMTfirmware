@@ -17,7 +17,7 @@ entity generate_lemo_signals is
     clk      : in  std_logic;
     rst      : in  std_logic;
     iMuons   : in  TGMTMu_vector(7 downto 0);
-    iBGOs    : in  ttc_cmd_t;
+    iBctr    : in  bctr_t;
     iValid   : in  std_logic;
     oTrigger : out std_logic;
     gpio     : out std_logic_vector(29 downto 0);
@@ -57,12 +57,18 @@ begin  -- architecture behavioral
   gpio_en(29 downto 3) <= (others => '0');
 
   gpio_en(2 downto 0) <= "111";
-  gpio(2) <= iValid;
 
   send_bc0 : process (clk)
   begin  -- process send_bc0
     if clk'event and clk = '1' then  -- rising clock edge
-      if iBGOs = TTC_BCMD_BC0 then
+      gpio(2) <= iValid;
+    end if;
+  end process send_bc0;
+
+  send_bc0 : process (clk)
+  begin  -- process send_bc0
+    if clk'event and clk = '1' then  -- rising clock edge
+      if iBctr = to_unsigned(3555, iBctr'length) then
         gpio(1) <= '1';
       else
         gpio(1) <= '0';
