@@ -43,7 +43,7 @@ architecture Behavioral of GhostCheckerUnit_spatialCoords is
 
   signal deltaEta     : signed(9 downto 0);
   signal deltaPhi     : signed(8 downto 0);
-  signal deltaEtaRed  : unsigned(3 downto 0);
+  signal deltaEtaRed  : unsigned(4 downto 0);
   signal deltaPhiRed  : unsigned(2 downto 0);
   signal lutInput     : std_logic_vector(COU_INPUT_SIZE-1 downto 0);
   signal match        : std_logic_vector(0 downto 0);
@@ -55,7 +55,7 @@ begin
   deltaEta    <= abs(resize(eta1, 10) - resize(eta2, 10));
   deltaPhi    <= abs(resize(phi1, 9) - (LOCAL_PHI_OFFSET + resize(phi2, 9)));
 
-  deltaEtaRed <= resize(unsigned(deltaEta), 4);
+  deltaEtaRed <= resize(unsigned(deltaEta), 5);
   deltaPhiRed <= resize(unsigned(deltaPhi), 3);
 
   construct_lut_input : process (deltaEtaRed, deltaPhiRed, etaFine1, etaFine2)

@@ -206,8 +206,8 @@ package ugmt_constants is
   constant ABS_ISO_ADDR_WIDTH : natural := 5;
   constant ABS_ISO_WORD_SIZE  : natural := 1;
 
-  constant COU_MEM_ADDR_WIDTH               : natural := 7;
-  constant COU_HALF_ETA_FINE_MEM_ADDR_WIDTH : natural := 8;
+  constant COU_MEM_ADDR_WIDTH               : natural := 8;
+  constant COU_HALF_ETA_FINE_MEM_ADDR_WIDTH : natural := COU_MEM_ADDR_WIDTH+1;  --8;
   constant COU_MEM_WORD_SIZE                : natural := 1;
 
   constant SORT_RANK_MEM_ADDR_WIDTH : natural := 13;
