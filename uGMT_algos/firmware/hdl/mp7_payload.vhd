@@ -135,15 +135,6 @@ begin
       ipb_from_slaves => ipbr
     );
 
-  version_reg : entity work.ipbus_reg_const
-    generic map(
-      INIT  => UGMT_VERSION
-    )
-    port map(
-      ipbus_in  => ipbw(N_SLV_VERSION_REG),
-      ipbus_out => ipbr(N_SLV_VERSION_REG)
-    );
-
   bgo_delay_reg : entity work.ipbus_reg_setable
     generic map(
       N_REG => 1,

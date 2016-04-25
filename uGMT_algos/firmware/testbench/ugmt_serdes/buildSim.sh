@@ -25,7 +25,6 @@ vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/boards/mp7/base_fw/common/f
 vcom -check_synthesis ../../hdl/top_decl.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/mp7_ttc/firmware/hdl/mp7_ttc_decl.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_dpram.vhd
-vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_reg_const.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_reg_setable.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_reg_status.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_counter.vhd

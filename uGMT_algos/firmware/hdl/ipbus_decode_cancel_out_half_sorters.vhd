@@ -17,7 +17,7 @@ package ipbus_decode_cancel_out_half_sorters is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_cancel_out_half_sorters(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Mon Apr 25 11:38:07 2016 
+-- START automatically  generated VHDL the Wed Apr 13 14:47:31 2016 
   constant N_SLV_CANCEL_OUT_MEMS_0: integer := 0;
   constant N_SLV_CANCEL_OUT_MEMS_1: integer := 1;
   constant N_SLV_CANCEL_OUT_MEMS_2: integer := 2;
@@ -36,7 +36,7 @@ package body ipbus_decode_cancel_out_half_sorters is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Mon Apr 25 11:38:07 2016 
+-- START automatically  generated VHDL the Wed Apr 13 14:47:31 2016 
     if    std_match(addr, "------------------000-----------") then
       sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEMS_0, IPBUS_SEL_WIDTH)); -- cancel_out_mems_0 / base 0x00000000 / mask 0x00003800
     elsif std_match(addr, "------------------001-----------") then

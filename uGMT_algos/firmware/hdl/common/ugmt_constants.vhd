@@ -5,8 +5,6 @@ use work.ipbus_reg_types.all;
 
 package ugmt_constants is
 
-  constant UGMT_VERSION : std_logic_vector(31 downto 0) := X"02" & X"01" & X"00" & X"00" ; -- Mayor, minor, "very minor" and patch level
-
   constant BGO_DELAY : natural := 39;
 
   -- Start and end positions for buffers for outputs.
