@@ -40,9 +40,9 @@ runSim.sh
 
 The uGMT is versioned (as of version 2.1.0) with the following scheme:
 
-Mayor version: Changes that require significant interventions at p5. e.g.: online software version changes, link protocol changes, etc.
-Minor version: Changes that require modifications to offline software (i.e. the emulator). i.e. algorithm changes
-"Very minor" version: Changes and additions to monitoring facilities
-Patch level: Bug fixes
+- Mayor version: Changes that require significant interventions at p5. e.g.: online software version changes, link protocol changes, etc.
+- Minor version: Changes that require modifications to offline software (i.e. the emulator). i.e. algorithm changes
+- "Very minor" version: Changes and additions to monitoring facilities
+- Patch level: Bug fixes
 
 This is stored in a 32 bit word in the firmware, thus it makes sense to store each such value in one octet.
