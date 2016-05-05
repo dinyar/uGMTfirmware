@@ -52,7 +52,7 @@ architecture rtl of mp7_payload is
   -- Currently our master latency is ~39 BX. Making sure we can absorb a significant latency increase.
   signal sBGoDelay_reg_v   : ipb_reg_v(0 downto 0);
   signal sBGoDelay        : unsigned(5 downto 0); -- Pointer to position in BGo buffer.
-  signal sBGoBuffer       : TBGoBuffer(2**6-1 downto 0);
+  signal sBGoBuffer       : TBGoBuffer(3563 downto 0); -- Want to delay by up to an orbit.
   signal sDelayedCtrs     : ttc_stuff_array(N_REGION - 1 downto 0);
   signal sDelayedCtrsBctr : ttc_stuff_array(N_REGION - 1 downto 0); -- Signal that will be used for the error counters.
 
@@ -155,20 +155,21 @@ begin
     if clk_payload'event and clk_payload = '1' then  -- rising clock edge
       sBGoBuffer(0)                        <= ctrs;
       sBGoBuffer(sBGoBuffer'high downto 1) <= sBGoBuffer(sBGoBuffer'high-1 downto 0);
-      sDelayedCtrs                         <= sBGoBuffer(MAX(0, to_integer(sBGoDelay)-5)); -- Absorbing delays incured during signal generation.
-      sDelayedCtrsBctr                     <= sBGoBuffer(MAX(3, to_integer(sBGoDelay)-2)); -- sMuCtrReset is generated after 3 BX, synching to that.
+      sDelayedCtrs                         <= sBGoBuffer(sBGoBuffer'high-(to_integer(sBGoDelay)+5)); -- Absorbing delays incured during signal generation.
+      sDelayedCtrsBctr                     <= sBGoBuffer(sBGoBuffer'high-(to_integer(sBGoDelay)+2)); -- sMuCtrReset is generated after 3 BX, synching to that.
     end if;
   end process delay_bgos;
 
   muon_counter_reset_gen : entity work.muon_counter_reset
     port map (
-      clk_ipb      => clk,
-      rst          => rst_payload,
-      ipb_in       => ipbw(N_SLV_MUON_COUNTER_RESET),
-      ipb_out      => ipbr(N_SLV_MUON_COUNTER_RESET),
-      ttc_command  => sDelayedCtrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
-      clk40        => clk_payload,
-      mu_ctr_rst   => sMuCtrReset
+      clk_ipb              => clk,
+      rst                  => rst_payload,
+      ipb_in               => ipbw(N_SLV_MUON_COUNTER_RESET),
+      ipb_out              => ipbr(N_SLV_MUON_COUNTER_RESET),
+      ttc_command          => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
+      delayed_ttc_command  => sDelayedCtrs(4).ttc_cmd,  -- Using delayed signals for BC0
+      clk40                => clk_payload,
+      mu_ctr_rst           => sMuCtrReset
     );
 
   disable_bmtf_inputs_reg : entity work.ipbus_reg_v
