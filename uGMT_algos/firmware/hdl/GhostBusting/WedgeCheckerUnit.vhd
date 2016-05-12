@@ -33,6 +33,9 @@ architecture Behavioral of WedgeCheckerUnit is
   signal ipbw    : ipb_wbus_array(N_SLAVES-1 downto 0);
   signal ipbr    : ipb_rbus_array(N_SLAVES-1 downto 0);
 
+  type TEtaFineMatrix is array (wedge1'range) of std_logic_vector(wedge2'range);
+  signal etaFine : TEtaFineMatrix;
+
   subtype muon_cancel is std_logic_vector(wedge2'range);
   type    muon_cancel_vec is array (integer range <>) of muon_cancel;
   signal  sCancel1             : muon_cancel_vec(wedge1'range);
@@ -112,25 +115,24 @@ begin
       end generate gen_coord_based;
 
       -- Need to be able to tell if a muon can have eta fine bit set.
-      gen_coord_w_eta_fine : if CANCEL_OUT_TYPE = string'("COORDINATE_HALF_ETA_FINE") generate
+      gen_coord_w_eta_fine : if CANCEL_OUT_TYPE = string'("COORDINATE_ETA_FINE") generate
+        etaFine(i)(j) <= wedge1(i).etaFine and wedge2(j).etaFine;
         x : entity work.GhostCheckerUnit_spatialCoords
         generic map (
-          USE_ETA_FINE_1   => false, -- OMTF, doesn't use an eta fine bit.
-          USE_ETA_FINE_2   => true,  -- BMTF uses an eta fine bit.
+          USE_ETA_FINE     => true,
           DATA_FILE        => DATA_FILE,
           LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET,
-          COU_INPUT_SIZE   => COU_HALF_ETA_FINE_MEM_ADDR_WIDTH
+          COU_INPUT_SIZE   => COU_ETA_FINE_MEM_ADDR_WIDTH
           )
         port map (
           clk_ipb  => clk_ipb,
           rst      => rst,
           ipb_in   => ipbw(3*i +j),
           ipb_out  => ipbr(3*i +j),
-          etaFine1 => wedge1(i).etaFine,
+          etaFine  => etaFine(i)(j),
           eta1     => wedge1(i).eta,
           phi1     => wedge1(i).phi,
           qual1    => wedge1(i).qual,
-          etaFine2 => wedge2(j).etaFine,
           eta2     => wedge2(j).eta,
           phi2     => wedge2(j).phi,
           qual2    => wedge2(j).qual,

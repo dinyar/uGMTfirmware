@@ -206,9 +206,9 @@ package ugmt_constants is
   constant ABS_ISO_ADDR_WIDTH : natural := 5;
   constant ABS_ISO_WORD_SIZE  : natural := 1;
 
-  constant COU_MEM_ADDR_WIDTH               : natural := 8;
-  constant COU_HALF_ETA_FINE_MEM_ADDR_WIDTH : natural := COU_MEM_ADDR_WIDTH+1;  --8;
-  constant COU_MEM_WORD_SIZE                : natural := 1;
+  constant COU_MEM_ADDR_WIDTH          : natural := 8;
+  constant COU_ETA_FINE_MEM_ADDR_WIDTH : natural := COU_MEM_ADDR_WIDTH+1;
+  constant COU_MEM_WORD_SIZE           : natural := 1;
 
   constant SORT_RANK_MEM_ADDR_WIDTH : natural := 13;
   constant SORT_RANK_MEM_WORD_SIZE  : natural := 10;
@@ -237,11 +237,10 @@ package ugmt_constants is
   -----------------------------------------------------------------------------
 
   constant CANCEL_OUT_TYPE_BMTF : string := string'("BMTF_ADDRESSES");
-  constant CANCEL_OUT_TYPE_OMTF : string := string'("COORDINATE");
-  constant CANCEL_OUT_TYPE_EMTF : string := string'("COORDINATE");
-  --constant CANCEL_OUT_TYPE_BO   : string := string'("COORDINATE_HALF_ETA_FINE");
-  constant CANCEL_OUT_TYPE_BO   : string := string'("COORDINATE");
-  constant CANCEL_OUT_TYPE_EO   : string := string'("COORDINATE");
+  constant CANCEL_OUT_TYPE_OMTF : string := string'("COORDINATE_ETA_FINE");
+  constant CANCEL_OUT_TYPE_EMTF : string := string'("COORDINATE_ETA_FINE");
+  constant CANCEL_OUT_TYPE_BO   : string := string'("COORDINATE_ETA_FINE");
+  constant CANCEL_OUT_TYPE_EO   : string := string'("COORDINATE_ETA_FINE");
 
   -----------------------------------------------------------------------------
   -- Cancel-out unit mapping to chip regions

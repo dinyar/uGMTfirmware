@@ -11,8 +11,7 @@ use work.ugmt_constants.all;
 
 entity GhostCheckerUnit_spatialCoords is
   generic (
-    USE_ETA_FINE_1   : boolean := false;
-    USE_ETA_FINE_2   : boolean := false;
+    USE_ETA_FINE     : boolean := false;
     DATA_FILE        : string;
     LOCAL_PHI_OFFSET : signed(8 downto 0);
     COU_INPUT_SIZE   : natural
@@ -22,11 +21,10 @@ entity GhostCheckerUnit_spatialCoords is
     rst      : in  std_logic;
     ipb_in   : in  ipb_wbus;
     ipb_out  : out ipb_rbus;
-    etaFine1 : in  std_logic := '1'; -- Per default we assume best eta.
+    etaFine  : in  std_logic := '1'; -- Per default we assume best eta.
     eta1     : in  signed(8 downto 0);
     phi1     : in  signed(7 downto 0);
     qual1    : in  unsigned(3 downto 0);
-    etaFine2 : in  std_logic := '1'; -- Per default we assume best eta.
     eta2     : in  signed(8 downto 0);
     phi2     : in  signed(7 downto 0);
     qual2    : in  unsigned(3 downto 0);
@@ -58,14 +56,10 @@ begin
   deltaEtaRed <= resize(unsigned(deltaEta), 5);
   deltaPhiRed <= resize(unsigned(deltaPhi), 3);
 
-  construct_lut_input : process (deltaEtaRed, deltaPhiRed, etaFine1, etaFine2)
+  construct_lut_input : process (deltaEtaRed, deltaPhiRed, etaFine)
   begin  -- construct_lut_input
-    if USE_ETA_FINE_1 = true and USE_ETA_FINE_2 = true then
-      lutInput <= etaFine1 & etaFine2 & std_logic_vector(deltaEtaRed) & std_logic_vector(deltaPhiRed);
-    elsif USE_ETA_FINE_1 = true then
-      lutInput <= etaFine1 & std_logic_vector(deltaEtaRed) & std_logic_vector(deltaPhiRed);
-    elsif USE_ETA_FINE_2 = true then
-      lutInput <= etaFine2 & std_logic_vector(deltaEtaRed) & std_logic_vector(deltaPhiRed);
+    if USE_ETA_FINE = true then
+      lutInput <= etaFine & std_logic_vector(deltaEtaRed) & std_logic_vector(deltaPhiRed);
     else
       lutInput <= std_logic_vector(deltaEtaRed) & std_logic_vector(deltaPhiRed);
     end if;
