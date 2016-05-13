@@ -83,7 +83,7 @@ begin
   check_ghosts : process (match, qual1, qual2, deltaPhi, deltaEta)
   begin  -- process check_ghosts
     -- If the muons are 'far enough' apart we don't check the LUT output.
-    if (deltaPhi(7 downto 3) /= (4 downto 0 => '0')) or (deltaEta(8 downto 4) /= (4 downto 0 => '0')) then
+    if (deltaPhi(7 downto 3) /= (4 downto 0 => '0')) or (deltaEta(8 downto 5) /= (3 downto 0 => '0')) then
       ghost1 <= '0';
       ghost2 <= '0';
     elsif match = "1" then
