@@ -179,15 +179,18 @@ begin
       end loop;  -- i
       for i in iTracksB'range loop
         for j in iTracksB(0)'range loop
-          event_buffer(iEvent).tracks_bmtf(i)(j).eta  := "000000000";
-          event_buffer(iEvent).tracks_bmtf(i)(j).phi  := "00000000";
-          event_buffer(iEvent).tracks_bmtf(i)(j).qual := "0000";
-          event_buffer(iEvent).tracks_omtf(i)(j).eta  := "000000000";
-          event_buffer(iEvent).tracks_omtf(i)(j).phi  := "00000000";
-          event_buffer(iEvent).tracks_omtf(i)(j).qual := "0000";
-          event_buffer(iEvent).tracks_emtf(i)(j).eta  := "000000000";
-          event_buffer(iEvent).tracks_emtf(i)(j).phi  := "00000000";
-          event_buffer(iEvent).tracks_emtf(i)(j).qual := "0000";
+          event_buffer(iEvent).tracks_bmtf(i)(j).etaFine := '1';
+          event_buffer(iEvent).tracks_bmtf(i)(j).eta     := "000000000";
+          event_buffer(iEvent).tracks_bmtf(i)(j).phi     := "00000000";
+          event_buffer(iEvent).tracks_bmtf(i)(j).qual    := "0000";
+          event_buffer(iEvent).tracks_omtf(i)(j).etaFine := '1';
+          event_buffer(iEvent).tracks_omtf(i)(j).eta     := "000000000";
+          event_buffer(iEvent).tracks_omtf(i)(j).phi     := "00000000";
+          event_buffer(iEvent).tracks_omtf(i)(j).qual    := "0000";
+          event_buffer(iEvent).tracks_emtf(i)(j).etaFine := '1';
+          event_buffer(iEvent).tracks_emtf(i)(j).eta     := "000000000";
+          event_buffer(iEvent).tracks_emtf(i)(j).phi     := "00000000";
+          event_buffer(iEvent).tracks_emtf(i)(j).qual    := "0000";
         end loop;  -- j
       end loop;  -- i
     end loop;  -- event

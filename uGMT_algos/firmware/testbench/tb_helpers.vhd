@@ -332,6 +332,8 @@ package body tb_helpers is
   begin  -- ReadTrack
     read(L, tfID);
 
+    -- TODO: Read this from file.
+    track(0).etaFine := '1';
     read(L, eta1);
     track(0).eta  := to_signed(eta1, 9);
     read(L, phi1);
@@ -354,10 +356,11 @@ package body tb_helpers is
       read(L, station41);
       track(0).bmtfAddress.stationAddresses(2) := to_unsigned(station41, 4);
     end if;
-
     read(L, empty1);
     track(0).empty := to_stdulogic(empty1);
 
+    -- TODO: Read this from file.
+    track(1).etaFine := '1';
     read(L, eta2);
     track(1).eta  := to_signed(eta2, 9);
     read(L, phi2);
@@ -383,6 +386,8 @@ package body tb_helpers is
     read(L, empty2);
     track(1).empty := to_stdulogic(empty2);
 
+    -- TODO: Read this from file.
+    track(2).etaFine := '1';
     read(L, eta3);
     track(2).eta  := to_signed(eta3, 9);
     read(L, phi3);
