@@ -1,5 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
+use IEEE.numeric_std.all;
+
 use work.mp7_data_types.all;
 use work.ipbus.all;
 use work.ipbus_decode_energy_input.all;

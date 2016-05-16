@@ -153,17 +153,17 @@ begin
   delay_bgos : process(clk_payload)
     variable bctrAdjusted : unsigned(11 downto 0);
   begin  -- process delay_bgos
-    if unsigned(ctrs(4).bctr) < sBGoDelay+4 then
-      bctrAdjusted := to_unsigned(3564, ctrs(4).bctr'length)+unsigned(ctrs(4).bctr)-sBGoDelay-4;
-    else
-      bctrAdjusted := unsigned(ctrs(4).bctr)-sBGoDelay-4;
-    end if;
-
     if clk_payload'event and clk_payload = '1' then  -- rising clock edge
-      if bctrAdjusted = 0 then
-        sBCres = '1';
+      if unsigned(ctrs(4).bctr) < sBGoDelay+4 then
+        bctrAdjusted := to_unsigned(3564, ctrs(4).bctr'length)+unsigned(ctrs(4).bctr)-sBGoDelay-4;
       else
-        sBCres = '0';
+        bctrAdjusted := unsigned(ctrs(4).bctr)-sBGoDelay-4;
+      end if;
+
+      if bctrAdjusted = 0 then
+        sBCres <= '1';
+      else
+        sBCres <= '0';
       end if;
     end if;
   end process delay_bgos;

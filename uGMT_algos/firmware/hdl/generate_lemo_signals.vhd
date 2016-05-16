@@ -69,13 +69,13 @@ begin  -- architecture behavioral
   gen_bctr_signal : process (clk)
     variable bctrAdjusted : unsigned(11 downto 0);
   begin  -- process gen_bctr_signal
-    if unsigned(iBctr) < iBGoDelay then
-      bctrAdjusted := to_unsigned(3564, iBctr'length)+unsigned(iBctr)-iBGoDelay;
-    else
-      bctrAdjusted := unsigned(iBctr)-iBGoDelay;
-    end if;
-
     if clk'event and clk = '1' then  -- rising clock edge
+      if unsigned(iBctr) < iBGoDelay then
+        bctrAdjusted := to_unsigned(3564, iBctr'length)+unsigned(iBctr)-iBGoDelay;
+      else
+        bctrAdjusted := unsigned(iBctr)-iBGoDelay;
+      end if;
+
       if unsigned(bctrAdjusted) = to_unsigned(3555, bctrAdjusted'length) then
         gpio(1) <= '1';
       else

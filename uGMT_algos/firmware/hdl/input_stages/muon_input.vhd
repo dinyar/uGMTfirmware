@@ -74,7 +74,7 @@ begin
         ipb_in             => ipbw(N_SLV_MU_QUAD_0+i),
         ipb_out            => ipbr(N_SLV_MU_QUAD_0+i),
         bctr               => ctrs(MU_QUAD_ASSIGNMENT(i)).bctr,
-        iBGoDelay          => sBGoDelay,
+        iBGoDelay          => iBGoDelay,
         muon_counter_reset => mu_ctr_rst(i),
         clk240             => clk240,
         clk40              => clk40,
