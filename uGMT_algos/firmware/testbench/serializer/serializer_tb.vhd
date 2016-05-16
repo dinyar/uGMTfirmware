@@ -50,7 +50,7 @@ begin
       iIntermediateMuonsB => iIntermediateMuonsB,
       iIntermediateMuonsO => iIntermediateMuonsO,
       iIntermediateMuonsE => iIntermediateMuonsE,
-      q                   => oQ((OUTPUT_MULTIPLIER*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS-1 downto 0));
+      q                   => oQ((OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS-1 downto 0));
 
   -- Clocks
   clk240 <= not clk240 after half_period_240;
