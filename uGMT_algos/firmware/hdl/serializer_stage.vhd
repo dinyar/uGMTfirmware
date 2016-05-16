@@ -26,8 +26,8 @@ architecture Behavioral of serializer_stage is
   signal sValid_reg         : std_logic;
 
   signal sIntermediateMuons : TGMTMu_vector(23 downto 0);
-  signal sFakeIdxBits       : TIndexBits := "0000000";
-  signal sFakeIso           : TIsoBits   := "00";
+  signal sFakeIdxBits       : TIndexBits_vector(4*NUM_MUONS_OUT-1 downto 0) := (others => "0000000");
+  signal sFakeIso           : TIsoBits_vector(4*NUM_MUONS_OUT-1 downto 0)   := (others => "00");
 begin
 
   sIntermediateMuons <= iIntermediateMuonsE(7 downto 4) & iIntermediateMuonsO(7 downto 4) & iIntermediateMuonsB & iIntermediateMuonsO(3 downto 0) & iIntermediateMuonsE(3 downto 0);
