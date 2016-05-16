@@ -34,7 +34,7 @@ begin
   begin  -- process selector_gen
     if clk240'event and clk240 = '1' then  -- rising clock edge
       if rst = '1' then
-        sSel <= 1;
+        sSel <= 0;
       elsif sSel < 5 then
         sSel <= sSel+1;
       else

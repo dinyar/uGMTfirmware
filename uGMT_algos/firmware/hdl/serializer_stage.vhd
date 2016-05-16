@@ -21,9 +21,7 @@ entity serializer_stage is
 end serializer_stage;
 
 architecture Behavioral of serializer_stage is
-  signal sValidMuons_reg    : std_logic;
-  signal sValidEnergies_reg : std_logic;
-  signal sValid_reg         : std_logic;
+  signal sValid : std_logic;
 
   signal sIntermediateMuons : TGMTMu_vector(23 downto 0);
   signal sFakeIdxBits       : TIndexBits_vector(11 downto 0) := (others => "0000000");
@@ -32,15 +30,7 @@ begin
 
   sIntermediateMuons <= iIntermediateMuonsE(7 downto 4) & iIntermediateMuonsO(7 downto 4) & iIntermediateMuonsB & iIntermediateMuonsO(3 downto 0) & iIntermediateMuonsE(3 downto 0);
 
-  valid_reg : process (clk40)
-  begin  -- process valid_reg
-    if clk40'event and clk40 = '1' then  -- rising clock edge
-      sValidMuons_reg    <= iValidMuons;
-      sValidEnergies_reg <= iValidEnergies;
-    end if;
-  end process valid_reg;
-
-  sValid_reg <= sValidMuons_reg or sValidEnergies_reg;
+  sValid <= iValidMuons or iValidEnergies;
 
   generate_serializers : for i in OUTPUT_QUAD_ASSIGNMENT'range generate
     serializer_quad : entity work.serialize_outputs_quad
@@ -51,7 +41,7 @@ begin
         clk240     => clk240,
         clk40      => clk40,
         rst        => rst,
-        iValid     => sValid_reg,
+        iValid     => sValid,
         iMuons     => iMuons,
         iIso       => iIso,
         iMuIdxBits => iMuIdxBits,
@@ -68,7 +58,7 @@ begin
         clk240     => clk240,
         clk40      => clk40,
         rst        => rst,
-        iValid     => sValid_reg,
+        iValid     => sValid,
         iMuons     => sIntermediateMuons(12*i+11 downto 12*i),
         iIso       => sFakeIso,
         iMuIdxBits => sFakeIdxBits,
