@@ -200,7 +200,6 @@ begin
               muonCount(iChan)             := muonCount(iChan)+to_unsigned(1, muonCount(iChan)'length);
             end if;
 
-
             -- Store global phi value.
             sGlobalPhi_event(iChan)(iFrame/2) <= sGlobalPhi_buffer(iFrame)(iChan);
           else
@@ -227,8 +226,8 @@ begin
         end if;
 
         if in_buf(0)(iChan).valid = '1' then
-          if (bctrAdjusted /= 0) and (in_buf(0)(iChan).data(31) = '1')) or
-             (bctrAdjusted = 0) and (in_buf(0)(iChan).data(31) = '0')) then
+          if ((bctrAdjusted /= 0) and (in_buf(0)(iChan).data(31) = '1')) or
+             ((bctrAdjusted = 0) and (in_buf(0)(iChan).data(31) = '0')) then
             sBCerror(iChan) <= '1';
           else
             sBCerror(iChan) <= '0';
@@ -254,9 +253,7 @@ begin
         else
           sMuonCounters(iChan) <= sMuonCounters(iChan) + resize(muonCount(iChan), sMuonCounters(iChan)'length);
         end if;
-
       end loop;  -- iChan
-
     end if;
   end process gmt_in_reg;
 
