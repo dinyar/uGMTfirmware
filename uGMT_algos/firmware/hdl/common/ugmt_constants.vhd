@@ -17,7 +17,6 @@ package ugmt_constants is
   constant NUM_MU_CHANS                : integer := 36;  -- Number of channels for input muons.
   constant NUM_CALO_CHANS              : integer := 28;  -- Number of channels for energy sums.
   constant NUM_IN_CHANS                : integer := NUM_MU_CHANS+NUM_CALO_CHANS;  -- Number of input channels
-  constant OUTPUT_MULTIPLIER           : integer := 6;  -- Number of sets of output channels to uGT
   constant NUM_OUT_CHANS               : integer := 4;  -- Number of channels to uGT.
   constant NUM_INTERM_MU_OUT_CHANS     : integer := 8;  -- Number of channels
                                         -- used for intermediate
@@ -67,6 +66,10 @@ package ugmt_constants is
 
   -- Calo
   constant ENERGY_QUAD_ASSIGNMENT : QuadAssignment_vector(6 downto 0) := (8, 7, 6, 5, 4, 3, 2);
+
+  -- Output
+  constant OUTPUT_QUAD_ASSIGNMENT : QuadAssignment_vector(5 downto 0) := (5, 4, 3, 2, 1, 0);
+  constant INTERMEDIATE_QUAD_ASSIGNMENT : QuadAssignment_vector(1 downto 0) := (7, 6);
 
   -----------------------------------------------------------------------------
   -- Output word assignment
