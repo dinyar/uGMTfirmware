@@ -22,6 +22,7 @@ entity muon_input is
     ipb_in       : in  ipb_wbus;
     ipb_out      : out ipb_rbus;
     ctrs         : in  ttc_stuff_array(N_REGION - 1 downto 0);
+    iBGoDelay    : in  unsigned(5 downto 0);
     mu_ctr_rst   : in  std_logic_vector(N_REGION - 1 downto 0);
     clk240       : in  std_logic;
     clk40        : in  std_logic;
@@ -73,6 +74,7 @@ begin
         ipb_in             => ipbw(N_SLV_MU_QUAD_0+i),
         ipb_out            => ipbr(N_SLV_MU_QUAD_0+i),
         bctr               => ctrs(MU_QUAD_ASSIGNMENT(i)).bctr,
+        iBGoDelay          => sBGoDelay,
         muon_counter_reset => mu_ctr_rst(i),
         clk240             => clk240,
         clk40              => clk40,

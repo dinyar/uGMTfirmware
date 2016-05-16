@@ -20,6 +20,7 @@ entity energy_input is
     ipb_in    : in  ipb_wbus;
     ipb_out   : out ipb_rbus;
     ctrs      : in  ttc_stuff_array(N_REGION - 1 downto 0);
+    iBGoDelay : in  unsigned(5 downto 0);
     clk240    : in  std_logic;
     clk40     : in  std_logic;
     d         : in  ldata(NCHAN-1 downto 0);
@@ -59,6 +60,7 @@ begin  -- Behavioral
         ipb_in    => ipbw(i),
         ipb_out   => ipbr(i),
         bctr      => ctrs(ENERGY_QUAD_ASSIGNMENT(i)).bctr,
+        iBGoDelay => sBGoDelay,
         clk240    => clk240,
         clk40     => clk40,
         d         => d(ENERGY_QUAD_ASSIGNMENT(i)*4+3 downto ENERGY_QUAD_ASSIGNMENT(i)*4),

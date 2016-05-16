@@ -50,11 +50,10 @@ architecture rtl of mp7_payload is
 
   type TBGoBuffer is array(natural range <>) of ttc_stuff_array(N_REGION - 1 downto 0);
   -- Currently our master latency is ~39 BX. Making sure we can absorb a significant latency increase.
-  signal sBGoDelay_reg_v   : ipb_reg_v(0 downto 0);
-  signal sBGoDelay        : unsigned(5 downto 0); -- Pointer to position in BGo buffer.
-  signal sBGoBuffer       : TBGoBuffer(3563 downto 0); -- Want to delay by up to an orbit.
-  signal sDelayedCtrs     : ttc_stuff_array(N_REGION - 1 downto 0);
-  signal sDelayedCtrsBctr : ttc_stuff_array(N_REGION - 1 downto 0); -- Signal that will be used for the error counters.
+  signal sBGoDelay_reg_v : ipb_reg_v(0 downto 0);
+  signal sBGoDelay       : unsigned(5 downto 0); -- Pointer to position in BGo buffer.
+  signal sDelayCnt       : integer range 0 to 3563;
+  signal sBCres          : std_logic;
 
   signal sTrigger     : std_logic := '0';
   signal sTrigger_reg : std_logic := '0';
@@ -150,26 +149,35 @@ begin
 
   sBGoDelay <= unsigned(std_logic_vector(sBGoDelay_reg_v(0)(5 downto 0)));
 
+  -- Generating BCres signal 4 clocks early due to delays. (1 clock in below logic + 3 clocks in muon_counter_reset_gen)
   delay_bgos : process(clk_payload)
+    variable bctrAdjusted : unsigned(11 downto 0);
   begin  -- process delay_bgos
+    if unsigned(ctrs(4).bctr) < sBGoDelay+4 then
+      bctrAdjusted := to_unsigned(3564, ctrs(4).bctr'length)+unsigned(ctrs(4).bctr)-sBGoDelay-4;
+    else
+      bctrAdjusted := unsigned(ctrs(4).bctr)-sBGoDelay-4;
+    end if;
+
     if clk_payload'event and clk_payload = '1' then  -- rising clock edge
-      sBGoBuffer(0)                        <= ctrs;
-      sBGoBuffer(sBGoBuffer'high downto 1) <= sBGoBuffer(sBGoBuffer'high-1 downto 0);
-      sDelayedCtrs                         <= sBGoBuffer(sBGoBuffer'high-(to_integer(sBGoDelay)+5)); -- Absorbing delays incured during signal generation.
-      sDelayedCtrsBctr                     <= sBGoBuffer(sBGoBuffer'high-(to_integer(sBGoDelay)+2)); -- sMuCtrReset is generated after 3 BX, synching to that.
+      if bctrAdjusted = 0 then
+        sBCres = '1';
+      else
+        sBCres = '0';
+      end if;
     end if;
   end process delay_bgos;
 
   muon_counter_reset_gen : entity work.muon_counter_reset
     port map (
-      clk_ipb              => clk,
-      rst                  => rst_payload,
-      ipb_in               => ipbw(N_SLV_MUON_COUNTER_RESET),
-      ipb_out              => ipbr(N_SLV_MUON_COUNTER_RESET),
-      ttc_command          => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
-      delayed_ttc_command  => sDelayedCtrs(4).ttc_cmd,  -- Using delayed signals for BC0
-      clk40                => clk_payload,
-      mu_ctr_rst           => sMuCtrReset
+      clk_ipb     => clk,
+      rst         => rst_payload,
+      ipb_in      => ipbw(N_SLV_MUON_COUNTER_RESET),
+      ipb_out     => ipbr(N_SLV_MUON_COUNTER_RESET),
+      ttc_command => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
+      iBCres      => sBCres,  -- Using delayed BC0 to synchronize with 'data orbit'
+      clk40       => clk_payload,
+      mu_ctr_rst  => sMuCtrReset
     );
 
   disable_bmtf_inputs_reg : entity work.ipbus_reg_v
@@ -232,7 +240,8 @@ begin
       rst          => rst_loc,
       ipb_in       => ipbw(N_SLV_MUON_INPUT),
       ipb_out      => ipbr(N_SLV_MUON_INPUT),
-      ctrs         => sDelayedCtrsBctr,
+      ctrs         => ctrs,
+      iBGoDelay    => sBGoDelay,  -- TODO: Add or subtract 2 BX from this signal.
       mu_ctr_rst   => sMuCtrReset,
       clk240       => clk_p,
       clk40        => clk_payload,
@@ -254,7 +263,7 @@ begin
       rst       => rst_loc,
       ipb_in    => ipbw(N_SLV_ENERGY_INPUT),
       ipb_out   => ipbr(N_SLV_ENERGY_INPUT),
-      ctrs      => sDelayedCtrs,
+      ctrs      => ctrs,
       clk240    => clk_p,
       clk40     => clk_payload,
       d         => d(NCHAN-1 downto 0),
@@ -357,17 +366,18 @@ begin
 
   generate_lemo_signals : entity work.generate_lemo_signals
     port map (
-      clk_ipb  => clk,
-      ipb_in   => ipbw(N_SLV_GENERATE_LEMO_SIGNALS),
-      ipb_out  => ipbr(N_SLV_GENERATE_LEMO_SIGNALS),
-      clk      => clk_payload,
-      rst      => rst_payload,
-      iMuons   => oMuons,
-      iBctr    => sDelayedCtrsBctr(4).bctr,  -- Using ctrs from one of the two central clock regions
-      iValid   => sValid_muons,
-      oTrigger => sTrigger,
-      gpio     => gpio,
-      gpio_en  => gpio_en
+      clk_ipb   => clk,
+      ipb_in    => ipbw(N_SLV_GENERATE_LEMO_SIGNALS),
+      ipb_out   => ipbr(N_SLV_GENERATE_LEMO_SIGNALS),
+      clk       => clk_payload,
+      rst       => rst_payload,
+      iMuons    => oMuons,
+      iBGoDelay => sBGoDelay,
+      iBctr     => ctrs(4).bctr,  -- Using ctrs from one of the two central clock regions
+      iValid    => sValid_muons,
+      oTrigger  => sTrigger,
+      gpio      => gpio,
+      gpio_en   => gpio_en
       );
 
   gmt_out_reg : process (clk_payload)

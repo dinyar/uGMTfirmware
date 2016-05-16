@@ -90,7 +90,14 @@ end process shift_buffers;
   end generate unroll_links;
 
   gmt_in_reg : process (clk40)
+    variable bctrAdjusted : unsigned(11 downto 0);
   begin  -- process gmt_in_reg
+    if unsigned(bctr) < iBGoDelay then
+      bctrAdjusted := to_unsigned(3564, bctr'length)+unsigned(bctr)-iBGoDelay;
+    else
+      bctrAdjusted := unsigned(bctr)-iBGoDelay;
+    end if;
+
     if clk40'event and clk40 = '1' then  -- rising clock edge
       -- Store valid bit.
       oValid <= combine_or(sValid_buf);
@@ -99,16 +106,16 @@ end process shift_buffers;
 
         -- Check for errors
         if in_buf(0)(chan).valid = '1' then
-          if ((bctr /= (11 downto 0 => '0')) and (in_buf(0)(chan).data(31) = '1')) or
-             ((bctr = (11 downto 0 => '0')) and (in_buf(0)(chan).data(31) = '0')) then
+          if ((bctrAdjusted /= 0) and (in_buf(0)(chan).data(31) = '1')) or
+             ((bctrAdjusted = 0) and (in_buf(0)(chan).data(31) = '0')) then
             sBCerror(chan) <= '1';
           else
             sBCerror(chan) <= '0';
           end if;
 
-          if in_buf(2)(chan).data(31) /= bctr(0) or
-             in_buf(3)(chan).data(31) /= bctr(1) or
-             in_buf(4)(chan).data(31) /= bctr(2) then
+          if in_buf(2)(chan).data(31) /= bctrAdjusted(0) or
+             in_buf(3)(chan).data(31) /= bctrAdjusted(1) or
+             in_buf(4)(chan).data(31) /= bctrAdjusted(2) then
             sBnchCntErr(chan) <= '1';
           else
             sBnchCntErr(chan) <= '0';

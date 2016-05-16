@@ -24,6 +24,7 @@ entity deserialize_mu_quad is
     ipb_in             : in  ipb_wbus;
     ipb_out            : out ipb_rbus;
     bctr               : in  bctr_t;
+    iBGoDelay          : in  unsigned(5 downto 0);
     muon_counter_reset : in  std_logic;
     clk240             : in  std_logic;
     clk40              : in  std_logic;
@@ -174,7 +175,8 @@ begin
   end process shift_buffers;
 
   gmt_in_reg : process (clk40)
-    variable muonCount : TLocalMuonCounter;
+    variable muonCount    : TLocalMuonCounter;
+    variable bctrAdjusted : unsigned(11 downto 0);
   begin  -- process gmt_in_reg
     if clk40'event and clk40 = '1' then  -- rising clock edge
       --Store muon counter reset
@@ -218,17 +220,23 @@ begin
         end loop;  -- iFrame
 
         -- Check for errors
+        if unsigned(bctr) < iBGoDelay then
+          bctrAdjusted := to_unsigned(3564, bctr'length)+unsigned(bctr)-iBGoDelay;
+        else
+          bctrAdjusted := unsigned(bctr)-iBGoDelay;
+        end if;
+
         if in_buf(0)(iChan).valid = '1' then
-          if ((bctr /= (11 downto 0 => '0')) and (in_buf(0)(iChan).data(31) = '1')) or
-             ((bctr = (11 downto 0 => '0')) and (in_buf(0)(iChan).data(31) = '0')) then
+          if (bctrAdjusted /= 0) and (in_buf(0)(iChan).data(31) = '1')) or
+             (bctrAdjusted = 0) and (in_buf(0)(iChan).data(31) = '0')) then
             sBCerror(iChan) <= '1';
           else
             sBCerror(iChan) <= '0';
           end if;
 
-          if in_buf(2)(iChan).data(31) /= bctr(0) or
-             in_buf(3)(iChan).data(31) /= bctr(1) or
-             in_buf(4)(iChan).data(31) /= bctr(2) then
+          if in_buf(2)(iChan).data(31) /= bctrAdjusted(0) or
+             in_buf(3)(iChan).data(31) /= bctrAdjusted(1) or
+             in_buf(4)(iChan).data(31) /= bctrAdjusted(2) then
             sBnchCntErr(iChan) <= '1';
           else
             sBnchCntErr(iChan) <= '0';

@@ -11,17 +11,18 @@ use work.mp7_ttc_decl.all;
 
 entity generate_lemo_signals is
   port (
-    clk_ipb  : in  std_logic;
-    ipb_in   : in  ipb_wbus;
-    ipb_out  : out ipb_rbus;
-    clk      : in  std_logic;
-    rst      : in  std_logic;
-    iMuons   : in  TGMTMu_vector(7 downto 0);
-    iBctr    : in  bctr_t;
-    iValid   : in  std_logic;
-    oTrigger : out std_logic;
-    gpio     : out std_logic_vector(29 downto 0);
-    gpio_en  : out std_logic_vector(29 downto 0)
+    clk_ipb   : in  std_logic;
+    ipb_in    : in  ipb_wbus;
+    ipb_out   : out ipb_rbus;
+    clk       : in  std_logic;
+    rst       : in  std_logic;
+    iMuons    : in  TGMTMu_vector(7 downto 0);
+    iBGoDelay : in  unsigned(5 downto 0);
+    iBctr     : in  bctr_t;
+    iValid    : in  std_logic;
+    oTrigger  : out std_logic;
+    gpio      : out std_logic_vector(29 downto 0);
+    gpio_en   : out std_logic_vector(29 downto 0)
     );
 end entity generate_lemo_signals;
 
@@ -66,9 +67,16 @@ begin  -- architecture behavioral
   end process send_valid;
 
   gen_bctr_signal : process (clk)
+    variable bctrAdjusted : unsigned(11 downto 0);
   begin  -- process gen_bctr_signal
+    if unsigned(iBctr) < iBGoDelay then
+      bctrAdjusted := to_unsigned(3564, iBctr'length)+unsigned(iBctr)-iBGoDelay;
+    else
+      bctrAdjusted := unsigned(iBctr)-iBGoDelay;
+    end if;
+
     if clk'event and clk = '1' then  -- rising clock edge
-      if unsigned(iBctr) = to_unsigned(3555, iBctr'length) then
+      if unsigned(bctrAdjusted) = to_unsigned(3555, bctrAdjusted'length) then
         gpio(1) <= '1';
       else
         gpio(1) <= '0';

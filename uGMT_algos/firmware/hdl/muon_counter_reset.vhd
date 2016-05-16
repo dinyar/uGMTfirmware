@@ -15,14 +15,14 @@ use work.ugmt_constants.all;
 
 entity muon_counter_reset is
   port (
-    clk_ipb              : in  std_logic;
-    rst                  : in  std_logic;
-    ipb_in               : in  ipb_wbus;
-    ipb_out              : out ipb_rbus;
-    ttc_command          : in  ttc_cmd_t;
-    delayed_ttc_command  : in  ttc_cmd_t; -- BC0 received late by ~master latency. Delayed this signal by (orbit-master lastency) to fix.
-    clk40                : in  std_logic;
-    mu_ctr_rst           : out std_logic_vector(N_REGION - 1 downto 0)
+    clk_ipb     : in  std_logic;
+    rst         : in  std_logic;
+    ipb_in      : in  ipb_wbus;
+    ipb_out     : out ipb_rbus;
+    ttc_command : in  ttc_cmd_t;
+    iBCres      : in  std_logic; -- BC0 received late by ~master latency. Delayed this signal by (orbit-master lastency) to fix.
+    clk40       : in  std_logic;
+    mu_ctr_rst  : out std_logic_vector(N_REGION - 1 downto 0)
     );
 end muon_counter_reset;
 
@@ -101,7 +101,7 @@ begin
         -- Reached end of lumi section. Resetting muon counters.
         lumi_section_ended <= '1';
         orbit_ctr          := 0;
-      elsif delayed_ttc_command = TTC_BCMD_BC0 then
+      elsif iBCres = '1' then
         if receivedOC0 = '1' then
           -- End of orbit and OC0 received. Going to reset everything.
           lumi_section_ended <= '0';
@@ -122,7 +122,7 @@ begin
   gen_lumi_section_reset : process (clk40)
   begin  -- process gen_lumi_section_reset
     if clk40'event and clk40 = '1' then  -- rising clock edge
-      if (delayed_ttc_command = TTC_BCMD_BC0) and (receivedOC0 = '1') then
+      if (iBCres = '1') and (receivedOC0 = '1') then
         sLumiSectionReset  <= '1';
       else
         sLumiSectionReset  <= '0';
