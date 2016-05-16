@@ -31,6 +31,7 @@ src input_stages/deserialize_mu_quad.vhd
 src input_stages/gen_idx_bits.vhd
 src GMT.vhd
 src serializer_stage.vhd
+src serialize_outputs_quad.vhd
 src Isolation/IsoAssignmentUnit.vhd
 src Isolation/compute_complete_sums.vhd
 src Isolation/compute_energy_strip_sums.vhd
