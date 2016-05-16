@@ -14,6 +14,7 @@ vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/fir
 vcom -check_synthesis ../../hdl/common/ugmt_constants.vhd
 vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/mp7_datapath/firmware/hdl/mp7_data_types.vhd
 vcom -check_synthesis ../../hdl/common/GMTTypes_pkg.vhd
+vcom -check_synthesis ../../hdl/serialize_outputs_quad.vhd
 vcom -check_synthesis ../../hdl/serializer_stage.vhd
 vcom -check_synthesis ../tb_helpers.vhd
 vcom -check_synthesis serializer_tb.vhd

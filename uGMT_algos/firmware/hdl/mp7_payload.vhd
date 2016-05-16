@@ -52,7 +52,6 @@ architecture rtl of mp7_payload is
   -- Currently our master latency is ~39 BX. Making sure we can absorb a significant latency increase.
   signal sBGoDelay_reg_v : ipb_reg_v(0 downto 0);
   signal sBGoDelay       : unsigned(5 downto 0); -- Pointer to position in BGo buffer.
-  signal sDelayCnt       : integer range 0 to 3563;
   signal sBCres          : std_logic;
 
   signal sTrigger     : std_logic := '0';
@@ -116,7 +115,7 @@ architecture rtl of mp7_payload is
   signal sIntermediateMuonsO_reg     : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsE_reg     : TGMTMu_vector(7 downto 0);
 
-  signal sQ : ldata(((OUTPUT_MULTIPLIER*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS)-1 downto 0);
+  signal sQ : ldata(((OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS)-1 downto 0);
 
 begin
 
@@ -432,9 +431,9 @@ begin
       q                    => sQ
       );
 
-  q(((OUTPUT_MULTIPLIER*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS)-1 downto 0) <= sQ;
+  q(((OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS)-1 downto 0) <= sQ;
 
-  strobe_high : for i in q'high downto ((OUTPUT_MULTIPLIER*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS) generate
+  strobe_high : for i in q'high downto ((OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS) generate
         q(i).strobe <= '1';
   end generate;
 

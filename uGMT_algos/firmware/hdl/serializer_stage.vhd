@@ -17,7 +17,7 @@ entity serializer_stage is
         iIntermediateMuonsB  : in  TGMTMu_vector(7 downto 0);
         iIntermediateMuonsO  : in  TGMTMu_vector(7 downto 0);
         iIntermediateMuonsE  : in  TGMTMu_vector(7 downto 0);
-        q                    : out ldata (((OUTPUT_MULTIPLIER*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS)-1 downto 0));
+        q                    : out ldata (((OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS)-1 downto 0));
 end serializer_stage;
 
 architecture Behavioral of serializer_stage is

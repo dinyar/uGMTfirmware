@@ -69,6 +69,7 @@ vcom -check_synthesis ../../hdl/Isolation/iso_check_rel.vhd
 vcom -check_synthesis ../../hdl/Isolation/iso_check.vhd
 vcom -check_synthesis ../../hdl/Isolation/IsoAssignmentUnit.vhd
 vcom -check_synthesis ../../hdl/GMT.vhd
+vcom -check_synthesis ../../hdl/serialize_outputs_quad.vhd
 vcom -check_synthesis ../../hdl/serializer_stage.vhd
 vcom -check_synthesis ../../hdl/muon_counter_reset.vhd
 vcom -check_synthesis ../../hdl/generate_lemo_signals.vhd
