@@ -22,12 +22,26 @@ entity serialize_outputs_quad is
 end serialize_outputs_quad;
 
 architecture Behavioral of serialize_outputs_quad is
-  signal sOutBuf : TQuadTransceiverBufferIn;
+  type TTransceiverBufferOut is array (2*2*NUM_MUONS_LINK-1 downto 0) of ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0);
+  signal sOutBuf : TTransceiverBufferOut;
 
   -- Offsetting the beginning of sending to align with 40 MHz clock and make
   -- sending a bit faster.
   signal sSel    : integer range 0 to 5;
 begin
+
+  selector_gen : process (clk240)
+  begin  -- process selector_gen
+    if clk240'event and clk240 = '1' then  -- rising clock edge
+      if rst = '1' then
+        sSel <= 1;
+      elsif sSel < 5 then
+        sSel <= sSel+1;
+      else
+        sSel <= 0;
+      end if;
+    end if;
+  end process selector_gen;
 
   gen_finals : if FINAL_MUONS = true generate
     serialize_muons : for i in NUM_MUONS_LINK-1 downto 0 generate
@@ -60,14 +74,6 @@ begin
           end if;
           q(i).data <= sOutBuf(sSel)(i).data;
         end loop;  -- i
-
-        if rst = '1' then
-          sSel <= 1;
-        elsif sSel < 5 then
-          sSel <= sSel+1;
-        else
-          sSel <= 0;
-        end if;
       end if;
     end process serialization;
   end generate gen_finals;
@@ -95,14 +101,6 @@ begin
             q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+NUM_OUT_CHANS).valid;
           end if;
         end loop;  -- i
-
-        if rst = '1' then
-          sSel <= 1;
-        elsif sSel < 5 then
-          sSel <= sSel+1;
-        else
-          sSel <= 0;
-        end if;
       end if;
     end process serialization;
   end generate gen_intermediates;

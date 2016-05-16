@@ -44,10 +44,13 @@ begin
 
   generate_serializers : for i in OUTPUT_QUAD_ASSIGNMENT'range generate
     serializer_quad : entity work.serialize_outputs_quad
+      generic map (
+        FINAL_MUONS => True
+      )
       port map (
-        clk240     => clk_p,
-        clk40      => clk_payload,
-        rst        => rst_payload,
+        clk240     => clk240,
+        clk40      => clk40,
+        rst        => rst,
         iValid     => sValid_reg,
         iMuons     => iMuons,
         iIso       => iIso,
@@ -58,10 +61,13 @@ begin
 
   generate_int_serializers : for i in INTERMEDIATE_QUAD_ASSIGNMENT'range generate
     serializer_quad : entity work.serialize_outputs_quad
+      generic map (
+        FINAL_MUONS => False
+      )
       port map (
-        clk240     => clk_p,
-        clk40      => clk_payload,
-        rst        => rst_payload,
+        clk240     => clk240,
+        clk40      => clk40,
+        rst        => rst,
         iValid     => sValid_reg,
         iMuons     => sIntermediateMuons(12*i+11 downto 12*i),
         iIso       => sFakeIso,
