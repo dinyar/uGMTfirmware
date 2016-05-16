@@ -45,7 +45,7 @@ begin
   generate_serializers : for i in OUTPUT_QUAD_ASSIGNMENT'range generate
     serializer_quad : entity work.serialize_outputs_quad
       generic map (
-        FINAL_MUONS => True
+        N_MU_OUT => 8
       )
       port map (
         clk240     => clk240,
@@ -62,7 +62,7 @@ begin
   generate_int_serializers : for i in INTERMEDIATE_QUAD_ASSIGNMENT'range generate
     serializer_quad : entity work.serialize_outputs_quad
       generic map (
-        FINAL_MUONS => False
+        N_MU_OUT => 12
       )
       port map (
         clk240     => clk240,

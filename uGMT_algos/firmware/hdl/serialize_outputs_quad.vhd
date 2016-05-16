@@ -7,16 +7,16 @@ use work.ugmt_constants.all;
 
 entity serialize_outputs_quad is
   generic (
-    FINAL_MUONS : boolean
+    N_MU_OUT : natural
     );
   port (
     clk240     : in  std_logic;
     clk40      : in  std_logic;
     rst        : in  std_logic;
     iValid     : in  std_logic;
-    iMuons     : in  TGMTMu_vector(4*NUM_MUONS_OUT-1 downto 0);
-    iIso       : in  TIsoBits_vector(4*NUM_MUONS_OUT-1 downto 0);
-    iMuIdxBits : in  TIndexBits_vector(4*NUM_MUONS_OUT-1 downto 0);
+    iMuons     : in  TGMTMu_vector(N_MU_OUT-1 downto 0);
+    iIso       : in  TIsoBits_vector(N_MU_OUT-1 downto 0);
+    iMuIdxBits : in  TIndexBits_vector(N_MU_OUT-1 downto 0);
     q          : out ldata (3 downto 0)
     );
 end serialize_outputs_quad;
@@ -43,7 +43,7 @@ begin
     end if;
   end process selector_gen;
 
-  gen_finals : if FINAL_MUONS = true generate
+  gen_finals : if N_MU_OUT = 8 generate
     serialize_muons : for i in NUM_MUONS_LINK-1 downto 0 generate
       split_muons : for j in 3 downto 0 generate -- Number of channels
         muon_check : if i < NUM_MUONS_OUT generate
@@ -78,7 +78,7 @@ begin
     end process serialization;
   end generate gen_finals;
 
-  gen_intermediates : if FINAL_MUONS = false generate
+  gen_intermediates : if N_MU_OUT = 12 generate
     serialize_intermediate_muons : for i in NUM_MUONS_LINK-1 downto 0 generate
       split_muons : for j in 3 downto 0 generate -- Number of channels
         sOutBuf(2*i)(j+NUM_OUT_CHANS).data    <= pack_mu_to_flat(iMuons(i+3*j), iMuIdxBits(i+3*j), iIso(i+3*j))(31 downto 0);
