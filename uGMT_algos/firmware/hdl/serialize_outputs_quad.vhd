@@ -45,7 +45,7 @@ begin
 
   gen_finals : if FINAL_MUONS = true generate
     serialize_muons : for i in NUM_MUONS_LINK-1 downto 0 generate
-      split_muons : for j in NUM_OUT_CHANS-1 downto 0 generate
+      split_muons : for j in 3 downto 0 generate -- Number of channels
         muon_check : if i < NUM_MUONS_OUT generate
           -- First two clocks are always filled with '0'.
           sOutBuf(2*MU_ASSIGNMENT(i))(j).data    <= pack_mu_to_flat(iMuons(i+2*j), iMuIdxBits(i+2*j), iIso(i+2*j))(31 downto 0);
@@ -65,7 +65,7 @@ begin
     serialization : process (clk240)
     begin  -- process serialization
       if clk240'event and clk240 = '1' then  -- rising clock edge
-        for i in 0 to NUM_OUT_CHANS-1 loop
+        for i in 0 to 3 loop -- Number of channels
           q(i).strobe <= '1';
           if sSel = 0 then
             q(i).valid <= sOutBuf(sSel)(i).valid;
@@ -80,7 +80,7 @@ begin
 
   gen_intermediates : if FINAL_MUONS = false generate
     serialize_intermediate_muons : for i in NUM_MUONS_LINK-1 downto 0 generate
-      split_muons : for j in NUM_INTERM_MU_OUT_CHANS-1 downto 0 generate
+      split_muons : for j in 3 downto 0 generate -- Number of channels
         sOutBuf(2*i)(j+NUM_OUT_CHANS).data    <= pack_mu_to_flat(iMuons(i+3*j), iMuIdxBits(i+3*j), iIso(i+3*j))(31 downto 0);
         sOutBuf(2*i)(j+NUM_OUT_CHANS).valid   <= iValid;
         sOutBuf(2*i+1)(j+NUM_OUT_CHANS).data  <= pack_mu_to_flat(iMuons(i+3*j), iMuIdxBits(i+3*j), iIso(i+3*j))(63 downto 32);
@@ -91,7 +91,7 @@ begin
     serialization : process (clk240)
     begin  -- process serialization
       if clk240'event and clk240 = '1' then  -- rising clock edge
-        for i in 0 to NUM_INTERM_MU_OUT_CHANS - 1 loop
+        for i in 0 to 3 loop -- Number of channels
           q(i).strobe <= '1';
           if sSel = 0 then
             q(i).valid <= sOutBuf(sSel)(i+NUM_OUT_CHANS).valid;
