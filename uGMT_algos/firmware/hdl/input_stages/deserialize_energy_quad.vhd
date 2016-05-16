@@ -1,5 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
+use IEEE.numeric_std.all;
+
 use work.mp7_data_types.all;
 use work.ipbus.all;
 use work.ipbus_decode_energy_quad_deserialization.all;
@@ -20,6 +22,7 @@ entity deserialize_energy_quad is
     ipb_in    : in  ipb_wbus;
     ipb_out   : out ipb_rbus;
     bctr      : in  bctr_t;
+    iBGoDelay : in  unsigned(5 downto 0);
     clk240    : in  std_logic;
     clk40     : in  std_logic;
     d         : in  ldata(3 downto 0);
@@ -92,11 +95,6 @@ end process shift_buffers;
   gmt_in_reg : process (clk40)
     variable bctrAdjusted : unsigned(11 downto 0);
   begin  -- process gmt_in_reg
-    if unsigned(bctr) < iBGoDelay then
-      bctrAdjusted := to_unsigned(3564, bctr'length)+unsigned(bctr)-iBGoDelay;
-    else
-      bctrAdjusted := unsigned(bctr)-iBGoDelay;
-    end if;
 
     if clk40'event and clk40 = '1' then  -- rising clock edge
       -- Store valid bit.
@@ -105,6 +103,12 @@ end process shift_buffers;
         oEnergies(chan) <= calo_etaslice_from_flat(sLinkData(chan));
 
         -- Check for errors
+        if unsigned(bctr) < iBGoDelay then
+          bctrAdjusted := to_unsigned(3564, bctr'length)+unsigned(bctr)-iBGoDelay;
+        else
+          bctrAdjusted := unsigned(bctr)-iBGoDelay;
+        end if;
+
         if in_buf(0)(chan).valid = '1' then
           if ((bctrAdjusted /= 0) and (in_buf(0)(chan).data(31) = '1')) or
              ((bctrAdjusted = 0) and (in_buf(0)(chan).data(31) = '0')) then
