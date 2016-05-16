@@ -62,7 +62,7 @@ begin  -- Behavioral
         ipb_in    => ipbw(i),
         ipb_out   => ipbr(i),
         bctr      => ctrs(ENERGY_QUAD_ASSIGNMENT(i)).bctr,
-        iBGoDelay => sBGoDelay,
+        iBGoDelay => iBGoDelay,
         clk240    => clk240,
         clk40     => clk40,
         d         => d(ENERGY_QUAD_ASSIGNMENT(i)*4+3 downto ENERGY_QUAD_ASSIGNMENT(i)*4),

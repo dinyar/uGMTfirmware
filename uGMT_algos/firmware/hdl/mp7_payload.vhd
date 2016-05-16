@@ -241,7 +241,7 @@ begin
       ipb_in       => ipbw(N_SLV_MUON_INPUT),
       ipb_out      => ipbr(N_SLV_MUON_INPUT),
       ctrs         => ctrs,
-      iBGoDelay    => sBGoDelay,  -- TODO: Add or subtract 2 BX from this signal.
+      iBGoDelay    => sBGoDelay,
       mu_ctr_rst   => sMuCtrReset,
       clk240       => clk_p,
       clk40        => clk_payload,
@@ -264,6 +264,7 @@ begin
       ipb_in    => ipbw(N_SLV_ENERGY_INPUT),
       ipb_out   => ipbr(N_SLV_ENERGY_INPUT),
       ctrs      => ctrs,
+      iBGoDelay => sBGoDelay,
       clk240    => clk_p,
       clk40     => clk_payload,
       d         => d(NCHAN-1 downto 0),
