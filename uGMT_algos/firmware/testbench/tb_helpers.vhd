@@ -317,6 +317,7 @@ package body tb_helpers is
     variable track : out   TGMTMuTracks3) is
     variable LO                              : line;
     variable eta1, eta2, eta3                : integer;
+    variable etaFine1, etaFine2, etaFine3    : bit;
     variable phi1, phi2, phi3                : integer;
     variable qual1, qual2, qual3             : integer;
     variable sel1, sel2, sel3                : bit;
@@ -333,9 +334,10 @@ package body tb_helpers is
     read(L, tfID);
 
     -- TODO: Read this from file.
-    track(0).etaFine := '1';
     read(L, eta1);
     track(0).eta  := to_signed(eta1, 9);
+    read(L, etaFine1);
+    track(0).etaFine := to_stdulogic(etaFine1);
     read(L, phi1);
     track(0).phi  := to_signed(phi1, 8);
     read(L, qual1);
@@ -360,9 +362,10 @@ package body tb_helpers is
     track(0).empty := to_stdulogic(empty1);
 
     -- TODO: Read this from file.
-    track(1).etaFine := '1';
     read(L, eta2);
     track(1).eta  := to_signed(eta2, 9);
+    read(L, etaFine2);
+    track(1).etaFine := to_stdulogic(etaFine2);
     read(L, phi2);
     track(1).phi  := to_signed(phi2, 8);
     read(L, qual2);
@@ -387,9 +390,10 @@ package body tb_helpers is
     track(1).empty := to_stdulogic(empty2);
 
     -- TODO: Read this from file.
-    track(2).etaFine := '1';
     read(L, eta3);
     track(2).eta  := to_signed(eta3, 9);
+    read(L, etaFine3);
+    track(2).etaFine := to_stdulogic(etaFine3);
     read(L, phi3);
     track(2).phi  := to_signed(phi3, 8);
     read(L, qual3);
