@@ -103,10 +103,10 @@ architecture rtl of mp7_payload is
 
   signal sIso       : TIsoBits_vector(7 downto 0);
   signal oMuons     : TGMTMu_vector(7 downto 0);
-  signal oMuons_reg : TGMTMu_vector(7 downto 0);
+  signal oMuons_reg : TGMTMu_vector(8*OUTPUT_QUAD_ASSIGNMENT'length - 1 downto 0);
 
   signal sMuIdxBits     : TIndexBits_vector (7 downto 0);
-  signal sMuIdxBits_reg : TIndexBits_vector (7 downto 0);
+  signal sMuIdxBits_reg : TIndexBits_vector (8*OUTPUT_QUAD_ASSIGNMENT'length - 1 downto 0);
 
   signal sIntermediateMuonsB         : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsO         : TGMTMu_vector(7 downto 0);
@@ -383,8 +383,10 @@ begin
   gmt_out_reg : process (clk_payload)
   begin  -- process gmt_out_reg
     if clk_payload'event and clk_payload = '1' then  -- rising clock edge
-      oMuons_reg     <= oMuons;
-      sMuIdxBits_reg <= sMuIdxBits;
+      for i in OUTPUT_QUAD_ASSIGNMENT'range loop 
+        oMuons_reg(8*i+7 downto 8*i)     <= oMuons;
+        sMuIdxBits_reg(8*i+7 downto 8*i) <= sMuIdxBits;
+      end loop;
 
       sIntermediateMuonsO_reg <= sIntermediateMuonsO;
       sIntermediateMuonsB_reg <= sIntermediateMuonsB;

@@ -28,9 +28,14 @@ add_cells_to_pblock [get_pblocks payload_4] [get_cells -quiet [list {payload/ene
 add_cells_to_pblock [get_pblocks payload_3] [get_cells -quiet [list {payload/energy_input_stage/deserialize_loop[1].deserialize}]]
 add_cells_to_pblock [get_pblocks payload_2] [get_cells -quiet [list {payload/energy_input_stage/deserialize_loop[0].deserialize}]]
 
-create_pblock ser_x1y8
-resize_pblock [get_pblocks ser_x1y8] -add {SLICE_X152Y50:SLICE_X179Y449}
-add_cells_to_pblock [get_pblocks ser_x1y8] [get_cells -quiet [list payload/serialize]]
+add_cells_to_pblock [get_pblocks payload_7] [get_cells -quiet [list {payload/serialize/generate_int_serializers[1].serializer_quad}]]
+add_cells_to_pblock [get_pblocks payload_6] [get_cells -quiet [list {payload/serialize/generate_int_serializers[0].serializer_quad}]]
+add_cells_to_pblock [get_pblocks payload_5] [get_cells -quiet [list {payload/serialize/generate_serializers[5].serializer_quad}]]
+add_cells_to_pblock [get_pblocks payload_4] [get_cells -quiet [list {payload/serialize/generate_serializers[4].serializer_quad}]]
+add_cells_to_pblock [get_pblocks payload_3] [get_cells -quiet [list {payload/serialize/generate_serializers[3].serializer_quad}]]
+add_cells_to_pblock [get_pblocks payload_2] [get_cells -quiet [list {payload/serialize/generate_serializers[2].serializer_quad}]]
+add_cells_to_pblock [get_pblocks payload_1] [get_cells -quiet [list {payload/serialize/generate_serializers[1].serializer_quad}]]
+add_cells_to_pblock [get_pblocks payload_0] [get_cells -quiet [list {payload/serialize/generate_serializers[0].serializer_quad}]]
 
 # Algo area constraints
 add_cells_to_pblock [get_pblocks payload_8] [get_cells -quiet [list payload/uGMT/sort_and_cancel/cou_e_plus]]

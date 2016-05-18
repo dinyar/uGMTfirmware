@@ -11,9 +11,9 @@ entity serializer_stage is
         rst                  : in  std_logic;
         iValidMuons          : in  std_logic;
         iValidEnergies       : in  std_logic;
-        iMuons               : in  TGMTMu_vector (NUM_OUT_CHANS*NUM_MUONS_OUT-1 downto 0);
+        iMuons               : in  TGMTMu_vector(OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS*NUM_MUONS_OUT-1 downto 0);
         iIso                 : in  TIsoBits_vector(NUM_OUT_CHANS*NUM_MUONS_OUT-1 downto 0);
-        iMuIdxBits           : in  TIndexBits_vector (7 downto 0);
+        iMuIdxBits           : in  TIndexBits_vector(OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS*NUM_MUONS_OUT-1 downto 0);
         iIntermediateMuonsB  : in  TGMTMu_vector(7 downto 0);
         iIntermediateMuonsO  : in  TGMTMu_vector(7 downto 0);
         iIntermediateMuonsE  : in  TGMTMu_vector(7 downto 0);
@@ -30,7 +30,7 @@ begin
 
   sIntermediateMuons <= iIntermediateMuonsE(7 downto 4) & iIntermediateMuonsO(7 downto 4) & iIntermediateMuonsB & iIntermediateMuonsO(3 downto 0) & iIntermediateMuonsE(3 downto 0);
 
-  sValid <= iValidMuons or iValidEnergies;
+  sValid <= iValidMuons; -- or iValidEnergies;
 
   generate_serializers : for i in OUTPUT_QUAD_ASSIGNMENT'range generate
     serializer_quad : entity work.serialize_outputs_quad
@@ -42,9 +42,9 @@ begin
         clk40      => clk40,
         rst        => rst,
         iValid     => sValid,
-        iMuons     => iMuons,
+        iMuons     => iMuons(8*i+7 downto 8*i),
         iIso       => iIso,
-        iMuIdxBits => iMuIdxBits,
+        iMuIdxBits => iMuIdxBits(8*i+7 downto 8*i),
         q          => q(4*OUTPUT_QUAD_ASSIGNMENT(i)+3 downto 4*OUTPUT_QUAD_ASSIGNMENT(i))
         );
   end generate generate_serializers;
