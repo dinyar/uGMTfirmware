@@ -8,7 +8,10 @@ use WORK.GMTTypes.all;
 use work.tb_helpers.all;
 use STD.TEXTIO.all;
 use ieee.std_logic_textio.all;
+
+use work.mp7_brd_decl.all;
 use work.mp7_data_types.all;
+
 use work.ugmt_constants.all;
 
 entity testbench is
@@ -24,12 +27,12 @@ architecture behavior of testbench is
   constant half_period_40  : time      := 6*half_period_240;
   signal   clk240          : std_logic := '1';
   signal   clk40           : std_logic := '0';
-  signal   rst             : std_logic := '0';
+  signal   rst             : std_logic_vector(N_REGION - 1 downto 0) := (others => '0');
 
   signal iValid              : std_logic := '0';
-  signal iMuons              : TGMTMu_vector(7 downto 0);
+  signal iMuons              : TGMTMu_vector(OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS*NUM_MUONS_OUT-1 downto 0);
   signal iIso                : TIsoBits_vector(7 downto 0);
-  signal iMuIdxBits          : TIndexBits_vector(7 downto 0);
+  signal iMuIdxBits          : TIndexBits_vector(OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS*NUM_MUONS_OUT-1 downto 0);
   signal iIntermediateMuonsB : TGMTMu_vector(7 downto 0);
   signal iIntermediateMuonsO : TGMTMu_vector(7 downto 0);
   signal iIntermediateMuonsE : TGMTMu_vector(7 downto 0);
@@ -82,9 +85,9 @@ begin
     end loop;  -- i
     iValid <= '0';
 
-    rst    <= '1';
+    rst    <= (others => '1');
     wait for 3*half_period_40;
-    rst    <= '0';
+    rst    <= (others => '0');
     wait for 2*half_period_40;  -- wait until global set/reset completes
 
     while remainingEvents > 0 loop
@@ -94,18 +97,22 @@ begin
 
         -- Filling serializer
         iValid              <= '1';
-        iMuons              <= event_buffer(1).muons;
+        for i in OUTPUT_QUAD_ASSIGNMENT'range loop
+          iMuons(8*i+7 downto 8*i)     <= event_buffer(1).muons;
+          iMuIdxBits(8*i+7 downto 8*i) <= event_buffer(1).idxBits;
+        end loop;
         iIso                <= event_buffer(1).iso;
-        iMuIdxBits          <= event_buffer(1).idxBits;
         iIntermediateMuonsB <= event.intMuons_bmtf;
         iIntermediateMuonsO <= event.intMuons_omtf;
         iIntermediateMuonsE <= event.intMuons_emtf;
 
         event_buffer(0) := event;
       else
-        iMuons          <= event_buffer(1).muons;
+        for i in OUTPUT_QUAD_ASSIGNMENT'range loop
+          iMuons(8*i+7 downto 8*i)     <= event_buffer(1).muons;
+          iMuIdxBits(8*i+7 downto 8*i) <= event_buffer(1).idxBits;
+        end loop;
         iIso            <= event_buffer(1).iso;
-        iMuIdxBits      <= event_buffer(1).idxBits;
         remainingEvents := remainingEvents-1;
       end if;
 

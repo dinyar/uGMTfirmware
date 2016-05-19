@@ -421,7 +421,7 @@ begin
     port map (
       clk240               => clk_p,
       clk40                => clk_payload,
-      rst                  => rst_payload,
+      rst                  => rst_loc,
       iValidMuons          => sValid_buffer(sValid_buffer'high),
       iValidEnergies       => sValid_energies,
       iMuons               => oMuons_reg,
@@ -437,6 +437,7 @@ begin
 
   strobe_high : for i in q'high downto ((OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS) generate
         q(i).strobe <= '1';
+        q(i).valid  <= '1';
   end generate;
 
 end rtl;

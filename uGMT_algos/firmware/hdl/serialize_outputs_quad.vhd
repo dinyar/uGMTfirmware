@@ -67,11 +67,7 @@ begin
       if clk240'event and clk240 = '1' then  -- rising clock edge
         for i in 0 to 3 loop -- Number of channels
           q(i).strobe <= '1';
-          if sSel = 0 then
-            q(i).valid <= sOutBuf(sSel)(i).valid;
-          else
-            q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i).valid;
-          end if;
+          q(i).valid <= sOutBuf(sSel)(i).valid;
           q(i).data <= sOutBuf(sSel)(i).data;
         end loop;  -- i
       end if;
@@ -93,12 +89,11 @@ begin
       if clk240'event and clk240 = '1' then  -- rising clock edge
         for i in 0 to 3 loop -- Number of channels
           q(i).strobe <= '1';
+          q(i).valid <= sOutBuf(sSel)(i+NUM_OUT_CHANS).valid;
           if sSel = 0 then
-            q(i).valid <= sOutBuf(sSel)(i+NUM_OUT_CHANS).valid;
             q(i).data <= sOutBuf(sSel)(i+NUM_OUT_CHANS).data;
           else
             q(i).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+NUM_OUT_CHANS).data;
-            q(i).valid <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+NUM_OUT_CHANS).valid;
           end if;
         end loop;  -- i
       end if;
