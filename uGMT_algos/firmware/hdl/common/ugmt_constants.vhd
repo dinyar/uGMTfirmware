@@ -241,7 +241,7 @@ package ugmt_constants is
 
   constant CANCEL_OUT_TYPE_BMTF : string := string'("BMTF_ADDRESSES");
   constant CANCEL_OUT_TYPE_OMTF : string := string'("COORDINATE_ETA_FINE");
-  constant CANCEL_OUT_TYPE_EMTF : string := string'("COORDINATE_ETA_FINE");
+  constant CANCEL_OUT_TYPE_EMTF : string := string'("COORDINATE");
   constant CANCEL_OUT_TYPE_BO   : string := string'("COORDINATE_ETA_FINE");
   constant CANCEL_OUT_TYPE_EO   : string := string'("COORDINATE_ETA_FINE");
 

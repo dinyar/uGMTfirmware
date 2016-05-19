@@ -93,6 +93,7 @@ begin
       gen_coord_based : if CANCEL_OUT_TYPE = string'("COORDINATE") generate
         x : entity work.GhostCheckerUnit_spatialCoords
         generic map (
+          USE_ETA_FINE     => false,
           DATA_FILE        => DATA_FILE,
           LOCAL_PHI_OFFSET => LOCAL_PHI_OFFSET,
           COU_INPUT_SIZE   => COU_MEM_ADDR_WIDTH
