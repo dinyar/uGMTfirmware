@@ -54,10 +54,8 @@ package ugmt_constants is
 
   -----------------------------------------------------------------------------
   -- Quad assignments
-  -- IMPORTANT: THESE HAVE TO BE SYNCHRONIZED WITH AREA CONSTRAINTS IN .ucf
+  -- IMPORTANT: THESE HAVE TO BE SYNCHRONIZED WITH AREA CONSTRAINTS IN .xdc
   -- file!
-  -- Use the script ucf_serdes_constraints_generator.py for this. (Available in
-  -- github repo for now.)
   -----------------------------------------------------------------------------
   type QuadAssignment_vector is array (integer range <>) of natural;
 
@@ -68,7 +66,7 @@ package ugmt_constants is
   constant ENERGY_QUAD_ASSIGNMENT : QuadAssignment_vector(6 downto 0) := (8, 7, 6, 5, 4, 3, 2);
 
   -- Output
-  constant OUTPUT_QUAD_ASSIGNMENT : QuadAssignment_vector(5 downto 0) := (5, 4, 3, 2, 1, 0);
+  constant OUTPUT_QUAD_ASSIGNMENT       : QuadAssignment_vector(5 downto 0) := (5, 4, 3, 2, 1, 0);
   constant INTERMEDIATE_QUAD_ASSIGNMENT : QuadAssignment_vector(1 downto 0) := (7, 6);
 
   -----------------------------------------------------------------------------

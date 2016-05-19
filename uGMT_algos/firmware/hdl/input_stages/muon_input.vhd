@@ -95,7 +95,7 @@ begin
       )
       port map (
         clk_ipb       => clk_ipb,
-        rst           => rst(i),
+        rst           => rst(MU_QUAD_ASSIGNMENT(i)),
         ipb_in        => ipbw(N_SLV_GEN_CALO_IDX_BITS_QUAD_0+i),
         ipb_out       => ipbr(N_SLV_GEN_CALO_IDX_BITS_QUAD_0+i),
         clk240        => clk240,
