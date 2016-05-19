@@ -436,8 +436,10 @@ begin
   q(((OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS)-1 downto 0) <= sQ;
 
   strobe_high : for i in q'high downto ((OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS) generate
+        q(i).data   <= (others => '0');
         q(i).strobe <= '1';
         q(i).valid  <= '1';
+        q(i).start  <= '1';
   end generate;
 
 end rtl;
