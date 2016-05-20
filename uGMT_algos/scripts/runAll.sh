@@ -4,7 +4,7 @@ export XILINXD_LICENSE_FILE='2112@lxlicen01,2112@lxlicen02,2112@lxlicen03'
 export LD_LIBRARY_PATH=/opt/cactus/lib:$LD_LIBRARY_PATH
 export PATH=/opt/cactus/bin:/opt/cactus/bin/uhal/tools:$PATH
 
-source /home/scratch/Vivado2015.2/Vivado/2015.2/settings64.sh
+source /home/scratch/Vivado2016.1/Vivado/2016.1/settings64.sh
 
 PROJECTFILE="top/top.xpr"
 
@@ -17,6 +17,7 @@ EOM
 
 cat << EOM > setupImplementation.tcl
 open_project $PROJECTFILE
+set_property STEPS.PHYS_OPT_DESIGN.IS_ENABLED true [get_runs impl_1]
 launch_runs impl_1 -scripts_only
 exit
 EOM
