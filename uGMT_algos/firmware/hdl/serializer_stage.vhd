@@ -23,7 +23,8 @@ entity serializer_stage is
 end serializer_stage;
 
 architecture Behavioral of serializer_stage is
-  signal sValid : std_logic;
+  signal sValidMuons_reg    : std_logic;
+  signal sValidEnergies_reg : std_logic;
 
   signal sIntermediateMuons : TGMTMu_vector(23 downto 0);
   signal sFakeIdxBits       : TIndexBits_vector(11 downto 0) := (others => "0000000");
@@ -35,7 +36,8 @@ begin
   reg_valids : process (clk40)
   begin  -- process reg_valids
     if clk40'event and clk40 = '1' then  -- rising clock edge
-      sValid <= iValidMuons or iValidEnergies;
+      sValidMuons_reg    <= iValidMuons;
+      sValidEnergies_reg <= iValidEnergies;
     end if;
   end process reg_valids;
 
@@ -45,14 +47,15 @@ begin
         N_MU_OUT => 8
       )
       port map (
-        clk240     => clk240,
-        clk40      => clk40,
-        rst        => rst(OUTPUT_QUAD_ASSIGNMENT(i)),
-        iValid     => sValid,
-        iMuons     => iMuons(8*i+7 downto 8*i),
-        iIso       => iIso,
-        iMuIdxBits => iMuIdxBits(8*i+7 downto 8*i),
-        q          => q(4*OUTPUT_QUAD_ASSIGNMENT(i)+3 downto 4*OUTPUT_QUAD_ASSIGNMENT(i))
+        clk240         => clk240,
+        clk40          => clk40,
+        rst            => rst(OUTPUT_QUAD_ASSIGNMENT(i)),
+        iValidMuons    => sValidMuons_reg,
+        iValidEnergies => sValidEnergies_reg,
+        iMuons         => iMuons(8*i+7 downto 8*i),
+        iIso           => iIso,
+        iMuIdxBits     => iMuIdxBits(8*i+7 downto 8*i),
+        q              => q(4*OUTPUT_QUAD_ASSIGNMENT(i)+3 downto 4*OUTPUT_QUAD_ASSIGNMENT(i))
         );
   end generate generate_serializers;
 
@@ -62,14 +65,15 @@ begin
         N_MU_OUT => 12
       )
       port map (
-        clk240     => clk240,
-        clk40      => clk40,
-        rst        => rst(OUTPUT_QUAD_ASSIGNMENT(i)),
-        iValid     => sValid,
-        iMuons     => sIntermediateMuons(12*i+11 downto 12*i),
-        iIso       => sFakeIso,
-        iMuIdxBits => sFakeIdxBits,
-        q          => q(4*INTERMEDIATE_QUAD_ASSIGNMENT(i)+3 downto 4*INTERMEDIATE_QUAD_ASSIGNMENT(i))
+        clk240         => clk240,
+        clk40          => clk40,
+        rst            => rst(INTERMEDIATE_QUAD_ASSIGNMENT(i)),
+        iValidMuons    => sValidMuons_reg,
+        iValidEnergies => sValidEnergies_reg,
+        iMuons         => sIntermediateMuons(12*i+11 downto 12*i),
+        iIso           => sFakeIso,
+        iMuIdxBits     => sFakeIdxBits,
+        q              => q(4*INTERMEDIATE_QUAD_ASSIGNMENT(i)+3 downto 4*INTERMEDIATE_QUAD_ASSIGNMENT(i))
         );
   end generate generate_int_serializers;
 

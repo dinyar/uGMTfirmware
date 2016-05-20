@@ -10,14 +10,15 @@ entity serialize_outputs_quad is
     N_MU_OUT : natural
     );
   port (
-    clk240     : in  std_logic;
-    clk40      : in  std_logic;
-    rst        : in  std_logic;
-    iValid     : in  std_logic;
-    iMuons     : in  TGMTMu_vector(N_MU_OUT-1 downto 0);
-    iIso       : in  TIsoBits_vector(N_MU_OUT-1 downto 0);
-    iMuIdxBits : in  TIndexBits_vector(N_MU_OUT-1 downto 0);
-    q          : out ldata (3 downto 0)
+    clk240         : in  std_logic;
+    clk40          : in  std_logic;
+    rst            : in  std_logic;
+    iValidMuons    : in  std_logic;
+    iValidEnergies : in  std_logic;
+    iMuons         : in  TGMTMu_vector(N_MU_OUT-1 downto 0);
+    iIso           : in  TIsoBits_vector(N_MU_OUT-1 downto 0);
+    iMuIdxBits     : in  TIndexBits_vector(N_MU_OUT-1 downto 0);
+    q              : out ldata (3 downto 0)
     );
 end serialize_outputs_quad;
 
@@ -49,15 +50,15 @@ begin
         muon_check : if i < NUM_MUONS_OUT generate
           -- First two clocks are always filled with '0'.
           sOutBuf(2*MU_ASSIGNMENT(i))(j).data    <= pack_mu_to_flat(iMuons(i+2*j), iMuIdxBits(i+2*j), iIso(i+2*j))(31 downto 0);
-          sOutBuf(2*MU_ASSIGNMENT(i))(j).valid   <= iValid;
+--          sOutBuf(2*MU_ASSIGNMENT(i))(j).valid   <= iValid;
           sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).data  <= pack_mu_to_flat(iMuons(i+2*j), iMuIdxBits(i+2*j), iIso(i+2*j))(63 downto 32);
-          sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).valid <= iValid;
+--          sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).valid <= iValid;
         end generate muon_check;
         empty_check : if i = NUM_MUONS_OUT generate
           sOutBuf(2*MU_ASSIGNMENT(i))(j).data    <= (31 downto 0 => '0');
-          sOutBuf(2*MU_ASSIGNMENT(i))(j).valid   <= iValid;
+--          sOutBuf(2*MU_ASSIGNMENT(i))(j).valid   <= iValid;
           sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).data  <= (31 downto 0 => '0');
-          sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).valid <= iValid;
+--          sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).valid <= iValid;
         end generate empty_check;
       end generate split_muons;
     end generate serialize_muons;
@@ -67,7 +68,7 @@ begin
       if clk240'event and clk240 = '1' then  -- rising clock edge
         for i in 0 to 3 loop -- Number of channels
           q(i).strobe <= '1';
-          q(i).valid <= sOutBuf(sSel)(i).valid;
+          q(i).valid <= iValidMuons or iValidEnergies;
           q(i).data <= sOutBuf(sSel)(i).data;
         end loop;  -- i
       end if;
@@ -78,9 +79,9 @@ begin
     serialize_intermediate_muons : for i in NUM_MUONS_LINK-1 downto 0 generate
       split_muons : for j in 3 downto 0 generate -- Number of channels
         sOutBuf(2*i)(j+NUM_OUT_CHANS).data    <= pack_mu_to_flat(iMuons(i+3*j), iMuIdxBits(i+3*j), iIso(i+3*j))(31 downto 0);
-        sOutBuf(2*i)(j+NUM_OUT_CHANS).valid   <= iValid;
+--        sOutBuf(2*i)(j+NUM_OUT_CHANS).valid   <= iValid;
         sOutBuf(2*i+1)(j+NUM_OUT_CHANS).data  <= pack_mu_to_flat(iMuons(i+3*j), iMuIdxBits(i+3*j), iIso(i+3*j))(63 downto 32);
-        sOutBuf(2*i+1)(j+NUM_OUT_CHANS).valid <= iValid;
+--        sOutBuf(2*i+1)(j+NUM_OUT_CHANS).valid <= iValid;
       end generate split_muons;
     end generate serialize_intermediate_muons;
 
@@ -89,7 +90,7 @@ begin
       if clk240'event and clk240 = '1' then  -- rising clock edge
         for i in 0 to 3 loop -- Number of channels
           q(i).strobe <= '1';
-          q(i).valid <= sOutBuf(sSel)(i+NUM_OUT_CHANS).valid;
+          q(i).valid <= iValidMuons or iValidEnergies;
           if sSel = 0 then
             q(i).data <= sOutBuf(sSel)(i+NUM_OUT_CHANS).data;
           else
