@@ -67,7 +67,7 @@ begin
       port map (
         clk240         => clk240,
         clk40          => clk40,
-        rst            => rst(OUTPUT_QUAD_ASSIGNMENT(i)),
+        rst            => rst(INTERMEDIATE_QUAD_ASSIGNMENT(i)),
         iValidMuons    => sValidMuons_reg,
         iValidEnergies => sValidEnergies_reg,
         iMuons         => sIntermediateMuons(12*i+11 downto 12*i),
