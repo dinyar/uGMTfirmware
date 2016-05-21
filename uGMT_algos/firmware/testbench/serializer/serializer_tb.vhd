@@ -86,9 +86,11 @@ begin
     iValid <= '0';
 
     rst    <= (others => '1');
-    wait for 3*half_period_40;
+    -- wait for 3*half_period_40;
+    wait for 19*half_period_240;
     rst    <= (others => '0');
-    wait for 2*half_period_40;  -- wait until global set/reset completes
+    -- wait for 2*half_period_40;  -- wait until global set/reset completes
+    wait for 11*half_period_240;  -- wait until global set/reset completes
 
     while remainingEvents > 0 loop
       tmpError := 99999999;

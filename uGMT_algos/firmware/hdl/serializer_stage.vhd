@@ -23,6 +23,7 @@ entity serializer_stage is
 end serializer_stage;
 
 architecture Behavioral of serializer_stage is
+  signal rst_reg            : std_logic_vector(N_REGION - 1 downto 0);
   signal sValidMuons_reg    : std_logic;
   signal sValidEnergies_reg : std_logic;
 
@@ -36,6 +37,7 @@ begin
   reg_valids : process (clk40)
   begin  -- process reg_valids
     if clk40'event and clk40 = '1' then  -- rising clock edge
+      rst_reg            <= rst;
       sValidMuons_reg    <= iValidMuons;
       sValidEnergies_reg <= iValidEnergies;
     end if;
@@ -49,7 +51,7 @@ begin
       port map (
         clk240         => clk240,
         clk40          => clk40,
-        rst            => rst(OUTPUT_QUAD_ASSIGNMENT(i)),
+        rst            => rst_reg(OUTPUT_QUAD_ASSIGNMENT(i)),
         iValidMuons    => sValidMuons_reg,
         iValidEnergies => sValidEnergies_reg,
         iMuons         => iMuons(8*i+7 downto 8*i),
@@ -67,7 +69,7 @@ begin
       port map (
         clk240         => clk240,
         clk40          => clk40,
-        rst            => rst(INTERMEDIATE_QUAD_ASSIGNMENT(i)),
+        rst            => rst_reg(INTERMEDIATE_QUAD_ASSIGNMENT(i)),
         iValidMuons    => sValidMuons_reg,
         iValidEnergies => sValidEnergies_reg,
         iMuons         => sIntermediateMuons(12*i+11 downto 12*i),
