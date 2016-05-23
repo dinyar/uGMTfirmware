@@ -1,8 +1,8 @@
 <node description="Collections of LUTs for cancel-out between BMTF and OMTF." fwinfo="endpoint">
     <node id="cancel_out_bo_0" address="0x0" module="file://cancel_out_bo_wedge.xml" description="Collection of LUTs to compare one OMTF sector with four BMTF wedges."/>
-    <node id="cancel_out_bo_1" address="0x2000" module="file://cancel_out_bo_wedge.xml" description="Collection of LUTs to compare one OMTF sector with four BMTF wedges."/>
-    <node id="cancel_out_bo_2" address="0x4000" module="file://cancel_out_bo_wedge.xml" description="Collection of LUTs to compare one OMTF sector with four BMTF wedges."/>
-    <node id="cancel_out_bo_3" address="0x6000" module="file://cancel_out_bo_wedge.xml" description="Collection of LUTs to compare one OMTF sector with four BMTF wedges."/>
-    <node id="cancel_out_bo_4" address="0x8000" module="file://cancel_out_bo_wedge.xml" description="Collection of LUTs to compare one OMTF sector with four BMTF wedges."/>
-    <node id="cancel_out_bo_5" address="0xA000" module="file://cancel_out_bo_wedge.xml" description="Collection of LUTs to compare one OMTF sector with four BMTF wedges."/>
+    <node id="cancel_out_bo_1" address="0x4800" module="file://cancel_out_bo_wedge.xml" description="Collection of LUTs to compare one OMTF sector with four BMTF wedges."/>
+    <node id="cancel_out_bo_2" address="0x9000" module="file://cancel_out_bo_wedge.xml" description="Collection of LUTs to compare one OMTF sector with four BMTF wedges."/>
+    <node id="cancel_out_bo_3" address="0xD800" module="file://cancel_out_bo_wedge.xml" description="Collection of LUTs to compare one OMTF sector with four BMTF wedges."/>
+    <node id="cancel_out_bo_4" address="0x12000" module="file://cancel_out_bo_wedge.xml" description="Collection of LUTs to compare one OMTF sector with four BMTF wedges."/>
+    <node id="cancel_out_bo_5" address="0x16800" module="file://cancel_out_bo_wedge.xml" description="Collection of LUTs to compare one OMTF sector with four BMTF wedges."/>
 </node>
