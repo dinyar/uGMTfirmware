@@ -101,7 +101,7 @@ begin
           if sSel = 0 then
             q(i).data <= sOutBuf(sSel)(i+NUM_OUT_CHANS).data;
           else
-            q(i).data <= sOutBuf(BUFFER_INTERMEDIATES_POS_LOW+sSel)(i+NUM_OUT_CHANS).data;
+            q(i).data <= sOutBuf(sSel)(i+NUM_OUT_CHANS).data;
           end if;
         end loop;  -- i
       end if;
