@@ -68,6 +68,7 @@ package ugmt_constants is
   -- Output
   constant OUTPUT_QUAD_ASSIGNMENT       : QuadAssignment_vector(5 downto 0) := (5, 4, 3, 2, 1, 0);
   constant INTERMEDIATE_QUAD_ASSIGNMENT : QuadAssignment_vector(1 downto 0) := (7, 6);
+  constant DUMMY_QUAD_ASSIGNMENT        : QuadAssignment_vector(9 downto 0) := (17, 16, 15, 14, 13, 12, 11, 10, 9, 8);
 
   -----------------------------------------------------------------------------
   -- Output word assignment
@@ -239,7 +240,8 @@ package ugmt_constants is
 
   constant CANCEL_OUT_TYPE_BMTF : string := string'("BMTF_ADDRESSES");
   constant CANCEL_OUT_TYPE_OMTF : string := string'("COORDINATE_ETA_FINE");
-  constant CANCEL_OUT_TYPE_EMTF : string := string'("COORDINATE");
+  -- constant CANCEL_OUT_TYPE_EMTF : string := string'("COORDINATE");
+  constant CANCEL_OUT_TYPE_EMTF : string := string'("COORDINATE_ETA_FINE");
   constant CANCEL_OUT_TYPE_BO   : string := string'("COORDINATE_ETA_FINE");
   constant CANCEL_OUT_TYPE_EO   : string := string'("COORDINATE_ETA_FINE");
 

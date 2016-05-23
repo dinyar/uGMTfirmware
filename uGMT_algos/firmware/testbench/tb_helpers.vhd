@@ -1390,7 +1390,7 @@ package body tb_helpers is
   begin
       if (event.iEvent >= 0) then
         for iFrame in iOutput'range loop
-        CheckFrame(iOutput(iFrame)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS - 1 downto 0), event.expectedOutput(iFrame)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS - 1 downto 0), FO, tmpError);
+        CheckFrame(iOutput(iFrame)(OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS - 1 downto 0), event.expectedOutput(iFrame)(OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS - 1 downto 0), FO, tmpError);
           if tmpError > 0 then
               write(LO, string'("!!!!!! of frame #"));
               write(LO, iFrame);
@@ -1465,7 +1465,7 @@ package body tb_helpers is
   begin
     if (event.iEvent >= 0) then
       for iFrame in iOutput'range loop
-        CheckFrame(iOutput(iFrame)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS-1 downto 0), event.expectedOutput(iFrame)(NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS-1 downto 0), FO, tmpError);
+        CheckFrame(iOutput(iFrame)(OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS-1 downto 0), event.expectedOutput(iFrame)(OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS-1 downto 0), FO, tmpError);
         if tmpError > 0 then
             write(LO, string'("!!!!!! of frame #"));
             write(LO, iFrame);

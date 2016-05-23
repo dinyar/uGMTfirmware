@@ -108,9 +108,11 @@ begin
 
     rst     <= '1';
     rst_loc <= (others => '1');
-    wait for 3*half_period_40;
-    rst     <= '0';
+    -- wait for 3*half_period_40;
+    wait for 13*half_period_240;
     rst_loc <= (others => '0');
+    wait for 5*half_period_240;
+    rst     <= '0';
     wait for 20*half_period_40;  -- wait until global set/reset completes
 
     -- Add user defined stimulus here
