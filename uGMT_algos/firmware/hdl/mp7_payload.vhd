@@ -115,7 +115,7 @@ architecture rtl of mp7_payload is
   signal sIntermediateMuonsO_reg     : TGMTMu_vector(7 downto 0);
   signal sIntermediateMuonsE_reg     : TGMTMu_vector(7 downto 0);
 
-  signal sQ : ldata(((OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS)-1 downto 0);
+  signal sQ : ldata(q'range);
 
 begin
 
@@ -433,13 +433,6 @@ begin
       q                    => sQ
       );
 
-  q(((OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS)-1 downto 0) <= sQ;
-
-  strobe_high : for i in q'high downto ((OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS) generate
-        q(i).data   <= (others => '0');
-        q(i).strobe <= '1';
-        q(i).valid  <= '1';
-        q(i).start  <= '1';
-  end generate;
+  q <= sQ;
 
 end rtl;
