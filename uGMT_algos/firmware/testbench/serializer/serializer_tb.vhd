@@ -53,7 +53,7 @@ begin
       iIntermediateMuonsB => iIntermediateMuonsB,
       iIntermediateMuonsO => iIntermediateMuonsO,
       iIntermediateMuonsE => iIntermediateMuonsE,
-      q                   => oQ((OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS)+NUM_INTERM_MU_OUT_CHANS-1 downto 0));
+      q                   => oQ);
 
   -- Clocks
   clk240 <= not clk240 after half_period_240;
@@ -104,9 +104,9 @@ begin
           iMuIdxBits(8*i+7 downto 8*i) <= event_buffer(1).idxBits;
         end loop;
         iIso                <= event_buffer(1).iso;
-        iIntermediateMuonsB <= event.intMuons_bmtf;
-        iIntermediateMuonsO <= event.intMuons_omtf;
-        iIntermediateMuonsE <= event.intMuons_emtf;
+        iIntermediateMuonsB <= event_buffer(1).intMuons_bmtf;
+        iIntermediateMuonsO <= event_buffer(1).intMuons_omtf;
+        iIntermediateMuonsE <= event_buffer(1).intMuons_emtf;
 
         event_buffer(0) := event;
       else
@@ -114,8 +114,11 @@ begin
           iMuons(8*i+7 downto 8*i)     <= event_buffer(1).muons;
           iMuIdxBits(8*i+7 downto 8*i) <= event_buffer(1).idxBits;
         end loop;
-        iIso            <= event_buffer(1).iso;
-        remainingEvents := remainingEvents-1;
+        iIso                <= event_buffer(1).iso;
+        iIntermediateMuonsB <= event_buffer(1).intMuons_bmtf;
+        iIntermediateMuonsO <= event_buffer(1).intMuons_omtf;
+        iIntermediateMuonsE <= event_buffer(1).intMuons_emtf;
+        remainingEvents     := remainingEvents-1;
       end if;
 
       vOutput(4 downto 0) := vOutput(vOutput'high downto vOutput'high-4);
