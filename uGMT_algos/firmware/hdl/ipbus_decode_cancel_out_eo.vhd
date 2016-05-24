@@ -17,7 +17,7 @@ package ipbus_decode_cancel_out_eo is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_cancel_out_eo(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Wed Apr 13 14:47:31 2016 
+-- START automatically  generated VHDL the Tue May 24 12:21:58 2016 
   constant N_SLV_CANCEL_OUT_EO_0: integer := 0;
   constant N_SLV_CANCEL_OUT_EO_1: integer := 1;
   constant N_SLV_CANCEL_OUT_EO_2: integer := 2;
@@ -36,19 +36,19 @@ package body ipbus_decode_cancel_out_eo is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Wed Apr 13 14:47:31 2016 
-    if    std_match(addr, "----------------000-------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_EO_0, IPBUS_SEL_WIDTH)); -- cancel_out_eo_0 / base 0x00000000 / mask 0x0000e000
-    elsif std_match(addr, "----------------001-------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_EO_1, IPBUS_SEL_WIDTH)); -- cancel_out_eo_1 / base 0x00002000 / mask 0x0000e000
-    elsif std_match(addr, "----------------010-------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_EO_2, IPBUS_SEL_WIDTH)); -- cancel_out_eo_2 / base 0x00004000 / mask 0x0000e000
-    elsif std_match(addr, "----------------011-------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_EO_3, IPBUS_SEL_WIDTH)); -- cancel_out_eo_3 / base 0x00006000 / mask 0x0000e000
-    elsif std_match(addr, "----------------100-------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_EO_4, IPBUS_SEL_WIDTH)); -- cancel_out_eo_4 / base 0x00008000 / mask 0x0000e000
-    elsif std_match(addr, "----------------101-------------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_EO_5, IPBUS_SEL_WIDTH)); -- cancel_out_eo_5 / base 0x0000a000 / mask 0x0000e000
+-- START automatically  generated VHDL the Tue May 24 12:21:58 2016 
+    if    std_match(addr, "--------------000---------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_EO_0, IPBUS_SEL_WIDTH)); -- cancel_out_eo_0 / base 0x00000000 / mask 0x00038000
+    elsif std_match(addr, "--------------001---------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_EO_1, IPBUS_SEL_WIDTH)); -- cancel_out_eo_1 / base 0x00008000 / mask 0x00038000
+    elsif std_match(addr, "--------------010---------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_EO_2, IPBUS_SEL_WIDTH)); -- cancel_out_eo_2 / base 0x00010000 / mask 0x00038000
+    elsif std_match(addr, "--------------011---------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_EO_3, IPBUS_SEL_WIDTH)); -- cancel_out_eo_3 / base 0x00018000 / mask 0x00038000
+    elsif std_match(addr, "--------------100---------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_EO_4, IPBUS_SEL_WIDTH)); -- cancel_out_eo_4 / base 0x00020000 / mask 0x00038000
+    elsif std_match(addr, "--------------101---------------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_EO_5, IPBUS_SEL_WIDTH)); -- cancel_out_eo_5 / base 0x00028000 / mask 0x00038000
 -- END automatically generated VHDL
 
     else

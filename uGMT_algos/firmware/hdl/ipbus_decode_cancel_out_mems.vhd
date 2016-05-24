@@ -17,7 +17,7 @@ package ipbus_decode_cancel_out_mems is
   subtype ipbus_sel_t is std_logic_vector(IPBUS_SEL_WIDTH - 1 downto 0);
   function ipbus_sel_cancel_out_mems(addr : in std_logic_vector(31 downto 0)) return ipbus_sel_t;
 
--- START automatically  generated VHDL the Wed Apr 13 14:47:31 2016 
+-- START automatically  generated VHDL the Tue May 24 12:21:58 2016 
   constant N_SLV_CANCEL_OUT_MEM_0: integer := 0;
   constant N_SLV_CANCEL_OUT_MEM_1: integer := 1;
   constant N_SLV_CANCEL_OUT_MEM_2: integer := 2;
@@ -39,25 +39,25 @@ package body ipbus_decode_cancel_out_mems is
     variable sel: ipbus_sel_t;
   begin
 
--- START automatically  generated VHDL the Wed Apr 13 14:47:31 2016 
-    if    std_match(addr, "---------------------0000-------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_0, IPBUS_SEL_WIDTH)); -- cancel_out_mem_0 / base 0x00000000 / mask 0x00000780
-    elsif std_match(addr, "---------------------0001-------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_1, IPBUS_SEL_WIDTH)); -- cancel_out_mem_1 / base 0x00000080 / mask 0x00000780
-    elsif std_match(addr, "---------------------0010-------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_2, IPBUS_SEL_WIDTH)); -- cancel_out_mem_2 / base 0x00000100 / mask 0x00000780
-    elsif std_match(addr, "---------------------0011-------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_3, IPBUS_SEL_WIDTH)); -- cancel_out_mem_3 / base 0x00000180 / mask 0x00000780
-    elsif std_match(addr, "---------------------0100-------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_4, IPBUS_SEL_WIDTH)); -- cancel_out_mem_4 / base 0x00000200 / mask 0x00000780
-    elsif std_match(addr, "---------------------0101-------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_5, IPBUS_SEL_WIDTH)); -- cancel_out_mem_5 / base 0x00000280 / mask 0x00000780
-    elsif std_match(addr, "---------------------0110-------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_6, IPBUS_SEL_WIDTH)); -- cancel_out_mem_6 / base 0x00000300 / mask 0x00000780
-    elsif std_match(addr, "---------------------0111-------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_7, IPBUS_SEL_WIDTH)); -- cancel_out_mem_7 / base 0x00000380 / mask 0x00000780
-    elsif std_match(addr, "---------------------1000-------") then
-      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_8, IPBUS_SEL_WIDTH)); -- cancel_out_mem_8 / base 0x00000400 / mask 0x00000780
+-- START automatically  generated VHDL the Tue May 24 12:21:58 2016 
+    if    std_match(addr, "-------------------0000---------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_0, IPBUS_SEL_WIDTH)); -- cancel_out_mem_0 / base 0x00000000 / mask 0x00001e00
+    elsif std_match(addr, "-------------------0001---------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_1, IPBUS_SEL_WIDTH)); -- cancel_out_mem_1 / base 0x00000200 / mask 0x00001e00
+    elsif std_match(addr, "-------------------0010---------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_2, IPBUS_SEL_WIDTH)); -- cancel_out_mem_2 / base 0x00000400 / mask 0x00001e00
+    elsif std_match(addr, "-------------------0011---------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_3, IPBUS_SEL_WIDTH)); -- cancel_out_mem_3 / base 0x00000600 / mask 0x00001e00
+    elsif std_match(addr, "-------------------0100---------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_4, IPBUS_SEL_WIDTH)); -- cancel_out_mem_4 / base 0x00000800 / mask 0x00001e00
+    elsif std_match(addr, "-------------------0101---------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_5, IPBUS_SEL_WIDTH)); -- cancel_out_mem_5 / base 0x00000a00 / mask 0x00001e00
+    elsif std_match(addr, "-------------------0110---------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_6, IPBUS_SEL_WIDTH)); -- cancel_out_mem_6 / base 0x00000c00 / mask 0x00001e00
+    elsif std_match(addr, "-------------------0111---------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_7, IPBUS_SEL_WIDTH)); -- cancel_out_mem_7 / base 0x00000e00 / mask 0x00001e00
+    elsif std_match(addr, "-------------------1000---------") then
+      sel := ipbus_sel_t(to_unsigned(N_SLV_CANCEL_OUT_MEM_8, IPBUS_SEL_WIDTH)); -- cancel_out_mem_8 / base 0x00001000 / mask 0x00001e00
 -- END automatically generated VHDL
 
     else
