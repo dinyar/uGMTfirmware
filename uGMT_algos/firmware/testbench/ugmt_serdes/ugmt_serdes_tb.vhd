@@ -65,20 +65,6 @@ begin
   clk240 <= not clk240 after half_period_240;
   clk40  <= not clk40  after half_period_40;
 
-  -- Dummy BC0 (one BC0 at every second BX.)
-  bgo_process :process
-  begin
-    wait for half_period_40;
-  for i in dummyCtrs'range loop
-    dummyCtrs(i).ttc_cmd <= X"00";
-  end loop;
-    wait for 2*half_period_40;
-  for i in dummyCtrs'range loop
-    dummyCtrs(i).ttc_cmd <= X"01";
-  end loop;
-    wait for half_period_40;
-  end process;
-
   tb : process
     file F                   : text open read_mode  is "ugmt_testfile.dat";
     file FO                  : text open write_mode is "../results/ugmt_serdes_tb.results";
@@ -106,14 +92,24 @@ begin
         end loop;  -- j
     end loop;  -- i
 
+    -- Choosing counter start value so that we see a reset due to the bctr at the beginning of the test.
+    for i in dummyCtrs'range loop
+      dummyCtrs(i).bctr <= std_logic_vector(to_unsigned(3506, dummyCtrs(i).bctr'length)); 
+    end loop;
+
     rst     <= '1';
     rst_loc <= (others => '1');
     -- wait for 3*half_period_40;
-    wait for 13*half_period_240;
+    wait for 7*half_period_240;
     rst_loc <= (others => '0');
-    wait for 5*half_period_240;
+    wait for 11*half_period_240;
     rst     <= '0';
-    wait for 20*half_period_40;  -- wait until global set/reset completes
+    for i in 0 to 9 loop
+      wait for 2*half_period_40;  -- wait until global set/reset completes
+      for i in dummyCtrs'range loop
+        dummyCtrs(i).bctr <= std_logic_vector(unsigned(dummyCtrs(i).bctr) + "1");
+      end loop;
+    end loop;
 
     -- Add user defined stimulus here
     while remainingEvents > 0 loop
@@ -133,6 +129,10 @@ begin
           wait for 2*half_period_240;
           vOutput(cnt+5) := oQ;
         end loop;  -- cnt
+
+        for i in dummyCtrs'range loop
+          dummyCtrs(i).bctr <= std_logic_vector(unsigned(dummyCtrs(i).bctr) + "1");
+        end loop;
 
         event_buffer(0) := event;
 

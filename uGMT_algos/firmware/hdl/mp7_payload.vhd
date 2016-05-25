@@ -154,7 +154,7 @@ begin
     variable vBGoDelayAdjusted : unsigned(5 downto 0);
   begin  -- process delay_bgos
     if clk_payload'event and clk_payload = '1' then  -- rising clock edge
-      vBGoDelayAdjusted := sBGoDelay-4;
+      vBGoDelayAdjusted := sBGoDelay+4;
       if unsigned(ctrs(4).bctr)+vBGoDelayAdjusted < to_unsigned(3564, ctrs(4).bctr'length) then
         bctrAdjusted := unsigned(ctrs(4).bctr)+vBGoDelayAdjusted;
       else
