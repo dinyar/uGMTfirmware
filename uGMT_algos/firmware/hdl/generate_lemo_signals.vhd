@@ -70,10 +70,10 @@ begin  -- architecture behavioral
     variable bctrAdjusted : unsigned(11 downto 0);
   begin  -- process gen_bctr_signal
     if clk'event and clk = '1' then  -- rising clock edge
-      if unsigned(iBctr) < iBGoDelay then
-        bctrAdjusted := to_unsigned(3564, iBctr'length)+unsigned(iBctr)-iBGoDelay;
+      if unsigned(iBctr)+iBGoDelay < to_unsigned(3564, iBctr'length) then
+        bctrAdjusted := unsigned(iBctr)+iBGoDelay;
       else
-        bctrAdjusted := unsigned(iBctr)-iBGoDelay;
+        bctrAdjusted := unsigned(iBctr)+iBGoDelay-to_unsigned(3564, iBctr'length);
       end if;
 
       if unsigned(bctrAdjusted) = to_unsigned(3555, bctrAdjusted'length) then

@@ -219,10 +219,10 @@ begin
         end loop;  -- iFrame
 
         -- Check for errors
-        if unsigned(bctr) < iBGoDelay then
-          bctrAdjusted := to_unsigned(3564, bctr'length)+unsigned(bctr)-iBGoDelay;
+        if unsigned(bctr)+iBGoDelay < to_unsigned(3564, bctr'length) then
+          bctrAdjusted := unsigned(bctr)+iBGoDelay;
         else
-          bctrAdjusted := unsigned(bctr)-iBGoDelay;
+          bctrAdjusted := unsigned(bctr)+iBGoDelay-to_unsigned(3564, bctr'length);
         end if;
 
         if in_buf(0)(iChan).valid = '1' then

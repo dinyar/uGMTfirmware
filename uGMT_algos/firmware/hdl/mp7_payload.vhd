@@ -150,13 +150,15 @@ begin
 
   -- Generating BCres signal 4 clocks early due to delays. (1 clock in below logic + 3 clocks in muon_counter_reset_gen)
   delay_bgos : process(clk_payload)
-    variable bctrAdjusted : unsigned(11 downto 0);
+    variable bctrAdjusted      : unsigned(11 downto 0);
+    variable vBGoDelayAdjusted : unsigned(5 downto 0);
   begin  -- process delay_bgos
     if clk_payload'event and clk_payload = '1' then  -- rising clock edge
-      if unsigned(ctrs(4).bctr) < sBGoDelay+4 then
-        bctrAdjusted := to_unsigned(3564, ctrs(4).bctr'length)+unsigned(ctrs(4).bctr)-sBGoDelay-4;
+      vBGoDelayAdjusted := BGoDelay-4;
+      if unsigned(ctrs(4).bctr)+vBGoDelayAdjusted < to_unsigned(3564, ctrs(4).bctr'length) then
+        bctrAdjusted := unsigned(ctrs(4).bctr)+vBGoDelayAdjusted;
       else
-        bctrAdjusted := unsigned(ctrs(4).bctr)-sBGoDelay-4;
+        bctrAdjusted := unsigned(ctrs(4).bctr)+vBGoDelayAdjusted-to_unsigned(3564, ctrs(4).bctr'length);
       end if;
 
       if bctrAdjusted = 0 then
@@ -383,7 +385,7 @@ begin
   gmt_out_reg : process (clk_payload)
   begin  -- process gmt_out_reg
     if clk_payload'event and clk_payload = '1' then  -- rising clock edge
-      for i in OUTPUT_QUAD_ASSIGNMENT'range loop 
+      for i in OUTPUT_QUAD_ASSIGNMENT'range loop
         oMuons_reg(8*i+7 downto 8*i)     <= oMuons;
         sMuIdxBits_reg(8*i+7 downto 8*i) <= sMuIdxBits;
       end loop;
