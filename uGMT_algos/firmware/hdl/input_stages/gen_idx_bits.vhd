@@ -20,15 +20,16 @@ entity gen_idx_bits is
     ETA_EXTRAPOLATION_DATA_FILE : ContentFileAssignment_vector
     );
   port (
-    clk_ipb      : in  std_logic;
-    rst          : in  std_logic;
-    ipb_in       : in  ipb_wbus;
-    ipb_out      : out ipb_rbus;
-    clk240       : in  std_logic;
-    clk40        : in  std_logic;
-    d            : in  ldata(NCHAN-1 downto 0);              -- in 1 frame late
-    iGlobalPhi   : in  TGlobalPhi_frame(NCHAN-1 downto 0);   -- in 2 frames late
-    oCaloIdxBits : out TCaloIndexBit_vector(NCHAN*NUM_MUONS_IN-1 downto 0)
+    clk_ipb          : in  std_logic;
+    rst              : in  std_logic;
+    ipb_in           : in  ipb_wbus;
+    ipb_out          : out ipb_rbus;
+    clk240           : in  std_logic;
+    clk40            : in  std_logic;
+    d                : in  ldata(NCHAN-1 downto 0);              -- in 1 frame late
+    iGlobalPhi       : in  TGlobalPhi_frame(NCHAN-1 downto 0);   -- in 2 frames late
+    oExtrapolatedPhi : out TPhi_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
+    oCaloIdxBits     : out TCaloIndexBit_vector(NCHAN*NUM_MUONS_IN-1 downto 0)
     );
 end gen_idx_bits;
 
@@ -68,6 +69,11 @@ architecture Behavioral of gen_idx_bits is
   signal sCaloIndexBits_buffer   : TCaloIndexBitsBuffer;
   signal sCaloIndexBits_link     : TCaloIndexBits_link(NCHAN-1 downto 0);
   signal sCaloIndexBits_link_reg : TCaloIndexBits_link(NCHAN-1 downto 0);
+
+  type   TExtrapolatedPhiBuffer is array (2*NUM_MUONS_LINK-1 downto 0) of TPhi_vector(NCHAN-1 downto 0);
+  signal sExtrapolatedPhi_buffer   : TExtrapolatedPhiBuffer;
+  signal sExtrapolatedPhi_link     : TExtrapolatedPhi_link(NCHAN-1 downto 0);
+  signal sExtrapolatedPhi_link_reg : TExtrapolatedPhi_link(NCHAN-1 downto 0);
 
 begin
 
@@ -213,6 +219,11 @@ begin
   begin  -- process shift_idx_bits_buffer
     if clk240'event and clk240 = '1' then  -- rising clock edge
       sCaloIndexBits_buffer(sCaloIndexBits_buffer'high-1 downto 0) <= sCaloIndexBits_buffer(sCaloIndexBits_buffer'high downto 1);
+
+      for i in NCHAN-1 downto 0 loop
+        sExtrapolatedPhi_buffer(sExtrapolatedPhi_buffer'high)(i) <= sExtrapolatedCoords_reg(i).phi
+      end loop;
+      sExtrapolatedPhi_buffer(sExtrapolatedPhi_buffer'high-1 downto 0) <= sExtrapolatedPhi_buffer(sExtrapolatedPhi_buffer'high downto 1);
     end if;
   end process shift_idx_bits_buffer;
 
@@ -224,16 +235,19 @@ begin
           if (iFrame mod 2) = 0 then
             -- Use every second result from index bit generation. (The other
             -- results were calculated with the 'wrong part' of the TF muon.)
-            sCaloIndexBits_link(iChan)(iFrame/2) <= sCaloIndexBits_buffer(iFrame)(iChan);
+            sCaloIndexBits_link(iChan)(iFrame/2)   <= sCaloIndexBits_buffer(iFrame)(iChan);
+            sExtrapolatedPhi_link(iChan)(iFrame/2) <= sExtrapolatedPhi_buffer(iFrame)(iChan);
           else
             -- DO NOTHING
           end if;
         end loop;  -- iFrame
       end loop;  -- iChan
-      sCaloIndexBits_link_reg <= sCaloIndexBits_link;
+      sCaloIndexBits_link_reg   <= sCaloIndexBits_link;
+      sExtrapolatedPhi_link_reg <= sExtrapolatedPhi_link;
     end if;
   end process gmt_in_reg;
 
-  oCaloIdxBits <= unpack_calo_idx_bits(sCaloIndexBits_link_reg(NCHAN-1 downto 0));
+  oCaloIdxBits     <= unpack_calo_idx_bits(sCaloIndexBits_link_reg(NCHAN-1 downto 0));
+  oExtrapolatedPhi <= unpack_extrapolated_phi(sExtrapolatedPhi_link_reg(NCHAN-1 downto 0));
 
 end Behavioral;

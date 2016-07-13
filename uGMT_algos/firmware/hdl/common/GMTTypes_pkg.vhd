@@ -141,6 +141,9 @@ package GMTTypes is
   -- Vector for muons pTs.
   type TMuonPT_vector is array (integer range <>) of unsigned(8 downto 0);
 
+  -- Vector for extrapolated phi values
+  type TPhi_vector is array (integer range <>) of unsigned(9 downto 0);
+
   -- Iso bits
   subtype TIsoBits is std_logic_vector(1 downto 0);
   type    TIsoBits_vector is array (integer range <>) of TIsoBits;
@@ -213,6 +216,8 @@ package GMTTypes is
   type TSortRank_link is array (natural range <>) of TSortRank10_vector(NUM_MUONS_IN-1 downto 0);
 
   type TCaloIndexBits_link is array (natural range <>) of TCaloIndexBit_vector(NUM_MUONS_IN-1 downto 0);
+
+  type TExtrapolatedPhi_link is array (natural range <>) of TPhi_vector(NUM_MUONS_IN-1 downto 0);
 
   -- Valid bits for words from one link for one BX.
   type TValid_link is array (natural range <>) of std_logic_vector(2*NUM_MUONS_IN-1 downto 0);
@@ -450,24 +455,26 @@ package body GMTTypes is
 
   function pack_mu_to_flat (
     signal iMuon      : TGMTMu;
+    signal iPhi       : unsigned(9 downto 0);
     signal iMuIdxBits : TIndexBits;
     signal iIso       : TIsoBits)
     return TFlatMuon is
     variable oMuon_flat : TFlatMuon;
   begin  -- pack_mu_to_flat
-    oMuon_flat(oMuon_flat'high downto IDX_OUT_HIGH+1) := (others => '0');
-    oMuon_flat(IDX_OUT_HIGH downto IDX_OUT_LOW)          := std_logic_vector(iMuIdxBits);
-    oMuon_flat(SIGN_OUT)                                 := iMuon.sign;
-    oMuon_flat(VALIDSIGN_OUT)                            := iMuon.sign_valid;
-    oMuon_flat(ISO_OUT_HIGH downto ISO_OUT_LOW)          := iIso;
-    oMuon_flat(ETA_OUT_HIGH downto ETA_OUT_LOW)          := std_logic_vector(iMuon.eta);
+    oMuon_flat(oMuon_flat'high downto PHI_EXTRAPOLATED_HIGH+1)    := (others => '0');
+    oMuon_flat(PHI_EXTRAPOLATED_HIGH downto PHI_EXTRAPOLATED_LOW) := std_logic_vector(iPhi);
+    oMuon_flat(IDX_OUT_HIGH downto IDX_OUT_LOW)                   := std_logic_vector(iMuIdxBits);
+    oMuon_flat(SIGN_OUT)                                          := iMuon.sign;
+    oMuon_flat(VALIDSIGN_OUT)                                     := iMuon.sign_valid;
+    oMuon_flat(ISO_OUT_HIGH downto ISO_OUT_LOW)                   := iIso;
+    oMuon_flat(ETA_OUT_HIGH downto ETA_OUT_LOW)                   := std_logic_vector(iMuon.eta);
     if iMuon.halo = '0' then
-      oMuon_flat(QUAL_OUT_HIGH downto QUAL_OUT_LOW)      := std_logic_vector(iMuon.qual(3 downto 2)) & "00";
+      oMuon_flat(QUAL_OUT_HIGH downto QUAL_OUT_LOW)               := std_logic_vector(iMuon.qual(3 downto 2)) & "00";
     else
-      oMuon_flat(QUAL_OUT_HIGH downto QUAL_OUT_LOW)      := "1111";
+      oMuon_flat(QUAL_OUT_HIGH downto QUAL_OUT_LOW)               := "1111";
     end if;
-    oMuon_flat(PT_OUT_HIGH downto PT_OUT_LOW)            := std_logic_vector(iMuon.pt);
-    oMuon_flat(PHI_OUT_HIGH downto PHI_OUT_LOW)          := std_logic_vector(iMuon.phi);
+    oMuon_flat(PT_OUT_HIGH downto PT_OUT_LOW)                     := std_logic_vector(iMuon.pt);
+    oMuon_flat(PHI_OUT_HIGH downto PHI_OUT_LOW)                   := std_logic_vector(iMuon.phi);
     return oMuon_flat;
   end pack_mu_to_flat;
 
@@ -596,5 +603,18 @@ package body GMTTypes is
     end loop;  -- i
     return oCaloIdxBits;
   end unpack_calo_idx_bits;
+
+  function unpack_extrapolated_phi (
+    signal iPhi : TExtrapolatedPhi_link)
+    return TPhi_vector is
+    variable oPhi : TPhi_vector(iPhi'length*NUM_MUONS_LINK-1 downto 0);
+  begin  -- unpack_extrapolated_phi
+    for i in iPhi'range loop
+      for j in iPhi(i)'range loop
+        oPhi(i*iPhi(i)'length+j) := iPhi(i)(j);
+      end loop;  -- j
+    end loop;  -- i
+    return oPhi;
+  end unpack_extrapolated_phi;
 
 end GMTTypes;
