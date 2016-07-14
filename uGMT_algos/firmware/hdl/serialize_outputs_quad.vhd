@@ -11,15 +11,16 @@ entity serialize_outputs_quad is
     N_MU_OUT : natural := 12
     );
   port (
-    clk240         : in  std_logic;
-    clk40          : in  std_logic;
-    rst            : in  std_logic;
-    iValidMuons    : in  std_logic;
-    iValidEnergies : in  std_logic;
-    iMuons         : in  TGMTMu_vector(N_MU_OUT-1 downto 0);
-    iIso           : in  TIsoBits_vector(N_MU_OUT-1 downto 0);
-    iMuIdxBits     : in  TIndexBits_vector(N_MU_OUT-1 downto 0);
-    q              : out ldata (3 downto 0)
+    clk240           : in  std_logic;
+    clk40            : in  std_logic;
+    rst              : in  std_logic;
+    iValidMuons      : in  std_logic;
+    iValidEnergies   : in  std_logic;
+    iMuons           : in  TGMTMu_vector(N_MU_OUT-1 downto 0);
+    iExtrapolatedPhi : in  TPhi_vector(N_MU_OUT-1 downto 0);
+    iIso             : in  TIsoBits_vector(N_MU_OUT-1 downto 0);
+    iMuIdxBits       : in  TIndexBits_vector(N_MU_OUT-1 downto 0);
+    q                : out ldata (3 downto 0)
     );
 end serialize_outputs_quad;
 
@@ -62,8 +63,8 @@ begin
       split_muons : for j in 3 downto 0 generate -- Number of channels
         muon_check : if i < NUM_MUONS_OUT generate
           -- First two clocks are always filled with '0'.
-          sOutBuf(2*MU_ASSIGNMENT(i))(j).data    <= pack_mu_to_flat(iMuons(i+2*j), iMuIdxBits(i+2*j), iIso(i+2*j))(31 downto 0);
-          sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).data  <= pack_mu_to_flat(iMuons(i+2*j), iMuIdxBits(i+2*j), iIso(i+2*j))(63 downto 32);
+          sOutBuf(2*MU_ASSIGNMENT(i))(j).data    <= pack_mu_to_flat(iMuons(i+2*j), iExtrapolatedPhi(i+2*j), iMuIdxBits(i+2*j), iIso(i+2*j))(31 downto 0);
+          sOutBuf(2*MU_ASSIGNMENT(i)+1)(j).data  <= pack_mu_to_flat(iMuons(i+2*j), iExtrapolatedPhi(i+2*j), iMuIdxBits(i+2*j), iIso(i+2*j))(63 downto 32);
         end generate muon_check;
         empty_check : if i = NUM_MUONS_OUT generate
           sOutBuf(2*MU_ASSIGNMENT(i))(j).data    <= (31 downto 0 => '0');
@@ -87,8 +88,8 @@ begin
   gen_intermediates : if (DUMMY = false) and (N_MU_OUT = 12) generate
     serialize_intermediate_muons : for i in NUM_MUONS_LINK-1 downto 0 generate
       split_muons : for j in 3 downto 0 generate -- Number of channels
-        sOutBuf(2*i)(j+NUM_OUT_CHANS).data    <= pack_mu_to_flat(iMuons(i+3*j), iMuIdxBits(i+3*j), iIso(i+3*j))(31 downto 0);
-        sOutBuf(2*i+1)(j+NUM_OUT_CHANS).data  <= pack_mu_to_flat(iMuons(i+3*j), iMuIdxBits(i+3*j), iIso(i+3*j))(63 downto 32);
+        sOutBuf(2*i)(j+NUM_OUT_CHANS).data    <= pack_mu_to_flat(iMuons(i+3*j), iExtrapolatedPhi(i+3*j), iMuIdxBits(i+3*j), iIso(i+3*j))(31 downto 0);
+        sOutBuf(2*i+1)(j+NUM_OUT_CHANS).data  <= pack_mu_to_flat(iMuons(i+3*j), iExtrapolatedPhi(i+3*j), iMuIdxBits(i+3*j), iIso(i+3*j))(63 downto 32);
       end generate split_muons;
     end generate serialize_intermediate_muons;
 

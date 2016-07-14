@@ -82,6 +82,10 @@ architecture rtl of mp7_payload is
   signal sEnergies_tmp : TCaloRegionEtaSlice_vector(31 downto 0);
   signal sEnergies_fin : TCaloRegionEtaSlice_vector(31 downto 0);
 
+  signal sExtrapolatedPhi         : TPhi_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+  signal sExtrapolatedPhi_sel     : TPhi_vector(7 downto 0);
+  signal sExtrapolatedPhi_sel_reg : TPhi_vector(8*OUTPUT_QUAD_ASSIGNMENT'length - 1 downto 0);
+
   signal sCaloIndexBits : TCaloIndexBit_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sCaloIndexBitsB : TCaloIndexBit_vector(35 downto 0);
   signal sCaloIndexBitsO : TCaloIndexBit_vector(35 downto 0);
@@ -243,22 +247,23 @@ begin
       NCHAN     => NCHAN
       )
     port map (
-      clk_ipb      => clk,
-      rst          => rst_loc,
-      ipb_in       => ipbw(N_SLV_MUON_INPUT),
-      ipb_out      => ipbr(N_SLV_MUON_INPUT),
-      ctrs         => ctrs,
-      iBGoDelay    => sBGoDelay,
-      mu_ctr_rst   => sMuCtrReset,
-      clk240       => clk_p,
-      clk40        => clk_lhc,
-      d            => d(NCHAN-1 downto 0),
-      iDisable     => sMuonDisable,
-      oMuons       => sMuons,
-      oTracks      => sTracks,
-      oSortRanks   => sSortRanks,
-      oValid       => sValid_muons,
-      oCaloIdxBits => sCaloIndexBits
+      clk_ipb          => clk,
+      rst              => rst_loc,
+      ipb_in           => ipbw(N_SLV_MUON_INPUT),
+      ipb_out          => ipbr(N_SLV_MUON_INPUT),
+      ctrs             => ctrs,
+      iBGoDelay        => sBGoDelay,
+      mu_ctr_rst       => sMuCtrReset,
+      clk240           => clk_p,
+      clk40            => clk_lhc,
+      d                => d(NCHAN-1 downto 0),
+      iDisable         => sMuonDisable,
+      oMuons           => sMuons,
+      oTracks          => sTracks,
+      oSortRanks       => sSortRanks,
+      oValid           => sValid_muons,
+      oExtrapolatedPhi => sExtrapolatedPhi,
+      oCaloIdxBits     => sCaloIndexBits
       );
 
   energy_input_stage : entity work.energy_input
@@ -349,6 +354,8 @@ begin
       iCaloIdxBitsO     => sCaloIndexBitsO,
       iCaloIdxBitsE     => sCaloIndexBitsE,
 
+      iExtrapolatedPhi => sExtrapolatedPhi,
+
       iEnergies => sEnergies_fin,
 
       oIntermediateMuonsB     => sIntermediateMuonsB,
@@ -360,8 +367,9 @@ begin
 
       oMuIdxBits => sMuIdxBits,
 
-      oMuons => oMuons,
-      oIso   => sIso,
+      oMuons           => oMuons,
+      oExtrapolatedPhi => sExtrapolatedPhi_sel,
+      oIso             => sIso,
 
       mu_ctr_rst   => sMuCtrReset(4),
       clk          => clk_lhc,
@@ -392,8 +400,9 @@ begin
   begin  -- process gmt_out_reg
     if clk_lhc'event and clk_lhc = '1' then  -- rising clock edge
       for i in OUTPUT_QUAD_ASSIGNMENT'range loop
-        oMuons_reg(8*i+7 downto 8*i)     <= oMuons;
-        sMuIdxBits_reg(8*i+7 downto 8*i) <= sMuIdxBits;
+        oMuons_reg(8*i+7 downto 8*i)               <= oMuons;
+        sExtrapolatedPhi_sel_reg(8*i+7 downto 8*i) <= sExtrapolatedPhi_sel;
+        sMuIdxBits_reg(8*i+7 downto 8*i)           <= sMuIdxBits;
       end loop;
 
       sIntermediateMuonsO_reg <= sIntermediateMuonsO;
@@ -433,6 +442,7 @@ begin
       iValidMuons          => sValid_buffer(sValid_buffer'high),
       iValidEnergies       => sValid_energies,
       iMuons               => oMuons_reg,
+      iExtrapolatedPhi     => sExtrapolatedPhi_sel_reg,
       iMuIdxBits           => sMuIdxBits_reg,
       iIso                 => sIso,
       iIntermediateMuonsB  => sIntermediateMuonsB_reg,

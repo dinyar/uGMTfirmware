@@ -17,22 +17,23 @@ entity muon_input is
     NCHAN     : positive
     );
   port (
-    clk_ipb      : in  std_logic;
-    rst          : in  std_logic_vector(N_REGION - 1 downto 0);
-    ipb_in       : in  ipb_wbus;
-    ipb_out      : out ipb_rbus;
-    ctrs         : in  ttc_stuff_array(N_REGION - 1 downto 0);
-    iBGoDelay    : in  unsigned(5 downto 0);
-    mu_ctr_rst   : in  std_logic_vector(N_REGION - 1 downto 0);
-    clk240       : in  std_logic;
-    clk40        : in  std_logic;
-    d            : in  ldata (NCHAN-1 downto 0);
-    iDisable     : in  std_logic_vector(NUM_MU_CHANS-1 downto 0);
-    oMuons       : out TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-    oTracks      : out TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
-    oSortRanks   : out TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
-    oValid       : out std_logic;
-    oCaloIdxBits : out TCaloIndexBit_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0) -- Out one bx after muons
+    clk_ipb          : in  std_logic;
+    rst              : in  std_logic_vector(N_REGION - 1 downto 0);
+    ipb_in           : in  ipb_wbus;
+    ipb_out          : out ipb_rbus;
+    ctrs             : in  ttc_stuff_array(N_REGION - 1 downto 0);
+    iBGoDelay        : in  unsigned(5 downto 0);
+    mu_ctr_rst       : in  std_logic_vector(N_REGION - 1 downto 0);
+    clk240           : in  std_logic;
+    clk40            : in  std_logic;
+    d                : in  ldata (NCHAN-1 downto 0);
+    iDisable         : in  std_logic_vector(NUM_MU_CHANS-1 downto 0);
+    oMuons           : out TGMTMu_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+    oTracks          : out TGMTMuTracks_vector(NUM_MU_CHANS-1 downto 0);
+    oSortRanks       : out TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+    oValid           : out std_logic;
+    oExtrapolatedPhi : out TPhi_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0); -- Out one bx after muons.
+    oCaloIdxBits     : out TCaloIndexBit_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0) -- Out one bx after muons.
     );
 end muon_input;
 
@@ -94,15 +95,16 @@ begin
         PHI_EXTRAPOLATION_DATA_FILE  => PHI_EXTRAP_CONT_ASSIGN(i)
       )
       port map (
-        clk_ipb       => clk_ipb,
-        rst           => rst(MU_QUAD_ASSIGNMENT(i)),
-        ipb_in        => ipbw(N_SLV_GEN_CALO_IDX_BITS_QUAD_0+i),
-        ipb_out       => ipbr(N_SLV_GEN_CALO_IDX_BITS_QUAD_0+i),
-        clk240        => clk240,
-        clk40         => clk40,
-        d             => q(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
-        iGlobalPhi    => sGlobalPhi(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
-        oCaloIdxBits  => oCaloIdxBits(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN)
+        clk_ipb          => clk_ipb,
+        rst              => rst(MU_QUAD_ASSIGNMENT(i)),
+        ipb_in           => ipbw(N_SLV_GEN_CALO_IDX_BITS_QUAD_0+i),
+        ipb_out          => ipbr(N_SLV_GEN_CALO_IDX_BITS_QUAD_0+i),
+        clk240           => clk240,
+        clk40            => clk40,
+        d                => q(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
+        iGlobalPhi       => sGlobalPhi(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
+        oExtrapolatedPhi => oExtrapolatedPhi(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
+        oCaloIdxBits     => oCaloIdxBits(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN)
         );
   end generate deserialize_loop;
 

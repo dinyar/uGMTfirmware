@@ -31,6 +31,7 @@ architecture behavior of testbench is
 
   signal iValid              : std_logic := '0';
   signal iMuons              : TGMTMu_vector(OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS*NUM_MUONS_OUT-1 downto 0);
+  signal iExtrapolatedPhi    : TPhi_vector(OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS*NUM_MUONS_OUT-1 downto 0);
   signal iIso                : TIsoBits_vector(7 downto 0);
   signal iMuIdxBits          : TIndexBits_vector(OUTPUT_QUAD_ASSIGNMENT'length*NUM_OUT_CHANS*NUM_MUONS_OUT-1 downto 0);
   signal iIntermediateMuonsB : TGMTMu_vector(7 downto 0);
@@ -40,6 +41,9 @@ architecture behavior of testbench is
 
 begin
 
+  -- TODO: Fix this eventually.
+  iExtrapolatedPhi <= (others => "0000000000");
+
   uut : entity work.serializer_stage
     port map (
       clk240              => clk240,
@@ -48,6 +52,7 @@ begin
       iValidMuons         => iValid,
       iValidEnergies      => iValid,
       iMuons              => iMuons,
+      iExtrapolatedPhi    => iExtrapolatedPhi,
       iIso                => iIso,
       iMuIdxBits          => iMuIdxBits,
       iIntermediateMuonsB => iIntermediateMuonsB,

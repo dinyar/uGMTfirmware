@@ -27,6 +27,8 @@ entity GMT is
     iCaloIdxBitsO : in TCaloIndexBit_vector(35 downto 0);
     iCaloIdxBitsE : in TCaloIndexBit_vector(35 downto 0);
 
+    iExtrapolatedPhi : in TPhi_vector(107 downto 0);
+
     iEnergies : in TCaloRegionEtaSlice_vector(31 downto 0);
     -- The outer two slices will be set to '0'. XST should optimize logic
     -- appropriately.
@@ -39,8 +41,9 @@ entity GMT is
     oIntermediateSortRanksE : out TSortRank10_vector(7 downto 0);
     oMuIdxBits              : out TIndexBits_vector (7 downto 0);
 
-    oMuons : out TGMTMu_vector(7 downto 0);
-    oIso   : out TIsoBits_vector(7 downto 0);
+    oMuons           : out TGMTMu_vector(7 downto 0);
+    oExtrapolatedPhi : out TPhi_vector(7 downto 0);
+    oIso             : out TIsoBits_vector(7 downto 0);
 
     mu_ctr_rst : in  std_logic;
     clk        : in  std_logic;
@@ -168,6 +171,15 @@ begin
   oIntermediateSortRanksB <= sIntermediateSortRanksB;
   oIntermediateSortRanksO <= sIntermediateSortRanksO;
   oIntermediateSortRanksE <= sIntermediateSortRanksE;
+
+  select_extrapolated_phi : process (clk)
+  begin  -- process select_extrapolated_phi
+    if clk'event and clk = '0' then  -- falling clock
+      for i in oExtrapolatedPhi'range loop
+        oExtrapolatedPhi(i) <= (others => '0');
+      end loop;  -- i
+    end if;
+  end process select_extrapolated_phi;
 
   -- Synchronize idx bits to final muons.
   final_mu_reg : process (clk)
