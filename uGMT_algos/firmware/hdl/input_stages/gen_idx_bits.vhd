@@ -221,7 +221,7 @@ begin
       sCaloIndexBits_buffer(sCaloIndexBits_buffer'high-1 downto 0) <= sCaloIndexBits_buffer(sCaloIndexBits_buffer'high downto 1);
 
       for i in NCHAN-1 downto 0 loop
-        sExtrapolatedPhi_buffer(sExtrapolatedPhi_buffer'high)(i) <= sExtrapolatedCoords_reg(i).phi
+        sExtrapolatedPhi_buffer(sExtrapolatedPhi_buffer'high)(i) <= sExtrapolatedCoords_reg(i).phi;
       end loop;
       sExtrapolatedPhi_buffer(sExtrapolatedPhi_buffer'high-1 downto 0) <= sExtrapolatedPhi_buffer(sExtrapolatedPhi_buffer'high downto 1);
     end if;

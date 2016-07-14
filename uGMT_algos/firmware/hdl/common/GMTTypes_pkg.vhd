@@ -250,7 +250,10 @@ package GMTTypes is
   function unpack_emtf_mu_from_flat(signal iMuon_flat : TFlatMuon;
                                     signal iPhi       : unsigned(9 downto 0)) return TGMTMuIn;
 
+  function unpack_extrapolated_phi (signal iPhi : TExtrapolatedPhi_link) return TPhi_vector;
+
   function pack_mu_to_flat(signal iMuon      : TGMTMu;
+                           signal iPhi       : unsigned(9 downto 0);
                            signal iMuIdxBits : TIndexBits;
                            signal iIso       : TIsoBits) return TFlatMuon;
 end;
