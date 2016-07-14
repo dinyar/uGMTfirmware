@@ -22,8 +22,8 @@ entity mp7_payload is
     rst         : in  std_logic;  -- IPbus reset
     ipb_in      : in  ipb_wbus;
     ipb_out     : out ipb_rbus;
-    clk_payload : in  std_logic;  -- LHC clock (40 MHz)
-    rst_payload : in  std_logic;
+    clk_payload : in  std_logic_vector(2 downto 0);  -- User clocks.
+    rst_payload : in  std_logic_vector(2 downto 0);
     clk_p       : in  std_logic;  -- board clock (240 MHz)
     rst_loc     : in  std_logic_vector(N_REGION - 1 downto 0); -- per-region reset signals
     clken_loc   : in  std_logic_vector(N_REGION - 1 downto 0); -- per-region clken signals
@@ -47,6 +47,9 @@ architecture rtl of mp7_payload is
 
   signal ipbw : ipb_wbus_array(N_SLAVES - 1 downto 0);
   signal ipbr : ipb_rbus_array(N_SLAVES - 1 downto 0);
+
+  signal clk_lhc : std_logic;
+  signal rst_lhc : std_logic;
 
   type TBGoBuffer is array(natural range <>) of ttc_stuff_array(N_REGION - 1 downto 0);
   -- Currently our master latency is ~39 BX. Making sure we can absorb a significant latency increase.
@@ -119,6 +122,9 @@ architecture rtl of mp7_payload is
 
 begin
 
+  clk_lhc <= clk_payload(2);
+  rst_lhc <= rst_payload(2);
+
   -- ipbus address decode
   fabric : entity work.ipbus_fabric_sel
     generic map(
@@ -149,11 +155,11 @@ begin
   sBGoDelay <= unsigned(std_logic_vector(sBGoDelay_reg_v(0)(5 downto 0)));
 
   -- Generating BCres signal 4 clocks early due to delays. (1 clock in below logic + 3 clocks in muon_counter_reset_gen)
-  delay_bgos : process(clk_payload)
+  delay_bgos : process(clk_lhc)
     variable bctrAdjusted      : unsigned(11 downto 0);
     variable vBGoDelayAdjusted : unsigned(5 downto 0);
   begin  -- process delay_bgos
-    if clk_payload'event and clk_payload = '1' then  -- rising clock edge
+    if clk_lhc'event and clk_lhc = '1' then  -- rising clock edge
       vBGoDelayAdjusted := sBGoDelay+4;
       if unsigned(ctrs(4).bctr)+vBGoDelayAdjusted < to_unsigned(3564, ctrs(4).bctr'length) then
         bctrAdjusted := unsigned(ctrs(4).bctr)+vBGoDelayAdjusted;
@@ -172,12 +178,12 @@ begin
   muon_counter_reset_gen : entity work.muon_counter_reset
     port map (
       clk_ipb     => clk,
-      rst         => rst_payload,
+      rst         => rst_lhc,
       ipb_in      => ipbw(N_SLV_MUON_COUNTER_RESET),
       ipb_out     => ipbr(N_SLV_MUON_COUNTER_RESET),
       ttc_command => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
       iBCres      => sBCres,  -- Using delayed BC0 to synchronize with 'data orbit'
-      clk40       => clk_payload,
+      clk40       => clk_lhc,
       mu_ctr_rst  => sMuCtrReset
     );
 
@@ -245,7 +251,7 @@ begin
       iBGoDelay    => sBGoDelay,
       mu_ctr_rst   => sMuCtrReset,
       clk240       => clk_p,
-      clk40        => clk_payload,
+      clk40        => clk_lhc,
       d            => d(NCHAN-1 downto 0),
       iDisable     => sMuonDisable,
       oMuons       => sMuons,
@@ -267,7 +273,7 @@ begin
       ctrs      => ctrs,
       iBGoDelay => sBGoDelay,
       clk240    => clk_p,
-      clk40     => clk_payload,
+      clk40     => clk_lhc,
       d         => d(NCHAN-1 downto 0),
       iDisable  => sCaloDisable(0)(NUM_CALO_CHANS-1 downto 0),
       oEnergies => sEnergies,
@@ -282,17 +288,17 @@ begin
   -- Begin 40 MHz domain.
   -----------------------------------------------------------------------------
 
-  delay_valid_bit : process(clk_payload)
+  delay_valid_bit : process(clk_lhc)
   begin  -- process delay_valid_bit
-    if clk_payload'event and clk_payload = '1' then  -- rising clock edge
+    if clk_lhc'event and clk_lhc = '1' then  -- rising clock edge
       sValid_buffer(0)                           <= sValid_muons;
       sValid_buffer(sValid_buffer'high downto 1) <= sValid_buffer(sValid_buffer'high-1 downto 0);
     end if;
   end process delay_valid_bit;
 
-  gmt_index_comp : process (clk_payload)
+  gmt_index_comp : process (clk_lhc)
   begin  -- process gmt_index_comp
-    if clk_payload'event and clk_payload = '1' then  -- rising clock edge
+    if clk_lhc'event and clk_lhc = '1' then  -- rising clock edge
       for index in sMuons'range loop
         sIndexBits(index) <= to_unsigned(index, sIndexBits(index)'length);
       end loop;  -- index
@@ -358,9 +364,9 @@ begin
       oIso   => sIso,
 
       mu_ctr_rst   => sMuCtrReset(4),
-      clk          => clk_payload,
+      clk          => clk_lhc,
       clk_ipb      => clk,
-      sinit        => rst_payload,
+      sinit        => rst_lhc,
       rst_loc      => rst_loc,
       ipb_in       => ipbw(N_SLV_UGMT),
       ipb_out      => ipbr(N_SLV_UGMT)
@@ -371,8 +377,8 @@ begin
       clk_ipb   => clk,
       ipb_in    => ipbw(N_SLV_GENERATE_LEMO_SIGNALS),
       ipb_out   => ipbr(N_SLV_GENERATE_LEMO_SIGNALS),
-      clk       => clk_payload,
-      rst       => rst_payload,
+      clk       => clk_lhc,
+      rst       => rst_lhc,
       iMuons    => oMuons,
       iBGoDelay => sBGoDelay,
       iBctr     => ctrs(4).bctr,  -- Using ctrs from one of the two central clock regions
@@ -382,9 +388,9 @@ begin
       gpio_en   => gpio_en
       );
 
-  gmt_out_reg : process (clk_payload)
+  gmt_out_reg : process (clk_lhc)
   begin  -- process gmt_out_reg
-    if clk_payload'event and clk_payload = '1' then  -- rising clock edge
+    if clk_lhc'event and clk_lhc = '1' then  -- rising clock edge
       for i in OUTPUT_QUAD_ASSIGNMENT'range loop
         oMuons_reg(8*i+7 downto 8*i)     <= oMuons;
         sMuIdxBits_reg(8*i+7 downto 8*i) <= sMuIdxBits;
@@ -413,7 +419,7 @@ begin
       rst      => rst,
       ipb_in   => ipbw(N_SLV_SPY_BUFFER_CONTROL),
       ipb_out  => ipbr(N_SLV_SPY_BUFFER_CONTROL),
-      clk40    => clk_payload,
+      clk40    => clk_lhc,
       clk240   => clk_p,
       iTrigger => sTrigger_reg,
       q        => sQ(NUM_OUT_CHANS-1 downto 0)
@@ -422,7 +428,7 @@ begin
   serialize : entity work.serializer_stage
     port map (
       clk240               => clk_p,
-      clk40                => clk_payload,
+      clk40                => clk_lhc,
       rst                  => rst_loc,
       iValidMuons          => sValid_buffer(sValid_buffer'high),
       iValidEnergies       => sValid_energies,
