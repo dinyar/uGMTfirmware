@@ -53,8 +53,12 @@ begin
         ipb_out           => open,
         ctrs              => dummyCtrs,
         clk_p             => clk240,
-        clk_payload       => clk40,
-        rst_payload       => rst,
+        clk_payload(0)    => clk40,
+        clk_payload(1)    => clk40,
+        clk_payload(2)    => clk40,
+        rst_payload(0)    => rst,
+        rst_payload(1)    => rst,
+        rst_payload(2)    => rst,
         rst_loc           => rst_loc,
         clken_loc         => (others => '0'),
         d                 => iD,
@@ -99,7 +103,6 @@ begin
 
     rst     <= '1';
     rst_loc <= (others => '1');
-    -- wait for 3*half_period_40;
     wait for 7*half_period_240;
     rst_loc <= (others => '0');
     wait for 11*half_period_240;
