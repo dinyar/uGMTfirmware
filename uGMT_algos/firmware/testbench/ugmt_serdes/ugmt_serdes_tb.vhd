@@ -27,7 +27,7 @@ architecture behavior of testbench is
   constant half_period_40  : time      := 6*half_period_240;
   signal   clk240          : std_logic := '1';
   signal   clk40           : std_logic := '0';
-  signal   rst             : std_logic := '0';
+  signal   rst             : std_logic_vector(2 downto 0) := (others => '0');
   signal   rst_loc         : std_logic_vector(N_REGION - 1 downto 0) := (others => '0');
 
   signal iD       : ldata(71 downto 0);
@@ -45,7 +45,7 @@ begin
     uut : entity work.mp7_payload
       port map (
         clk               => clk240,
-        rst               => rst,
+        rst               => rst(0),
         ipb_in.ipb_addr   => (others => '0'),
         ipb_in.ipb_wdata  => (others => '0'),
         ipb_in.ipb_strobe => '0',
@@ -56,9 +56,7 @@ begin
         clk_payload(0)    => clk40,
         clk_payload(1)    => clk40,
         clk_payload(2)    => clk40,
-        rst_payload(0)    => rst,
-        rst_payload(1)    => rst,
-        rst_payload(2)    => rst,
+        rst_payload       => rst,
         rst_loc           => rst_loc,
         clken_loc         => (others => '0'),
         d                 => iD,
@@ -101,12 +99,12 @@ begin
       dummyCtrs(i).bctr <= std_logic_vector(to_unsigned(3506, dummyCtrs(i).bctr'length)); 
     end loop;
 
-    rst     <= '1';
+    rst     <= (others => '1');
     rst_loc <= (others => '1');
     wait for 7*half_period_240;
     rst_loc <= (others => '0');
     wait for 11*half_period_240;
-    rst     <= '0';
+    rst     <= (others => '0');
     for i in 0 to 9 loop
       wait for 2*half_period_40;  -- wait until global set/reset completes
       for i in dummyCtrs'range loop
