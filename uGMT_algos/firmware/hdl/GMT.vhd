@@ -70,10 +70,15 @@ architecture Behavioral of GMT is
   signal sMuCtrReset_reg : std_logic;
 
   -- Core uGMT algos
-  signal sIsoBits      : TIsoBits_vector(7 downto 0);
-  signal sMuIdxBits    : TIndexBits_vector(7 downto 0);
-  signal sFinalMuPt    : TMuonPT_vector(7 downto 0);
-  signal sMuons_sorted : TGMTMu_vector(7 downto 0);
+  signal sIsoBits       : TIsoBits_vector(7 downto 0);
+  signal sMuIdxBits     : TIndexBits_vector(7 downto 0);
+  signal sMuIdxBits_reg : TIndexBits_vector(7 downto 0);
+  signal sFinalMuPt     : TMuonPT_vector(7 downto 0);
+  signal sFinalMuPt_reg : TMuonPT_vector(7 downto 0);
+  signal sMuons_sorted  : TGMTMu_vector(7 downto 0);
+
+  signal sExtrapolatedPhi_reg : TPhi_vector(107 downto 0);
+
 
   -- For intermediates
   signal sIntermediateMuonsB     : TGMTMu_vector(7 downto 0);
@@ -172,24 +177,28 @@ begin
   oIntermediateSortRanksO <= sIntermediateSortRanksO;
   oIntermediateSortRanksE <= sIntermediateSortRanksE;
 
-  select_extrapolated_phi : process (clk)
-  begin  -- process select_extrapolated_phi
-    if clk'event and clk = '0' then  -- falling clock
-      for i in oExtrapolatedPhi'range loop
-        oExtrapolatedPhi(i) <= (others => '0');
-      end loop;  -- i
-    end if;
-  end process select_extrapolated_phi;
-
   -- Synchronize idx bits to final muons.
   final_mu_reg : process (clk)
   begin  -- process final_mu_reg
     if clk'event and clk = '0' then     -- falling clock edge
-      oMuIdxBits <= sMuIdxBits;
+      sExtrapolatedPhi_reg <= iExtrapolatedPhi;
+      sMuIdxBits_reg       <= sMuIdxBits;
     end if;
   end process final_mu_reg;
 
-  oMuons <= sMuons_sorted;
-  oIso   <= sIsoBits;
+  select_extrapolated_phi : process (sFinalMuPt, sExtrapolatedPhi_reg, sMuIdxBits_reg)
+  begin  -- process select_extrapolated_phi
+    for i in oExtrapolatedPhi'range loop
+      if sFinalMuPt(i) = (sFinalMuPt(i)'range => '0') then
+        oExtrapolatedPhi(i) <= (others => '0');
+      else
+        oExtrapolatedPhi(i) <= sExtrapolatedPhi_reg(to_integer(sMuIdxBits_reg(i)));
+      end if;
+    end loop;  -- i
+  end process select_extrapolated_phi;
+
+  oMuIdxBits <= sMuIdxBits_reg;
+  oMuons     <= sMuons_sorted;
+  oIso       <= sIsoBits;
 
 end Behavioral;
