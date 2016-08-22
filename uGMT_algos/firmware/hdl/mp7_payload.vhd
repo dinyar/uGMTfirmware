@@ -50,6 +50,8 @@ architecture rtl of mp7_payload is
 
   signal rst_lhc : std_logic;
 
+  signal ctrs_reg : ttc_stuff_array(N_REGION - 1 downto 0);
+
   type TBGoBuffer is array(natural range <>) of ttc_stuff_array(N_REGION - 1 downto 0);
   -- Currently our master latency is ~39 BX. Making sure we can absorb a significant latency increase.
   signal sBGoDelay_reg_v : ipb_reg_v(0 downto 0);
@@ -154,7 +156,8 @@ begin
       q         => sBGoDelay_reg_v
     );
 
-  sBGoDelay <= unsigned(std_logic_vector(sBGoDelay_reg_v(0)(5 downto 0)));
+  -- Adding 1 due to the delay for ctrs in process below.
+  sBGoDelay <= unsigned(std_logic_vector(sBGoDelay_reg_v(0)(5 downto 0))) + to_unsigned(1, sBGoDelay'length);
 
   -- Generating BCres signal 4 clocks early due to delays. (1 clock in below logic + 3 clocks in muon_counter_reset_gen)
   delay_bgos : process(clk_payload(2))
@@ -162,11 +165,13 @@ begin
     variable vBGoDelayAdjusted : unsigned(5 downto 0);
   begin  -- process delay_bgos
     if clk_payload(2)'event and clk_payload(2) = '1' then  -- rising clock edge
+      ctrs_reg <= ctrs;
+
       vBGoDelayAdjusted := sBGoDelay+4;
-      if unsigned(ctrs(4).bctr)+vBGoDelayAdjusted < to_unsigned(3564, ctrs(4).bctr'length) then
-        bctrAdjusted := unsigned(ctrs(4).bctr)+vBGoDelayAdjusted;
+      if unsigned(ctrs_reg(4).bctr)+vBGoDelayAdjusted < to_unsigned(3564, ctrs_reg(4).bctr'length) then
+        bctrAdjusted := unsigned(ctrs_reg(4).bctr)+vBGoDelayAdjusted;
       else
-        bctrAdjusted := unsigned(ctrs(4).bctr)+vBGoDelayAdjusted-to_unsigned(3564, ctrs(4).bctr'length);
+        bctrAdjusted := unsigned(ctrs_reg(4).bctr)+vBGoDelayAdjusted-to_unsigned(3564, ctrs_reg(4).bctr'length);
       end if;
 
       if bctrAdjusted = 0 then
@@ -183,7 +188,7 @@ begin
       rst         => rst_lhc,
       ipb_in      => ipbw(N_SLV_MUON_COUNTER_RESET),
       ipb_out     => ipbr(N_SLV_MUON_COUNTER_RESET),
-      ttc_command => ctrs(4).ttc_cmd,  -- Using ctrs from one of the two central clock regions
+      ttc_command => ctrs_reg(4).ttc_cmd,  -- Using this for OC0. Delay is fine because OC0 comes in BC2000 and we're waiting for BC0 then anyway.
       iBCres      => sBCres,  -- Using delayed BC0 to synchronize with 'data orbit'
       clk40       => clk_payload(2),
       mu_ctr_rst  => sMuCtrReset
@@ -249,7 +254,7 @@ begin
       rst              => rst_loc,
       ipb_in           => ipbw(N_SLV_MUON_INPUT),
       ipb_out          => ipbr(N_SLV_MUON_INPUT),
-      ctrs             => ctrs,
+      ctrs             => ctrs_reg,
       iBGoDelay        => sBGoDelay,
       mu_ctr_rst       => sMuCtrReset,
       clk240           => clk_p,
@@ -273,7 +278,7 @@ begin
       rst       => rst_loc,
       ipb_in    => ipbw(N_SLV_ENERGY_INPUT),
       ipb_out   => ipbr(N_SLV_ENERGY_INPUT),
-      ctrs      => ctrs,
+      ctrs      => ctrs_reg,
       iBGoDelay => sBGoDelay,
       clk240    => clk_p,
       clk40     => clk_payload(2),
@@ -387,7 +392,7 @@ begin
       rst       => rst_lhc,
       iMuons    => oMuons,
       iBGoDelay => sBGoDelay,
-      iBctr     => ctrs(4).bctr,  -- Using ctrs from one of the two central clock regions
+      iBctr     => ctrs_reg(4).bctr,  -- Using ctrs from one of the two central clock regions
       iValid    => sValid_muons,
       oTrigger  => sTrigger,
       gpio      => gpio,
