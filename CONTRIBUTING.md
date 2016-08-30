@@ -26,7 +26,7 @@ Visit the project folder, source the Xilinx environment (if you haven't already)
   cd [mp7framework_directory]/ugmt
   [source Xilinx environment]
   make project
-  make bitfile
+  bash runAll.sh
   ```
 *Note:* Calling `make bitfile` is only necessary the first time after a new checkout in order to generate some required cores. After this follow the instructions in the following section to (re-)build the firmware.
 
