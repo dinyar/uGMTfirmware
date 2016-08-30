@@ -16,7 +16,7 @@ git clone https://github.com/dinyar/uGMTfirmware.git
 From the root of the uGMTfirmware project:
 ```
 cd uGMT_algos/scripts
-bash makeProject.sh [required options]
+bash makeProject.sh [tag, e.g. mp7fw_v2_2_0] ['unstable'/'stable'] [username for svn] [absolute path to checkout mp7fw in]
 ```
 
 ### Generating the Vivado project
