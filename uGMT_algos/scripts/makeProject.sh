@@ -19,7 +19,7 @@ fi
 
 tag=$1
 username=$3
-mp7fwPath=$4
+mp7fwPath=$(cd $4 && pwd)
 
 scriptsPath=$(pwd)
 uGMTalgosPath=$scriptsPath"/../"
