@@ -33,4 +33,11 @@ vivado -mode batch -source makeBitfile.tcl
 
 python checkTiming.py
 
+if [ "$?" == 0 ];
+then
+    echo "Timing met. Creating package.. "
+else
+    exit
+fi
+
 make package
