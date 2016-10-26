@@ -11,7 +11,7 @@ use work.mp7_top_decl.all;
 
 package top_decl is
 
-  constant ALGO_REV: std_logic_vector(31 downto 0) := X"03" & X"00" & X"00" & X"00" ; -- Mayor, minor, "very minor" and patch level;
+  constant ALGO_REV: std_logic_vector(31 downto 0) := X"04" & X"00" & X"00" & X"00" ; -- Mayor, minor, "very minor" and patch level;
   constant LHC_BUNCH_COUNT: integer := 3564;
   constant LB_ADDR_WIDTH: integer := 10;
   constant DR_ADDR_WIDTH: integer := 9;

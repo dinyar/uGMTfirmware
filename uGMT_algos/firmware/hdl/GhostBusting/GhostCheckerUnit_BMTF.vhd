@@ -66,7 +66,6 @@ begin
       end if;
     end loop;
 
-    -- If the muons are 'far enough' apart we don't check the LUT output.
     if matchedStation = true then
       if qual1 > qual2 then
         ghost1 <= '0';
