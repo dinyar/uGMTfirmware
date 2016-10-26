@@ -22,7 +22,7 @@ package top_decl is
   constant DAQ_N_BANKS: integer := 4;
   constant DAQ_TRIGGER_MODES: integer := 2;
   constant DAQ_N_CAP_CTRLS: integer := 4; -- Number of capture controls per trigger mode
-  constant ZS_ENABLED: boolean := FALSE;
+  constant ZS_ENABLED: boolean := TRUE;
 
   constant REGION_CONF: region_conf_array_t := (
     (gth_10g, u_crc32, buf, no_fmt, buf, u_crc32, gth_10g, 3, 10), -- 0 / 118
