@@ -16,7 +16,7 @@ git clone https://github.com/dinyar/uGMTfirmware.git
 From the root of the uGMTfirmware project:
 ```
 cd uGMT_algos/scripts
-bash makeProject.sh [required options]
+bash makeProject.sh [path in CACTUS, e.g. tags/mp7/stable/firmware/] [directory name, e.g. mp7fw_v2_2_0] [username for svn] [path to checkout mp7fw in]
 ```
 
 ### Generating the Vivado project
@@ -26,7 +26,7 @@ Visit the project folder, source the Xilinx environment (if you haven't already)
   cd [mp7framework_directory]/ugmt
   [source Xilinx environment]
   make project
-  make bitfile
+  bash runAll.sh
   ```
 *Note:* Calling `make bitfile` is only necessary the first time after a new checkout in order to generate some required cores. After this follow the instructions in the following section to (re-)build the firmware.
 

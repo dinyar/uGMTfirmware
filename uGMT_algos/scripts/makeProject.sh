@@ -3,9 +3,9 @@
 usage="
 # Directory for mp7fw can be chosen freely.
 # Call with the following options:
-# $0 [tag] ['unstable'/'stable'] [username for svn] [path for mp7fw]
-# e.g. $0 mp7fw_v1_8_0 stable dinyar /[...]/mp7fwdirectory
-# or   $0 mp7fw_v1_7_1 unstable dinyar /[...]/mp7fwdirectory
+# $0 [path in CACTUS] [tag/branch] [username for svn] [path for mp7fw]
+# e.g. $0 tags/mp7/stable/firmware/ mp7fw_v2_2_0 dinyar /[...]/mp7fwdirectory
+# or   $0 branches/ mp7fw_v2_2_X_support dinyar /[...]/mp7fwdirectory
 "
 
 if [ ! $# -eq 4 ];
@@ -17,16 +17,22 @@ then
     exit
 fi
 
-tag=$1
+cactusPath=$1
+cactusDir=$2
 username=$3
-mp7fwPath=$4
+
+if [ ! -d $4 ];
+then
+    mkdir -p $4
+fi
+mp7fwPath=$(cd $4 && pwd)
 
 scriptsPath=$(pwd)
 uGMTalgosPath=$scriptsPath"/../"
 #topPath=$scriptsPath"/../../../"
 
 # If directory for mp7fw doesn't exist we'll create it.
-mp7path=$mp7fwPath"/"$tag
+mp7path=$mp7fwPath"/"$cactusDir
 if [ ! -d $mp7path ];
 then
     mkdir -p $mp7path
@@ -40,18 +46,8 @@ then
     mv ProjectManager.py.1 ProjectManager.py
 fi
 chmod a+x ProjectManager.py
-if [ "$2" == "stable" ];
-then
-    unstableSelector="stable/"
-elif [ "$2" == "unstable" ];
-then
-    unstableSelector="unstable/"
-else
-    echo "Error, indicate whether checking out a stable or unstable tag."
-    exit
-fi
 
-checkoutString="create tags/mp7/"$unstableSelector"firmware/"$tag
+checkoutString="create "$cactusPath"/"$cactusDir
 checkoutCommand="$checkoutString -u $username --board mp7"
 ./ProjectManager.py $checkoutCommand
 
@@ -60,7 +56,7 @@ then
     echo "Done with mp7fw checkout. Fetching project.. "
 else
     cd ..
-    rm -rf $tag
+    rm -rf $cactusDir
     echo "Error, couldn't check out mp7fw."
     exit
 fi
@@ -72,7 +68,7 @@ cd ..
 echo "Setting this tag as current tag.. "
 mp7currDir=mp7fw_current
 rm -f $mp7currDir
-ln -s $tag $mp7currDir
+ln -s $cactusDir $mp7currDir
 mp7currPath=$mp7fwPath/$mp7currDir
 
 cd $mp7currPath
