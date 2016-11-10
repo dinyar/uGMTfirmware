@@ -28,7 +28,9 @@ architecture Behavioral of serialize_outputs_quad is
   type TTransceiverBufferOut is array (2*2*NUM_MUONS_LINK-1 downto 0) of ldata((NUM_OUT_CHANS+NUM_INTERM_MU_OUT_CHANS)-1 downto 0);
   signal sOutBuf : TTransceiverBufferOut;
 
-  signal sSel    : integer range 0 to 5;
+  signal sSel                  : integer range 0 to 5;
+  ATTRIBUTE max_fanout         : integer;
+  ATTRIBUTE max_fanout of sSel : signal is 20;
 begin
 
   selector_gen : process (clk240)
