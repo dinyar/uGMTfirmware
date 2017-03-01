@@ -204,7 +204,7 @@ package ugmt_constants is
 
   constant EXTRAPOLATION_ADDR_WIDTH    : natural := 12;
   constant ETA_EXTRAPOLATION_WORD_SIZE : natural := 4;
-  constant PHI_EXTRAPOLATION_WORD_SIZE : natural := 3;
+  constant PHI_EXTRAPOLATION_WORD_SIZE : natural := 4;
 
   constant REL_ISO_ADDR_WIDTH : natural := 14;
   constant REL_ISO_WORD_SIZE  : natural := 1;
@@ -276,8 +276,9 @@ package ugmt_constants is
   -----------------------------------------------------------------------------
   -- Misc. constants
   -----------------------------------------------------------------------------
+
   constant MAX_PHI_VAL          : natural := 576;
-  constant EXTRAPOLATION_PT_CUT : natural := 63; -- 31.5 GeV is lowest pT value to be still extrapolated.
+  constant EXTRAPOLATION_PT_CUT : natural := 127; -- 63.5 GeV is lowest pT value to be still extrapolated.
   constant LS_LENGTH_IN_ORBITS  : natural := 2**18;
 
 end ugmt_constants;
