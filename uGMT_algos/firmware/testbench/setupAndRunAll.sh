@@ -19,12 +19,9 @@ else
 	rm -f results/*
 fi
 
-echo "Updating test pattern and LUT content files.. "
-bash update_testfiles.sh
-bash setTestfile.sh $testfile
-
 echo "Running setup.."
 bash setupAll.sh
+bash setTestfile.sh $testfile
 
 echo "Running testbenches.."
 bash runAll.sh

@@ -5,7 +5,7 @@ export MGLS_LICENSE_FILE='1717@lxlic01:1717@lxlic02:1717@lxlic03'
 PATH=$PATH:/opt/mentor/modeltech/linux_x86_64
 export PATH
 
-
+echo "Updating test pattern and LUT content files.. "
 bash update_testfiles.sh
 
 echo "Building serializer testbench.. "

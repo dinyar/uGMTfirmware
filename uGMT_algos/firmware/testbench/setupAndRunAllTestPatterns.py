@@ -10,7 +10,6 @@ error = 0
 errorPatterns = []
 
 
-subprocess.call(os.getcwd() + "/update_testfiles.sh")
 subprocess.call(os.getcwd() + "/setupAll.sh")
 
 for pattern in testpatterns:
