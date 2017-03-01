@@ -21,10 +21,8 @@ It is then possible to setup and build the uGMT firmware by issuing `make projec
 The complete test suite can be run by using the `setupAndRunAllTestPatterns.py` script in `projects/ugmt/firmware/testbench` (if checked out via SVN -- else see CONTRIBUTING.md) which runs all available testbenches on all available test patterns.
 
 A more fine-grained possibiliy is to use `setupAndRunAll.sh`. This script takes as its argument the test pattern type to be used. Currently there are four such test pattern types available:
-- `ttbar_small_sample` -- a sample of events from a ttbar generator
-- `many_events` -- the uGMT's muons inputs are saturated with muons (i.e. full 108 muons per bx)
-- `fwd_iso_scan` -- only forward muons and energy deposits with uniform energy for a given bunch crossing
-- `iso_test` -- muons with uniform pT; energy deposits with uniform energy for a given bunch crossing
+- `JPsiToMuMu_Pt20to120_EtaPhiRestricted` -- a sample of J/Psi --> mu + mu events restricted to a certain area of the detector
+- `TT_TuneCUETP8M1_13TeV` -- a sample of events from a ttbar generator
 
 Individual testbenches can be setup and run with the following commands entered in the root testbench directory (i.e. `uGMT_algos/firmware/testbench`):
 
