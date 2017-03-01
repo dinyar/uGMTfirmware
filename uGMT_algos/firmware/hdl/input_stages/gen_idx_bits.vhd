@@ -149,7 +149,11 @@ begin
     if clk240'event and clk240 = '1' then  -- rising clock edge
       for i in NCHAN-1 downto 0 loop
         -- First tick
-        sPreCalcEta(i) <= signed(in_buf(EXTRAPOLATION_LATENCY-1)(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(sDeltaEta(i), 8));
+        if in_buf(EXTRAPOLATION_LATENCY-1)(i).data(ETA_IN_HIGH) = '0' then -- Checking pseudo-sign bit of eta
+          sPreCalcEta(i) <= signed(in_buf(EXTRAPOLATION_LATENCY-1)(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(sDeltaEta(i), 8));
+        else
+          sPreCalcEta(i) <= signed(in_buf(EXTRAPOLATION_LATENCY-1)(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) - signed(resize(sDeltaEta(i), 8));
+        end if;
         if d(i).data(31-SIGN_IN) = '1' then -- SYSIGN_IN assumes 62 bit vector. Need to remove offset of 31.
           sPreCalcPhi(i) <= signed(resize(iGlobalPhi(i), 11)) - signed(resize(SHIFT_LEFT("00" & sDeltaPhi(i), 2), 7));
         else
