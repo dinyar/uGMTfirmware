@@ -125,6 +125,8 @@ package ugmt_constants is
   --
   -- out
   --
+  constant ETA_EXTRAPOLATED_HIGH : natural := 61;
+  constant ETA_EXTRAPOLATED_LOW  : natural := 53;
   constant PHI_OUT_HIGH : natural := 52;
   constant PHI_OUT_LOW  : natural := 43;
 
