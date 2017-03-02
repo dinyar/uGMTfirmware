@@ -4,7 +4,7 @@ if [ $# -gt 0 ];
 then
         testfile=$1
 else
-        testfile=many_events
+        testfile=TT_TuneCUETP8M1_13TeV
 fi
 
 cd serializer

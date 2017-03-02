@@ -4,7 +4,7 @@ import os
 import sys
 import subprocess
 
-testpatterns = ["many_events", "fwd_iso_scan", "iso_test", "ttbar_small_sample"]
+testpatterns = ["TT_TuneCUETP8M1_13TeV", "JPsiToMuMu_Pt20to120_EtaPhiRestricted"]
 
 error = 0
 errorPatterns = []
