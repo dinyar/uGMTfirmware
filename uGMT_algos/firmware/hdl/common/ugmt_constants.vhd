@@ -125,8 +125,8 @@ package ugmt_constants is
   --
   -- out
   --
-  constant PHI_EXTRAPOLATED_HIGH : natural := 52;
-  constant PHI_EXTRAPOLATED_LOW  : natural := 43;
+  constant PHI_OUT_HIGH : natural := 52;
+  constant PHI_OUT_LOW  : natural := 43;
 
   constant IDX_OUT_HIGH : natural := 42;
   constant IDX_OUT_LOW  : natural := 36;
@@ -146,8 +146,8 @@ package ugmt_constants is
   constant PT_OUT_HIGH : natural := 18;
   constant PT_OUT_LOW  : natural := 10;
 
-  constant PHI_OUT_HIGH : natural := 9;
-  constant PHI_OUT_LOW  : natural := 0;
+  constant PHI_EXTRAPOLATED_HIGH : natural := 9;
+  constant PHI_EXTRAPOLATED_LOW  : natural := 0;
 
   --
   -- isolation bits within the iso word
