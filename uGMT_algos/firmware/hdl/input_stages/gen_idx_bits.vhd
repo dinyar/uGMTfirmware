@@ -29,6 +29,7 @@ entity gen_idx_bits is
     d                : in  ldata(NCHAN-1 downto 0);              -- in 1 frame late
     iGlobalPhi       : in  TGlobalPhi_frame(NCHAN-1 downto 0);   -- in 2 frames late
     oExtrapolatedPhi : out TPhi_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
+    oExtrapolatedEta : out TEta_vector(NCHAN*NUM_MUONS_IN-1 downto 0);
     oCaloIdxBits     : out TCaloIndexBit_vector(NCHAN*NUM_MUONS_IN-1 downto 0)
     );
 end gen_idx_bits;
@@ -74,6 +75,10 @@ architecture Behavioral of gen_idx_bits is
   signal sExtrapolatedPhi_buffer   : TExtrapolatedPhiBuffer;
   signal sExtrapolatedPhi_link     : TExtrapolatedPhi_link(NCHAN-1 downto 0);
   signal sExtrapolatedPhi_link_reg : TExtrapolatedPhi_link(NCHAN-1 downto 0);
+  type   TExtrapolatedEtaBuffer is array (2*NUM_MUONS_LINK-1 downto 0) of TEta_vector(NCHAN-1 downto 0);
+  signal sExtrapolatedEta_buffer   : TExtrapolatedEtaBuffer;
+  signal sExtrapolatedEta_link     : TExtrapolatedEta_link(NCHAN-1 downto 0);
+  signal sExtrapolatedEta_link_reg : TExtrapolatedEta_link(NCHAN-1 downto 0);
 
 begin
 
@@ -226,8 +231,10 @@ begin
 
       for i in NCHAN-1 downto 0 loop
         sExtrapolatedPhi_buffer(sExtrapolatedPhi_buffer'high)(i) <= sExtrapolatedCoords_reg(i).phi;
+        sExtrapolatedEta_buffer(sExtrapolatedEta_buffer'high)(i) <= sExtrapolatedCoords_reg(i).eta;
       end loop;
       sExtrapolatedPhi_buffer(sExtrapolatedPhi_buffer'high-1 downto 0) <= sExtrapolatedPhi_buffer(sExtrapolatedPhi_buffer'high downto 1);
+      sExtrapolatedEta_buffer(sExtrapolatedEta_buffer'high-1 downto 0) <= sExtrapolatedEta_buffer(sExtrapolatedEta_buffer'high downto 1);
     end if;
   end process shift_idx_bits_buffer;
 
@@ -241,6 +248,7 @@ begin
             -- results were calculated with the 'wrong part' of the TF muon.)
             sCaloIndexBits_link(iChan)(iFrame/2)   <= sCaloIndexBits_buffer(iFrame)(iChan);
             sExtrapolatedPhi_link(iChan)(iFrame/2) <= sExtrapolatedPhi_buffer(iFrame)(iChan);
+            sExtrapolatedEta_link(iChan)(iFrame/2) <= sExtrapolatedEta_buffer(iFrame)(iChan);
           else
             -- DO NOTHING
           end if;
@@ -248,10 +256,12 @@ begin
       end loop;  -- iChan
       sCaloIndexBits_link_reg   <= sCaloIndexBits_link;
       sExtrapolatedPhi_link_reg <= sExtrapolatedPhi_link;
+      sExtrapolatedEta_link_reg <= sExtrapolatedEta_link;
     end if;
   end process gmt_in_reg;
 
   oCaloIdxBits     <= unpack_calo_idx_bits(sCaloIndexBits_link_reg(NCHAN-1 downto 0));
   oExtrapolatedPhi <= unpack_extrapolated_phi(sExtrapolatedPhi_link_reg(NCHAN-1 downto 0));
+  oExtrapolatedEta <= unpack_extrapolated_eta(sExtrapolatedEta_link_reg(NCHAN-1 downto 0));
 
 end Behavioral;

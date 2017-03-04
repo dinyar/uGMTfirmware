@@ -141,8 +141,9 @@ package GMTTypes is
   -- Vector for muons pTs.
   type TMuonPT_vector is array (integer range <>) of unsigned(8 downto 0);
 
-  -- Vector for extrapolated phi values
+  -- Vector for extrapolated coordinatates
   type TPhi_vector is array (integer range <>) of unsigned(9 downto 0);
+  type TEta_vector is array (integer range <>) of signed(8 downto 0);
 
   -- Iso bits
   subtype TIsoBits is std_logic_vector(1 downto 0);
@@ -251,9 +252,11 @@ package GMTTypes is
                                     signal iPhi       : unsigned(9 downto 0)) return TGMTMuIn;
 
   function unpack_extrapolated_phi (signal iPhi : TExtrapolatedPhi_link) return TPhi_vector;
+  function unpack_extrapolated_eta (signal iEta : TExtrapolatedEta_link) return TEta_vector;
 
   function pack_mu_to_flat(signal iMuon      : TGMTMu;
                            signal iPhi       : unsigned(9 downto 0);
+                           signal iEta       : signed(8 downto 0);
                            signal iMuIdxBits : TIndexBits;
                            signal iIso       : TIsoBits) return TFlatMuon;
 end;
@@ -459,6 +462,7 @@ package body GMTTypes is
   function pack_mu_to_flat (
     signal iMuon      : TGMTMu;
     signal iPhi       : unsigned(9 downto 0);
+    signal iEta       : signed(8 downto 0);
     signal iMuIdxBits : TIndexBits;
     signal iIso       : TIsoBits)
     return TFlatMuon is
@@ -466,6 +470,7 @@ package body GMTTypes is
   begin  -- pack_mu_to_flat
     oMuon_flat(oMuon_flat'high downto PHI_EXTRAPOLATED_HIGH+1)    := (others => '0');
     oMuon_flat(PHI_EXTRAPOLATED_HIGH downto PHI_EXTRAPOLATED_LOW) := std_logic_vector(iPhi);
+    oMuon_flat(ETA_EXTRAPOLATED_HIGH downto ETA_EXTRAPOLATED_LOW) := std_logic_vector(iEta);
     oMuon_flat(IDX_OUT_HIGH downto IDX_OUT_LOW)                   := std_logic_vector(iMuIdxBits);
     oMuon_flat(SIGN_OUT)                                          := iMuon.sign;
     oMuon_flat(VALIDSIGN_OUT)                                     := iMuon.sign_valid;
@@ -619,5 +624,19 @@ package body GMTTypes is
     end loop;  -- i
     return oPhi;
   end unpack_extrapolated_phi;
+
+  function unpack_extrapolated_eta (
+    signal iEta : TExtrapolatedEta_link)
+    return TEta_vector is
+    variable oEta : TEta_vector(iEta'length*NUM_MUONS_LINK-1 downto 0);
+  begin  -- unpack_extrapolated_eta
+    for i in iEta'range loop
+      for j in iEta(i)'range loop
+        oEta(i*iEta(i)'length+j) := iEta(i)(j);
+      end loop;  -- j
+    end loop;  -- i
+    return oEta;
+  end unpack_extrapolated_eta;
+
 
 end GMTTypes;

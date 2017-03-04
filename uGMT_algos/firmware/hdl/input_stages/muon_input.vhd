@@ -33,6 +33,7 @@ entity muon_input is
     oSortRanks       : out TSortRank10_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
     oValid           : out std_logic;
     oExtrapolatedPhi : out TPhi_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0); -- Out one bx after muons.
+    oExtrapolatedEta : out TEta_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0); -- Out one bx after muons.
     oCaloIdxBits     : out TCaloIndexBit_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0) -- Out one bx after muons.
     );
 end muon_input;
@@ -104,6 +105,7 @@ begin
         d                => q(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
         iGlobalPhi       => sGlobalPhi(MU_QUAD_ASSIGNMENT(i)*4+3 downto MU_QUAD_ASSIGNMENT(i)*4),
         oExtrapolatedPhi => oExtrapolatedPhi(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
+        oExtrapolatedEta => oExtrapolatedEta(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN),
         oCaloIdxBits     => oCaloIdxBits(i*4*NUM_MUONS_IN+(4*NUM_MUONS_IN-1) downto i*4*NUM_MUONS_IN)
         );
   end generate deserialize_loop;

@@ -28,6 +28,7 @@ entity GMT is
     iCaloIdxBitsE : in TCaloIndexBit_vector(35 downto 0);
 
     iExtrapolatedPhi : in TPhi_vector(107 downto 0);
+    iExtrapolatedEta : in TEta_vector(107 downto 0);
 
     iEnergies : in TCaloRegionEtaSlice_vector(31 downto 0);
     -- The outer two slices will be set to '0'. XST should optimize logic
@@ -43,6 +44,7 @@ entity GMT is
 
     oMuons           : out TGMTMu_vector(7 downto 0);
     oExtrapolatedPhi : out TPhi_vector(7 downto 0);
+    oExtrapolatedEta : out TEta_vector(7 downto 0);
     oIso             : out TIsoBits_vector(7 downto 0);
 
     mu_ctr_rst : in  std_logic;
@@ -78,6 +80,7 @@ architecture Behavioral of GMT is
   signal sMuons_sorted  : TGMTMu_vector(7 downto 0);
 
   signal sExtrapolatedPhi_reg : TPhi_vector(107 downto 0);
+  signal sExtrapolatedEta_reg : TEta_vector(107 downto 0);
 
 
   -- For intermediates
@@ -182,20 +185,23 @@ begin
   begin  -- process final_mu_reg
     if clk'event and clk = '0' then     -- falling clock edge
       sExtrapolatedPhi_reg <= iExtrapolatedPhi;
+      sExtrapolatedEta_reg <= iExtrapolatedEta;
       sMuIdxBits_reg       <= sMuIdxBits;
     end if;
   end process final_mu_reg;
 
-  select_extrapolated_phi : process (sFinalMuPt, sExtrapolatedPhi_reg, sMuIdxBits_reg)
-  begin  -- process select_extrapolated_phi
+  select_extrapolated_coords : process (sFinalMuPt, sExtrapolatedPhi_reg, sExtrapolatedEta_reg, sMuIdxBits_reg)
+  begin  -- process select_extrapolated_coords
     for i in oExtrapolatedPhi'range loop
       if sFinalMuPt(i) = (sFinalMuPt(i)'range => '0') then
         oExtrapolatedPhi(i) <= (others => '0');
+        oExtrapolatedEta(i) <= (others => '0');
       else
         oExtrapolatedPhi(i) <= sExtrapolatedPhi_reg(to_integer(sMuIdxBits_reg(i)));
+        oExtrapolatedEta(i) <= sExtrapolatedEta_reg(to_integer(sMuIdxBits_reg(i)));
       end if;
     end loop;  -- i
-  end process select_extrapolated_phi;
+  end process select_extrapolated_coords;
 
   oMuIdxBits <= sMuIdxBits_reg;
   oMuons     <= sMuons_sorted;

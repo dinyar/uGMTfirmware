@@ -86,6 +86,10 @@ architecture rtl of mp7_payload is
   signal sExtrapolatedPhi         : TPhi_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sExtrapolatedPhi_sel     : TPhi_vector(7 downto 0);
   signal sExtrapolatedPhi_sel_reg : TPhi_vector(8*OUTPUT_QUAD_ASSIGNMENT'length - 1 downto 0);
+  signal sExtrapolatedEta         : TEta_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
+  signal sExtrapolatedEta_sel     : TEta_vector(7 downto 0);
+  signal sExtrapolatedEta_sel_reg : TEta_vector(8*OUTPUT_QUAD_ASSIGNMENT'length - 1 downto 0);
+
 
   signal sCaloIndexBits : TCaloIndexBit_vector(NUM_MU_CHANS*NUM_MUONS_IN-1 downto 0);
   signal sCaloIndexBitsB : TCaloIndexBit_vector(35 downto 0);
@@ -266,6 +270,7 @@ begin
       oSortRanks       => sSortRanks,
       oValid           => sValid_muons,
       oExtrapolatedPhi => sExtrapolatedPhi,
+      oExtrapolatedEta => sExtrapolatedEta,
       oCaloIdxBits     => sCaloIndexBits
       );
 
@@ -358,6 +363,7 @@ begin
       iCaloIdxBitsE     => sCaloIndexBitsE,
 
       iExtrapolatedPhi => sExtrapolatedPhi,
+      iExtrapolatedEta => sExtrapolatedEta,
 
       iEnergies => sEnergies_fin,
 
@@ -372,6 +378,7 @@ begin
 
       oMuons           => oMuons,
       oExtrapolatedPhi => sExtrapolatedPhi_sel,
+      oExtrapolatedEta => sExtrapolatedEta_sel,
       oIso             => sIso,
 
       mu_ctr_rst   => sMuCtrReset(4),
@@ -405,6 +412,7 @@ begin
       for i in OUTPUT_QUAD_ASSIGNMENT'range loop
         oMuons_reg(8*i+7 downto 8*i)               <= oMuons;
         sExtrapolatedPhi_sel_reg(8*i+7 downto 8*i) <= sExtrapolatedPhi_sel;
+        sExtrapolatedEta_sel_reg(8*i+7 downto 8*i) <= sExtrapolatedEta_sel;
         sMuIdxBits_reg(8*i+7 downto 8*i)           <= sMuIdxBits;
       end loop;
 
@@ -446,6 +454,7 @@ begin
       iValidEnergies       => sValid_energies,
       iMuons               => oMuons_reg,
       iExtrapolatedPhi     => sExtrapolatedPhi_sel_reg,
+      iExtrapolatedEta     => sExtrapolatedEta_sel_reg,
       iMuIdxBits           => sMuIdxBits_reg,
       iIso                 => sIso,
       iIntermediateMuonsB  => sIntermediateMuonsB_reg,
