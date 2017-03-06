@@ -1,8 +1,8 @@
 #!/bin/bash
-export MODELSIM_ROOT='/opt/mentor/modeltech/'
+export MODELSIM_ROOT='/opt/modelsim-104d/modeltech/'
 ## license server
 export MGLS_LICENSE_FILE='1717@lxlic01:1717@lxlic02:1717@lxlic03'
-PATH=$PATH:/opt/mentor/modeltech/linux_x86_64
+PATH=$PATH:/opt/modelsim-104d/modeltech/linux_x86_64
 export PATH
 
 echo "Updating test pattern and LUT content files.. "

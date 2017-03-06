@@ -150,10 +150,6 @@ package GMTTypes is
   -- Vector for muons pTs.
   type TMuonPT_vector is array (integer range <>) of unsigned(8 downto 0);
 
-  -- Vector for extrapolated coordinatates
-  type TPhi_vector is array (integer range <>) of unsigned(9 downto 0);
-  type TEta_vector is array (integer range <>) of signed(8 downto 0);
-
   -- Iso bits
   subtype TIsoBits is std_logic_vector(1 downto 0);
   type    TIsoBits_vector is array (integer range <>) of TIsoBits;
@@ -175,8 +171,13 @@ package GMTTypes is
   -----------------------------------------------------------------------------
   -- Extrapolated coordinates at vertex
   -----------------------------------------------------------------------------
-  type TEtaCoordinate_vector is array (integer range <>) of signed(8 downto 0);
-  type TPhiCoordinate_vector is array (integer range <>) of unsigned(9 downto 0);
+
+  -- Vector for extrapolated coordinatates
+  type TPhi_vector is array (integer range <>) of unsigned(9 downto 0);
+  type TEta_vector is array (integer range <>) of signed(8 downto 0);
+
+  type TExtrapolatedPhi_link is array (natural range <>) of TPhi_vector(NUM_MUONS_IN-1 downto 0);
+  type TExtrapolatedEta_link is array (natural range <>) of TEta_vector(NUM_MUONS_IN-1 downto 0);
 
   type TSpatialCoordinate is record
     eta : signed(8 downto 0);
@@ -226,8 +227,6 @@ package GMTTypes is
   type TSortRank_link is array (natural range <>) of TSortRank10_vector(NUM_MUONS_IN-1 downto 0);
 
   type TCaloIndexBits_link is array (natural range <>) of TCaloIndexBit_vector(NUM_MUONS_IN-1 downto 0);
-
-  type TExtrapolatedPhi_link is array (natural range <>) of TPhi_vector(NUM_MUONS_IN-1 downto 0);
 
   -- Valid bits for words from one link for one BX.
   type TValid_link is array (natural range <>) of std_logic_vector(2*NUM_MUONS_IN-1 downto 0);
