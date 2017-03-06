@@ -101,9 +101,9 @@ package ugmt_constants is
   constant PHI_IN_LOW  : natural := 23;
   constant PHI_IN_HIGH : natural := 30;
 
-  -- This crosses the word boundary in the incoming frames. As the MSB is a
+  -- This crosses the word boundary in the incoming frames. Because the MSB is a
   -- control bit we "lose" one bit here, so the bit numbering for the 31 MSBs
-  -- is of by one. (i.e. our muon has 62 bits, not 64)
+  -- is off by one. (i.e. our muon has 62 bits, not 64)
   constant SIGN_IN      : natural := 31;
   constant VALIDSIGN_IN : natural := 32;
 
@@ -121,6 +121,19 @@ package ugmt_constants is
 
   constant BMTF_DETECTOR_SIDE_LOW  : natural := 53;
   constant BMTF_DETECTOR_SIDE_HIGH : natural := 53;
+
+  constant EMTF_ME1_SEGMENT_ID_IN      : natural := 33;
+  constant EMTF_ME1_CHAMBER_ID_IN_LOW  : natural := 34;
+  constant EMTF_ME1_CHAMBER_ID_IN_HIGH : natural := 36;
+  constant EMTF_ME2_SEGMENT_ID_IN      : natural := 37;
+  constant EMTF_ME2_CHAMBER_ID_IN_LOW  : natural := 38;
+  constant EMTF_ME2_CHAMBER_ID_IN_HIGH : natural := 40;
+  constant EMTF_ME3_SEGMENT_ID_IN      : natural := 41;
+  constant EMTF_ME3_CHAMBER_ID_IN_LOW  : natural := 42;
+  constant EMTF_ME3_CHAMBER_ID_IN_HIGH : natural := 44;
+  constant EMTF_ME4_SEGMENT_ID_IN      : natural := 45;
+  constant EMTF_ME4_CHAMBER_ID_IN_LOW  : natural := 46;
+  constant EMTF_ME4_CHAMBER_ID_IN_HIGH : natural := 48;
 
   --
   -- out

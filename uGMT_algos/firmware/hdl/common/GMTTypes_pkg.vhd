@@ -59,11 +59,20 @@ package GMTTypes is
     stationAddresses : TBMTFSectorAddresses; -- 8 to D; 0 to 5. F for empty
   end record;
 
+  type TEMTFChamberIDs is array (4 downto 1) of unsigned(2 downto 0);
+  subtype TEMTFChamberSegments is std_logic_vector(4 downto 1);
+
+  type TEMTFTrackAddress is record
+    chamberIDs      : TEMTFChamberIDs; -- Chamber ID. 1-6 for ME1; 1-4 for all else. 0 means no segment from this station
+    chamberSegments : TEMTFChamberSegments; -- ID of segment from given chamber. Can be 0 or 1.
+  end record;
+
   type TGMTMuTrackInfo is record
     etaFine     : std_logic; -- eta fine bit. 1 = fine eta measurement
     eta         : signed(8 downto 0);
     phi         : signed(7 downto 0);
     bmtfAddress : TBMTFTrackAddress;
+    emtfAddress : TEMTFTrackAddress;
 
     qual  : unsigned(3 downto 0);
     empty : std_logic;
@@ -289,7 +298,8 @@ package body GMTTypes is
   function track_address_from_in_mus (
     signal   iMuon_flat   : TFlatMuon;
     signal   iEmpty       : std_logic;
-    iBmtfAddress : TBMTFTrackAddress;
+    iBmtfAddress          : TBMTFTrackAddress;
+    iEmtfAddress          : TEMTFTrackAddress;
     signal   iEtaFine     : std_logic)
     return   TGMTMuTrackInfo is
     variable oTrack : TGMTMuTrackInfo;
@@ -299,9 +309,7 @@ package body GMTTypes is
       oTrack.phi     := signed(iMuon_flat(PHI_IN_HIGH downto PHI_IN_LOW));
 
       oTrack.bmtfAddress := iBmtfAddress;
-
-      -- TODO: Missing EMTF and OMTF addresses here. Should be optimized away
-      -- by tools when not used downstream.
+      oTrack.emtfAddress := iEmtfAddress;
 
       oTrack.qual  := unsigned(iMuon_flat(QUAL_IN_HIGH downto QUAL_IN_LOW));
       oTrack.empty := iEmpty;
@@ -313,6 +321,7 @@ package body GMTTypes is
     signal iEmpty     : std_logic)
     return TGMTMuTrackInfo is
     variable vBmtfAddress : TBMTFTrackAddress;
+    variable vEmtfAddress : TEMTFTrackAddress;
     variable oTrack       : TGMTMuTrackInfo;
   begin
     vBmtfAddress.addressStation0 := unsigned(iMuon_flat(BMTF_ADDRESS_STATION_1_IN_HIGH downto BMTF_ADDRESS_STATION_1_IN_LOW));
@@ -324,7 +333,10 @@ package body GMTTypes is
     vBmtfAddress.detectorSide := iMuon_flat(BMTF_DETECTOR_SIDE_HIGH downto BMTF_DETECTOR_SIDE_LOW);
     vBmtfAddress.wheelNo      := unsigned(iMuon_flat(BMTF_WHEEL_NO_IN_HIGH downto BMTF_WHEEL_NO_IN_LOW));
 
-    oTrack := track_address_from_in_mus(iMuon_flat, iEmpty, vBmtfAddress, iMuon_flat(HALO_FINE_IN));
+    vEmtfAddress.chamberIDs      := (others => (others => '0'));
+    vEmtfAddress.chamberSegments := (others => '0');
+
+    oTrack := track_address_from_in_mus(iMuon_flat, iEmpty, vBmtfAddress, vEmtfAddress, iMuon_flat(HALO_FINE_IN));
 
     return oTrack;
   end;
@@ -334,6 +346,7 @@ package body GMTTypes is
     signal iEmpty     : std_logic)
     return TGMTMuTrackInfo is
     variable vBmtfAddress : TBMTFTrackAddress;
+    variable vEmtfAddress : TEMTFTrackAddress;
     variable oTrack       : TGMTMuTrackInfo;
   begin
     vBmtfAddress.addressStation0 := (others => '0');
@@ -345,7 +358,10 @@ package body GMTTypes is
     vBmtfAddress.detectorSide := (others => '0');
     vBmtfAddress.wheelNo      := (others => '0');
 
-    oTrack := track_address_from_in_mus(iMuon_flat, iEmpty, vBmtfAddress, iMuon_flat(HALO_FINE_IN));
+    vEmtfAddress.chamberIDs      := (others => (others => '0'));
+    vEmtfAddress.chamberSegments := (others => '0');
+
+    oTrack := track_address_from_in_mus(iMuon_flat, iEmpty, vBmtfAddress, vEmtfAddress, iMuon_flat(HALO_FINE_IN));
 
     return oTrack;
   end;
@@ -355,6 +371,7 @@ package body GMTTypes is
     signal iEmpty     : std_logic)
     return TGMTMuTrackInfo is
     variable vBmtfAddress : TBMTFTrackAddress;
+    variable vEmtfAddress : TEMTFTrackAddress;
     variable oTrack       : TGMTMuTrackInfo;
   begin
     vBmtfAddress.addressStation0 := (others => '0');
@@ -366,7 +383,16 @@ package body GMTTypes is
     vBmtfAddress.detectorSide := (others => '0');
     vBmtfAddress.wheelNo      := (others => '0');
 
-    oTrack := track_address_from_in_mus(iMuon_flat, iEmpty, vBmtfAddress, iMuon_flat(HALO_FINE_IN));
+    vEmtfAddress.chamberIDs(1)      := unsigned(iMuon_flat(EMTF_ME1_CHAMBER_ID_IN_HIGH downto EMTF_ME1_CHAMBER_ID_IN_LOW));
+    vEmtfAddress.chamberIDs(2)      := unsigned(iMuon_flat(EMTF_ME2_CHAMBER_ID_IN_HIGH downto EMTF_ME2_CHAMBER_ID_IN_LOW));
+    vEmtfAddress.chamberIDs(3)      := unsigned(iMuon_flat(EMTF_ME3_CHAMBER_ID_IN_HIGH downto EMTF_ME3_CHAMBER_ID_IN_LOW));
+    vEmtfAddress.chamberIDs(4)      := unsigned(iMuon_flat(EMTF_ME4_CHAMBER_ID_IN_HIGH downto EMTF_ME4_CHAMBER_ID_IN_LOW));
+    vEmtfAddress.chamberSegments(1) := iMuon_flat(EMTF_ME1_SEGMENT_ID_IN);
+    vEmtfAddress.chamberSegments(2) := iMuon_flat(EMTF_ME2_SEGMENT_ID_IN);
+    vEmtfAddress.chamberSegments(3) := iMuon_flat(EMTF_ME3_SEGMENT_ID_IN);
+    vEmtfAddress.chamberSegments(4) := iMuon_flat(EMTF_ME4_SEGMENT_ID_IN);
+
+    oTrack := track_address_from_in_mus(iMuon_flat, iEmpty, vBmtfAddress, vEmtfAddress, iMuon_flat(HALO_FINE_IN));
 
     return oTrack;
   end;
