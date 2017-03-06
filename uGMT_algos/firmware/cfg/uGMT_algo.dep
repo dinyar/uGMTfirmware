@@ -48,6 +48,7 @@ src GhostBusting/CancelOutUnit_Single.vhd
 src GhostBusting/WedgeCheckerUnit.vhd
 src GhostBusting/GhostCheckerUnit_spatialCoords.vhd
 src GhostBusting/GhostCheckerUnit_BMTF.vhd
+src GhostBusting/GhostCheckerUnit_EMTF.vhd
 src Sorting/Stage0/HalfSortStage0.vhd
 src Sorting/Stage0/SortStage0_behavioral.vhd
 src Sorting/Stage0/SortStage0_countWins.vhd

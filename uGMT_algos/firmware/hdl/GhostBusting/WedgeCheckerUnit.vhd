@@ -84,10 +84,17 @@ begin
         sIntermediateCancel2(j)(i) <= '0';
       end generate gen_omtf_addr_based;
 
-      -- TODO: MISSING!
       gen_emtf_addr_based : if CANCEL_OUT_TYPE = string'("EMTF_ADDRESSES") generate
-        sIntermediateCancel1(j)(i) <= '0';
-        sIntermediateCancel2(j)(i) <= '0';
+        x : entity work.GhostCheckerUnit_EMTF
+         port map (
+           mu1     => wedge1(i).emtfAddress,
+           qual1   => wedge1(i).qual,
+           mu2     => wedge2(j).emtfAddress,
+           qual2   => wedge2(j).qual,
+           ghost1  => sIntermediateCancel1(i)(j),
+           ghost2  => sIntermediateCancel2(j)(i),
+           clk     => clk
+           );
       end generate gen_emtf_addr_based;
 
       gen_coord_based : if CANCEL_OUT_TYPE = string'("COORDINATE") generate
