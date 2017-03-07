@@ -20,14 +20,14 @@ begin
     variable matchedStation : boolean := false;  -- whether a track segement was shared between two tracks
   begin
     matchedStation := false;
-    if (mu1.chamberIDs(1) > 0 and mu2.chamberIDs(1) > 0 and
+    if (mu2.chamberIDs(1) > 0 and  -- mu1.chamberIDs is implicitly greater than 0 due to line below.
         mu1.chamberIDs(1) = (mu2.chamberIDs(1)+3) and
         mu1.chamberSegments(1) = mu2.chamberSegments(1)) then
       matchedStation := true;
     end if;
 
     for station in 2 to 4 loop
-      if (mu1.chamberIDs(station) > 0 and mu2.chamberIDs(station) > 0 and
+      if (mu2.chamberIDs(station) > 0 and  -- mu1.chamberIDs is implicitly greater than 0 due to line below.
           mu1.chamberIDs(station) = (mu2.chamberIDs(station)+2) and
           mu1.chamberSegments(station) = mu2.chamberSegments(station)) then
         matchedStation := true;
