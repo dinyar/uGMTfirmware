@@ -155,9 +155,9 @@ begin
       for i in NCHAN-1 downto 0 loop
         -- First tick
         if in_buf(EXTRAPOLATION_LATENCY-1)(i).data(ETA_IN_HIGH) = '0' then -- Checking pseudo-sign bit of eta
-          sPreCalcEta(i) <= signed(in_buf(EXTRAPOLATION_LATENCY-1)(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(sDeltaEta(i), ETA_EXTRAPOLATION_WORD_SIZE+1));
-        else
           sPreCalcEta(i) <= signed(in_buf(EXTRAPOLATION_LATENCY-1)(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) - signed(resize(sDeltaEta(i), ETA_EXTRAPOLATION_WORD_SIZE+1));
+        else
+          sPreCalcEta(i) <= signed(in_buf(EXTRAPOLATION_LATENCY-1)(i).data(ETA_IN_HIGH downto ETA_IN_LOW)) + signed(resize(sDeltaEta(i), ETA_EXTRAPOLATION_WORD_SIZE+1));
         end if;
         if d(i).data(31-SIGN_IN) = '1' then -- SYSIGN_IN assumes 62 bit vector. Need to remove offset of 31.
           sPreCalcPhi(i) <= signed(resize(iGlobalPhi(i), 11)) - signed(resize(SHIFT_LEFT("00" & sDeltaPhi(i), 2), 7));
