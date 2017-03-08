@@ -38,6 +38,8 @@ package tb_helpers is
   type TGMTOutEvent is record
     iEvent            : integer;
     muons             : TGMTMu_vector(7 downto 0);
+    extrapolatedPhi   : TPhi_vector(7 downto 0);
+    extrapolatedEta   : TEta_vector(7 downto 0);
     iso               : TIsoBits_vector(7 downto 0);
     idxBits           : TIndexBits_vector(7 downto 0);
     intMuons_bmtf     : TGMTMu_vector(7 downto 0);
@@ -246,13 +248,15 @@ end;
 package body tb_helpers is
 
   procedure ReadInputMuon (
-    variable L        : inout line;
-    variable id       : in    string(1 to 3);
-    variable muon     : out   TGMTMu;
-    variable sortRank : out   TSortRank10;
-    variable emptyBit : out   std_logic;
-    variable isoBit   : out   TIsoBits;
-    variable idxBits  : out   TIndexBits
+    variable L               : inout line;
+    variable id              : in    string(1 to 3);
+    variable muon            : out   TGMTMu;
+    variable extrapolatedPhi : out   unsigned(9 downto 0);
+    variable extrapolatedEta : out   signed(8 downto 0);
+    variable sortRank        : out   TSortRank10;
+    variable emptyBit        : out   std_logic;
+    variable isoBit          : out   TIsoBits;
+    variable idxBits         : out   TIndexBits
     ) is
     variable cable_no    : integer;
     variable sign, vsign : bit;
@@ -264,6 +268,8 @@ package body tb_helpers is
     variable empty       : bit;
     variable iso         : integer;
     variable index       : integer;
+    variable phiAtVtx    : integer;
+    variable etaAtVtx    : integer;
 
     variable dummy : string(1 to 5);
   begin  -- ReadInputMuon
@@ -289,9 +295,13 @@ package body tb_helpers is
 
     if id = string'("OUT") then
       read(L, iso);
-      isoBit  := std_logic_vector(to_unsigned(iso, 2));
+      isoBit          := std_logic_vector(to_unsigned(iso, 2));
       read(L, index);
-      idxBits := to_unsigned(index, 7);
+      idxBits         := to_unsigned(index, 7);
+      read(L, phiAtVtx);
+      extrapolatedPhi := to_unsigned(phiAtVtx, 10);
+      read(L, etaAtVtx);
+      extrapolatedEta := to_signed(etaAtVtx, 9);
     end if;
 
     -- TODO: Handle halo bit once this has been added to testbench.
@@ -305,11 +315,13 @@ package body tb_helpers is
     variable sortRank : out   TSortRank10;
     variable emptyBit : out   std_logic
     ) is
-    variable dummyIso     : TIsoBits;
-    variable dummyid      : string(1 to 3) := "XXX";
-    variable dummyIdxBits : TIndexBits;
+    variable dummyIso             : TIsoBits;
+    variable dummyid              : string(1 to 3) := "XXX";
+    variable dummyIdxBits         : TIndexBits;
+    variable dummyExtrapolatedPhi : unsigned(9 downto 0);
+    variable dummyExtrapolatedEta : signed(8 downto 0);
   begin  -- ReadInputMuon
-    ReadInputMuon(L, dummyid, muon, sortRank, emptyBit, dummyIso, dummyIdxBits);
+    ReadInputMuon(L, dummyid, muon, dummyExtrapolatedPhi, dummyExtrapolatedEta, sortRank, emptyBit, dummyIso, dummyIdxBits);
   end ReadInputMuon;
 
   procedure ReadTrack (
@@ -549,7 +561,7 @@ package body tb_helpers is
         -- TODO: Parse this maybe?
         next;
       elsif L.all(1 to 3) = "OUT" then
-        ReadInputMuon(L, L.all(1 to 3), event.muons(muFinNo), dummySortRank, dummyEmpty, event.iso(muFinNo), event.idxBits(muFinNo));
+        ReadInputMuon(L, L.all(1 to 3), event.muons(muFinNo), event.extrapolatedPhi(muFinNo), event.extrapolatedEta(muFinNo), dummySortRank, dummyEmpty, event.iso(muFinNo), event.idxBits(muFinNo));
         muFinNo := muFinNo+1;
         muNo    := muNo+1;
       elsif L.all(1 to 4) = "BIMD" then
@@ -606,31 +618,33 @@ package body tb_helpers is
     file F                 :     text;
     variable iEvent        : in  integer;
     variable event         : out TGMTMuEvent) is
-    variable L, L1         : line;
-    variable muNo          : integer := 0;
-    variable muBmtfNo      : integer := 0;
-    variable muOmtfNo      : integer := 0;
-    variable muEmtfNo      : integer := 0;
-    variable wedgeNo       : integer := 0;
-    variable wedgeBmtfNo   : integer := 0;
-    variable wedgeOmtfNo   : integer := 0;
-    variable wedgeEmtfNo   : integer := 0;
-    variable muons         : TGMTMu_vector(107 downto 0);
-    variable sortRanks     : TSortRank10_vector(107 downto 0);
-    variable emptyBits     : std_logic_vector(107 downto 0);
-    variable idxBits       : TIndexBits_vector(107 downto 0);
-    variable finId         : string(1 to 3) := "OUT";
-    variable bimId         : string(1 to 3) := "BIM";
-    variable oimId         : string(1 to 3) := "OIM";
-    variable fimId         : string(1 to 3) := "FIM";
-    variable dummySrtRnk   : TSortRank10;
-    variable dummyEmptyBit : std_logic;
-    variable dummyIsoBits  : TIsoBits;
-    variable dummyIdxBits  : TIndexBits;
-    variable finMuNo       : integer := 0;
-    variable intMuBNo      : integer := 0;
-    variable intMuONo      : integer := 0;
-    variable intMuENo      : integer := 0;
+    variable L, L1                : line;
+    variable muNo                 : integer := 0;
+    variable muBmtfNo             : integer := 0;
+    variable muOmtfNo             : integer := 0;
+    variable muEmtfNo             : integer := 0;
+    variable wedgeNo              : integer := 0;
+    variable wedgeBmtfNo          : integer := 0;
+    variable wedgeOmtfNo          : integer := 0;
+    variable wedgeEmtfNo          : integer := 0;
+    variable muons                : TGMTMu_vector(107 downto 0);
+    variable sortRanks            : TSortRank10_vector(107 downto 0);
+    variable emptyBits            : std_logic_vector(107 downto 0);
+    variable idxBits              : TIndexBits_vector(107 downto 0);
+    variable finId                : string(1 to 3) := "OUT";
+    variable bimId                : string(1 to 3) := "BIM";
+    variable oimId                : string(1 to 3) := "OIM";
+    variable fimId                : string(1 to 3) := "FIM";
+    variable dummyExtrapolatedPhi : unsigned(9 downto 0);
+    variable dummyExtrapolatedEta : signed(8 downto 0);
+    variable dummySrtRnk          : TSortRank10;
+    variable dummyEmptyBit        : std_logic;
+    variable dummyIsoBits         : TIsoBits;
+    variable dummyIdxBits         : TIndexBits;
+    variable finMuNo              : integer := 0;
+    variable intMuBNo             : integer := 0;
+    variable intMuONo             : integer := 0;
+    variable intMuENo             : integer := 0;
   begin  -- ReadMuEvent
 
     event.iEvent := iEvent;
@@ -673,7 +687,7 @@ package body tb_helpers is
         wedgeEmtfNo := wedgeEmtfNo+1;
         wedgeNo     := wedgeNo+1;
       elsif L.all(1 to 3) = "OUT" then
-        ReadInputMuon(L, finId, event.expectedMuons(finMuNo), dummySrtRnk, dummyEmptyBit, event.expectedIsoBits(finMuNo), dummyIdxBits);
+        ReadInputMuon(L, finId, event.expectedMuons(finMuNo), dummyExtrapolatedPhi, dummyExtrapolatedEta, dummySrtRnk, dummyEmptyBit, event.expectedIsoBits(finMuNo), dummyIdxBits);
         finMuNo := finMuNo+1;
       elsif L.all(1 to 4) = "BIMD" then
         ReadInputMuon(L, event.expectedIntMuB(intMuBNo), event.expectedSrtRnksB(intMuBNo), dummyEmptyBit);
