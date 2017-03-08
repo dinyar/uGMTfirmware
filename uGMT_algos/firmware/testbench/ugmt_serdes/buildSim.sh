@@ -47,13 +47,10 @@ vcom -check_synthesis ../../hdl/input_stages/gen_idx_bits.vhd
 vcom -check_synthesis ../../hdl/input_stages/energy_input.vhd
 vcom -check_synthesis ../../hdl/input_stages/muon_input.vhd
 vcom -check_synthesis ../../hdl/Sorting/SorterUnit.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_BMTF.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_spatialCoords.vhd
+vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_*.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/WedgeCheckerUnit.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_BO_WedgeComp.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_BO.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_EO_WedgeComp.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_EO.vhd
+vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_*_WedgeComp.vhd
+vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_*.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_*
 vcom -check_synthesis ../../hdl/common/comp10_ge_behavioral.vhd
 vcom -check_synthesis ../../hdl/Sorting/Stage0/SortStage0_countWins.vhd
@@ -64,8 +61,7 @@ vcom -check_synthesis ../../hdl/Sorting/Stage1/SortStage1_behavioral.vhd
 vcom -check_synthesis ../../hdl/Sorting/SortAndCancelUnit.vhd
 vcom -check_synthesis ../../hdl/Isolation/compute_complete_sums.vhd
 vcom -check_synthesis ../../hdl/Isolation/compute_energy_strip_sums.vhd
-vcom -check_synthesis ../../hdl/Isolation/iso_check_abs.vhd
-vcom -check_synthesis ../../hdl/Isolation/iso_check_rel.vhd
+vcom -check_synthesis ../../hdl/Isolation/iso_check_*.vhd
 vcom -check_synthesis ../../hdl/Isolation/iso_check.vhd
 vcom -check_synthesis ../../hdl/Isolation/IsoAssignmentUnit.vhd
 vcom -check_synthesis ../../hdl/GMT.vhd

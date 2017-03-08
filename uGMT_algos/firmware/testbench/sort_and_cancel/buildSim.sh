@@ -22,14 +22,10 @@ vcom -check_synthesis ../../hdl/Sorting/SorterUnit.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_dpram_dist.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_reg_status.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_cancel_out_*.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_BMTF.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_spatialCoords.vhd
+vcom -check_synthesis ../../hdl/GhostBusting/GhostCheckerUnit_*.vhd
 vcom -check_synthesis ../../hdl/GhostBusting/WedgeCheckerUnit.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_BO_WedgeComp.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_BO.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_EO_WedgeComp.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_EO.vhd
-vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_*
+vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_*_WedgeComp.vhd
+vcom -check_synthesis ../../hdl/GhostBusting/CancelOutUnit_*.vhd
 vcom -check_synthesis ../../hdl/common/comp10_ge_behavioral.vhd
 vcom -check_synthesis ../../hdl/Sorting/Stage0/SortStage0_countWins.vhd
 vcom -check_synthesis ../../hdl/Sorting/Stage0/SortStage0_Mux.vhd
