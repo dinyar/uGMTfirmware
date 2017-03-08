@@ -108,8 +108,8 @@ begin
 
   coordinate_extrapolation : for i in sExtrapolatedCoords'range generate
     sEtaAbs(i)               <= unsigned(abs(signed(d(i).data(ETA_IN_HIGH downto ETA_IN_LOW))));
-    sExtrapolationAddress(i) <= std_logic_vector(sEtaAbs(i)(7 downto 2)) &
-                                d(i).data(PT_IN_LOW+5 downto PT_IN_LOW);
+    sExtrapolationAddress(i) <= std_logic_vector(sEtaAbs(i)(7 downto 3)) &
+                                d(i).data(PT_IN_LOW+6 downto PT_IN_LOW);
     phi_extrapolation : entity work.ipbus_initialized_dpram
       generic map (
         DATA_FILE  => PHI_EXTRAPOLATION_DATA_FILE(i),
