@@ -6,31 +6,9 @@ export PATH=/opt/cactus/bin:/opt/cactus/bin/uhal/tools:$PATH
 
 source /home/scratch/Vivado2016.1/Vivado/2016.1/settings64.sh
 
-PROJECTFILE="top/top.xpr"
-
-##### Create files #####
-cat << EOM > makeBitfile.tcl
-open_project $PROJECTFILE
-set_property STEPS.OPT_DESIGN.ARGS.DIRECTIVE Explore [get_runs impl_1]
-set_property STEPS.PLACE_DESIGN.ARGS.DIRECTIVE ExtraPostPlacementOpt [get_runs impl_1]
-set_property STEPS.PHYS_OPT_DESIGN.IS_ENABLED true [get_runs impl_1]
-set_property STEPS.PHYS_OPT_DESIGN.ARGS.DIRECTIVE AggressiveExplore [get_runs impl_1]
-set_property STEPS.ROUTE_DESIGN.ARGS.DIRECTIVE Explore [get_runs impl_1]
-set_property STEPS.POST_ROUTE_PHYS_OPT_DESIGN.IS_ENABLED true [get_runs impl_1]
-set_property STEPS.POST_ROUTE_PHYS_OPT_DESIGN.ARGS.DIRECTIVE AggressiveExplore [get_runs impl_1]
-launch_runs synth_1
-wait_on_run synth_1
-launch_runs impl_1
-wait_on_run impl_1
-launch_runs impl_1 -to_step write_bitstream
-wait_on_run impl_1
-exit
-EOM
-
 ## Reset project and run steps up to bitfile generation and packaging.
 make reset
-vivado -mode batch -source makeBitfile.tcl
-
+make bitfile
 python checkTiming.py
 
 if [ "$?" == 0 ];
