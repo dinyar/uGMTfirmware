@@ -42,10 +42,6 @@ architecture behavior of testbench is
 
 begin
 
-  -- TODO: Fix this eventually.
-  iExtrapolatedPhi <= (others => "0000000000");
-  iExtrapolatedEta <= (others => "000000000");
-
   uut : entity work.serializer_stage
     port map (
       clk240              => clk240,
@@ -87,8 +83,10 @@ begin
     for i in event_buffer'range loop
       event_buffer(i).iEvent := -1;
       for iMu in event_buffer(i).muons'range loop
-        event_buffer(i).muons(iMu) := ('0', '0', "000000000", '0', "0000", "000000000", "0000000000", '0');
-        event_buffer(i).iso(iMu)   := "00";
+        event_buffer(i).muons(iMu)           := ('0', '0', "000000000", '0', "0000", "000000000", "0000000000", '0');
+        event_buffer(i).extrapolatedPhi(iMu) := "0000000000";
+        event_buffer(i).extrapolatedEta(iMu) := "000000000";
+        event_buffer(i).iso(iMu)             := "00";
       end loop;  -- iMu
     end loop;  -- i
     iValid <= '0';
@@ -108,8 +106,10 @@ begin
         -- Filling serializer
         iValid              <= '1';
         for i in OUTPUT_QUAD_ASSIGNMENT'range loop
-          iMuons(8*i+7 downto 8*i)     <= event_buffer(1).muons;
-          iMuIdxBits(8*i+7 downto 8*i) <= event_buffer(1).idxBits;
+          iMuons(8*i+7 downto 8*i)           <= event_buffer(1).muons;
+          iExtrapolatedPhi(8*i+7 downto 8*i) <= event_buffer(1).extrapolatedPhi;
+          iExtrapolatedEta(8*i+7 downto 8*i) <= event_buffer(1).extrapolatedEta;
+          iMuIdxBits(8*i+7 downto 8*i)       <= event_buffer(1).idxBits;
         end loop;
         iIso                <= event_buffer(1).iso;
         iIntermediateMuonsB <= event_buffer(1).intMuons_bmtf;
@@ -119,8 +119,10 @@ begin
         event_buffer(0) := event;
       else
         for i in OUTPUT_QUAD_ASSIGNMENT'range loop
-          iMuons(8*i+7 downto 8*i)     <= event_buffer(1).muons;
-          iMuIdxBits(8*i+7 downto 8*i) <= event_buffer(1).idxBits;
+          iMuons(8*i+7 downto 8*i)           <= event_buffer(1).muons;
+          iExtrapolatedPhi(8*i+7 downto 8*i) <= event_buffer(1).extrapolatedPhi;
+          iExtrapolatedEta(8*i+7 downto 8*i) <= event_buffer(1).extrapolatedEta;
+          iMuIdxBits(8*i+7 downto 8*i)       <= event_buffer(1).idxBits;
         end loop;
         iIso                <= event_buffer(1).iso;
         iIntermediateMuonsB <= event_buffer(1).intMuons_bmtf;
