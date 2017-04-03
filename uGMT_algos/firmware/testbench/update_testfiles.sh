@@ -5,7 +5,7 @@ then
     echo "Error, expecting mp7fw release path."
     exit
 fi
-mp7fw_repo_subdir=$1
+MP7FW_REPO_SUBDIR=$1
 
 if [ ! -d patterns ];
 then
