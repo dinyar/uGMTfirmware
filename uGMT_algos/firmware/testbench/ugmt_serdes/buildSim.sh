@@ -1,30 +1,24 @@
 #!/bin/bash
 
-# TODO: Add warning to modify path to CACTUSREPO here!
-
-################## MODIFY HERE ##################
-CACTUSREPOPATH=/home/scratch/ugmt_firmware/mp7fw_current
-#################################################
-
 rm -rf ugmt_serdes
 
 vlib ugmt_serdes
 vmap work ugmt_serdes
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_types.vhd
+vcom -check_synthesis ../cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_types.vhd
 vcom -check_synthesis ../../hdl/common/ugmt_constants.vhd
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/mp7_datapath/firmware/hdl/mp7_data_types.vhd
+vcom -check_synthesis ../cactusupgrades/components/mp7_datapath/firmware/hdl/mp7_data_types.vhd
 vcom -check_synthesis ../../hdl/common/GMTTypes_pkg.vhd
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_core/firmware/hdl/ipbus_package.vhd
+vcom -check_synthesis ../cactusupgrades/components/ipbus_core/firmware/hdl/ipbus_package.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_sorting.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_sort_rank_mems.vhd
 vcom -check_synthesis ../../hdl/ipbus_decode_deserialization.vhd
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_core/firmware/hdl/ipbus_fabric_sel.vhd
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_v.vhd
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/boards/mp7/base_fw/mp7xe_690/firmware/hdl/mp7_brd_decl.vhd
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/boards/mp7/base_fw/common/firmware/hdl/mp7_top_decl.vhd
+vcom -check_synthesis ../cactusupgrades/components/ipbus_core/firmware/hdl/ipbus_fabric_sel.vhd
+vcom -check_synthesis ../cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_reg_v.vhd
+vcom -check_synthesis ../cactusupgrades/boards/mp7/base_fw/mp7xe_690/firmware/hdl/mp7_brd_decl.vhd
+vcom -check_synthesis ../cactusupgrades/boards/mp7/base_fw/common/firmware/hdl/mp7_top_decl.vhd
 vcom -check_synthesis ../../hdl/top_decl.vhd
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/mp7_ttc/firmware/hdl/mp7_ttc_decl.vhd
-vcom -check_synthesis $CACTUSREPOPATH/cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_dpram.vhd
+vcom -check_synthesis ../cactusupgrades/components/mp7_ttc/firmware/hdl/mp7_ttc_decl.vhd
+vcom -check_synthesis ../cactusupgrades/components/ipbus_slaves/firmware/hdl/ipbus_dpram.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_reg_setable.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_reg_status.vhd
 vcom -check_synthesis ../../hdl/ipbus_slaves/ipbus_counter.vhd
